@@ -2,7 +2,34 @@ use reqwest::Client;
 use serde::{Deserialize, Serialize};
 use std::error::Error;
 use reqwest::header::AUTHORIZATION;
+use config::{Config, File};
 
+// config file
+#[derive(Debug, Deserialize)]
+pub struct ConfigFile {
+    pub credentials: Credentials,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct Credentials {
+    pub id: String,
+    pub password: String,
+}
+
+
+// load the config file
+fn load_config() -> Result<ConfigFile, Box<dyn Error>> {
+    let config = Config::builder()
+        .add_source(File::with_name("../config.toml"))
+        .build()?;
+
+    let credentials: Credentials = config.get("credentials")?;
+
+    Ok(ConfigFile { credentials })
+}
+
+
+// 
 #[derive(Serialize)]
 struct LoginRequest {
     username: String,
@@ -20,13 +47,14 @@ struct UserInfo {
 }
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
+    let config = load_config()?; // load config file
     let login_url = "https://audiobook.nuagemagique.duckdns.org/login";
 
     let client = Client::new();
 
     let login_data = LoginRequest {
-        username: "luc".to_string(),
-        password: "Areyousure?!".to_string(),
+        username: config.credentials.id.to_string(),
+        password: config.credentials.password.to_string(),
     };
 
     let response = client
