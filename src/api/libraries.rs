@@ -3,7 +3,9 @@ use serde_json::Value;
 use reqwest::header::AUTHORIZATION;
 use color_eyre::eyre::{Result, Report};
 
+/// Get a Library's Personalized View
 /// https://api.audiobookshelf.org/#get-a-library-39-s-personalized-view
+
 /// filter only book continue to listening from personalized view
 pub async fn get_continue_listening(token: &str) -> Result<Vec<String>> {
     let client = Client::new();

@@ -19,6 +19,9 @@ struct UserInfo {
     token: String,
 }
 
+/// LOGIN
+/// https://api.audiobookshelf.org/#server
+
 /// The login function takes a username and password, makes a POST request and returns a token.
 pub async fn login(username: &str, password: &str) -> Result<String> {
     let login_url = "https://audiobook.nuagemagique.duckdns.org/login";
