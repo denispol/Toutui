@@ -3,21 +3,6 @@
 version = 4
 
 [[package]]
-name = "Clisten"
-version = "0.1.0"
-dependencies = [
- "color-eyre",
- "config",
- "crossterm",
- "ratatui",
- "reqwest",
- "serde",
- "serde_derive",
- "serde_json",
- "tokio",
-]
-
-[[package]]
 name = "addr2line"
 version = "0.21.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1713,6 +1698,21 @@ dependencies = [
  "serde_spanned",
  "toml_datetime",
  "winnow",
+]
+
+[[package]]
+name = "toutui"
+version = "0.1.0"
+dependencies = [
+ "color-eyre",
+ "config",
+ "crossterm",
+ "ratatui",
+ "reqwest",
+ "serde",
+ "serde_derive",
+ "serde_json",
+ "tokio",
 ]
 
 [[package]]
