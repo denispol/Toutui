@@ -2,25 +2,12 @@ use crate::api::auth::login;
 use crate::api::libraries::get_continue_listening;
 use crate::config::load_config;
 use color_eyre::Result;
-use ratatui::init;
-use color_eyre::eyre::Report;
 use ratatui::{
-    buffer::Buffer,
     crossterm::event::{self, Event, KeyCode, KeyEvent, KeyEventKind},
-    layout::{Constraint, Layout, Rect},
-    style::{
-        palette::tailwind::{BLUE, GREEN, SLATE},
-        Color, Modifier, Style, Stylize,
-    },
-    symbols,
-    text::Line,
     widgets::{
-        Block, Borders, HighlightSpacing, List, ListItem, ListState, Paragraph, StatefulWidget,
-        Widget,
-    },
+         ListState    },
     DefaultTerminal,
 };
-use ratatui::widgets::Wrap;
 
 
 pub struct App {
@@ -39,8 +26,8 @@ pub struct App {
                 .await?;
         let titles = get_continue_listening(&token).await?;
 
-        let mut list_state = ListState::default();
-        list_state.select(Some(0));
+        let mut list_state = ListState::default(); // init the ListState ratatui's widget
+        list_state.select(Some(0)); // select the first item of the list when app is launch
 
         Ok(Self {
             should_exit: false,
@@ -77,28 +64,21 @@ pub struct App {
     }
 
     /// selection
+    // all select fun are from ListState widget
    pub fn select_next(&mut self) {
-        let i = match self.list_state.selected() {
-            Some(i) => (i + 1) % self.titles.len(),
-            None => 0,
-        };
-        self.list_state.select(Some(i));
+       self.list_state.select_next();
     }
 
    pub fn select_previous(&mut self) {
-        let i = match self.list_state.selected() {
-            Some(i) => if i == 0 { self.titles.len() - 1 } else { i - 1 },
-            None => 0,
-        };
-        self.list_state.select(Some(i));
+       self.list_state.select_previous();
     }
 
    pub fn select_first(&mut self) {
-        self.list_state.select(Some(0));
+       self.list_state.select_first();
     }
 
   pub fn select_last(&mut self) { 
-        self.list_state.select(Some(self.titles.len() - 1));
+       self.list_state.select_last();
     }
 }
 
