@@ -88,7 +88,7 @@ impl App {
 
     fn render_selected_item(&self, area: Rect, buf: &mut Buffer) {
         if let Some(selected) = self.list_state.selected() {
-            let content = &self.titles[selected];
+            let content = &self.authors_names[selected];
             Paragraph::new(content.clone())
                 .wrap(Wrap { trim: true })
                 .render(area, buf);

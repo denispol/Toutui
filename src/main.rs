@@ -2,7 +2,6 @@ mod app;
 mod config;
 mod api;
 mod ui;
-
 use app::App;
 use color_eyre::Result;
 
@@ -14,5 +13,6 @@ async fn main() -> Result<()> {
     let app_result = app.run(terminal);
     ratatui::restore();
     app_result
+
 }
 
