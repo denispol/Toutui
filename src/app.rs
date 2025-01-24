@@ -64,24 +64,6 @@ pub struct App {
         Ok(())
     }
 
-pub async fn start_playback(&self) {
-    if let Some(selected) = self.list_state.selected() {
-        if let Some(id) = self.ids_library_items.get(selected) {
-            if let Err(e) = post_start_playback_session(
-                Some(self.token.clone()).as_ref().unwrap().clone(),
-                id,
-            )
-            .await
-            {
-                eprintln!("Failed to start playback session: {}", e);
-            }
-        } else {
-            eprintln!("No valid ID found for the selected entity.");
-        }
-    } else {
-        eprintln!("No entity selected.");
-    }
-}
    /// handle key
     pub fn handle_key(&mut self, key: KeyEvent) {
         if key.kind != KeyEventKind::Press {
