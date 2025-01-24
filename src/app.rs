@@ -1,8 +1,9 @@
 use crate::api::get_test::get_test;
-use crate::api::utils::collect::*;
+use crate::api::library_items::play_lib_item_or_pod::*;
+use crate::api::utils::collect_personalized_view::*;
+use crate::api::libraries::get_library_perso_view::*;
 use crate::api::auth::login;
-use crate::api::libraries::get_continue_listening;
-use crate::api::library_item::play;
+use crate::api::libraries::*;
 use crate::config::load_config;
 use color_eyre::Result;
 use ratatui::{
@@ -36,11 +37,8 @@ pub struct App {
          let authors_names = collect_author_name(&continue_listening).await;
          let ids_library_items = collect_ids_library_items(&continue_listening).await;
 
-        // test
-        if let Err(e) = get_test().await {
-            eprintln!("Failed to get sessions: {}", e);
-        }
 
+        // test
 
         let mut list_state = ListState::default(); // init the ListState ratatui's widget
         list_state.select(Some(0)); // select the first item of the list when app is launch
@@ -66,6 +64,24 @@ pub struct App {
         Ok(())
     }
 
+pub async fn start_playback(&self) {
+    if let Some(selected) = self.list_state.selected() {
+        if let Some(id) = self.ids_library_items.get(selected) {
+            if let Err(e) = post_start_playback_session(
+                Some(self.token.clone()).as_ref().unwrap().clone(),
+                id,
+            )
+            .await
+            {
+                eprintln!("Failed to start playback session: {}", e);
+            }
+        } else {
+            eprintln!("No valid ID found for the selected entity.");
+        }
+    } else {
+        eprintln!("No entity selected.");
+    }
+}
    /// handle key
     pub fn handle_key(&mut self, key: KeyEvent) {
         if key.kind != KeyEventKind::Press {
@@ -78,15 +94,25 @@ pub struct App {
             KeyCode::Char('g') | KeyCode::Home => self.select_first(),
             KeyCode::Char('G') | KeyCode::End => self.select_last(),
             KeyCode::Char('l') | KeyCode::Right | KeyCode::Enter => {
-                tokio::spawn(async {
-                    if let Err(e) = play().await {
-                        eprintln!("Error during playback: {:?}", e);
-                    }
-                });}
+                let token = self.token.clone();
+                let ids_library_items = self.ids_library_items.clone();
+                let selected = self.list_state.selected();
 
-                _ => {}
+                tokio::spawn(async move {
+                    if let Some(index) = selected {
+                        if let Some(id) = ids_library_items.get(index) {
+                            if let Some(token) = token {
+                                if let Err(e) = post_start_playback_session(Some(token), id).await {
+                                    eprintln!("Failed to start playback session: {}", e);
+                                }
+                            }
+                        }
+                    }
+                });
             }
+            _ => {}
         }
+    }
 
     /// selection
     // all select fun are from ListState widget

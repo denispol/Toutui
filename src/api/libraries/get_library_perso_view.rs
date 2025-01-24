@@ -5,6 +5,8 @@ use color_eyre::eyre::{Result, Report};
 use serde::Deserialize;
 use serde::Serialize;
 
+/// Get a PersonalizedView's Personalized View (allow to have continue linstening)
+/// https://api.audiobookshelf.org/#get-a-library-39-s-personalized-view
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -91,8 +93,6 @@ pub struct Book {
     pub size: Option<i64>,
     pub series_sequence: Option<String>,
 }
-/// Get a PersonalizedView's Personalized View (allow to have continue linstening)
-/// https://api.audiobookshelf.org/#get-a-library-39-s-personalized-view
 
 // filter only book continue to listening from personalized view
 pub async fn get_continue_listening(token: &str) -> Result<Vec<PersonalizedView>> {

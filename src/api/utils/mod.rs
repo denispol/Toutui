@@ -1,1 +1,1 @@
-pub mod collect;
+pub mod collect_personalized_view;

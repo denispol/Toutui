@@ -1,4 +1,4 @@
-use crate::api::libraries::PersonalizedView;
+use crate::api::libraries::get_library_perso_view::PersonalizedView;
 
 /// collect titles
 pub async fn collect_titles(continue_listening: &[PersonalizedView]) -> Vec<String> {
