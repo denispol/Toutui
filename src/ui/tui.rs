@@ -55,7 +55,7 @@ impl App {
     }
 
     fn render_footer(area: Rect, buf: &mut Buffer) {
-        Paragraph::new("Use ↓↑ to move, g/G to go top/bottom, q to quit.")
+        Paragraph::new("Use ↓↑ to move, → to play, g/G to go top/bottom, q to quit.")
             .centered()
             .render(area, buf);
     }

@@ -19,6 +19,7 @@ pub async fn post_start_playback_session(token: Option<String>, id_library_items
 
     let params = json!({
         "forceDirectPlay": true, // avoid latency load, allow view chapter, cover etc.(the .m3u8 stream the original format, ex: .m4b) when playing with vlc
+        "mediaPlayer": "vlc",
     });
 
     let response = client
