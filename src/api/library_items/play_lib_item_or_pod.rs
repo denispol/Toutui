@@ -1,5 +1,5 @@
 use reqwest::Client; 
-use color_eyre::eyre::{Result, Report}; 
+use color_eyre::eyre::{Result}; 
 use reqwest::header::AUTHORIZATION;
 use serde_json::Value;
 use serde_json::json;
