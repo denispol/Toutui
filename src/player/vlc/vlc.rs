@@ -11,6 +11,3 @@ pub async fn start_vlc(current_time: &String, content_url: &String, token: Optio
     output
 }
 
-pub async fn fetch_vlc_data() {
-
-}
