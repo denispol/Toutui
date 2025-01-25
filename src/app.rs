@@ -25,7 +25,7 @@ pub struct App {
    pub ids_library_items: Vec<String>,
 }
 
-/// Init, handlling events and navigation
+/// Init app, handlling events and navigation
  impl App {
      pub  async fn new() -> Result<Self> {
          let config = load_config()?;
@@ -37,9 +37,6 @@ pub struct App {
          let titles = collect_titles(&continue_listening).await;
          let authors_names = collect_author_name(&continue_listening).await;
          let ids_library_items = collect_ids_library_items(&continue_listening).await;
-
-
-        // test
 
         let mut list_state = ListState::default(); // init the ListState ratatui's widget
         list_state.select(Some(0)); // select the first item of the list when app is launch
@@ -54,7 +51,7 @@ pub struct App {
         })
     }
 
-    // handle events
+   /// handle events
    pub fn run(mut self, mut terminal: DefaultTerminal) -> Result<()> {
         while !self.should_exit {
             terminal.draw(|frame| frame.render_widget(&mut self, frame.area()))?;
@@ -87,9 +84,9 @@ pub struct App {
                     if let Some(index) = selected {
                         if let Some(id) = ids_library_items.get(index) {
                             if let Some(token) = token {
-                                if let Ok(data_for_vlc) = post_start_playback_session(Some(token), id).await {
-                                    start_vlc(&data_for_vlc[0], &data_for_vlc[1], token2).await;}
-                                    else {
+                                if let Ok(data_for_vlc) = post_start_playback_session(Some(&token), id).await {
+                                    start_vlc(&data_for_vlc[0], &data_for_vlc[1], Some(&token)).await;}
+                                else {
                                     eprintln!("Failed to start playback session");
                                 }
                             }
@@ -102,7 +99,7 @@ pub struct App {
     }
 
     /// selection
-    // all select fun are from ListState widget
+    // all select fn are from ListState widget
    pub fn select_next(&mut self) {
        self.list_state.select_next();
     }
