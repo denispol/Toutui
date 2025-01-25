@@ -1,7 +1,6 @@
 use reqwest::Client;
 use serde::{Deserialize, Serialize};
-use std::error::Error;
-use color_eyre::eyre::{Result, Report}; // Uuse Report rather than Box<dyn Error>
+use color_eyre::eyre::{Result, Report};
 
 #[derive(Serialize)]
 struct LoginRequest {
@@ -19,7 +18,7 @@ struct UserInfo {
     token: String,
 }
 
-/// LOGIN
+/// Login
 /// https://api.audiobookshelf.org/#server
 
 /// The login function takes a username and password, makes a POST request and returns a token.

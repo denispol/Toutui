@@ -3,7 +3,7 @@ use crate::player::vlc::*;
 use crate::api::library_items::play_lib_item_or_pod::*;
 use crate::api::utils::collect_personalized_view::*;
 use crate::api::libraries::get_library_perso_view::*;
-use crate::api::auth::login;
+use crate::api::server::auth::*;
 use crate::api::libraries::*;
 use crate::config::load_config;
 use color_eyre::Result;

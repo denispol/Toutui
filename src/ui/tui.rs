@@ -25,7 +25,7 @@ const ALT_ROW_BG_COLOR: Color = SLATE.c900;
 const SELECTED_STYLE: Style = Style::new().bg(SLATE.c800).add_modifier(Modifier::BOLD);
 const TEXT_FG_COLOR: Color = SLATE.c200;
 
-/// widget home's page
+/// widget home page
 impl Widget for &mut App {
     fn render(self, area: Rect, buf: &mut Buffer) {
         let [header_area, main_area, footer_area] = Layout::vertical([
@@ -45,7 +45,7 @@ impl Widget for &mut App {
     }
 }
 
-/// Rendering logic for home's page 
+/// Rendering logic for home page 
 impl App {
     fn render_header(area: Rect, buf: &mut Buffer) {
         Paragraph::new("Home")
