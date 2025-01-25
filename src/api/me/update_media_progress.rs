@@ -2,6 +2,10 @@ use reqwest::header::{AUTHORIZATION, CONTENT_TYPE};
 use serde_json::json;
 use std::error::Error;
 
+/// Create/Update Media Progress
+/// This endpoint creates/updates your media progress for a library item or podcast episode.
+/// https://api.audiobookshelf.org/#create-update-media-progress
+
 #[allow(dead_code)]
 pub async fn update_media_progress() -> Result<(), Box<dyn Error>> {
     let url = "https://audiobook.nuagemagique.duckdns.org/api/me/progress/a3c6a644-b77b-4737-a70e-88d4def19d6c";
