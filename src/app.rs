@@ -80,13 +80,16 @@ pub struct App {
                 let token = self.token.clone();
                 let ids_library_items = self.ids_library_items.clone();
                 let selected = self.list_state.selected();
+                let token2 = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI3NTk2MmQzMy05YmNmLTQyYzYtODY2ZC0yODcwYjQzYWM2MWYiLCJ1c2VybmFtZSI6ImFsYmFuIiwiaWF0IjoxNzMyNDUyMTEwfQ.VCiv72-0PxLhRdJen3KKi8BE_QDPBGmKQCNOzHf25lQ";
 
                 tokio::spawn(async move {
                     if let Some(index) = selected {
                         if let Some(id) = ids_library_items.get(index) {
                             if let Some(token) = token {
-                                if let Err(e) = post_start_playback_session(Some(token), id).await {
-                                    eprintln!("Failed to start playback session: {}", e);
+                                if let Ok(data_for_vlc) = post_start_playback_session(Some(token), id).await {
+                                    start_vlc(&data_for_vlc[0], &data_for_vlc[1], token2).await;}
+                                    else {
+                                    eprintln!("Failed to start playback session");
                                 }
                             }
                         }
