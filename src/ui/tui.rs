@@ -53,6 +53,10 @@ impl App {
         Paragraph::new("Use ↓↑ to move, → to play, g/G to go top/bottom, q to quit.")
             .centered()
             .render(area, buf);
+
+        Paragraph::new("toutui v0.1.0")
+            .right_aligned()
+            .render(area, buf);
     }
 
     fn render_list(&mut self, area: Rect, buf: &mut Buffer) {
