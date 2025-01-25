@@ -9,7 +9,7 @@ use serde_json::json;
 /// This endpoint starts a playback session for a library item or podcast episode.
 /// https://api.audiobookshelf.org/#play-a-library-item-or-podcast-episode
 
-pub async fn post_start_playback_session(token: Option<String>, id_library_items: &str) -> Result<Vec<String>, reqwest::Error> {
+pub async fn post_start_playback_session(token: Option<&String>, id_library_items: &str) -> Result<Vec<String>, reqwest::Error> {
     let client = Client::new();
 
     let params = json!({
@@ -23,7 +23,7 @@ pub async fn post_start_playback_session(token: Option<String>, id_library_items
             id_library_items
         ))
         .header("Content-Type", "application/json")
-        .header(AUTHORIZATION, format!("Bearer {}", token.as_deref().unwrap_or("")))
+        .header(AUTHORIZATION, format!("Bearer {}", token.unwrap()))
         .json(&params)
         .send()
         .await?;
