@@ -1,4 +1,5 @@
-use crate::api::get_test::get_test;
+//use crate::api::get_test::get_test;
+use crate::player::vlc::*;
 use crate::api::library_items::play_lib_item_or_pod::*;
 use crate::api::utils::collect_personalized_view::*;
 use crate::api::libraries::get_library_perso_view::*;
@@ -76,7 +77,7 @@ pub struct App {
             KeyCode::Char('g') | KeyCode::Home => self.select_first(),
             KeyCode::Char('G') | KeyCode::End => self.select_last(),
             KeyCode::Char('l') | KeyCode::Right | KeyCode::Enter => {
-                // we need to clone because they will be use in an spawn
+                // clone needed because variables will be use in an spawn
                 let token = self.token.clone();
                 let ids_library_items = self.ids_library_items.clone();
                 let selected = self.list_state.selected();
