@@ -7,23 +7,24 @@ use std::error::Error;
 /// https://api.audiobookshelf.org/#create-update-media-progress
 
 #[allow(dead_code)]
-pub async fn update_media_progress() -> Result<(), Box<dyn Error>> {
-    let url = "https://audiobook.nuagemagique.duckdns.org/api/me/progress/a3c6a644-b77b-4737-a70e-88d4def19d6c";
-    let token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI3NTk2MmQzMy05YmNmLTQyYzYtODY2ZC0yODcwYjQzYWM2MWYiLCJ1c2VybmFtZSI6ImFsYmFuIiwiaWF0IjoxNzMyNDUyMTEwfQ.VCiv72-0PxLhRdJen3KKi8BE_QDPBGmKQCNOzHf25lQ";
+pub async fn update_media_progress(id_library_item: &str, token: Option<&String>, current_time: Option<u32> ) -> Result<(), Box<dyn Error>> {
 
     // Construire le client reqwest
     let client = reqwest::Client::new();
 
     // Corps de la requête en JSON
     let body = json!({
-        "progress" : 0.55,
-        "currentTime": 1000
+        //"progress" : 0.75,
+        "currentTime": current_time,
     });
 
     // Effectuer la requête PATCH
     let response = client
-        .patch(url)
-        .header(AUTHORIZATION, format!("Bearer {}", token))
+        .patch(format!(
+                "https://audiobook.nuagemagique.duckdns.org/api/me/progress/{}", 
+                id_library_item
+        ))
+        .header(AUTHORIZATION, format!("Bearer {}", token.unwrap()))
         .header(CONTENT_TYPE, "application/json")
         .json(&body)
         .send()

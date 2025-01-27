@@ -9,7 +9,7 @@ use serde_json::json;
 /// This endpoint starts a playback session for a library item or podcast episode.
 /// https://api.audiobookshelf.org/#play-a-library-item-or-podcast-episode
 
-pub async fn post_start_playback_session(token: Option<&String>, id_library_items: &str) -> Result<Vec<String>, reqwest::Error> {
+pub async fn post_start_playback_session(token: Option<&String>, id_library_item: &str) -> Result<Vec<String>, reqwest::Error> {
     let client = Client::new();
 
     let params = json!({
@@ -20,7 +20,7 @@ pub async fn post_start_playback_session(token: Option<&String>, id_library_item
     let response = client
         .post(format!(
             "https://audiobook.nuagemagique.duckdns.org/api/items/{}/play", 
-            id_library_items
+            id_library_item
         ))
         .header("Content-Type", "application/json")
         .header(AUTHORIZATION, format!("Bearer {}", token.unwrap()))

@@ -5,6 +5,7 @@ use crate::api::library_items::play_lib_item_or_pod::*;
 use crate::api::utils::collect_personalized_view::*;
 use crate::api::libraries::get_library_perso_view::*;
 use crate::api::server::auth::*;
+use crate::api::me::update_media_progress::*;
 use crate::config::load_config;
 use color_eyre::Result;
 use ratatui::{
@@ -82,16 +83,34 @@ pub struct App {
                         if let Some(id) = ids_library_items.get(index) {
                             if let Some(token) = token {
                                 if let Ok(data_for_vlc) = post_start_playback_session(Some(&token), id).await {
+                                      let token_clone = token.clone();
                                     // start_vlc is  in a spwan to allow fetch_vlc_data to start at the same time
                                     // Thus, avoid to wait that VLC finished to start fetch_data 
-                                     tokio::spawn(async move {
-                                        start_vlc(&data_for_vlc[0], &port, &data_for_vlc[1], Some(&token)).await;
+                                    tokio::spawn(async move {
+                                        start_vlc(&data_for_vlc[0], &port, &data_for_vlc[1], Some(&token_clone)).await;
                                     }); 
                                     // Important, sleep time to 1s otherwise connection to vlc player will not
                                     // have the time to connect and will block everything
                                     tokio::time::sleep(std::time::Duration::from_secs(1)).await;
 
-                                    fetch_vlc_data(&port).await;
+                                    loop {
+                                        match fetch_vlc_data(&port).await {
+                                            Ok(Some(data_fetched)) => {
+                                                println!("Fetched data: {}", data_fetched.to_string());
+
+                                                tokio::time::sleep(tokio::time::Duration::from_secs(1)).await;
+                                                update_media_progress(id, Some(&token), Some(data_fetched)).await;
+
+                                            }Ok(None) => {
+                                                //println!("VLC is not running or there is no time available.");
+                                                break; 
+                                            }
+                                            Err(_e) => {
+                                                //eprintln!("Error fetching data from VLC: {}", e); 
+                                                break; 
+                                            }
+                                        }
+                                    }
                                 }
                                 else {
                                     eprintln!("Failed to start playback session");
