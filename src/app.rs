@@ -1,11 +1,7 @@
 //use crate::api::get_test::get_test;
-use crate::player::vlc::start_vlc::*;
-use crate::player::vlc::fetch_vlc_data::*;
-use crate::api::library_items::play_lib_item_or_pod::*;
 use crate::api::utils::collect_personalized_view::*;
 use crate::api::libraries::get_library_perso_view::*;
 use crate::api::server::auth::*;
-use crate::api::me::update_media_progress::*;
 use crate::logic::handle_input::handle_l::*;
 use crate::config::load_config;
 use color_eyre::Result;
