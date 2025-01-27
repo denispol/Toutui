@@ -3,6 +3,7 @@ mod config;
 mod api;
 mod ui;
 mod player;
+mod logic;
 use app::App;
 use color_eyre::Result;
 
