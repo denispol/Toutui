@@ -99,7 +99,7 @@ pub struct App {
                                                 println!("Fetched data: {}", data_fetched.to_string());
 
                                                 tokio::time::sleep(tokio::time::Duration::from_secs(1)).await;
-                                                update_media_progress(id, Some(&token), Some(data_fetched)).await;
+                                                let _ = update_media_progress(id, Some(&token), Some(data_fetched)).await;
 
                                             }Ok(None) => {
                                                 //println!("VLC is not running or there is no time available.");

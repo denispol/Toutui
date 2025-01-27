@@ -2,7 +2,6 @@ use std::fs::OpenOptions;
 use std::io::{self, Write};
 use vlc_rc::Client;
 use tokio::net::TcpStream;
-use std::error::Error;
 
 
 /// TODO : PUT ALL PRINT IN LOG ///
@@ -74,7 +73,7 @@ fn log_error_to_file(error_message: &str) -> io::Result<()> {
     writeln!(file, "{}", error_message)?;
     Ok(())
 }
-
+#[allow(dead_code)]
 fn write_to_file(file_path: &str, content: &str) -> io::Result<()> {
     let mut file = OpenOptions::new()
         .create(true)
