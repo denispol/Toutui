@@ -1,5 +1,6 @@
 //use crate::api::get_test::get_test;
-use crate::player::vlc::vlc::*;
+use crate::player::vlc::start_vlc::*;
+use crate::player::vlc::fetch_vlc_data::*;
 use crate::api::library_items::play_lib_item_or_pod::*;
 use crate::api::utils::collect_personalized_view::*;
 use crate::api::libraries::get_library_perso_view::*;
@@ -12,7 +13,6 @@ use ratatui::{
     DefaultTerminal,
 };
 
-
 pub struct App {
    pub should_exit: bool,
    pub token: Option<String>,
@@ -22,9 +22,9 @@ pub struct App {
    pub ids_library_items: Vec<String>,
 }
 
-/// Init app, handlling events and navigation
+/// Init app
  impl App {
-     pub  async fn new() -> Result<Self> {
+     pub async fn new() -> Result<Self> {
          let config = load_config()?;
          let token =
              login(&config.credentials.id.to_string(), &config.credentials.password.to_string())
@@ -75,13 +75,24 @@ pub struct App {
                 let token = self.token.clone();
                 let ids_library_items = self.ids_library_items.clone();
                 let selected = self.list_state.selected();
+                let port = "1234";
 
                 tokio::spawn(async move {
                     if let Some(index) = selected {
                         if let Some(id) = ids_library_items.get(index) {
                             if let Some(token) = token {
                                 if let Ok(data_for_vlc) = post_start_playback_session(Some(&token), id).await {
-                                    start_vlc(&data_for_vlc[0], &data_for_vlc[1], Some(&token)).await;}
+                                    // start_vlc is  in a spwan to allow fetch_vlc_data to start at the same time
+                                    // Thus, avoid to wait that VLC finished to start fetch_data 
+                                     tokio::spawn(async move {
+                                        start_vlc(&data_for_vlc[0], &port, &data_for_vlc[1], Some(&token)).await;
+                                    }); 
+                                    // Important, sleep time to 1s otherwise connection to vlc player will not
+                                    // have the time to connect and will block everything
+                                    tokio::time::sleep(std::time::Duration::from_secs(1)).await;
+
+                                    fetch_vlc_data(&port).await;
+                                }
                                 else {
                                     eprintln!("Failed to start playback session");
                                 }
@@ -96,7 +107,7 @@ pub struct App {
 
     /// selection
     // all select fn are from ListState widget
-   pub fn select_next(&mut self) {
+    pub fn select_next(&mut self) {
        self.list_state.select_next();
     }
 

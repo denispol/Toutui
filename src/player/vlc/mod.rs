@@ -1,3 +1,3 @@
-pub mod vlc;
+pub mod start_vlc;
 pub mod fetch_vlc_data;
 
