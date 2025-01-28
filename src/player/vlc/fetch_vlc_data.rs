@@ -47,11 +47,39 @@ pub async fn fetch_vlc_data(port: String) -> Result<Option<u32>, io::Error> {
 
 }
 
+// fetch if vlc is playing or stopped (return true if vlc is paused)
+pub async fn fetch_vlc_is_playing(port: String) -> Result<bool, String> {
+    // Tentative de connexion à VLC
+    let mut player = match Client::connect(format!("localhost:{}", &port)) {
+        Ok(player) => player,
+        Err(e) => return Err(format!("Failed to connect to VLC at port {}: {}", port, e)),
+    };
+
+    // Tentative de récupération du statut "is_playing"
+    let is_playing = match player.is_playing() {
+        Ok(true) => {
+            //println!("The track is currently playing.");
+            true
+        }
+        Ok(false) => {
+            //println!("The track is currently stopped.");
+            false
+        }
+        Err(e) => {
+            return Err(format!("Failed to check the play status of VLC: {}", e))
+        }
+    };
+
+    Ok(is_playing)
+}
+
+
+
 // check if VLC is running by checking if the port used by the app to open VLC is open
 pub async fn is_vlc_running(port: String) -> bool {
     match TcpStream::connect(format!("localhost:{}", port)).await {
         Ok(_) => {
-            println!("VLC is still running (port {} is open).", port);
+            //println!("VLC is still running (port {} is open).", port);
             true
         }
         Err(_) => {

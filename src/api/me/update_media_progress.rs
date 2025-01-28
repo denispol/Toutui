@@ -45,3 +45,44 @@ pub async fn update_media_progress(id_library_item: &str, token: Option<&String>
 
     Ok(())
 }
+
+pub async fn update_media_progress2(id_library_item: &str, token: Option<&String>, current_time: Option<u32>, duration: &String, is_finished: bool) -> Result<(), Box<dyn Error>> {
+
+    // Build client reqwest
+    let client = reqwest::Client::new();
+
+    // convert data before init progress (float)
+    let duration_f32 = duration.parse::<f32>().unwrap();
+    let current_time_f32: f32 = current_time.unwrap() as f32;
+
+    // init  progress
+    let progress = current_time_f32 / duration_f32 ;
+
+    // json bosy
+    let body = json!({
+        "progress" : progress,
+        "isFinished" : is_finished,
+        "currentTime": current_time,
+    });
+
+    // Patch request
+    let response = client
+        .patch(format!(
+                "https://audiobook.nuagemagique.duckdns.org/api/me/progress/{}",
+                id_library_item
+        ))
+        .header(AUTHORIZATION, format!("Bearer {}", token.unwrap()))
+        .json(&body)
+        .send()
+        .await?;
+
+    //
+    //let status = response.status();
+    //let response_text = response.text().await?;
+
+   // println!("Statut: {}", status);
+   // println!("Réponse: {}", response_text);
+
+    Ok(())
+}
+

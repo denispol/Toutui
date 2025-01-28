@@ -33,8 +33,23 @@ pub async fn handle_l(
 
                                 // Important, sleep time to 1s otherwise connection to vlc player will not have time to connect
                                 tokio::time::sleep(tokio::time::Duration::from_secs(1)).await;
-                                let _ = update_media_progress(id, Some(&token), Some(data_fetched_from_vlc), &info_item[2]).await;
-                                println!("{:?}", data_fetched_from_vlc)
+                                match fetch_vlc_is_playing(port.clone()).await {
+                                    Ok(true) => {
+                                        let is_finised = false; 
+                                        let _ = update_media_progress(id, Some(&token), Some(data_fetched_from_vlc), &info_item[2]).await;
+                                        //println!("{:?}", data_fetched_from_vlc);
+                                    },
+                                    Ok(false) => {
+                                        let is_finised = true;
+                                        let _ = update_media_progress2(id, Some(&token), Some(data_fetched_from_vlc), &info_item[2], is_finised).await;
+                                        break; 
+                                    },
+                                    Err(_e) => {
+                                        //eprintln!("Error fetching play status: {}", e);
+                                        break; 
+                                    }
+                                }
+
                             }
                             Ok(None) => {
                                 break; // Exit if no data available
