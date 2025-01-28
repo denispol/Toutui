@@ -25,7 +25,7 @@ pub async fn update_media_progress(id_library_item: &str, token: Option<&String>
     });
 
     // Patch request
-    let response = client
+    let _response = client
         .patch(format!(
                 "https://audiobook.nuagemagique.duckdns.org/api/me/progress/{}", 
                 id_library_item
@@ -66,7 +66,7 @@ pub async fn update_media_progress2(id_library_item: &str, token: Option<&String
     });
 
     // Patch request
-    let response = client
+    let _response = client
         .patch(format!(
                 "https://audiobook.nuagemagique.duckdns.org/api/me/progress/{}",
                 id_library_item

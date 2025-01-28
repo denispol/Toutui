@@ -58,11 +58,11 @@ pub async fn fetch_vlc_is_playing(port: String) -> Result<bool, String> {
     // Tentative de récupération du statut "is_playing"
     let is_playing = match player.is_playing() {
         Ok(true) => {
-            //println!("The track is currently playing.");
+            println!("The track is currently playing.");
             true
         }
         Ok(false) => {
-            //println!("The track is currently stopped.");
+            println!("The track is currently stopped.");
             false
         }
         Err(e) => {

@@ -35,7 +35,6 @@ pub async fn handle_l(
                                 tokio::time::sleep(tokio::time::Duration::from_secs(1)).await;
                                 match fetch_vlc_is_playing(port.clone()).await {
                                     Ok(true) => {
-                                        let is_finised = false; 
                                         let _ = update_media_progress(id, Some(&token), Some(data_fetched_from_vlc), &info_item[2]).await;
                                         //println!("{:?}", data_fetched_from_vlc);
                                     },
