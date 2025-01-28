@@ -6,19 +6,25 @@ use std::error::Error;
 /// This endpoint creates/updates your media progress for a library item or podcast episode.
 /// https://api.audiobookshelf.org/#create-update-media-progress
 
-#[allow(dead_code)]
-pub async fn update_media_progress(id_library_item: &str, token: Option<&String>, current_time: Option<u32> ) -> Result<(), Box<dyn Error>> {
+pub async fn update_media_progress(id_library_item: &str, token: Option<&String>, current_time: Option<u32>, duration: &String) -> Result<(), Box<dyn Error>> {
 
-    // Construire le client reqwest
+    // Build client reqwest
     let client = reqwest::Client::new();
 
-    // Corps de la requête en JSON
+    // convert data before init progress (float)
+    let duration_f32 = duration.parse::<f32>().unwrap();
+    let current_time_f32: f32 = current_time.unwrap() as f32;
+
+    // init  progress
+    let progress = current_time_f32 / duration_f32 ;
+
+    // json bosy
     let body = json!({
-        //"progress" : 0.75,
+        "progress" : progress,
         "currentTime": current_time,
     });
 
-    // Effectuer la requête PATCH
+    // Patch request
     let response = client
         .patch(format!(
                 "https://audiobook.nuagemagique.duckdns.org/api/me/progress/{}", 
@@ -30,12 +36,12 @@ pub async fn update_media_progress(id_library_item: &str, token: Option<&String>
         .send()
         .await?;
 
-    // Lire et afficher la réponse
-    let status = response.status();
-    let response_text = response.text().await?;
+    // 
+    //let status = response.status();
+    //let response_text = response.text().await?;
 
-    println!("Statut: {}", status);
-    println!("Réponse: {}", response_text);
+   // println!("Statut: {}", status);
+   // println!("Réponse: {}", response_text);
 
     Ok(())
 }

@@ -38,8 +38,12 @@ pub async fn post_start_playback_session(token: Option<&String>, id_library_item
     let content_url = v["audioTracks"][0]["contentUrl"]
         .as_str()
         .unwrap_or("");
+    let duration = v["audioTracks"][0]["duration"]
+        .as_f64()
+        .unwrap_or(0.0);
+    let duration: u32 = duration as u32;
 
-    let data_for_vlc = vec![current_time.to_string(), content_url.to_string()];
+    let info_item = vec![current_time.to_string(), content_url.to_string(), duration.to_string()];
 
-    Ok(data_for_vlc)
+    Ok(info_item)
 }

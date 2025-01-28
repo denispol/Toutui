@@ -12,14 +12,15 @@ pub async fn handle_l(
     if let Some(index) = selected {
         if let Some(id) = ids_library_items.get(index) {
             if let Some(token) = token {
-                if let Ok(data_for_vlc) = post_start_playback_session(Some(&token), id).await {
+                if let Ok(info_item) = post_start_playback_session(Some(&token), id).await {
                     // clone otherwise, these variable will  be consumed and not available anymore
                     // for use outside start_vlc spawn
                     let token_clone = token.clone();
                     let port_clone = port.clone();
+                    let info_item_clone = info_item.clone() ;
                     // Start VLC is launched in a spawn to allow fetch_vlc_data to start at the same time
                     tokio::spawn(async move {
-                        start_vlc(&data_for_vlc[0], &port_clone, &data_for_vlc[1], Some(&token_clone)).await;
+                        start_vlc(&info_item_clone[0], &port_clone, &info_item_clone[1], Some(&token_clone)).await;
                     });
 
                     // Important, sleep time to 1s otherwise connection to vlc player will not have time to connect
@@ -27,12 +28,13 @@ pub async fn handle_l(
 
                     loop {
                         match fetch_vlc_data(port.clone()).await {
-                            Ok(Some(data_fetched)) => {
+                            Ok(Some(data_fetched_from_vlc)) => {
                                 //println!("Fetched data: {}", data_fetched.to_string());
 
                                 // Important, sleep time to 1s otherwise connection to vlc player will not have time to connect
                                 tokio::time::sleep(tokio::time::Duration::from_secs(1)).await;
-                                let _ = update_media_progress(id, Some(&token), Some(data_fetched)).await;
+                                let _ = update_media_progress(id, Some(&token), Some(data_fetched_from_vlc), &info_item[2]).await;
+                                println!("{:?}", data_fetched_from_vlc)
                             }
                             Ok(None) => {
                                 break; // Exit if no data available
