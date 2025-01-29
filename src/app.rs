@@ -112,15 +112,23 @@ pub struct App {
                 let ids_library = self.ids_library.clone();
                 let selected_library = self.list_state_library.selected();
 
-                tokio::spawn(async move {
-                    handle_l(token.as_ref(), ids_cnt_list, selected_cnt_list, port).await;
-                });
+                // Now, spawn the async task based on the current view state
+                match self.view_state {
+                    AppView::Home => {
+                        tokio::spawn(async move {
+                            handle_l(token.as_ref(), ids_cnt_list, selected_cnt_list, port).await;
+                        });
+                    }
+                    AppView::Library => {
+                        tokio::spawn(async move {
+                            handle_l(token.as_ref(), ids_library, selected_library, port).await;
+                        });
+                    }
+                }
             }
             _ => {}
         }
-
     }
-
 
     /// Toggle between Home and Library views
     fn toggle_view(&mut self) {
