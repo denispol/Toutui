@@ -1,4 +1,5 @@
 use crate::App;
+use crate::app::AppView;
 use ratatui::{
     buffer::Buffer,
     layout::{Constraint, Layout, Rect},
@@ -20,30 +21,60 @@ const NORMAL_ROW_BG: Color = SLATE.c950;
 const ALT_ROW_BG_COLOR: Color = SLATE.c900;
 const SELECTED_STYLE: Style = Style::new().bg(SLATE.c800).add_modifier(Modifier::BOLD);
 
-/// widget home page
+/// init widget for selected AppView 
 impl Widget for &mut App {
-    fn render(self, area: Rect, buf: &mut Buffer) {
+  fn render(self, area: Rect, buf: &mut Buffer) {
+        match self.view_state {
+            AppView::Home => self.render_home(area, buf),
+            AppView::Library => self.render_library(area, buf),
+        }
+    }
+}
+
+
+/// Rendering logic
+
+impl App {
+    /// AppView::Home rendering
+    fn render_home(&mut self, area: Rect, buf: &mut Buffer) {
         let [header_area, main_area, footer_area] = Layout::vertical([
             Constraint::Length(2),
             Constraint::Fill(1),
             Constraint::Length(1),
-        ])
-        .areas(area);
+        ]).areas(area);
 
-        let [list_area, item_area] =
-            Layout::vertical([Constraint::Fill(1), Constraint::Fill(1)]).areas(main_area);
+        let [list_area, item_area] = Layout::vertical([Constraint::Fill(1), Constraint::Fill(1)]).areas(main_area);
+
+        let render_list_title = "Continue Listening";
 
         App::render_header(header_area, buf);
         App::render_footer(footer_area, buf);
-        self.render_list(list_area, buf);
+        self.render_list(list_area, buf, render_list_title, &self.titles.clone());
         self.render_selected_item(item_area, buf);
     }
-}
 
-/// Rendering logic for home page 
-impl App {
+    /// AppView::Library rendering
+    fn render_library(&mut self, area: Rect, buf: &mut Buffer) {
+        let [header_area, main_area, footer_area] = Layout::vertical([
+            Constraint::Length(2),
+            Constraint::Fill(1),
+            Constraint::Length(1),
+        ]).areas(area);
+        
+        let [list_area, item_area] = Layout::vertical([Constraint::Fill(1), Constraint::Fill(1)]).areas(main_area);
+
+        let render_list_title = "Library";
+
+        App::render_header(header_area, buf);
+        App::render_footer(footer_area, buf);
+        self.render_list(list_area, buf, render_list_title, &self.titles_library.clone());
+        self.render_selected_item(item_area, buf);
+    }
+
+    /// General functions for rendering 
+
     fn render_header(area: Rect, buf: &mut Buffer) {
-        Paragraph::new("Home")
+        Paragraph::new("< Home >")
             .bold()
             .centered()
             .render(area, buf);
@@ -59,22 +90,22 @@ impl App {
             .render(area, buf);
     }
 
-    fn render_list(&mut self, area: Rect, buf: &mut Buffer) {
+    fn render_list(&mut self, area: Rect, buf: &mut Buffer, render_list_title: &str, render_list_items: &[String]) {
         let block = Block::new()
-            .title(Line::raw("Continue Listening").centered())
+            .title(Line::raw(format!("{}", render_list_title)).centered())
             .borders(Borders::TOP)
             .border_style(TODO_HEADER_STYLE)
             .bg(NORMAL_ROW_BG);
 
-        let items: Vec<ListItem> = self
-            .titles
+        let items: Vec<ListItem> = render_list_items
             .iter()
             .enumerate()
             .map(|(i, title)| {
                 let color = Self::alternate_colors(i);
                 ListItem::new(title.clone()).bg(color)
             })
-            .collect();
+        .collect();
+
 
         let list = List::new(items)
             .block(block)

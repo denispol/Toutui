@@ -1,6 +1,8 @@
 //use crate::api::get_test::get_test;
 use crate::api::utils::collect_personalized_view::*;
+use crate::api::utils::collect_get_all_books::*;
 use crate::api::libraries::get_library_perso_view::*;
+use crate::api::libraries::get_all_books::*;
 use crate::api::server::auth::*;
 use crate::logic::handle_input::handle_l::*;
 use crate::config::load_config;
@@ -11,13 +13,20 @@ use ratatui::{
     DefaultTerminal,
 };
 
+pub enum AppView {
+    Home,
+    Library,
+}
+
 pub struct App {
+   pub view_state: AppView,
    pub should_exit: bool,
    pub token: Option<String>,
    pub list_state: ListState,
    pub titles: Vec<String>,
    pub authors_names: Vec<String>,
    pub ids_library_items: Vec<String>,
+   pub titles_library: Vec<String>,
 }
 
 /// Init app
@@ -28,10 +37,18 @@ pub struct App {
              login(&config.credentials.id.to_string(), &config.credentials.password.to_string())
              .await?;
 
+         // init for `Continue Listening`
          let continue_listening = get_continue_listening(&token).await?;
          let titles = collect_titles(&continue_listening).await;
          let authors_names = collect_author_name(&continue_listening).await;
          let ids_library_items = collect_ids_library_items(&continue_listening).await;
+
+         //init for `Library ` (all books of a shelf)
+         let all_books = get_all_books(&token).await?;
+         let titles_library = collect_titles_library(&all_books).await;
+
+
+         let view_state = AppView::Home;
 
         let mut list_state = ListState::default(); // init the ListState ratatui's widget
         list_state.select(Some(0)); // select the first item of the list when app is launch
@@ -43,6 +60,8 @@ pub struct App {
             titles,
             authors_names,
             ids_library_items,
+            view_state,
+            titles_library
         })
     }
 
@@ -63,6 +82,7 @@ pub struct App {
             return;
         }
         match key.code {
+            KeyCode::Tab => self.toggle_view(),
             KeyCode::Char('q') | KeyCode::Esc => self.should_exit = true,
             KeyCode::Char('j') | KeyCode::Down => self.select_next(),
             KeyCode::Char('k') | KeyCode::Up => self.select_previous(),
@@ -84,7 +104,7 @@ pub struct App {
     }
 
     /// selection
-    // all select fn are from ListState widget
+    // all select functions are from ListState widget
     pub fn select_next(&mut self) {
        self.list_state.select_next();
     }
@@ -100,5 +120,14 @@ pub struct App {
   pub fn select_last(&mut self) { 
        self.list_state.select_last();
     }
+
+  /// function for toggeling app view when `tab` is selected
+  fn toggle_view(&mut self) {
+      self.view_state = match self.view_state {
+          AppView::Home => AppView::Library,
+          AppView::Library => AppView::Home,
+      };
+  }
+
 }
 
