@@ -27,6 +27,7 @@ pub struct App {
    pub authors_names: Vec<String>,
    pub ids_library_items: Vec<String>,
    pub titles_library: Vec<String>,
+   pub ids_library: Vec<String>,
 }
 
 /// Init app
@@ -46,6 +47,7 @@ pub struct App {
          //init for `Library ` (all books of a shelf)
          let all_books = get_all_books(&token).await?;
          let titles_library = collect_titles_library(&all_books).await;
+         let ids_library = collect_ids_library(&all_books).await;
 
 
          let view_state = AppView::Home;
@@ -61,7 +63,8 @@ pub struct App {
             authors_names,
             ids_library_items,
             view_state,
-            titles_library
+            titles_library,
+            ids_library,
         })
     }
 

@@ -19,3 +19,18 @@ pub async fn collect_titles_library(library: &Root) -> Vec<String> {
     titles_library
 }
 
+/// collect ID of library items 
+pub async fn collect_ids_library(library: &Root) -> Vec<String> {
+    let mut ids_library = Vec::new();
+
+    if let Some(results) = &library.results {
+        for item in results {
+            if let Some(id) = &item.id {
+                        ids_library.push(id.clone());
+            }
+        }
+    }
+
+    ids_library
+}
+
