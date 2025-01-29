@@ -22,10 +22,11 @@ pub struct App {
    pub view_state: AppView,
    pub should_exit: bool,
    pub token: Option<String>,
-   pub list_state: ListState,
-   pub titles: Vec<String>,
-   pub authors_names: Vec<String>,
-   pub ids_library_items: Vec<String>,
+   pub list_state_cnt_list: ListState,
+   pub list_state_library: ListState,
+   pub titles_cnt_list: Vec<String>,
+   pub auth_names_cnt_list: Vec<String>,
+   pub ids_cnt_list: Vec<String>,
    pub titles_library: Vec<String>,
    pub ids_library: Vec<String>,
 }
@@ -40,9 +41,9 @@ pub struct App {
 
          // init for `Continue Listening`
          let continue_listening = get_continue_listening(&token).await?;
-         let titles = collect_titles(&continue_listening).await;
-         let authors_names = collect_author_name(&continue_listening).await;
-         let ids_library_items = collect_ids_library_items(&continue_listening).await;
+         let titles_cnt_list = collect_titles(&continue_listening).await;
+         let auth_names_cnt_list = collect_author_name(&continue_listening).await;
+         let ids_cnt_list = collect_ids_library_items(&continue_listening).await;
 
          //init for `Library ` (all books of a shelf)
          let all_books = get_all_books(&token).await?;
@@ -50,18 +51,25 @@ pub struct App {
          let ids_library = collect_ids_library(&all_books).await;
 
 
-         let view_state = AppView::Home;
+         let view_state = AppView::Home; // By default, Home will be the first AppView launched
+                                         // when the app start
 
-        let mut list_state = ListState::default(); // init the ListState ratatui's widget
-        list_state.select(Some(0)); // select the first item of the list when app is launch
+         // Init ListeState for `continue Listening` list
+         let mut list_state_cnt_list = ListState::default(); // init the ListState ratatui's widget
+         list_state_cnt_list.select(Some(0)); // select the first item of the list when app is launch
+
+         // Init ListeState for `Library` list
+         let mut list_state_library = ListState::default(); // init the ListState ratatui's widget
+         list_state_library.select(Some(0)); // select the first item of the list when app is launch
 
         Ok(Self {
             should_exit: false,
             token: Some(token),
-            list_state,
-            titles,
-            authors_names,
-            ids_library_items,
+            list_state_cnt_list,
+            list_state_library,
+            titles_cnt_list,
+            auth_names_cnt_list,
+            ids_cnt_list,
             view_state,
             titles_library,
             ids_library,
@@ -94,12 +102,18 @@ pub struct App {
             KeyCode::Char('l') | KeyCode::Right | KeyCode::Enter => {
                 // clone needed because variables will be use in an spawn
                 let token = self.token.clone();
-                let ids_library_items = self.ids_library_items.clone();
-                let selected = self.list_state.selected();
                 let port = "1234".to_string();
 
+                // clone for `Contnue Listening`
+                let ids_cnt_list = self.ids_cnt_list.clone();
+                let selected_cnt_list = self.list_state_cnt_list.selected();
+
+                // Clone for `Library`
+                let ids_library = self.ids_library.clone();
+                let selected_library = self.list_state_library.selected();
+
                 tokio::spawn(async move {
-                    handle_l(token.as_ref(), ids_library_items, selected, port).await;
+                    handle_l(token.as_ref(), ids_cnt_list, selected_cnt_list, port).await;
                 });
             }
             _ => {}
@@ -109,19 +123,19 @@ pub struct App {
     /// selection
     // all select functions are from ListState widget
     pub fn select_next(&mut self) {
-       self.list_state.select_next();
+       self.list_state_cnt_list.select_next();
     }
 
    pub fn select_previous(&mut self) {
-       self.list_state.select_previous();
+       self.list_state_cnt_list.select_previous();
     }
 
    pub fn select_first(&mut self) {
-       self.list_state.select_first();
+       self.list_state_cnt_list.select_first();
     }
 
   pub fn select_last(&mut self) { 
-       self.list_state.select_last();
+       self.list_state_cnt_list.select_last();
     }
 
   /// function for toggeling app view when `tab` is selected

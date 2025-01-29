@@ -14,6 +14,8 @@ use ratatui::{
     },
 };
 use ratatui::widgets::Wrap;
+use ratatui::widgets::ListState;
+
 
 // const for color theme
 const TODO_HEADER_STYLE: Style = Style::new().fg(SLATE.c100).bg(BLUE.c800);
@@ -49,8 +51,8 @@ impl App {
 
         App::render_header(header_area, buf);
         App::render_footer(footer_area, buf);
-        self.render_list(list_area, buf, render_list_title, &self.titles.clone());
-        self.render_selected_item(item_area, buf);
+        self.render_list(list_area, buf, render_list_title, &self.titles_cnt_list.clone(), &mut self.list_state_cnt_list.clone());
+ //       self.render_selected_item(item_area, buf, &mut self.list_state.clone());
     }
 
     /// AppView::Library rendering
@@ -67,8 +69,8 @@ impl App {
 
         App::render_header(header_area, buf);
         App::render_footer(footer_area, buf);
-        self.render_list(list_area, buf, render_list_title, &self.titles_library.clone());
-        self.render_selected_item(item_area, buf);
+        self.render_list(list_area, buf, render_list_title, &self.titles_library.clone(), &mut self.list_state_library.clone());
+//        self.render_selected_item(item_area, buf, &mut self.list_state2.clone());
     }
 
     /// General functions for rendering 
@@ -90,7 +92,7 @@ impl App {
             .render(area, buf);
     }
 
-    fn render_list(&mut self, area: Rect, buf: &mut Buffer, render_list_title: &str, render_list_items: &[String]) {
+    fn render_list(&mut self, area: Rect, buf: &mut Buffer, render_list_title: &str, render_list_items: &[String], list_state: &mut ListState) {
         let block = Block::new()
             .title(Line::raw(format!("{}", render_list_title)).centered())
             .borders(Borders::TOP)
@@ -113,17 +115,17 @@ impl App {
             .highlight_symbol(">")
             .highlight_spacing(HighlightSpacing::Always);
 
-        StatefulWidget::render(list, area, buf, &mut self.list_state);
+        StatefulWidget::render(list, area, buf, list_state);
     }
 
-    fn render_selected_item(&self, area: Rect, buf: &mut Buffer) {
-        if let Some(selected) = self.list_state.selected() {
-            let content = &self.authors_names[selected];
-            Paragraph::new(content.clone())
-                .wrap(Wrap { trim: true })
-                .render(area, buf);
-        }
-    }
+//    fn render_selected_item(&self, area: Rect, buf: &mut Buffer, list_state: &ListState) {
+//        if let Some(selected) = list_state.selected() {
+//            let content = &self.authors_names[selected];
+//            Paragraph::new(content.clone())
+//                .wrap(Wrap { trim: true })
+//                .render(area, buf);
+//        }
+//    }
 
     const fn alternate_colors(i: usize) -> Color {
         if i % 2 == 0 {
