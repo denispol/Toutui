@@ -118,33 +118,46 @@ pub struct App {
             }
             _ => {}
         }
+
     }
 
-    /// selection
-    // all select functions are from ListState widget
+
+    /// Toggle between Home and Library views
+    fn toggle_view(&mut self) {
+        self.view_state = match self.view_state {
+            AppView::Home => AppView::Library,
+            AppView::Library => AppView::Home,
+        };
+    }
+
+    /// Select functions that apply to both views
+    /// all select functions are from ListState widget
     pub fn select_next(&mut self) {
-       self.list_state_cnt_list.select_next();
+        match self.view_state {
+            AppView::Home => self.list_state_cnt_list.select_next(),
+            AppView::Library => self.list_state_library.select_next(),
+        }
     }
 
-   pub fn select_previous(&mut self) {
-       self.list_state_cnt_list.select_previous();
+    pub fn select_previous(&mut self) {
+        match self.view_state {
+            AppView::Home => self.list_state_cnt_list.select_previous(),
+            AppView::Library => self.list_state_library.select_previous(),
+        }
     }
 
-   pub fn select_first(&mut self) {
-       self.list_state_cnt_list.select_first();
+    pub fn select_first(&mut self) {
+        match self.view_state {
+            AppView::Home => self.list_state_cnt_list.select_first(),
+            AppView::Library => self.list_state_library.select_first(),
+        }
     }
 
-  pub fn select_last(&mut self) { 
-       self.list_state_cnt_list.select_last();
+    pub fn select_last(&mut self) {
+        match self.view_state {
+            AppView::Home => self.list_state_cnt_list.select_last(),
+            AppView::Library => self.list_state_library.select_last(),
+        }
     }
 
-  /// function for toggeling app view when `tab` is selected
-  fn toggle_view(&mut self) {
-      self.view_state = match self.view_state {
-          AppView::Home => AppView::Library,
-          AppView::Library => AppView::Home,
-      };
-  }
-
-}
-
+ }
