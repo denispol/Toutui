@@ -42,10 +42,37 @@ pub struct App {
 
          // init for `Continue Listening`
          let continue_listening = get_continue_listening(&token).await?;
-         let titles_cnt_list = collect_titles_cnt_list(&continue_listening).await;
+         let titles_cnt_list_raw = collect_titles_cnt_list(&continue_listening).await;
          let auth_names_cnt_list = collect_auth_names_cnt_list(&continue_listening).await;
-         let ids_cnt_list = collect_ids_cnt_list(&continue_listening).await;
+         let ids_cnt_list_raw = collect_ids_cnt_list(&continue_listening).await;
 
+         // TEST SEARCH //
+         let query = "harry potter phil";
+
+         let idx_and_titles: Vec<(usize, String)> = titles_cnt_list_raw
+             .iter()
+             .enumerate() // Permet de récupérer l'indice et l'élément
+             .filter(|(_, x)| x.to_lowercase().contains(&query.to_lowercase())) // Filtre les éléments qui contiennent le texte
+             .map(|(index, title)| (index, title.clone())) // Garde l'indice et la valeur
+             .collect();
+
+         let mut titles_cnt_list: Vec<String> = Vec::new();
+         let mut index_to_keep: Vec<usize> = Vec::new();
+         for (index, title) in idx_and_titles {
+             titles_cnt_list.push(title.to_string());
+             index_to_keep.push(index)
+         }
+
+         let ids_cnt_list: Vec<String> = ids_cnt_list_raw
+             .iter()
+             .enumerate()                           
+             .filter(|(index, _)| index_to_keep.contains(&index)) 
+             .map(|(_, value)| value.clone())       
+             .collect();        
+
+        
+         // END TEST //
+        
          //init for `Library ` (all books of a shelf)
          let all_books = get_all_books(&token).await?;
          let titles_library = collect_titles_library(&all_books).await;
