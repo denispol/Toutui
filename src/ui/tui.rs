@@ -52,7 +52,7 @@ impl App {
         App::render_header(header_area, buf);
         App::render_footer(footer_area, buf);
         self.render_list(list_area, buf, render_list_title, &self.titles_cnt_list.clone(), &mut self.list_state_cnt_list.clone());
- //       self.render_selected_item(item_area, buf, &mut self.list_state.clone());
+//        self.render_selected_item(item_area, buf, &mut self.list_state.clone());
     }
 
     /// AppView::Library rendering
@@ -70,7 +70,7 @@ impl App {
         App::render_header(header_area, buf);
         App::render_footer(footer_area, buf);
         self.render_list(list_area, buf, render_list_title, &self.titles_library.clone(), &mut self.list_state_library.clone());
-//        self.render_selected_item(item_area, buf, &mut self.list_state2.clone());
+        //self.render_selected_item(item_area, buf, &self.titles_library.clone(), self.auth_names_library.clone());
     }
 
     /// General functions for rendering 
@@ -118,9 +118,9 @@ impl App {
         StatefulWidget::render(list, area, buf, list_state);
     }
 
-//    fn render_selected_item(&self, area: Rect, buf: &mut Buffer, list_state: &ListState) {
+//    fn render_selected_item(&self, area: Rect, buf: &mut Buffer, list_state: &ListState, author_name: Vec<&String>) {
 //        if let Some(selected) = list_state.selected() {
-//            let content = &self.authors_names[selected];
+//            let content = author_name[selected];
 //            Paragraph::new(content.clone())
 //                .wrap(Wrap { trim: true })
 //                .render(area, buf);

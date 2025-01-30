@@ -29,6 +29,7 @@ pub struct App {
    pub ids_cnt_list: Vec<String>,
    pub titles_library: Vec<String>,
    pub ids_library: Vec<String>,
+   pub auth_names_library: Vec<String>,
 }
 
 /// Init app
@@ -41,14 +42,15 @@ pub struct App {
 
          // init for `Continue Listening`
          let continue_listening = get_continue_listening(&token).await?;
-         let titles_cnt_list = collect_titles(&continue_listening).await;
-         let auth_names_cnt_list = collect_author_name(&continue_listening).await;
-         let ids_cnt_list = collect_ids_library_items(&continue_listening).await;
+         let titles_cnt_list = collect_titles_cnt_list(&continue_listening).await;
+         let auth_names_cnt_list = collect_auth_names_cnt_list(&continue_listening).await;
+         let ids_cnt_list = collect_ids_cnt_list(&continue_listening).await;
 
          //init for `Library ` (all books of a shelf)
          let all_books = get_all_books(&token).await?;
          let titles_library = collect_titles_library(&all_books).await;
          let ids_library = collect_ids_library(&all_books).await;
+         let auth_names_library = collect_auth_names_library(&all_books).await;
 
 
          let view_state = AppView::Home; // By default, Home will be the first AppView launched
@@ -73,6 +75,7 @@ pub struct App {
             view_state,
             titles_library,
             ids_library,
+            auth_names_library,
         })
     }
 

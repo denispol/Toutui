@@ -10,7 +10,7 @@ use serde::Serialize;
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
-pub struct PersonalizedView {
+pub struct Root {
     pub id: Option<String>,
     pub label: String,
     pub entities: Option<Vec<Entity>>,
@@ -95,7 +95,7 @@ pub struct Book {
 }
 
 // filter only book continue to listening from personalized view
-pub async fn get_continue_listening(token: &str) -> Result<Vec<PersonalizedView>> {
+pub async fn get_continue_listening(token: &str) -> Result<Vec<Root>> {
     let client = Client::new();
     let url = "https://audiobook.nuagemagique.duckdns.org/api/libraries/64c39f84-9c58-4045-a89c-e17a6d990768/personalized";
 
@@ -114,11 +114,11 @@ pub async fn get_continue_listening(token: &str) -> Result<Vec<PersonalizedView>
         )));
     }
 
-    // Deserialize JSON response into Vec<PersonalizedView>
-    let libraries: Vec<PersonalizedView> = response.json().await?;
+    // Deserialize JSON response into Vec<Root>
+    let libraries: Vec<Root> = response.json().await?;
 
     // Filter libraries to keep only those with label "Continue Listening"
-    let continue_listening: Vec<PersonalizedView> = libraries
+    let continue_listening: Vec<Root> = libraries
         .into_iter()
         .filter(|lib| lib.label == "Continue Listening")
         .collect();
