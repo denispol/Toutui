@@ -56,7 +56,7 @@ pub struct App {
          let auth_names_library = collect_auth_names_library(&all_books).await;
 
          // init for `Search Book`
-         let mut ids_search_book: Vec<String> = Vec::new();
+         let ids_search_book: Vec<String> = Vec::new();
 
          let view_state = AppView::Home; // By default, Home will be the first AppView launched
                                          // when the app start
