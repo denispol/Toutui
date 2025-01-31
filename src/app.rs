@@ -16,6 +16,7 @@ use ratatui::{
 pub enum AppView {
     Home,
     Library,
+    SearchBook,
 }
 
 pub struct App {
@@ -24,12 +25,14 @@ pub struct App {
    pub token: Option<String>,
    pub list_state_cnt_list: ListState,
    pub list_state_library: ListState,
+   pub list_state_search_book: ListState,
    pub titles_cnt_list: Vec<String>,
    pub auth_names_cnt_list: Vec<String>,
    pub ids_cnt_list: Vec<String>,
    pub titles_library: Vec<String>,
    pub ids_library: Vec<String>,
    pub auth_names_library: Vec<String>,
+   pub ids_search_book: Vec<String>,
 }
 
 /// Init app
@@ -42,43 +45,18 @@ pub struct App {
 
          // init for `Continue Listening`
          let continue_listening = get_continue_listening(&token).await?;
-         let titles_cnt_list_raw = collect_titles_cnt_list(&continue_listening).await;
+         let titles_cnt_list = collect_titles_cnt_list(&continue_listening).await;
          let auth_names_cnt_list = collect_auth_names_cnt_list(&continue_listening).await;
-         let ids_cnt_list_raw = collect_ids_cnt_list(&continue_listening).await;
+         let ids_cnt_list = collect_ids_cnt_list(&continue_listening).await;
 
-         // TEST SEARCH //
-         let query = "harry potter phil";
-
-         let idx_and_titles: Vec<(usize, String)> = titles_cnt_list_raw
-             .iter()
-             .enumerate() // Permet de récupérer l'indice et l'élément
-             .filter(|(_, x)| x.to_lowercase().contains(&query.to_lowercase())) // Filtre les éléments qui contiennent le texte
-             .map(|(index, title)| (index, title.clone())) // Garde l'indice et la valeur
-             .collect();
-
-         let mut titles_cnt_list: Vec<String> = Vec::new();
-         let mut index_to_keep: Vec<usize> = Vec::new();
-         for (index, title) in idx_and_titles {
-             titles_cnt_list.push(title.to_string());
-             index_to_keep.push(index)
-         }
-
-         let ids_cnt_list: Vec<String> = ids_cnt_list_raw
-             .iter()
-             .enumerate()                           
-             .filter(|(index, _)| index_to_keep.contains(&index)) 
-             .map(|(_, value)| value.clone())       
-             .collect();        
-
-        
-         // END TEST //
-        
          //init for `Library ` (all books of a shelf)
          let all_books = get_all_books(&token).await?;
          let titles_library = collect_titles_library(&all_books).await;
          let ids_library = collect_ids_library(&all_books).await;
          let auth_names_library = collect_auth_names_library(&all_books).await;
 
+         // init for `Search Book`
+         let mut ids_search_book: Vec<String> = Vec::new();
 
          let view_state = AppView::Home; // By default, Home will be the first AppView launched
                                          // when the app start
@@ -90,12 +68,17 @@ pub struct App {
          // Init ListeState for `Library` list
          let mut list_state_library = ListState::default(); // init the ListState ratatui's widget
          list_state_library.select(Some(0)); // select the first item of the list when app is launch
+                                             
+         // Init ListeState for `titles_search_book` list
+         let mut list_state_search_book = ListState::default(); // init the ListState ratatui's widget
+         list_state_search_book.select(Some(0)); // select the first item of the list when app is launch
 
         Ok(Self {
             should_exit: false,
             token: Some(token),
             list_state_cnt_list,
             list_state_library,
+            list_state_search_book,
             titles_cnt_list,
             auth_names_cnt_list,
             ids_cnt_list,
@@ -103,6 +86,7 @@ pub struct App {
             titles_library,
             ids_library,
             auth_names_library,
+            ids_search_book,
         })
     }
 
@@ -134,13 +118,17 @@ pub struct App {
                 let token = self.token.clone();
                 let port = "1234".to_string();
 
-                // clone for `Contnue Listening`
+                // init for  `Contnue Listening`
                 let ids_cnt_list = self.ids_cnt_list.clone();
                 let selected_cnt_list = self.list_state_cnt_list.selected();
 
-                // Clone for `Library`
+                // init for `Library`
                 let ids_library = self.ids_library.clone();
                 let selected_library = self.list_state_library.selected();
+
+                // init for `Search Book`
+                let ids_search_book = self.ids_search_book.clone();
+                let selected_search_book = self.list_state_search_book.selected();
 
                 // Now, spawn the async task based on the current view state
                 match self.view_state {
@@ -154,6 +142,11 @@ pub struct App {
                             handle_l(token.as_ref(), ids_library, selected_library, port).await;
                         });
                     }
+                    AppView::SearchBook => {
+                        tokio::spawn(async move {
+                            handle_l(token.as_ref(), ids_search_book, selected_search_book, port).await;
+                        });
+                    }
                 }
             }
             _ => {}
@@ -164,7 +157,8 @@ pub struct App {
     fn toggle_view(&mut self) {
         self.view_state = match self.view_state {
             AppView::Home => AppView::Library,
-            AppView::Library => AppView::Home,
+            AppView::Library => AppView::SearchBook,
+            AppView::SearchBook => AppView::Home,
         };
     }
 
@@ -174,6 +168,7 @@ pub struct App {
         match self.view_state {
             AppView::Home => self.list_state_cnt_list.select_next(),
             AppView::Library => self.list_state_library.select_next(),
+            AppView::SearchBook => self.list_state_search_book.select_next(),
         }
     }
 
@@ -181,6 +176,7 @@ pub struct App {
         match self.view_state {
             AppView::Home => self.list_state_cnt_list.select_previous(),
             AppView::Library => self.list_state_library.select_previous(),
+            AppView::SearchBook => self.list_state_search_book.select_previous(),
         }
     }
 
@@ -188,6 +184,7 @@ pub struct App {
         match self.view_state {
             AppView::Home => self.list_state_cnt_list.select_first(),
             AppView::Library => self.list_state_library.select_first(),
+            AppView::SearchBook => self.list_state_search_book.select_first(),
         }
     }
 
@@ -195,6 +192,7 @@ pub struct App {
         match self.view_state {
             AppView::Home => self.list_state_cnt_list.select_last(),
             AppView::Library => self.list_state_library.select_last(),
+            AppView::SearchBook => self.list_state_search_book.select_last(),
         }
     }
 

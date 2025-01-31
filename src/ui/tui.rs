@@ -29,6 +29,7 @@ impl Widget for &mut App {
         match self.view_state {
             AppView::Home => self.render_home(area, buf),
             AppView::Library => self.render_library(area, buf),
+            AppView::SearchBook => self.render_search_book(area, buf),
         }
     }
 }
@@ -70,6 +71,50 @@ impl App {
         App::render_header(header_area, buf);
         App::render_footer(footer_area, buf);
         self.render_list(list_area, buf, render_list_title, &self.titles_library.clone(), &mut self.list_state_library.clone());
+        //self.render_selected_item(item_area, buf, &self.titles_library.clone(), self.auth_names_library.clone());
+    }
+
+    /// AppView::SearchBook rendering
+    fn render_search_book(&mut self, area: Rect, buf: &mut Buffer) {
+        let [header_area, main_area, footer_area] = Layout::vertical([
+            Constraint::Length(2),
+            Constraint::Fill(1),
+            Constraint::Length(1),
+        ]).areas(area);
+        
+        let [list_area, item_area] = Layout::vertical([Constraint::Fill(1), Constraint::Fill(1)]).areas(main_area);
+
+        let render_list_title = "Search a book";
+
+        let query = "de ga";
+
+        let idx_and_titles: Vec<(usize, String)> = self.titles_library
+            .iter()
+            .enumerate() // Permet de récupérer l'indice et l'élément
+            .filter(|(_, x)| x.to_lowercase().contains(&query.to_lowercase())) // Filtre les éléments qui contiennent le texte
+            .map(|(index, title)| (index, title.clone())) // Garde l'indice et la valeur
+            .collect();
+
+        let mut titles_search_book: Vec<String> = Vec::new();
+        let mut index_to_keep: Vec<usize> = Vec::new();
+        for (index, title) in idx_and_titles {
+            titles_search_book.push(title.to_string());
+            index_to_keep.push(index)
+        }
+
+        let titles_search_book: &[String] = &titles_search_book;
+
+        self.ids_search_book = self.ids_library
+            .iter()
+            .enumerate()
+            .filter(|(index, _)| index_to_keep.contains(&index))
+            .map(|(_, value)| value.clone())
+            .collect();
+
+
+        App::render_header(header_area, buf);
+        App::render_footer(footer_area, buf);
+        self.render_list(list_area, buf, render_list_title, titles_search_book, &mut self.list_state_search_book.clone());
         //self.render_selected_item(item_area, buf, &self.titles_library.clone(), self.auth_names_library.clone());
     }
 
