@@ -86,13 +86,13 @@ impl App {
 
         let render_list_title = "Search a book";
 
-        let query = "de ga";
+        let query = "the";
 
         let idx_and_titles: Vec<(usize, String)> = self.titles_library
             .iter()
-            .enumerate() // Permet de récupérer l'indice et l'élément
-            .filter(|(_, x)| x.to_lowercase().contains(&query.to_lowercase())) // Filtre les éléments qui contiennent le texte
-            .map(|(index, title)| (index, title.clone())) // Garde l'indice et la valeur
+            .enumerate() 
+            .filter(|(_, x)| x.to_lowercase().contains(&query.to_lowercase())) 
+            .map(|(index, title)| (index, title.clone())) 
             .collect();
 
         let mut titles_search_book: Vec<String> = Vec::new();
