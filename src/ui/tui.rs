@@ -16,6 +16,19 @@ use ratatui::{
 use ratatui::widgets::Wrap;
 use ratatui::widgets::ListState;
 
+// tui-textarea
+use crossterm::event::{DisableMouseCapture, EnableMouseCapture};
+use crossterm::terminal::{
+    disable_raw_mode, enable_raw_mode, EnterAlternateScreen, LeaveAlternateScreen,
+};
+use ratatui::backend::CrosstermBackend;
+use ratatui::Terminal;
+use std::io;
+use tui_textarea::TextArea;
+use tui_textarea::Input;
+use tui_textarea::Key;
+
+
 
 // const for color theme
 const TODO_HEADER_STYLE: Style = Style::new().fg(SLATE.c100).bg(BLUE.c800);
@@ -86,8 +99,9 @@ impl App {
 
         let render_list_title = "Search a book";
 
-        let query = "the";
 
+        if let Ok(query) = App::search_activ() {
+            let query = query.to_string();
         let idx_and_titles: Vec<(usize, String)> = self.titles_library
             .iter()
             .enumerate() 
@@ -111,12 +125,67 @@ impl App {
             .map(|(_, value)| value.clone())
             .collect();
 
-
         App::render_header(header_area, buf);
         App::render_footer(footer_area, buf);
         self.render_list(list_area, buf, render_list_title, titles_search_book, &mut self.list_state_search_book.clone());
         //self.render_selected_item(item_area, buf, &self.titles_library.clone(), self.auth_names_library.clone());
+
+        }
+
+
     }
+fn search_activ() -> io::Result<String> {
+    let stdout = io::stdout();
+    let mut stdout = stdout.lock();
+
+    enable_raw_mode()?;
+    crossterm::execute!(stdout, EnterAlternateScreen, EnableMouseCapture)?;
+    let backend = CrosstermBackend::new(stdout);
+    let mut term = Terminal::new(backend)?;
+
+    let mut textarea = TextArea::default();
+    textarea.set_block(
+        Block::default()
+            .borders(Borders::ALL)
+            .border_style(Style::default().fg(Color::LightBlue))
+            .title("Crossterm Popup Example"),
+    );
+
+    let area = Rect {
+        width: 40,
+        height: 5,
+        x: 5,
+        y: 5,
+    };
+    textarea.set_style(Style::default().fg(Color::Yellow));
+    textarea.set_placeholder_style(Style::default());
+    textarea.set_placeholder_text("prompt message");
+
+    loop {
+        term.draw(|f| {
+            f.render_widget(&textarea, area);
+        })?;
+        match crossterm::event::read()?.into() {
+            Input { key: Key::Esc, .. } => break,
+            input => {
+                textarea.input(input);
+            }
+        }
+    }
+
+    disable_raw_mode()?;
+    crossterm::execute!(
+        term.backend_mut(),
+        LeaveAlternateScreen,
+        DisableMouseCapture
+    )?;
+    term.show_cursor()?;
+
+    
+Ok(textarea.lines().join("\n"))
+}
+
+
 
     /// General functions for rendering 
 
