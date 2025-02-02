@@ -100,12 +100,14 @@ impl App {
         let render_list_title = "Search a book";
 
 
-        if let Ok(query) = App::search_activ() {
-            let query = query.to_string();
+if self.search_mode {
+    if let Ok(query) = self.search_activ() {
+        self.search_query = query.to_string();
+self.search_mode = false; }}
         let idx_and_titles: Vec<(usize, String)> = self.titles_library
             .iter()
             .enumerate() 
-            .filter(|(_, x)| x.to_lowercase().contains(&query.to_lowercase())) 
+            .filter(|(_, x)| x.to_lowercase().contains(&self.search_query.to_lowercase())) 
             .map(|(index, title)| (index, title.clone())) 
             .collect();
 
@@ -130,16 +132,19 @@ impl App {
         self.render_list(list_area, buf, render_list_title, titles_search_book, &mut self.list_state_search_book.clone());
         //self.render_selected_item(item_area, buf, &self.titles_library.clone(), self.auth_names_library.clone());
 
-        }
+        
+        
+        
+
 
 
     }
-fn search_activ() -> io::Result<String> {
+pub fn search_activ(&mut self) -> io::Result<String> {
     let stdout = io::stdout();
     let mut stdout = stdout.lock();
 
-    enable_raw_mode()?;
-    crossterm::execute!(stdout, EnterAlternateScreen, EnableMouseCapture)?;
+    //enable_raw_mode()?;
+    //crossterm::execute!(stdout, EnableMouseCapture)?;
     let backend = CrosstermBackend::new(stdout);
     let mut term = Terminal::new(backend)?;
 
@@ -147,44 +152,43 @@ fn search_activ() -> io::Result<String> {
     textarea.set_block(
         Block::default()
             .borders(Borders::ALL)
-            .border_style(Style::default().fg(Color::LightBlue))
-            .title("Crossterm Popup Example"),
+            .title("Search Book")
+            .border_style(Style::default().fg(Color::LightBlue)),
     );
 
-    let area = Rect {
-        width: 40,
-        height: 5,
-        x: 5,
-        y: 5,
+    let size = term.size()?;
+    let search_area = Rect {
+        x: 1,
+        y: size.height / 3,
+        width: size.width - 2,
+        height: 3,
     };
-    textarea.set_style(Style::default().fg(Color::Yellow));
-    textarea.set_placeholder_style(Style::default());
-    textarea.set_placeholder_text("prompt message");
 
     loop {
         term.draw(|f| {
-            f.render_widget(&textarea, area);
+            f.render_widget(&textarea, search_area);
         })?;
+
         match crossterm::event::read()?.into() {
-            Input { key: Key::Esc, .. } => break,
+            Input { key: Key::Enter, .. } => {
+                self.search_mode = false;
+                self.search_query = textarea.lines().join("\n");
+                self.view_state = AppView::SearchBook;
+                break;
+            }
+            Input { key: Key::Esc, .. } => {
+                self.search_mode = false;
+                break;
+            }
             input => {
                 textarea.input(input);
             }
         }
     }
 
-    disable_raw_mode()?;
-    crossterm::execute!(
-        term.backend_mut(),
-        LeaveAlternateScreen,
-        DisableMouseCapture
-    )?;
-    term.show_cursor()?;
 
-    
-Ok(textarea.lines().join("\n"))
+    Ok(textarea.lines().join("\n"))
 }
-
 
 
     /// General functions for rendering 

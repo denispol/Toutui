@@ -13,6 +13,31 @@ use ratatui::{
     DefaultTerminal,
 };
 
+// tui-textarea
+use crossterm::event::{DisableMouseCapture, EnableMouseCapture};
+use crossterm::terminal::{
+    disable_raw_mode, enable_raw_mode, EnterAlternateScreen, LeaveAlternateScreen,
+};
+use ratatui::backend::CrosstermBackend;
+use ratatui::Terminal;
+use std::io;
+use tui_textarea::TextArea;
+use tui_textarea::Input;
+use ratatui::{
+    buffer::Buffer,
+    layout::{Constraint, Layout, Rect},
+    style::{
+        palette::tailwind::{BLUE, SLATE},
+        Color, Modifier, Style, Stylize,
+    },
+    text::Line,
+    widgets::{
+        Block, Borders, HighlightSpacing, List, ListItem , Paragraph, StatefulWidget,
+        Widget,
+    },
+};
+use tui_textarea::Key;
+
 pub enum AppView {
     Home,
     Library,
@@ -33,6 +58,8 @@ pub struct App {
    pub ids_library: Vec<String>,
    pub auth_names_library: Vec<String>,
    pub ids_search_book: Vec<String>,
+   pub search_query: String,
+   pub search_mode: bool,
 }
 
 /// Init app
@@ -57,6 +84,8 @@ pub struct App {
 
          // init for `Search Book`
          let ids_search_book: Vec<String> = Vec::new();
+         let search_mode = false;
+         let search_query = "  ".to_string();
 
          let view_state = AppView::Home; // By default, Home will be the first AppView launched
                                          // when the app start
@@ -87,6 +116,8 @@ pub struct App {
             ids_library,
             auth_names_library,
             ids_search_book,
+            search_mode,
+            search_query,
         })
     }
 
@@ -107,6 +138,7 @@ pub struct App {
             return;
         }
         match key.code {
+            KeyCode::Char('s') => { self.search_activ();}
             KeyCode::Tab => self.toggle_view(),
             KeyCode::Char('q') | KeyCode::Esc => self.should_exit = true,
             KeyCode::Char('j') | KeyCode::Down => self.select_next(),
@@ -157,7 +189,7 @@ pub struct App {
     fn toggle_view(&mut self) {
         self.view_state = match self.view_state {
             AppView::Home => AppView::Library,
-            AppView::Library => AppView::SearchBook,
+            AppView::Library => AppView::Home,
             AppView::SearchBook => AppView::Home,
         };
     }
