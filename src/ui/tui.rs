@@ -14,15 +14,6 @@ use ratatui::{
     },
 };
 
-// tui-textarea
-use ratatui::backend::CrosstermBackend;
-use ratatui::Terminal;
-use std::io;
-use tui_textarea::TextArea;
-use tui_textarea::Input;
-use tui_textarea::Key;
-
-
 
 // const for color theme
 const TODO_HEADER_STYLE: Style = Style::new().fg(SLATE.c100).bg(BLUE.c800);
@@ -56,9 +47,10 @@ impl App {
         let [list_area, item_area] = Layout::vertical([Constraint::Fill(1), Constraint::Fill(1)]).areas(main_area);
 
         let render_list_title = "Continue Listening";
+        let text_render_footer = "Use ↓↑ to move, → to play, s to search, q to quit.";
 
         App::render_header(header_area, buf);
-        App::render_footer(footer_area, buf);
+        App::render_footer(footer_area, buf, text_render_footer);
         self.render_list(list_area, buf, render_list_title, &self.titles_cnt_list.clone(), &mut self.list_state_cnt_list.clone());
 //        self.render_selected_item(item_area, buf, &mut self.list_state.clone());
     }
@@ -74,9 +66,10 @@ impl App {
         let [list_area, item_area] = Layout::vertical([Constraint::Fill(1), Constraint::Fill(1)]).areas(main_area);
 
         let render_list_title = "Library";
+        let text_render_footer = "Use ↓↑ to move, → to play, s to search, q to quit.";
 
         App::render_header(header_area, buf);
-        App::render_footer(footer_area, buf);
+        App::render_footer(footer_area, buf, text_render_footer);
         self.render_list(list_area, buf, render_list_title, &self.titles_library.clone(), &mut self.list_state_library.clone());
         //self.render_selected_item(item_area, buf, &self.titles_library.clone(), self.auth_names_library.clone());
     }
@@ -88,16 +81,20 @@ impl App {
             Constraint::Fill(1),
             Constraint::Length(1),
         ]).areas(area);
-        
+
         let [list_area, item_area] = Layout::vertical([Constraint::Fill(1), Constraint::Fill(1)]).areas(main_area);
 
         let render_list_title = "Search result";
+        let text_render_footer = "Use Tab to back home, ↓↑ to move, → to play, s to search, q to quit.";
 
+        if self.search_mode {
+            if let Ok(query) = self.search_active() {
+                self.search_query = query.to_string();
+                self.search_mode = false; 
+            }
+        }
 
-if self.search_mode {
-    if let Ok(query) = self.search_active() {
-        self.search_query = query.to_string();
-self.search_mode = false; }}
+        // init variables for search result (search by a book by title)
         let idx_and_titles: Vec<(usize, String)> = self.titles_library
             .iter()
             .enumerate() 
@@ -122,70 +119,11 @@ self.search_mode = false; }}
             .collect();
 
         App::render_header(header_area, buf);
-        App::render_footer(footer_area, buf);
+        App::render_footer(footer_area, buf, text_render_footer);
         self.render_list(list_area, buf, render_list_title, titles_search_book, &mut self.list_state_search_book.clone());
         //self.render_selected_item(item_area, buf, &self.titles_library.clone(), self.auth_names_library.clone());
 
-        
-        
-        
-
-
-
     }
-    pub fn search_active(&mut self) -> io::Result<String> {
-        let stdout = io::stdout();
-        let stdout = stdout.lock();
-
-        let backend = CrosstermBackend::new(stdout);
-        let mut term = Terminal::new(backend)?;
-
-        let mut textarea = TextArea::default();
-        textarea.set_block(
-            Block::default()
-            .borders(Borders::ALL)
-            .title("Search a book by title")
-            .border_style(Style::default().fg(Color::LightBlue)),
-        );
-
-        let size = term.size()?;
-        let search_area = Rect {
-            x: 1,
-            y: size.height - 4,
-            width: size.width - 2,
-            height: 3,
-        };
-
-        loop {
-
-            term.draw(|f| {
-                f.render_widget(&textarea, search_area);
-            })?;
-            match crossterm::event::read()?.into() {
-                Input { key: Key::Enter, .. } => {
-                    self.search_mode = false;
-                    self.search_query = textarea.lines().join("\n");
-                    self.view_state = AppView::SearchBook;
-                    self.list_state_search_book.select(Some(0));
-                    break;
-                }
-                Input { key: Key::Esc, .. } => {
-                    self.search_mode = false;
-                    break;
-                }
-                input => {
-                    textarea.input(input);
-                }
-            }
-        }
-        term.draw(|f| {
-            let empty_block = Block::default();
-            f.render_widget(empty_block, search_area); 
-        })?;
-
-        Ok(textarea.lines().join("\n"))
-    }
-
 
     /// General functions for rendering 
 
@@ -196,8 +134,8 @@ self.search_mode = false; }}
             .render(area, buf);
     }
 
-    fn render_footer(area: Rect, buf: &mut Buffer) {
-        Paragraph::new("Use ↓↑ to move, → to play, s to search, q to quit.")
+    fn render_footer(area: Rect, buf: &mut Buffer, text_render_footer: &str) {
+        Paragraph::new(text_render_footer)
             .centered()
             .render(area, buf);
 
