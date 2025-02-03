@@ -9,25 +9,18 @@ use ratatui::{
     },
     text::Line,
     widgets::{
-        Block, Borders, HighlightSpacing, List, ListItem , Paragraph, StatefulWidget,
+        Block, Borders, HighlightSpacing, List, ListItem , ListState,  Paragraph, StatefulWidget,
         Widget,
     },
 };
-use ratatui::widgets::Wrap;
-use ratatui::widgets::ListState;
 
 // tui-textarea
-use crossterm::event::{DisableMouseCapture, EnableMouseCapture};
-use crossterm::terminal::{
-    disable_raw_mode, enable_raw_mode, EnterAlternateScreen, LeaveAlternateScreen,
-};
 use ratatui::backend::CrosstermBackend;
 use ratatui::Terminal;
 use std::io;
 use tui_textarea::TextArea;
 use tui_textarea::Input;
 use tui_textarea::Key;
-use crossterm::{execute, terminal::{Clear, ClearType}};
 
 
 
@@ -98,7 +91,7 @@ impl App {
         
         let [list_area, item_area] = Layout::vertical([Constraint::Fill(1), Constraint::Fill(1)]).areas(main_area);
 
-        let render_list_title = "Search a book";
+        let render_list_title = "Search result";
 
 
 if self.search_mode {
@@ -142,7 +135,7 @@ self.search_mode = false; }}
     }
     pub fn search_active(&mut self) -> io::Result<String> {
         let stdout = io::stdout();
-        let mut stdout = stdout.lock();
+        let stdout = stdout.lock();
 
         //enable_raw_mode()?;
         //crossterm::execute!(stdout, EnableMouseCapture)?;

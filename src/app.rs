@@ -13,30 +13,6 @@ use ratatui::{
     DefaultTerminal,
 };
 
-// tui-textarea
-use crossterm::event::{DisableMouseCapture, EnableMouseCapture};
-use crossterm::terminal::{
-    disable_raw_mode, enable_raw_mode, EnterAlternateScreen, LeaveAlternateScreen,
-};
-use ratatui::backend::CrosstermBackend;
-use ratatui::Terminal;
-use std::io;
-use tui_textarea::TextArea;
-use tui_textarea::Input;
-use ratatui::{
-    buffer::Buffer,
-    layout::{Constraint, Layout, Rect},
-    style::{
-        palette::tailwind::{BLUE, SLATE},
-        Color, Modifier, Style, Stylize,
-    },
-    text::Line,
-    widgets::{
-        Block, Borders, HighlightSpacing, List, ListItem , Paragraph, StatefulWidget,
-        Widget,
-    },
-};
-use tui_textarea::Key;
 
 pub enum AppView {
     Home,
@@ -138,7 +114,7 @@ pub struct App {
             return;
         }
         match key.code {
-            KeyCode::Char('s') => { self.search_active();}
+            KeyCode::Char('s') => {let _ = self.search_active();}
             KeyCode::Tab => self.toggle_view(),
             KeyCode::Char('q') | KeyCode::Esc => self.should_exit = true,
             KeyCode::Char('j') | KeyCode::Down => self.select_next(),
