@@ -11,7 +11,6 @@ pub async fn handle_l(
 ) {
     if let Some(index) = selected {
         if let Some(id) = ids_library_items.get(index) {
-            println!("{}", id);
             if let Some(token) = token {
                 if let Ok(info_item) = post_start_playback_session(Some(&token), id).await {
                     // clone otherwise, these variable will  be consumed and not available anymore
