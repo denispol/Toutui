@@ -138,7 +138,7 @@ pub struct App {
             return;
         }
         match key.code {
-            KeyCode::Char('s') => { self.search_activ();}
+            KeyCode::Char('s') => { self.search_active();}
             KeyCode::Tab => self.toggle_view(),
             KeyCode::Char('q') | KeyCode::Esc => self.should_exit = true,
             KeyCode::Char('j') | KeyCode::Down => self.select_next(),

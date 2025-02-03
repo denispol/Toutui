@@ -27,6 +27,7 @@ use std::io;
 use tui_textarea::TextArea;
 use tui_textarea::Input;
 use tui_textarea::Key;
+use crossterm::{execute, terminal::{Clear, ClearType}};
 
 
 
@@ -101,7 +102,7 @@ impl App {
 
 
 if self.search_mode {
-    if let Ok(query) = self.search_activ() {
+    if let Ok(query) = self.search_active() {
         self.search_query = query.to_string();
 self.search_mode = false; }}
         let idx_and_titles: Vec<(usize, String)> = self.titles_library
@@ -139,56 +140,60 @@ self.search_mode = false; }}
 
 
     }
-pub fn search_activ(&mut self) -> io::Result<String> {
-    let stdout = io::stdout();
-    let mut stdout = stdout.lock();
+    pub fn search_active(&mut self) -> io::Result<String> {
+        let stdout = io::stdout();
+        let mut stdout = stdout.lock();
 
-    //enable_raw_mode()?;
-    //crossterm::execute!(stdout, EnableMouseCapture)?;
-    let backend = CrosstermBackend::new(stdout);
-    let mut term = Terminal::new(backend)?;
+        //enable_raw_mode()?;
+        //crossterm::execute!(stdout, EnableMouseCapture)?;
+        let backend = CrosstermBackend::new(stdout);
+        let mut term = Terminal::new(backend)?;
 
-    let mut textarea = TextArea::default();
-    textarea.set_block(
-        Block::default()
+        let mut textarea = TextArea::default();
+        textarea.set_block(
+            Block::default()
             .borders(Borders::ALL)
-            .title("Search Book")
+            .title("Search a book by title")
             .border_style(Style::default().fg(Color::LightBlue)),
-    );
+        );
 
-    let size = term.size()?;
-    let search_area = Rect {
-        x: 1,
-        y: size.height / 3,
-        width: size.width - 2,
-        height: 3,
-    };
+        let size = term.size()?;
+        let search_area = Rect {
+            x: 1,
+            y: size.height - 4,
+            width: size.width - 2,
+            height: 3,
+        };
 
-    loop {
-        term.draw(|f| {
-            f.render_widget(&textarea, search_area);
-        })?;
+        loop {
 
-        match crossterm::event::read()?.into() {
-            Input { key: Key::Enter, .. } => {
-                self.search_mode = false;
-                self.search_query = textarea.lines().join("\n");
-                self.view_state = AppView::SearchBook;
-                break;
-            }
-            Input { key: Key::Esc, .. } => {
-                self.search_mode = false;
-                break;
-            }
-            input => {
-                textarea.input(input);
+            term.draw(|f| {
+                f.render_widget(&textarea, search_area);
+            })?;
+            match crossterm::event::read()?.into() {
+                Input { key: Key::Enter, .. } => {
+                    self.search_mode = false;
+                    self.search_query = textarea.lines().join("\n");
+                    self.view_state = AppView::SearchBook;
+                    self.list_state_search_book.select(Some(0));
+                    break;
+                }
+                Input { key: Key::Esc, .. } => {
+                    self.search_mode = false;
+                    break;
+                }
+                input => {
+                    textarea.input(input);
+                }
             }
         }
+        term.draw(|f| {
+            let empty_block = Block::default();
+            f.render_widget(empty_block, search_area); 
+        })?;
+
+        Ok(textarea.lines().join("\n"))
     }
-
-
-    Ok(textarea.lines().join("\n"))
-}
 
 
     /// General functions for rendering 
