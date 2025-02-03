@@ -6,7 +6,7 @@ use std::error::Error;
 /// This endpoint creates/updates your media progress for a library item or podcast episode.
 /// https://api.audiobookshelf.org/#create-update-media-progress
 
-pub async fn update_media_progress(id_library_item: &str, token: Option<&String>, current_time: Option<u32>, duration: &String) -> Result<(), Box<dyn Error>> {
+pub async fn update_media_progress(id_library_item: &str , token: Option<&String>, current_time: Option<u32>, duration: &String, ep_id : &str) -> Result<(), Box<dyn Error>> {
 
     // Build client reqwest
     let client = reqwest::Client::new();
@@ -27,8 +27,8 @@ pub async fn update_media_progress(id_library_item: &str, token: Option<&String>
     // Patch request
     let _response = client
         .patch(format!(
-                "https://audiobook.nuagemagique.duckdns.org/api/me/progress/{}", 
-                id_library_item
+                "https://audiobook.nuagemagique.duckdns.org/api/me/progress/{}/{}", 
+                id_library_item, ep_id
         ))
         .header(AUTHORIZATION, format!("Bearer {}", token.unwrap()))
         .header(CONTENT_TYPE, "application/json")
@@ -46,7 +46,7 @@ pub async fn update_media_progress(id_library_item: &str, token: Option<&String>
     Ok(())
 }
 
-pub async fn update_media_progress2(id_library_item: &str, token: Option<&String>, current_time: Option<u32>, duration: &String, is_finished: bool) -> Result<(), Box<dyn Error>> {
+pub async fn update_media_progress2(id_library_item: &str, token: Option<&String>, current_time: Option<u32>, duration: &String, is_finished: bool, ep_id: &str) -> Result<(), Box<dyn Error>> {
 
     // Build client reqwest
     let client = reqwest::Client::new();
@@ -68,8 +68,8 @@ pub async fn update_media_progress2(id_library_item: &str, token: Option<&String
     // Patch request
     let _response = client
         .patch(format!(
-                "https://audiobook.nuagemagique.duckdns.org/api/me/progress/{}",
-                id_library_item
+                "https://audiobook.nuagemagique.duckdns.org/api/me/progress/{}/{}",
+                id_library_item, ep_id
         ))
         .header(AUTHORIZATION, format!("Bearer {}", token.unwrap()))
         .json(&body)
