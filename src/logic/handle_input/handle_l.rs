@@ -9,10 +9,12 @@ pub async fn handle_l(
     selected: Option<usize>,
     port: String,
 ) {
+let pod = "5d80300e-e228-402e-9b6e-1356ff1f4243";
     if let Some(index) = selected {
         if let Some(id) = ids_library_items.get(index) {
+            println!("{}", id);
             if let Some(token) = token {
-                if let Ok(info_item) = post_start_playback_session(Some(&token), id).await {
+                if let Ok(info_item) = post_start_playback_session(Some(&token), &pod, id).await {
                     // clone otherwise, these variable will  be consumed and not available anymore
                     // for use outside start_vlc spawn
                     let token_clone = token.clone();
