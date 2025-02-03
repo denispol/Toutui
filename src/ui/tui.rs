@@ -137,8 +137,6 @@ self.search_mode = false; }}
         let stdout = io::stdout();
         let stdout = stdout.lock();
 
-        //enable_raw_mode()?;
-        //crossterm::execute!(stdout, EnableMouseCapture)?;
         let backend = CrosstermBackend::new(stdout);
         let mut term = Terminal::new(backend)?;
 
