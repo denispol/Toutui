@@ -36,6 +36,7 @@ pub struct App {
    pub ids_search_book: Vec<String>,
    pub search_query: String,
    pub search_mode: bool,
+   pub is_podcast: bool,
 }
 
 /// Init app
@@ -63,6 +64,8 @@ pub struct App {
          let search_mode = false;
          let search_query = "  ".to_string();
 
+         // init for podcast
+         let is_podcast = false;
          let view_state = AppView::Home; // By default, Home will be the first AppView launched
                                          // when the app start
 
@@ -94,6 +97,7 @@ pub struct App {
             ids_search_book,
             search_mode,
             search_query,
+            is_podcast,
         })
     }
 
@@ -141,10 +145,13 @@ pub struct App {
                 // Now, spawn the async task based on the current view state
                 match self.view_state {
                     AppView::Home => {
+                if self.is_podcast{
+                    self.view_state = AppView::Library;
+                } else {
                         tokio::spawn(async move {
                             handle_l(token.as_ref(), ids_cnt_list, selected_cnt_list, port).await;
                         });
-                    }
+                    }}
                     AppView::Library => {
                         tokio::spawn(async move {
                             handle_l(token.as_ref(), ids_library, selected_library, port).await;
