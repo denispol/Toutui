@@ -206,7 +206,7 @@ self.search_mode = false; }}
     }
 
     fn render_footer(area: Rect, buf: &mut Buffer) {
-        Paragraph::new("Use ↓↑ to move, → to play, g/G to go top/bottom, q to quit.")
+        Paragraph::new("Use ↓↑ to move, → to play, s to search, q to quit.")
             .centered()
             .render(area, buf);
 
