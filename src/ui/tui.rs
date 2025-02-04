@@ -28,6 +28,7 @@ impl Widget for &mut App {
             AppView::Home => self.render_home(area, buf),
             AppView::Library => self.render_library(area, buf),
             AppView::SearchBook => self.render_search_book(area, buf),
+            AppView::PodcastEpisode => self.render_library(area, buf),
         }
     }
 }

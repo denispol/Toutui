@@ -18,7 +18,7 @@ pub enum AppView {
     Home,
     Library,
     SearchBook,
-    //PodcastEpisode,
+    PodcastEpisode,
 }
 
 pub struct App {
@@ -48,7 +48,7 @@ pub struct App {
              login(&config.credentials.id.to_string(), &config.credentials.password.to_string())
              .await?;
 
-         // init for `Continue Listening`
+         // init for  `Home` (continue listening)
          let continue_listening = get_continue_listening(&token).await?;
          let titles_cnt_list = collect_titles_cnt_list(&continue_listening).await;
          let auth_names_cnt_list = collect_auth_names_cnt_list(&continue_listening).await;
@@ -60,28 +60,32 @@ pub struct App {
          let ids_library = collect_ids_library(&all_books).await;
          let auth_names_library = collect_auth_names_library(&all_books).await;
 
-         // init for `Search Book`
+         // init for `SearchBook`
          let ids_search_book: Vec<String> = Vec::new();
          let search_mode = false;
          let search_query = "  ".to_string();
 
-         // init for podcast
-         let is_podcast = false;
-         let view_state = AppView::Home; // By default, Home will be the first AppView launched
-                                         // when the app start
+         // init for `Shelf`
+         let is_podcast = true;
 
-         // Init ListeState for `continue Listening` list
+         // Default view_state
+         let view_state = AppView::Home; // By default, Home will be the first AppView launched when the app start
+
+         // Init ListeState for `Home` list (continue listening)
          let mut list_state_cnt_list = ListState::default(); // init the ListState ratatui's widget
          list_state_cnt_list.select(Some(0)); // select the first item of the list when app is launch
 
          // Init ListeState for `Library` list
-         let mut list_state_library = ListState::default(); // init the ListState ratatui's widget
-         list_state_library.select(Some(0)); // select the first item of the list when app is launch
+         let mut list_state_library = ListState::default(); 
+         list_state_library.select(Some(0)); 
                                              
-         // Init ListeState for `titles_search_book` list
-         let mut list_state_search_results = ListState::default(); // init the ListState ratatui's widget
-         list_state_search_results.select(Some(0)); // select the first item of the list when app is launch
+         // Init ListeState for `SearchBook` list
+         let mut list_state_search_results = ListState::default(); 
+         list_state_search_results.select(Some(0)); 
 
+         // Init ListState for `PodacastEpisode` list
+         let mut list_state_pod_ep = ListState::default();
+         list_state_pod_ep.select(Some(0));
 
 
         Ok(Self {
@@ -149,7 +153,7 @@ pub struct App {
                 match self.view_state {
                     AppView::Home => {
                 if self.is_podcast{
-                    self.view_state = AppView::Library;
+                    self.view_state = AppView::PodcastEpisode;
                 } else {
                         tokio::spawn(async move {
                             handle_l(token.as_ref(), ids_cnt_list, selected_cnt_list, port).await;
@@ -161,6 +165,11 @@ pub struct App {
                         });
                     }
                     AppView::SearchBook => {
+                        tokio::spawn(async move {
+                            handle_l(token.as_ref(), ids_search_book, selected_search_book, port).await;
+                        });
+                    }
+                    AppView::PodcastEpisode => {
                         tokio::spawn(async move {
                             handle_l(token.as_ref(), ids_search_book, selected_search_book, port).await;
                         });
@@ -177,6 +186,8 @@ pub struct App {
             AppView::Home => AppView::Library,
             AppView::Library => AppView::Home,
             AppView::SearchBook => AppView::Home,
+            AppView::PodcastEpisode => AppView::Home,
+
         };
     }
 
@@ -187,6 +198,7 @@ pub struct App {
             AppView::Home => self.list_state_cnt_list.select_next(),
             AppView::Library => self.list_state_library.select_next(),
             AppView::SearchBook => self.list_state_search_results.select_next(),
+            AppView::PodcastEpisode => self.list_state_library.select_next(),
         }
     }
 
@@ -195,6 +207,7 @@ pub struct App {
             AppView::Home => self.list_state_cnt_list.select_previous(),
             AppView::Library => self.list_state_library.select_previous(),
             AppView::SearchBook => self.list_state_search_results.select_previous(),
+            AppView::PodcastEpisode => self.list_state_library.select_previous(),
         }
     }
 
@@ -203,6 +216,7 @@ pub struct App {
             AppView::Home => self.list_state_cnt_list.select_first(),
             AppView::Library => self.list_state_library.select_first(),
             AppView::SearchBook => self.list_state_search_results.select_first(),
+            AppView::PodcastEpisode => self.list_state_library.select_first(),
         }
     }
 
@@ -211,6 +225,7 @@ pub struct App {
             AppView::Home => self.list_state_cnt_list.select_last(),
             AppView::Library => self.list_state_library.select_last(),
             AppView::SearchBook => self.list_state_search_results.select_last(),
+            AppView::PodcastEpisode => self.list_state_library.select_last(),
         }
     }
 
