@@ -41,6 +41,8 @@ pub struct App {
    pub search_query: String,
    pub search_mode: bool,
    pub is_podcast: bool,
+   pub all_titles_pod_ep: Vec<Vec<String>>,
+   pub all_ids_pod_ep: Vec<Vec<String>>,
    pub titles_pod_ep: Vec<String>,
    pub ids_pod_ep: Vec<String>,
 }
@@ -71,11 +73,20 @@ pub struct App {
          let search_query = "  ".to_string();
 
          //init for `PodcastEpisode`
-         let id = "878b6c43-1b4e-447c-aa00-8dcfad8d94f6";
-         let podcast_episode = get_pod_ep(&token, id).await?;
-         let titles_pod_ep = collect_titles_pod_ep(&podcast_episode).await;
-         let ids_pod_ep = collect_ids_pod_ep(&podcast_episode).await;
+         let mut all_titles_pod_ep: Vec<Vec<String>> = Vec::new();
+         let mut all_ids_pod_ep: Vec<Vec<String>> = Vec::new();
+         let titles_pod_ep: Vec<String> = Vec::new();
+         let ids_pod_ep: Vec<String> = Vec::new();
+ 
 
+
+         for i in 0..ids_library.len() 
+         {let podcast_episode = get_pod_ep(&token, ids_library[i].as_str()).await?;
+         let title = collect_titles_pod_ep(&podcast_episode).await;
+         all_titles_pod_ep.push(title);
+         let id = collect_ids_pod_ep(&podcast_episode).await;
+         all_ids_pod_ep.push(id);
+         }
          // init for `Shelf`
          let is_podcast = true;
 
@@ -117,6 +128,8 @@ pub struct App {
             search_mode,
             search_query,
             is_podcast,
+            all_titles_pod_ep,
+            all_ids_pod_ep,
             titles_pod_ep,
             ids_pod_ep,
         })
@@ -176,30 +189,33 @@ pub fn handle_key(&mut self, key: KeyEvent) {
             match self.view_state {
                 AppView::Home => {
                     tokio::spawn(async move {
-                        handle_l(token.as_ref(), ids_cnt_list, selected_cnt_list, port, &id_test).await;
+                        handle_l(token.as_ref(), &ids_cnt_list, selected_cnt_list, port, &id_test).await;
                     });
                 }
                 AppView::Library => {
                     if self.is_podcast {
+                    if let Some(index) = selected_library {
+                        self.titles_pod_ep = self.all_titles_pod_ep[index].clone();
                         self.list_state_pod_ep.select(Some(0));
                         self.view_state = AppView::PodcastEpisode;
-                    } else {
+                    }} else {
                         tokio::spawn(async move {
-                            handle_l(token.as_ref(), ids_library, selected_library, port, &id_test).await;
+                            handle_l(token.as_ref(), &ids_library, selected_library, port, &id_test).await;
                         });
                     }
                 }
                 AppView::SearchBook => {
                     tokio::spawn(async move {
-                        handle_l(token.as_ref(), ids_search_book, selected_search_book, port, &id_test).await;
+                        handle_l(token.as_ref(), &ids_search_book, selected_search_book, port, &id_test).await;
                     });
                 }
                 AppView::PodcastEpisode => {
                     if let Some(index) = selected_library {
                         if let Some(id_pod) = ids_library.get(index) {
+                            let all_ids_pod_ep_clone = self.all_ids_pod_ep.clone();
                             let id_pod_clone = id_pod.clone();
                             tokio::spawn(async move {
-                                handle_l(token.as_ref(), ids_pod_ep, selected_pod_ep, port, id_pod_clone.as_str()).await;
+                                handle_l(token.as_ref(), &all_ids_pod_ep_clone[index], selected_pod_ep, port, id_pod_clone.as_str()).await;
                             });
                         }
                     }

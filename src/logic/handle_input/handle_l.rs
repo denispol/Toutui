@@ -5,7 +5,7 @@ use crate::api::library_items::play_lib_item_or_pod::*;
 
 pub async fn handle_l(
     token: Option<&String>,
-    ids_library_items: Vec<String>,
+    ids_library_items: &Vec<String>,
     selected: Option<usize>,
     port: String,
     id_pod: &str,
