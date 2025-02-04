@@ -18,6 +18,7 @@ pub enum AppView {
     Home,
     Library,
     SearchBook,
+    //PodcastEpisode,
 }
 
 pub struct App {
@@ -26,7 +27,7 @@ pub struct App {
    pub token: Option<String>,
    pub list_state_cnt_list: ListState,
    pub list_state_library: ListState,
-   pub list_state_search_book: ListState,
+   pub list_state_search_results: ListState,
    pub titles_cnt_list: Vec<String>,
    pub auth_names_cnt_list: Vec<String>,
    pub ids_cnt_list: Vec<String>,
@@ -78,15 +79,17 @@ pub struct App {
          list_state_library.select(Some(0)); // select the first item of the list when app is launch
                                              
          // Init ListeState for `titles_search_book` list
-         let mut list_state_search_book = ListState::default(); // init the ListState ratatui's widget
-         list_state_search_book.select(Some(0)); // select the first item of the list when app is launch
+         let mut list_state_search_results = ListState::default(); // init the ListState ratatui's widget
+         list_state_search_results.select(Some(0)); // select the first item of the list when app is launch
+
+
 
         Ok(Self {
             should_exit: false,
             token: Some(token),
             list_state_cnt_list,
             list_state_library,
-            list_state_search_book,
+            list_state_search_results,
             titles_cnt_list,
             auth_names_cnt_list,
             ids_cnt_list,
@@ -140,7 +143,7 @@ pub struct App {
 
                 // init for `Search Book`
                 let ids_search_book = self.ids_search_book.clone();
-                let selected_search_book = self.list_state_search_book.selected();
+                let selected_search_book = self.list_state_search_results.selected();
 
                 // Now, spawn the async task based on the current view state
                 match self.view_state {
@@ -183,7 +186,7 @@ pub struct App {
         match self.view_state {
             AppView::Home => self.list_state_cnt_list.select_next(),
             AppView::Library => self.list_state_library.select_next(),
-            AppView::SearchBook => self.list_state_search_book.select_next(),
+            AppView::SearchBook => self.list_state_search_results.select_next(),
         }
     }
 
@@ -191,7 +194,7 @@ pub struct App {
         match self.view_state {
             AppView::Home => self.list_state_cnt_list.select_previous(),
             AppView::Library => self.list_state_library.select_previous(),
-            AppView::SearchBook => self.list_state_search_book.select_previous(),
+            AppView::SearchBook => self.list_state_search_results.select_previous(),
         }
     }
 
@@ -199,7 +202,7 @@ pub struct App {
         match self.view_state {
             AppView::Home => self.list_state_cnt_list.select_first(),
             AppView::Library => self.list_state_library.select_first(),
-            AppView::SearchBook => self.list_state_search_book.select_first(),
+            AppView::SearchBook => self.list_state_search_results.select_first(),
         }
     }
 
@@ -207,7 +210,7 @@ pub struct App {
         match self.view_state {
             AppView::Home => self.list_state_cnt_list.select_last(),
             AppView::Library => self.list_state_library.select_last(),
-            AppView::SearchBook => self.list_state_search_book.select_last(),
+            AppView::SearchBook => self.list_state_search_results.select_last(),
         }
     }
 

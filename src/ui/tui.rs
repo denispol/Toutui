@@ -120,7 +120,7 @@ impl App {
 
         App::render_header(header_area, buf);
         App::render_footer(footer_area, buf, text_render_footer);
-        self.render_list(list_area, buf, render_list_title, titles_search_book, &mut self.list_state_search_book.clone());
+        self.render_list(list_area, buf, render_list_title, titles_search_book, &mut self.list_state_search_results.clone());
         //self.render_selected_item(item_area, buf, &self.titles_library.clone(), self.auth_names_library.clone());
 
     }

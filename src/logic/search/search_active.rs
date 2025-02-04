@@ -45,7 +45,7 @@ impl App {
                     self.search_mode = false;
                     self.search_query = textarea.lines().join("\n");
                     self.view_state = AppView::SearchBook;
-                    self.list_state_search_book.select(Some(0));
+                    self.list_state_search_results.select(Some(0));
                     break;
                 }
                 Input { key: Key::Esc, .. } => {
