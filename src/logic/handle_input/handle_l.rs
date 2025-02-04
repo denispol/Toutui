@@ -8,13 +8,13 @@ pub async fn handle_l(
     ids_library_items: Vec<String>,
     selected: Option<usize>,
     port: String,
+    id_pod: &str,
 ) {
-let pod = "39916e41-3de3-46fc-993b-14f84c2a1ba0";
     if let Some(index) = selected {
+        println!("{:?}", id_pod);
         if let Some(id) = ids_library_items.get(index) {
-            println!("{}", id);
             if let Some(token) = token {
-                if let Ok(info_item) = post_start_playback_session(Some(&token),  id, &pod).await {
+                if let Ok(info_item) = post_start_playback_session(Some(&token),id_pod, &id).await {
                     // clone otherwise, these variable will  be consumed and not available anymore
                     // for use outside start_vlc spawn
                     let token_clone = token.clone();
@@ -37,12 +37,12 @@ let pod = "39916e41-3de3-46fc-993b-14f84c2a1ba0";
                                 tokio::time::sleep(tokio::time::Duration::from_secs(1)).await;
                                 match fetch_vlc_is_playing(port.clone()).await {
                                     Ok(true) => {
-                                        let _ = update_media_progress(id, Some(&token), Some(data_fetched_from_vlc), &info_item[2], &pod).await;
+                                        let _ = update_media_progress(id, Some(&token), Some(data_fetched_from_vlc), &info_item[2], &id).await;
                                         //println!("{:?}", data_fetched_from_vlc);
                                     },
                                     Ok(false) => {
                                         let is_finised = true;
-                                        let _ = update_media_progress2(id, Some(&token), Some(data_fetched_from_vlc), &info_item[2], is_finised, &pod).await;
+                                        let _ = update_media_progress2(id, Some(&token), Some(data_fetched_from_vlc), &info_item[2], is_finised, &id).await;
                                         break; 
                                     },
                                     Err(_e) => {

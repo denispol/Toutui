@@ -28,7 +28,7 @@ impl Widget for &mut App {
             AppView::Home => self.render_home(area, buf),
             AppView::Library => self.render_library(area, buf),
             AppView::SearchBook => self.render_search_book(area, buf),
-            AppView::PodcastEpisode => self.render_library(area, buf),
+            AppView::PodcastEpisode => self.render_pod_ep(area, buf),
         }
     }
 }
@@ -124,6 +124,25 @@ impl App {
         self.render_list(list_area, buf, render_list_title, titles_search_book, &mut self.list_state_search_results.clone());
         //self.render_selected_item(item_area, buf, &self.titles_library.clone(), self.auth_names_library.clone());
 
+    }
+
+    /// AppView::PodcastEpisode
+    fn render_pod_ep(&mut self, area: Rect, buf: &mut Buffer) {
+        let [header_area, main_area, footer_area] = Layout::vertical([
+            Constraint::Length(2),
+            Constraint::Fill(1),
+            Constraint::Length(1),
+        ]).areas(area);
+        
+        let [list_area, item_area] = Layout::vertical([Constraint::Fill(1), Constraint::Fill(1)]).areas(main_area);
+
+        let render_list_title = "Pod Ep";
+        let text_render_footer = "Use ↓↑ to move, → to play, s to search, q to quit.";
+
+        App::render_header(header_area, buf);
+        App::render_footer(footer_area, buf, text_render_footer);
+        self.render_list(list_area, buf, render_list_title, &self.titles_pod_ep.clone(), &mut self.list_state_pod_ep.clone());
+        //self.render_selected_item(item_area, buf, &self.titles_library.clone(), self.auth_names_library.clone());
     }
 
     /// General functions for rendering 
