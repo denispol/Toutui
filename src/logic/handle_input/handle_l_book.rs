@@ -3,17 +3,16 @@ use crate::player::vlc::fetch_vlc_data::*;
 use crate::api::me::update_media_progress::*;
 use crate::api::library_items::play_lib_item_or_pod::*;
 
-pub async fn handle_l(
-    token: Option<&String>,
-    ids_library_items: &Vec<String>,
+pub async fn handle_l_book(
+  token: Option<&String>,
+    ids_library_items: Vec<String>,
     selected: Option<usize>,
     port: String,
-    id_pod: &str,
 ) {
     if let Some(index) = selected {
         if let Some(id) = ids_library_items.get(index) {
             if let Some(token) = token {
-                if let Ok(info_item) = post_start_playback_session(Some(&token),id_pod, &id).await {
+                if let Ok(info_item) = post_start_playback_session_book(Some(&token), id).await {
                     // clone otherwise, these variable will  be consumed and not available anymore
                     // for use outside start_vlc spawn
                     let token_clone = token.clone();
@@ -36,12 +35,12 @@ pub async fn handle_l(
                                 tokio::time::sleep(tokio::time::Duration::from_secs(1)).await;
                                 match fetch_vlc_is_playing(port.clone()).await {
                                     Ok(true) => {
-                                        let _ = update_media_progress(id_pod, Some(&token), Some(data_fetched_from_vlc), &info_item[2], &id).await;
+                                        let _ = update_media_progress_book(id, Some(&token), Some(data_fetched_from_vlc), &info_item[2]).await;
                                         //println!("{:?}", data_fetched_from_vlc);
                                     },
                                     Ok(false) => {
                                         let is_finised = true;
-                                        let _ = update_media_progress2(id_pod, Some(&token), Some(data_fetched_from_vlc), &info_item[2], is_finised, &id).await;
+                                        let _ = update_media_progress2_book(id, Some(&token), Some(data_fetched_from_vlc), &info_item[2], is_finised).await;
                                         break; 
                                     },
                                     Err(_e) => {
@@ -66,4 +65,3 @@ pub async fn handle_l(
         }
     }
 }
-

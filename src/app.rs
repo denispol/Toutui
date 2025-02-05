@@ -6,7 +6,8 @@ use crate::api::libraries::get_library_perso_view::*;
 use crate::api::libraries::get_all_books::*;
 use crate::api::library_items::get_pod_ep::*;
 use crate::api::server::auth::*;
-use crate::logic::handle_input::handle_l::*;
+use crate::logic::handle_input::handle_l_book::*;
+use crate::logic::handle_input::handle_l_pod::*;
 use crate::config::load_config;
 use color_eyre::Result;
 use ratatui::{
@@ -189,7 +190,7 @@ pub fn handle_key(&mut self, key: KeyEvent) {
             match self.view_state {
                 AppView::Home => {
                     tokio::spawn(async move {
-                        handle_l(token.as_ref(), &ids_cnt_list, selected_cnt_list, port, &id_test).await;
+                        handle_l_book(token.as_ref(), ids_cnt_list, selected_cnt_list, port).await;
                     });
                 }
                 AppView::Library => {
@@ -200,13 +201,13 @@ pub fn handle_key(&mut self, key: KeyEvent) {
                         self.view_state = AppView::PodcastEpisode;
                     }} else {
                         tokio::spawn(async move {
-                            handle_l(token.as_ref(), &ids_library, selected_library, port, &id_test).await;
+                            handle_l_book(token.as_ref(), ids_library, selected_library, port).await;
                         });
                     }
                 }
                 AppView::SearchBook => {
                     tokio::spawn(async move {
-                        handle_l(token.as_ref(), &ids_search_book, selected_search_book, port, &id_test).await;
+                        handle_l_book(token.as_ref(), ids_search_book, selected_search_book, port).await;
                     });
                 }
                 AppView::PodcastEpisode => {
@@ -215,7 +216,7 @@ pub fn handle_key(&mut self, key: KeyEvent) {
                             let all_ids_pod_ep_clone = self.all_ids_pod_ep.clone();
                             let id_pod_clone = id_pod.clone();
                             tokio::spawn(async move {
-                                handle_l(token.as_ref(), &all_ids_pod_ep_clone[index], selected_pod_ep, port, id_pod_clone.as_str()).await;
+                                handle_l_pod(token.as_ref(), &all_ids_pod_ep_clone[index], selected_pod_ep, port, id_pod_clone.as_str()).await;
                             });
                         }
                     }
