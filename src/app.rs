@@ -60,6 +60,8 @@ pub struct App {
    pub ids_library_pod_search: Vec<String>,
    pub all_ids_pod_ep_search: Vec<Vec<String>>,
    pub library_names: Vec<String>,
+   pub media_types: Vec<String>,
+   pub library_ids: Vec<String>,
 
 }
 
@@ -123,6 +125,8 @@ pub struct App {
          // init for `Libraries`
          let all_libraries = get_all_libraries(&token).await?;
          let library_names = collect_library_names(&all_libraries).await;
+         let media_types = collect_media_types(&all_libraries).await;
+         let library_ids = collect_library_ids(&all_libraries).await;
  
 
          for i in 0..ids_library.len() 
@@ -187,6 +191,8 @@ pub struct App {
             ids_library_pod_search,
             all_ids_pod_ep_search,
             library_names,
+            library_ids,
+            media_types,
         })
     }
 
