@@ -53,6 +53,8 @@ pub struct App {
    pub all_titles_pod_ep_search: Vec<Vec<String>>,
    pub titles_pod_ep_search: Vec<String>,
    pub is_from_search_pod: bool,
+   pub ids_library_pod_search: Vec<String>,
+   pub all_ids_pod_ep_search: Vec<Vec<String>>,
 
 }
 
@@ -102,7 +104,10 @@ pub struct App {
          let search_query = "  ".to_string();
          let all_titles_pod_ep_search: Vec<Vec<String>> = Vec::new();
          let titles_pod_ep_search: Vec<String> = Vec::new();
-         let is_from_search_pod = true;
+         let is_from_search_pod = false;
+         let ids_library_pod_search: Vec<String> = Vec::new();
+         let mut all_ids_pod_ep_search: Vec<Vec<String>> = Vec::new();
+
 
          //init for `PodcastEpisode`
          let mut all_titles_pod_ep: Vec<Vec<String>> = Vec::new();
@@ -166,6 +171,8 @@ pub struct App {
             all_titles_pod_ep_search,
             titles_pod_ep_search,
             is_from_search_pod,
+            ids_library_pod_search,
+            all_ids_pod_ep_search,
         })
     }
 
@@ -248,7 +255,6 @@ pub fn handle_key(&mut self, key: KeyEvent) {
                         self.is_from_search_pod = true;
                         if let Some(index) = selected_search_book {
                             self.titles_pod_ep_search = self.all_titles_pod_ep_search[index].clone();
-
                             self.list_state_pod_ep.select(Some(0));
                             self.view_state = AppView::PodcastEpisode;
                         }} else {   
@@ -259,12 +265,15 @@ pub fn handle_key(&mut self, key: KeyEvent) {
                         }
                 }
                 AppView::PodcastEpisode => {
-                    if let Some(index) = selected_library {
-                        if let Some(id_pod) = ids_library.get(index) {
-                            let all_ids_pod_ep_clone = self.all_ids_pod_ep.clone();
+                    if let Some(index) = selected_search_book {
+                        println!("{}", index);
+                        if let Some(id_pod) = self.ids_library_pod_search.get(index) {
+                            println!("{:?}", id_pod);
+                            let all_ids_pod_ep_search_clone = self.all_ids_pod_ep_search.clone();
+                            println!("{:?}", all_ids_pod_ep_search_clone[index]);
                             let id_pod_clone = id_pod.clone();
                             tokio::spawn(async move {
-                                handle_l_pod(token.as_ref(), &all_ids_pod_ep_clone[index], selected_pod_ep, port, id_pod_clone.as_str()).await;
+                                handle_l_pod(token.as_ref(), &all_ids_pod_ep_search_clone[index], selected_pod_ep, port, id_pod_clone.as_str()).await;
                             });
                         }
                     }

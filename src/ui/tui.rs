@@ -112,13 +112,28 @@ impl App {
 
         let titles_search_book: &[String] = &titles_search_book;
 
+        // for book
         self.ids_search_book = self.ids_library
             .iter()
             .enumerate()
             .filter(|(index, _)| index_to_keep.contains(&index))
             .map(|(_, value)| value.clone())
             .collect();
-            self.all_titles_pod_ep_search= self.all_titles_pod_ep
+
+        // for podacst
+        self.all_titles_pod_ep_search = self.all_titles_pod_ep
+            .iter()
+            .enumerate()
+            .filter(|(index, _)| index_to_keep.contains(&index))
+            .map(|(_, value)| value.clone())
+            .collect();
+        self.all_ids_pod_ep_search = self.all_ids_pod_ep
+            .iter()
+            .enumerate()
+            .filter(|(index, _)| index_to_keep.contains(&index))
+            .map(|(_, value)| value.clone())
+            .collect();
+        self.ids_library_pod_search = self.ids_library
             .iter()
             .enumerate()
             .filter(|(index, _)| index_to_keep.contains(&index))
