@@ -118,6 +118,12 @@ impl App {
             .filter(|(index, _)| index_to_keep.contains(&index))
             .map(|(_, value)| value.clone())
             .collect();
+            self.all_titles_pod_ep_search= self.all_titles_pod_ep
+            .iter()
+            .enumerate()
+            .filter(|(index, _)| index_to_keep.contains(&index))
+            .map(|(_, value)| value.clone())
+            .collect();
 
         App::render_header(header_area, buf);
         App::render_footer(footer_area, buf, text_render_footer);
@@ -141,7 +147,11 @@ impl App {
 
         App::render_header(header_area, buf);
         App::render_footer(footer_area, buf, text_render_footer);
+        if self.is_from_search_pod {
+        self.render_list(list_area, buf, render_list_title, &self.titles_pod_ep_search.clone(), &mut self.list_state_pod_ep.clone());
+        } else {
         self.render_list(list_area, buf, render_list_title, &self.titles_pod_ep.clone(), &mut self.list_state_pod_ep.clone());
+        }
         //self.render_selected_item(item_area, buf, &self.titles_library.clone(), self.auth_names_library.clone());
     }
 
