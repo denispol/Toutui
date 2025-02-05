@@ -11,7 +11,6 @@ pub async fn handle_l(
     id_pod: &str,
 ) {
     if let Some(index) = selected {
-        println!("{:?}", id_pod);
         if let Some(id) = ids_library_items.get(index) {
             if let Some(token) = token {
                 if let Ok(info_item) = post_start_playback_session(Some(&token),id_pod, &id).await {
@@ -37,12 +36,12 @@ pub async fn handle_l(
                                 tokio::time::sleep(tokio::time::Duration::from_secs(1)).await;
                                 match fetch_vlc_is_playing(port.clone()).await {
                                     Ok(true) => {
-                                        let _ = update_media_progress(id, Some(&token), Some(data_fetched_from_vlc), &info_item[2], &id).await;
+                                        let _ = update_media_progress(id_pod, Some(&token), Some(data_fetched_from_vlc), &info_item[2], &id).await;
                                         //println!("{:?}", data_fetched_from_vlc);
                                     },
                                     Ok(false) => {
                                         let is_finised = true;
-                                        let _ = update_media_progress2(id, Some(&token), Some(data_fetched_from_vlc), &info_item[2], is_finised, &id).await;
+                                        let _ = update_media_progress2(id_pod, Some(&token), Some(data_fetched_from_vlc), &info_item[2], is_finised, &id).await;
                                         break; 
                                     },
                                     Err(_e) => {
