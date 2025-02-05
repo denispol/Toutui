@@ -68,7 +68,7 @@ pub struct App {
 
 
          // init for `Shelf`
-         let is_podcast = true;
+         let is_podcast = false;
 
          // init for `Home` (continue listening)
          let mut titles_cnt_list: Vec<String> = Vec::new();

@@ -96,7 +96,7 @@ pub struct CollapsedSeries {
 
 pub async fn get_all_books(token: &str) -> Result<Root> {
     let client = Client::new();
-    let url = "https://audiobook.nuagemagique.duckdns.org/api/libraries/5d80300e-e228-402e-9b6e-1356ff1f4243/items";
+    let url = "https://audiobook.nuagemagique.duckdns.org/api/libraries/64c39f84-9c58-4045-a89c-e17a6d990768/items";
 
     // json bosy
     let body = json!({
