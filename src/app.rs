@@ -271,8 +271,11 @@ pub fn handle_key(&mut self, key: KeyEvent) {
                 }
                 AppView::PodcastEpisode => {
                     if self.is_from_search_pod {
+                    // we need the index of selected_search_book to feet after with
+                    // ids_library_pod_search
                     if let Some(index) = selected_search_book {
-                        println!("{}", index);
+                        // ids_library_pod_search because we need the pod id and he is given by
+                        // this variable
                         if let Some(id_pod) = self.ids_library_pod_search.get(index) {
                             println!("{:?}", id_pod);
                             let all_ids_pod_ep_search_clone = self.all_ids_pod_ep_search.clone();
@@ -284,6 +287,10 @@ pub fn handle_key(&mut self, key: KeyEvent) {
                         }
                     }
                     } else {
+                        // selected_livrary ids_library because we need the pod id and he is given by
+                        // these variables
+                        // we also need the index of selected library to feet after with
+                        // ids_library
                     if let Some(index) = selected_library {
                         if let Some(id_pod) = ids_library.get(index) {
                             let all_ids_pod_ep_clone = self.all_ids_pod_ep.clone();
