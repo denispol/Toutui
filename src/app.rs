@@ -234,7 +234,7 @@ pub fn handle_key(&mut self, key: KeyEvent) {
                     }
                 }
                 AppView::SearchBook => {
-                    tokio::spawn(async move {
+                  tokio::spawn(async move {
                         handle_l_book(token.as_ref(), ids_search_book, selected_search_book, port).await;
                     });
                 }
