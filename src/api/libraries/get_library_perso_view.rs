@@ -5,7 +5,7 @@ use color_eyre::eyre::{Result, Report};
 use serde::Deserialize;
 use serde::Serialize;
 
-/// Get a PersonalizedView's Personalized View (allow to have continue linstening)
+/// Get a PersonalizedView's Personalized View for book (allow to have continue linstening)
 /// https://api.audiobookshelf.org/#get-a-library-39-s-personalized-view
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
@@ -97,7 +97,7 @@ pub struct Book {
 // filter only book continue to listening from personalized view
 pub async fn get_continue_listening(token: &str) -> Result<Vec<Root>> {
     let client = Client::new();
-    let url = "https://audiobook.nuagemagique.duckdns.org/api/libraries/5d80300e-e228-402e-9b6e-1356ff1f4243/personalized";
+    let url = "https://audiobook.nuagemagique.duckdns.org/api/libraries/64c39f84-9c58-4045-a89c-e17a6d990768/personalized";
 
     // Send GET request
     let response = client

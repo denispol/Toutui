@@ -1,13 +1,16 @@
 //use crate::api::get_test::get_test;
 use crate::api::utils::collect_personalized_view::*;
+use crate::api::utils::collect_personalized_view_pod::*;
 use crate::api::utils::collect_get_all_books::*;
 use crate::api::utils::collect_get_pod_ep::*;
 use crate::api::libraries::get_library_perso_view::*;
+use crate::api::libraries::get_library_perso_view_pod::*;
 use crate::api::libraries::get_all_books::*;
 use crate::api::library_items::get_pod_ep::*;
 use crate::api::server::auth::*;
 use crate::logic::handle_input::handle_l_book::*;
 use crate::logic::handle_input::handle_l_pod::*;
+use crate::logic::handle_input::handle_l_pod_home::*;
 use crate::config::load_config;
 use color_eyre::Result;
 use ratatui::{
@@ -46,6 +49,7 @@ pub struct App {
    pub all_ids_pod_ep: Vec<Vec<String>>,
    pub titles_pod_ep: Vec<String>,
    pub ids_pod_ep: Vec<String>,
+   pub ids_ep_cnt_list: Vec<String>,
 }
 
 /// Init app
@@ -56,11 +60,31 @@ pub struct App {
              login(&config.credentials.id.to_string(), &config.credentials.password.to_string())
              .await?;
 
-         // init for  `Home` (continue listening)
+
+         // init for `Shelf`
+         let is_podcast = false;
+
+         // init for `Home` (continue listening)
+         let mut titles_cnt_list: Vec<String> = Vec::new();
+         let mut auth_names_cnt_list: Vec<String> = Vec::new();
+         let mut ids_cnt_list: Vec<String> = Vec::new();
+         let mut ids_ep_cnt_list: Vec<String> = Vec::new();
+
+
+         if is_podcast {
+         // init for  `Home` (continue listening) for podcasts
+         let continue_listening_pod = get_continue_listening_pod(&token).await?;
+         ids_cnt_list = collect_ids_pod_cnt_list(&continue_listening_pod).await; // id of a podcast
+         titles_cnt_list = collect_titles_cnt_list_pod(&continue_listening_pod).await;
+         ids_ep_cnt_list = collect_ids_ep_pod_cnt_list(&continue_listening_pod).await; // id of a podcast episode
+         }
+         else {
+         // init for  `Home` (continue listening) for books
          let continue_listening = get_continue_listening(&token).await?;
-         let titles_cnt_list = collect_titles_cnt_list(&continue_listening).await;
-         let auth_names_cnt_list = collect_auth_names_cnt_list(&continue_listening).await;
-         let ids_cnt_list = collect_ids_cnt_list(&continue_listening).await;
+         titles_cnt_list = collect_titles_cnt_list(&continue_listening).await;
+         auth_names_cnt_list = collect_auth_names_cnt_list(&continue_listening).await;
+         ids_cnt_list = collect_ids_cnt_list(&continue_listening).await;
+         }
 
          //init for `Library ` (all books of a shelf)
          let all_books = get_all_books(&token).await?;
@@ -80,7 +104,6 @@ pub struct App {
          let ids_pod_ep: Vec<String> = Vec::new();
  
 
-
          for i in 0..ids_library.len() 
          {let podcast_episode = get_pod_ep(&token, ids_library[i].as_str()).await?;
          let title = collect_titles_pod_ep(&podcast_episode).await;
@@ -88,8 +111,7 @@ pub struct App {
          let id = collect_ids_pod_ep(&podcast_episode).await;
          all_ids_pod_ep.push(id);
          }
-         // init for `Shelf`
-         let is_podcast = true;
+
 
          // Default view_state
          let view_state = AppView::Home; // By default, Home will be the first AppView launched when the app start
@@ -133,6 +155,7 @@ pub struct App {
             all_ids_pod_ep,
             titles_pod_ep,
             ids_pod_ep,
+            ids_ep_cnt_list, 
         })
     }
 
@@ -168,7 +191,7 @@ pub fn handle_key(&mut self, key: KeyEvent) {
             let token = self.token.clone();
             let port = "1234".to_string();
 
-            // Init for `Continue Listening`
+            // Init for `Continue Listening` (AppView::Home)
             let ids_cnt_list = self.ids_cnt_list.clone();
             let selected_cnt_list = self.list_state_cnt_list.selected();
 
@@ -183,16 +206,21 @@ pub fn handle_key(&mut self, key: KeyEvent) {
             // Init for `PodcastEpisode`
             let ids_pod_ep = self.ids_pod_ep.clone();
             let selected_pod_ep = self.list_state_pod_ep.selected();
+            let ids_ep_cnt_list = self.ids_ep_cnt_list.clone();
 
-            let id_test =  "cac";
 
             // Now, spawn the async task based on the current view state
             match self.view_state {
                 AppView::Home => {
+                    if self.is_podcast {
+                        tokio::spawn(async move {
+                            handle_l_pod_home(token.as_ref(), &ids_cnt_list, selected_cnt_list, port, ids_ep_cnt_list).await;
+                        });
+                    } else {
                     tokio::spawn(async move {
                         handle_l_book(token.as_ref(), ids_cnt_list, selected_cnt_list, port).await;
                     });
-                }
+                }}
                 AppView::Library => {
                     if self.is_podcast {
                     if let Some(index) = selected_library {

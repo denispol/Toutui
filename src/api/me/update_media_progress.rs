@@ -6,7 +6,7 @@ use std::error::Error;
 /// This endpoint creates/updates your media progress for a library item or podcast episode.
 /// https://api.audiobookshelf.org/#create-update-media-progress
 
-// for a book (or a podcast fril `Continue Listening`)
+// for a book 
 pub async fn update_media_progress_book(id_library_item: &str, token: Option<&String>, current_time: Option<u32>, duration: &String) -> Result<(), Box<dyn Error>> {
 
     // Build client reqwest
@@ -47,7 +47,7 @@ pub async fn update_media_progress_book(id_library_item: &str, token: Option<&St
     Ok(())
 }
 
-// for a book (or a podcast fril `Continue Listening`)
+// for a book (to mark as finished)
 pub async fn update_media_progress2_book(id_library_item: &str, token: Option<&String>, current_time: Option<u32>, duration: &String, is_finished: bool) -> Result<(), Box<dyn Error>> {
 
     // Build client reqwest
@@ -129,7 +129,7 @@ pub async fn update_media_progress_pod(id_library_item: &str , token: Option<&St
     Ok(())
 }
 
-// for a podcast : 
+// for a podcast (to mark as finished) : 
 pub async fn update_media_progress2_pod(id_library_item: &str, token: Option<&String>, current_time: Option<u32>, duration: &String, is_finished: bool, ep_id: &str) -> Result<(), Box<dyn Error>> {
 
     // Build client reqwest
