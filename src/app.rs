@@ -3,9 +3,11 @@ use crate::api::utils::collect_personalized_view::*;
 use crate::api::utils::collect_personalized_view_pod::*;
 use crate::api::utils::collect_get_all_books::*;
 use crate::api::utils::collect_get_pod_ep::*;
+use crate::api::utils::collect_get_all_libraries::*;
 use crate::api::libraries::get_library_perso_view::*;
 use crate::api::libraries::get_library_perso_view_pod::*;
 use crate::api::libraries::get_all_books::*;
+use crate::api::libraries::get_all_libraries::*;
 use crate::api::library_items::get_pod_ep::*;
 use crate::api::server::auth::*;
 use crate::logic::handle_input::handle_l_book::*;
@@ -25,6 +27,7 @@ pub enum AppView {
     Library,
     SearchBook,
     PodcastEpisode,
+    Libraries,
 }
 
 pub struct App {
@@ -35,6 +38,7 @@ pub struct App {
    pub list_state_library: ListState,
    pub list_state_search_results: ListState,
    pub list_state_pod_ep: ListState,
+   pub list_state_libraries: ListState,
    pub titles_cnt_list: Vec<String>,
    pub auth_names_cnt_list: Vec<String>,
    pub ids_cnt_list: Vec<String>,
@@ -55,6 +59,7 @@ pub struct App {
    pub is_from_search_pod: bool,
    pub ids_library_pod_search: Vec<String>,
    pub all_ids_pod_ep_search: Vec<Vec<String>>,
+   pub library_names: Vec<String>,
 
 }
 
@@ -114,6 +119,10 @@ pub struct App {
          let mut all_ids_pod_ep: Vec<Vec<String>> = Vec::new();
          let titles_pod_ep: Vec<String> = Vec::new();
          let ids_pod_ep: Vec<String> = Vec::new();
+
+         // init for `Libraries`
+         let all_libraries = get_all_libraries(&token).await?;
+         let library_names = collect_library_names(&all_libraries).await;
  
 
          for i in 0..ids_library.len() 
@@ -144,6 +153,9 @@ pub struct App {
          let mut list_state_pod_ep = ListState::default();
          list_state_pod_ep.select(Some(0));
 
+         // Init ListState for `Libraries` list
+         let mut list_state_libraries = ListState::default();
+         list_state_libraries.select(Some(0));
 
         Ok(Self {
             should_exit: false,
@@ -152,6 +164,7 @@ pub struct App {
             list_state_library,
             list_state_search_results,
             list_state_pod_ep,
+            list_state_libraries,
             titles_cnt_list,
             auth_names_cnt_list,
             ids_cnt_list,
@@ -173,6 +186,7 @@ pub struct App {
             is_from_search_pod,
             ids_library_pod_search,
             all_ids_pod_ep_search,
+            library_names,
         })
     }
 
@@ -196,6 +210,9 @@ pub fn handle_key(&mut self, key: KeyEvent) {
     match key.code {
         KeyCode::Char('s') => {
             let _ = self.search_active();
+        }
+        KeyCode::Char('c') => {
+            self.view_state = AppView::Libraries;
         }
         KeyCode::Tab => {
             if self.is_from_search_pod {
@@ -243,6 +260,9 @@ pub fn handle_key(&mut self, key: KeyEvent) {
                         handle_l_book(token.as_ref(), ids_cnt_list, selected_cnt_list, port).await;
                     });
                 }}
+                AppView::Libraries => {
+
+                }
                 AppView::Library => {
                     if self.is_podcast {
                     if let Some(index) = selected_library {
@@ -316,6 +336,7 @@ pub fn handle_key(&mut self, key: KeyEvent) {
             AppView::Library => AppView::Home,
             AppView::SearchBook => AppView::Home,
             AppView::PodcastEpisode => AppView::Home,
+            AppView::Libraries => AppView::Home,
 
         };
     }
@@ -328,6 +349,7 @@ pub fn handle_key(&mut self, key: KeyEvent) {
             AppView::Library => self.list_state_library.select_next(),
             AppView::SearchBook => self.list_state_search_results.select_next(),
             AppView::PodcastEpisode => self.list_state_pod_ep.select_next(),
+            AppView::Libraries => self.list_state_libraries.select_next(),
         }
     }
 
@@ -337,6 +359,7 @@ pub fn handle_key(&mut self, key: KeyEvent) {
             AppView::Library => self.list_state_library.select_previous(),
             AppView::SearchBook => self.list_state_search_results.select_previous(),
             AppView::PodcastEpisode => self.list_state_pod_ep.select_previous(),
+            AppView::Libraries => self.list_state_libraries.select_previous(),
         }
     }
 
@@ -346,6 +369,7 @@ pub fn handle_key(&mut self, key: KeyEvent) {
             AppView::Library => self.list_state_library.select_first(),
             AppView::SearchBook => self.list_state_search_results.select_first(),
             AppView::PodcastEpisode => self.list_state_pod_ep.select_first(),
+            AppView::Libraries => self.list_state_libraries.select_first(),
         }
     }
 
@@ -355,6 +379,7 @@ pub fn handle_key(&mut self, key: KeyEvent) {
             AppView::Library => self.list_state_library.select_last(),
             AppView::SearchBook => self.list_state_search_results.select_last(),
             AppView::PodcastEpisode => self.list_state_pod_ep.select_last(),
+            AppView::Libraries => self.list_state_libraries.select_last(),
         }
     }
 
