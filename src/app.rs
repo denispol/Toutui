@@ -197,7 +197,12 @@ pub fn handle_key(&mut self, key: KeyEvent) {
         KeyCode::Char('s') => {
             let _ = self.search_active();
         }
-        KeyCode::Tab => self.toggle_view(),
+        KeyCode::Tab => {
+            if self.is_from_search_pod {
+                self.is_from_search_pod = false;
+            };
+            self.toggle_view()
+        }
         KeyCode::Char('q') | KeyCode::Esc => self.should_exit = true,
         KeyCode::Char('j') | KeyCode::Down => self.select_next(),
         KeyCode::Char('k') | KeyCode::Up => self.select_previous(),
@@ -265,6 +270,7 @@ pub fn handle_key(&mut self, key: KeyEvent) {
                         }
                 }
                 AppView::PodcastEpisode => {
+                    if self.is_from_search_pod {
                     if let Some(index) = selected_search_book {
                         println!("{}", index);
                         if let Some(id_pod) = self.ids_library_pod_search.get(index) {
@@ -276,6 +282,18 @@ pub fn handle_key(&mut self, key: KeyEvent) {
                                 handle_l_pod(token.as_ref(), &all_ids_pod_ep_search_clone[index], selected_pod_ep, port, id_pod_clone.as_str()).await;
                             });
                         }
+                    }
+                    } else {
+                    if let Some(index) = selected_library {
+                        if let Some(id_pod) = ids_library.get(index) {
+                            let all_ids_pod_ep_clone = self.all_ids_pod_ep.clone();
+                            let id_pod_clone = id_pod.clone();
+                            tokio::spawn(async move {
+                                handle_l_pod(token.as_ref(), &all_ids_pod_ep_clone[index], selected_pod_ep, port, id_pod_clone.as_str()).await;
+                            });
+                        }
+                    }
+
                     }
                 }
             }
