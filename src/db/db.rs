@@ -148,26 +148,26 @@ pub fn db() -> Result<()> {
 //    }
 //
 //    // Afficher tous les utilisateurs
-    let mut stmt = conn.prepare("SELECT username, server_adress, password, is_default_usr, name_selected_lib, id_selected_lib FROM users")?;
-    let user_iter = stmt.query_map([], |row| {
-        Ok(User {
-            username: row.get(0)?,
-            server_adress: row.get(1)?,
-            password: row.get(2)?,
-            is_default_usr: row.get::<_, i32>(3)? != 0,  // Forcer le type i32 pour is_default_usr
-            name_selected_lib: row.get(4)?,
-            id_selected_lib: row.get(5)?,
-        })
-    })?;
-
-    for user in user_iter {
-        match user {
-            Ok(user) => println!("User: {:?}", user),
-            Err(e) => println!("Error occurred: {}", e),
-        }
-    }
-
-
+//    let mut stmt = conn.prepare("SELECT username, server_adress, password, is_default_usr, name_selected_lib, id_selected_lib FROM users")?;
+//    let user_iter = stmt.query_map([], |row| {
+//        Ok(User {
+//            username: row.get(0)?,
+//            server_adress: row.get(1)?,
+//            password: row.get(2)?,
+//            is_default_usr: row.get::<_, i32>(3)? != 0,  // Forcer le type i32 pour is_default_usr
+//            name_selected_lib: row.get(4)?,
+//            id_selected_lib: row.get(5)?,
+//        })
+//    })?;
+//
+//    for user in user_iter {
+//        match user {
+//            Ok(user) => println!("User: {:?}", user),
+//            Err(e) => println!("Error occurred: {}", e),
+//        }
+//    }
+//
+//
     Ok(())
 }
 

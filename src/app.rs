@@ -13,6 +13,7 @@ use crate::api::server::auth::*;
 use crate::logic::handle_input::handle_l_book::*;
 use crate::logic::handle_input::handle_l_pod::*;
 use crate::logic::handle_input::handle_l_pod_home::*;
+use crate::main;
 use crate::config::load_config;
 use crate::db::db::*;
 use color_eyre::Result;
@@ -231,10 +232,69 @@ impl App {
         })
     }
 
+    pub async fn reset(&mut self) -> Result<()> {
+        // Réinitialiser les variables à leurs valeurs par défaut ou vides
+
+        // Recharger les données nécessaires
+        let config = load_config()?;
+        let token = login(&config.credentials.id.to_string(), &config.credentials.password.to_string()).await?;
+
+
+        // Initialisation de `Shelf` et `Home`
+        let is_podcast = true;
+
+        // Continue Listening
+        if is_podcast {
+            let continue_listening_pod = get_continue_listening_pod(&token).await?;
+            self.ids_cnt_list = collect_ids_pod_cnt_list(&continue_listening_pod).await;
+            self.titles_cnt_list = collect_titles_cnt_list_pod(&continue_listening_pod).await;
+            self.ids_ep_cnt_list = collect_ids_ep_pod_cnt_list(&continue_listening_pod).await;
+        } else {
+            let continue_listening = get_continue_listening(&token).await?;
+            self.titles_cnt_list = collect_titles_cnt_list(&continue_listening).await;
+            self.auth_names_cnt_list = collect_auth_names_cnt_list(&continue_listening).await;
+            self.ids_cnt_list = collect_ids_cnt_list(&continue_listening).await;
+        }
+
+        // Initialiser `Library`
+        let all_books = get_all_books(&token, &self.default_usr[5]).await?;
+        self.titles_library = collect_titles_library(&all_books).await;
+        self.ids_library = collect_ids_library(&all_books).await;
+        self.auth_names_library = collect_auth_names_library(&all_books).await;
+
+        // Récupérer les bibliothèques
+        let all_libraries = get_all_libraries(&token).await?;
+        self.library_names = collect_library_names(&all_libraries).await;
+        self.media_types = collect_media_types(&all_libraries).await;
+        self.library_ids = collect_library_ids(&all_libraries).await;
+
+        // Pour chaque bibliothèque, récupérer les épisodes de podcasts
+        for i in 0..self.ids_library.len() {
+            let podcast_episode = get_pod_ep(&token, &self.ids_library[i]).await?;
+            let title = collect_titles_pod_ep(&podcast_episode).await;
+            self.all_titles_pod_ep.push(title);
+            let id = collect_ids_pod_ep(&podcast_episode).await;
+            self.all_ids_pod_ep.push(id);
+        }
+
+        // Re-initialiser le `view_state` à la page d'accueil par défaut
+        self.view_state = AppView::Home;
+
+        // Initialiser `ListState` pour les différentes listes
+        self.list_state_cnt_list.select(Some(0));
+        self.list_state_library.select(Some(0));
+        self.list_state_search_results.select(Some(0));
+        self.list_state_pod_ep.select(Some(0));
+        self.list_state_libraries.select(Some(0));
+
+        Ok(())
+    
+}
+
    /// handle events
-   pub fn run(mut self, mut terminal: DefaultTerminal) -> Result<()> {
+   pub fn run(&mut self, terminal: &mut DefaultTerminal) -> Result<()> {
         while !self.should_exit {
-            terminal.draw(|frame| frame.render_widget(&mut self, frame.area()))?;
+            terminal.draw(|frame| frame.render_widget(&mut *self, frame.area()))?;
             if let Event::Key(key) = event::read()? {
                 self.handle_key(key);
             }
@@ -247,6 +307,8 @@ pub fn handle_key(&mut self, key: KeyEvent) {
     if key.kind != KeyEventKind::Press {
         return;
     }
+
+
 
     match key.code {
         KeyCode::Char('s') => {
@@ -304,9 +366,9 @@ pub fn handle_key(&mut self, key: KeyEvent) {
                 AppView::Libraries => {
                     if let Ok(conn) = Connection::open("db.sqlite3") {
                         if let Err(e) = update_id_selected_lib(&conn, "64c39f84-9c58-4045-a89c-e17a6d990768", "luc") {
-                            println!("Error updating id_selected_lib: {}", e);
+                            println!("Error updating selected library: {}", e);
                         } else {
-                            println!("id_selected_lib updated successfully!");
+                            println!("Selected library updated successfully!");
                         }
                     } else {
                         println!("Error connecting to the database.");
