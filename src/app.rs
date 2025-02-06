@@ -81,59 +81,43 @@ pub struct App {
 }
 
 /// Init app
- impl App {
-     pub async fn new() -> Result<Self> {
-         let config = load_config()?;
-         let token =
-             login(&config.credentials.id.to_string(), &config.credentials.password.to_string())
-             .await?;
-// init users
-    let users = vec![
-//        User {
-//            server_adress: "https://nuagemagique.duckdns.org".to_string(),
-//            username: "luc".to_string(),
-//            password: "acac".to_string(),
-//            is_default_usr: true,
-//            name_selected_lib: "LeNuageMagique".to_string(),
-//            id_selected_lib: "5d80300e-e228-402e-9b6e-1356ff1f4243".to_string(),
-//        },
-        User {
-            server_adress: "https://example.com".to_string(),
-            username: "karim".to_string(),
-            password: "securepassword".to_string(),
-            is_default_usr: false,
-            name_selected_lib: "Library2".to_string(),
-            id_selected_lib: "12345678-aaaa-bbbb-cccc-1356ff1f4243".to_string(),
-        },
-    ];
+impl App {
+    pub async fn new() -> Result<Self> {
+        let config = load_config()?;
+        let token =
+            login(&config.credentials.id.to_string(), &config.credentials.password.to_string())
+            .await?;
 
-    // insert users in db :
-    db_insert_usr(&users);
+        // db test
+        let _  = db();
 
-    // retrieve default user
-    let mut default_usr: Vec<String> = Vec::new();
-
-    if let Ok(mut result) = select_default_usr() {
-        default_usr = result;
-    }
+        // init emply Vec<User> for future add of users
+        let users = vec![];
 
 
+        // insert users in db :
+        db_insert_usr(&users);
+        let _  = db();
+
+        // retrieve default user
+        let mut default_usr: Vec<String> = Vec::new();
+
+        if let Ok(mut result) = select_default_usr() {
+            default_usr = result;
+        }
+
+        // init for `Shelf`
+        let is_podcast = true;
 
 
-         // init for `Shelf`
-         let is_podcast = true;
-
-         // db test
-         let _  = db();
-
-         // init for `Home` (continue listening)
-         let mut titles_cnt_list: Vec<String> = Vec::new();
-         let mut auth_names_cnt_list: Vec<String> = Vec::new();
-         let mut ids_cnt_list: Vec<String> = Vec::new();
-         let mut ids_ep_cnt_list: Vec<String> = Vec::new();
+        // init for `Home` (continue listening)
+        let mut titles_cnt_list: Vec<String> = Vec::new();
+        let mut auth_names_cnt_list: Vec<String> = Vec::new();
+        let mut ids_cnt_list: Vec<String> = Vec::new();
+        let mut ids_ep_cnt_list: Vec<String> = Vec::new();
 
 
-         if is_podcast {
+        if is_podcast {
          // init for  `Home` (continue listening) for podcasts
          let continue_listening_pod = get_continue_listening_pod(&token).await?;
          ids_cnt_list = collect_ids_pod_cnt_list(&continue_listening_pod).await; // id of a podcast

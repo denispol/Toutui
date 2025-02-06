@@ -3,7 +3,7 @@ use serde::{Serialize, Deserialize};
 use crate::app::User;
 
 
-    // Insère les utilisateurs dans la base de données
+// Insert user in database
 pub fn db_insert_usr(users : &Vec<User>)  -> Result<()> {   
     let conn = Connection::open("db.sqlite3")?;
     for user in users {
@@ -11,12 +11,12 @@ pub fn db_insert_usr(users : &Vec<User>)  -> Result<()> {
             "INSERT OR REPLACE INTO users (username, server_adress, password, is_default_usr, name_selected_lib, id_selected_lib) 
             VALUES (?1, ?2, ?3, ?4, ?5, ?6)",
             params![
-                user.username,
-                user.server_adress,
-                user.password,
-                if user.is_default_usr { 1 } else { 0 },
-                user.name_selected_lib,
-                user.id_selected_lib,
+            user.username,
+            user.server_adress,
+            user.password,
+            if user.is_default_usr { 1 } else { 0 },
+            user.name_selected_lib,
+            user.id_selected_lib,
             ],
         )?;
     }
@@ -24,10 +24,10 @@ pub fn db_insert_usr(users : &Vec<User>)  -> Result<()> {
 }
 
 
-    // select default user
+// Select default user
 pub fn select_default_usr() -> Result<Vec<String>> {
     let conn = Connection::open("db.sqlite3")?;
-    
+
     // Prépare la requête SQL
     let mut stmt = conn.prepare(
         "SELECT username, server_adress, password, is_default_usr, name_selected_lib, id_selected_lib
@@ -77,20 +77,22 @@ pub fn select_default_usr() -> Result<Vec<String>> {
 
     Ok(result)  // Retourne le vecteur des utilisateurs par défaut
 }
+
+// General 
 pub fn db() -> Result<()> {
     // Ouvre ou crée une base de données SQLite
     let conn = Connection::open("db.sqlite3")?;
-
-//    // Crée une table pour les utilisateurs si elle n'existe pas
-//    conn.execute(
-//        "CREATE TABLE IF NOT EXISTS users (
-//            username TEXT PRIMARY KEY,
-//            server_adress TEXT NOT NULL,
-//            password TEXT NOT NULL,
-//            is_default_usr INTEGER NOT NULL DEFAULT 0,
-//            name_selected_lib TEXT NOT NULL,
-//            id_selected_lib TEXT NOT NULL
-//        )",
+    //conn.execute("DROP TABLE IF EXISTS users", [])?;
+    // Crée une table pour les utilisateurs si elle n'existe pas
+    //    conn.execute(
+    //        "CREATE TABLE IF NOT EXISTS users (
+    //            username TEXT PRIMARY KEY,
+    //            server_adress TEXT NOT NULL,
+    //            password TEXT NOT NULL,
+    //            is_default_usr INTEGER NOT NULL DEFAULT 0,
+    //            name_selected_lib TEXT NOT NULL,
+    //            id_selected_lib TEXT NOT NULL
+    //        )",
 //        [],
 //    )?;
 
