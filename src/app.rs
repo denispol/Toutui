@@ -22,7 +22,7 @@ use ratatui::{
     DefaultTerminal,
 };
 use serde::{Serialize, Deserialize};
-
+use rusqlite::Connection;
 
 
 pub enum AppView {
@@ -300,9 +300,17 @@ pub fn handle_key(&mut self, key: KeyEvent) {
                     tokio::spawn(async move {
                         handle_l_book(token.as_ref(), ids_cnt_list, selected_cnt_list, port).await;
                     });
-                }}
+                    }}
                 AppView::Libraries => {
-
+                    if let Ok(conn) = Connection::open("db.sqlite3") {
+                        if let Err(e) = update_id_selected_lib(&conn, "64c39f84-9c58-4045-a89c-e17a6d990768", "luc") {
+                            println!("Error updating id_selected_lib: {}", e);
+                        } else {
+                            println!("id_selected_lib updated successfully!");
+                        }
+                    } else {
+                        println!("Error connecting to the database.");
+                    }
                 }
                 AppView::Library => {
                     if self.is_podcast {

@@ -3,6 +3,35 @@ use serde::{Serialize, Deserialize};
 use crate::app::User;
 
 
+// Update id_selected_lib
+pub fn update_id_selected_lib(conn: &Connection, id_selected_lib: &str, username: &str) -> Result<()> {
+
+    //  SQL request
+    conn.execute(
+        "UPDATE users SET id_selected_lib = ?1 WHERE username = ?2",
+        params![id_selected_lib, username],
+    )?;
+
+    Ok(())
+}
+
+// update default user 
+pub fn update_default_user(conn: &Connection, username: &str) -> Result<()> {
+    // Mark all user as 0 by default
+    conn.execute(
+        "UPDATE users SET is_default_usr = 0",
+        [],
+    )?;
+
+    // Put the desired user as default
+    conn.execute(
+        "UPDATE users SET is_default_usr = 1 WHERE username = ?1",
+        params![username],
+    )?;
+
+    Ok(())
+}
+
 // Insert user in database
 pub fn db_insert_usr(users : &Vec<User>)  -> Result<()> {   
     let conn = Connection::open("db.sqlite3")?;
