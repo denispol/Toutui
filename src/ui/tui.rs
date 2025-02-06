@@ -84,7 +84,7 @@ impl App {
             Constraint::Length(1),
         ]).areas(area);
         
-        let [list_area, item_area] = Layout::vertical([Constraint::Fill(1), Constraint::Fill(1)]).areas(main_area);
+        let [list_area, item_area] = Layout::vertical([Constraint::Fill(1), Constraint::Fill(1),]).areas(main_area);
 
         let render_list_title = "Libraries";
         let text_render_footer = "Use ↓↑ to move, → to play, s to search, q to quit.";

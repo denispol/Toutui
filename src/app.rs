@@ -75,7 +75,7 @@ pub struct App {
 
 
          // init for `Shelf`
-         let is_podcast = false;
+         let is_podcast = true;
 
          // init for `Home` (continue listening)
          let mut titles_cnt_list: Vec<String> = Vec::new();
@@ -99,7 +99,7 @@ pub struct App {
          ids_cnt_list = collect_ids_cnt_list(&continue_listening).await;
          }
 
-         //init for `Library ` (all books of a shelf)
+         //init for `Library ` (all books  or podcasts of a Library (shelf))
          let all_books = get_all_books(&token).await?;
          let titles_library = collect_titles_library(&all_books).await;
          let ids_library = collect_ids_library(&all_books).await;
