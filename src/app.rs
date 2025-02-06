@@ -21,6 +21,8 @@ use ratatui::{
     widgets::{ListState},
     DefaultTerminal,
 };
+use serde::{Serialize, Deserialize};
+
 
 
 pub enum AppView {
@@ -31,7 +33,19 @@ pub enum AppView {
     Libraries,
 }
 
+#[derive(Serialize, Deserialize, Debug)]
+pub struct User {
+  pub  server_adress: String,
+  pub  username: String,
+  pub  password: String,
+  pub  is_default_usr: bool,
+  pub  name_selected_lib: String,
+  pub  id_selected_lib: String,
+}
+
 pub struct App {
+   pub users: Vec<User>,
+   pub default_usr: Vec<String>,
    pub view_state: AppView,
    pub should_exit: bool,
    pub token: Option<String>,
@@ -73,6 +87,37 @@ pub struct App {
          let token =
              login(&config.credentials.id.to_string(), &config.credentials.password.to_string())
              .await?;
+// init users
+    let users = vec![
+//        User {
+//            server_adress: "https://nuagemagique.duckdns.org".to_string(),
+//            username: "luc".to_string(),
+//            password: "acac".to_string(),
+//            is_default_usr: true,
+//            name_selected_lib: "LeNuageMagique".to_string(),
+//            id_selected_lib: "5d80300e-e228-402e-9b6e-1356ff1f4243".to_string(),
+//        },
+        User {
+            server_adress: "https://example.com".to_string(),
+            username: "karim".to_string(),
+            password: "securepassword".to_string(),
+            is_default_usr: false,
+            name_selected_lib: "Library2".to_string(),
+            id_selected_lib: "12345678-aaaa-bbbb-cccc-1356ff1f4243".to_string(),
+        },
+    ];
+
+    // insert users in db :
+    db_insert_usr(&users);
+
+    // retrieve default user
+    let mut default_usr: Vec<String> = Vec::new();
+
+    if let Ok(mut result) = select_default_usr() {
+        default_usr = result;
+    }
+
+
 
 
          // init for `Shelf`
@@ -104,7 +149,7 @@ pub struct App {
          }
 
          //init for `Library ` (all books  or podcasts of a Library (shelf))
-         let all_books = get_all_books(&token).await?;
+         let all_books = get_all_books(&token, &default_usr[5]).await?;
          let titles_library = collect_titles_library(&all_books).await;
          let ids_library = collect_ids_library(&all_books).await;
          let auth_names_library = collect_auth_names_library(&all_books).await;
@@ -197,6 +242,8 @@ pub struct App {
             library_names,
             library_ids,
             media_types,
+            users,
+            default_usr,
         })
     }
 
