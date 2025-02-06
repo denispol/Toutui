@@ -14,6 +14,7 @@ use crate::logic::handle_input::handle_l_book::*;
 use crate::logic::handle_input::handle_l_pod::*;
 use crate::logic::handle_input::handle_l_pod_home::*;
 use crate::config::load_config;
+use crate::db::db::*;
 use color_eyre::Result;
 use ratatui::{
     crossterm::event::{self, Event, KeyCode, KeyEvent, KeyEventKind},
@@ -76,6 +77,9 @@ pub struct App {
 
          // init for `Shelf`
          let is_podcast = true;
+
+         // db test
+         let _  = db();
 
          // init for `Home` (continue listening)
          let mut titles_cnt_list: Vec<String> = Vec::new();
