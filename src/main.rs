@@ -13,8 +13,6 @@ use std::time::Duration;
 use tokio::time::sleep;
 
 
-
-
 #[tokio::main]
 async fn main() -> Result<()> {
     color_eyre::install()?;
@@ -23,7 +21,7 @@ async fn main() -> Result<()> {
     let mut terminal = ratatui::init();
 
     loop {
-        // Rafraîchit l'application
+        // Refresh app
         let result = app.run(&mut terminal);
 
         if let Err(e) = result {

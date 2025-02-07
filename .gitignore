@@ -2,4 +2,5 @@
 config.toml
 /src/api/utils/get_test.rs
 /src/vlc_time_log.txt
+/src/db/db.sqlite3
 

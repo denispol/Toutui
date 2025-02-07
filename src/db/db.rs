@@ -34,7 +34,7 @@ pub fn update_default_user(conn: &Connection, username: &str) -> Result<()> {
 
 // Insert user in database
 pub fn db_insert_usr(users : &Vec<User>)  -> Result<()> {   
-    let conn = Connection::open("db.sqlite3")?;
+    let conn = Connection::open("db/db.sqlite3")?;
     for user in users {
         conn.execute(
             "INSERT OR REPLACE INTO users (username, server_adress, password, is_default_usr, name_selected_lib, id_selected_lib) 
@@ -55,7 +55,7 @@ pub fn db_insert_usr(users : &Vec<User>)  -> Result<()> {
 
 // Select default user
 pub fn select_default_usr() -> Result<Vec<String>> {
-    let conn = Connection::open("db.sqlite3")?;
+    let conn = Connection::open("db/db.sqlite3")?;
 
     // Prépare la requête SQL
     let mut stmt = conn.prepare(
@@ -110,7 +110,7 @@ pub fn select_default_usr() -> Result<Vec<String>> {
 // General 
 pub fn db() -> Result<()> {
     // Ouvre ou crée une base de données SQLite
-    let conn = Connection::open("db.sqlite3")?;
+    let conn = Connection::open("db/db.sqlite3")?;
     //conn.execute("DROP TABLE IF EXISTS users", [])?;
     // Crée une table pour les utilisateurs si elle n'existe pas
     //    conn.execute(
