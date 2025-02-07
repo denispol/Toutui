@@ -111,19 +111,19 @@ pub fn select_default_usr() -> Result<Vec<String>> {
 pub fn db() -> Result<()> {
     // Ouvre ou crée une base de données SQLite
     let conn = Connection::open("db/db.sqlite3")?;
-    //conn.execute("DROP TABLE IF EXISTS users", [])?;
-    // Crée une table pour les utilisateurs si elle n'existe pas
-    //    conn.execute(
-    //        "CREATE TABLE IF NOT EXISTS users (
-    //            username TEXT PRIMARY KEY,
-    //            server_adress TEXT NOT NULL,
-    //            password TEXT NOT NULL,
-    //            is_default_usr INTEGER NOT NULL DEFAULT 0,
-    //            name_selected_lib TEXT NOT NULL,
-    //            id_selected_lib TEXT NOT NULL
-    //        )",
-//        [],
-//    )?;
+  //conn.execute("DROP TABLE IF EXISTS users", [])?;
+//     Crée une table pour les utilisateurs si elle n'existe pas
+        conn.execute(
+            "CREATE TABLE IF NOT EXISTS users (
+                username TEXT PRIMARY KEY,
+                server_adress TEXT NOT NULL,
+                password TEXT NOT NULL,
+                is_default_usr INTEGER NOT NULL DEFAULT 0,
+                name_selected_lib TEXT NOT NULL,
+                id_selected_lib TEXT NOT NULL
+            )",
+        [],
+    )?;
 
 
 //    // Récupérer un utilisateur spécifique (par exemple "luc")
