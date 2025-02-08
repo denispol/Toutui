@@ -35,6 +35,7 @@ pub enum AppView {
     SearchBook,
     PodcastEpisode,
     Libraries,
+    Auth,
 }
 
 
@@ -167,7 +168,7 @@ impl App {
 
 
          // Default view_state
-         let view_state = AppView::Home; // By default, Home will be the first AppView launched when the app start
+         let view_state = AppView::Auth; // By default, Home will be the first AppView launched when the app start
 
          // Init ListeState for `Home` list (continue listening)
          let mut list_state_cnt_list = ListState::default(); // init the ListState ratatui's widget
@@ -293,6 +294,9 @@ pub fn handle_key(&mut self, key: KeyEvent) {
 
             // Now, spawn the async task based on the current view state
             match self.view_state {
+                AppView::Auth => {
+
+                }
                 AppView::Home => {
                     if self.is_podcast {
                         tokio::spawn(async move {
@@ -388,6 +392,7 @@ pub fn handle_key(&mut self, key: KeyEvent) {
             AppView::SearchBook => AppView::Home,
             AppView::PodcastEpisode => AppView::Home,
             AppView::Libraries => AppView::Home,
+            AppView::Auth => AppView::Auth
 
         };
     }
@@ -401,6 +406,7 @@ pub fn handle_key(&mut self, key: KeyEvent) {
             AppView::SearchBook => self.list_state_search_results.select_next(),
             AppView::PodcastEpisode => self.list_state_pod_ep.select_next(),
             AppView::Libraries => self.list_state_libraries.select_next(),
+            AppView::Auth => {},
         }
     }
 
@@ -411,6 +417,7 @@ pub fn handle_key(&mut self, key: KeyEvent) {
             AppView::SearchBook => self.list_state_search_results.select_previous(),
             AppView::PodcastEpisode => self.list_state_pod_ep.select_previous(),
             AppView::Libraries => self.list_state_libraries.select_previous(),
+            AppView::Auth => {},
         }
     }
 
@@ -421,6 +428,7 @@ pub fn handle_key(&mut self, key: KeyEvent) {
             AppView::SearchBook => self.list_state_search_results.select_first(),
             AppView::PodcastEpisode => self.list_state_pod_ep.select_first(),
             AppView::Libraries => self.list_state_libraries.select_first(),
+            AppView::Auth => {},
         }
     }
 
@@ -431,6 +439,7 @@ pub fn handle_key(&mut self, key: KeyEvent) {
             AppView::SearchBook => self.list_state_search_results.select_last(),
             AppView::PodcastEpisode => self.list_state_pod_ep.select_last(),
             AppView::Libraries => self.list_state_libraries.select_last(),
+            AppView::Auth => {},
         }
     }
 

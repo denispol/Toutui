@@ -14,6 +14,15 @@ use ratatui::{
     },
 };
 
+// Auth
+use tui_textarea::{Input, Key, TextArea};
+use std::io;
+use ratatui::backend::CrosstermBackend;
+use ratatui::Terminal;
+
+
+
+
 
 // const for color theme
 const TODO_HEADER_STYLE: Style = Style::new().fg(SLATE.c100).bg(BLUE.c800);
@@ -30,6 +39,7 @@ impl Widget for &mut App {
             AppView::SearchBook => self.render_search_book(area, buf),
             AppView::PodcastEpisode => self.render_pod_ep(area, buf),
             AppView::Libraries => self.render_libraries(area, buf),
+            AppView::Auth => self.render_auth(area, buf),
         }
     }
 }
@@ -75,6 +85,17 @@ impl App {
         self.render_list(list_area, buf, render_list_title, &self.titles_library.clone(), &mut self.list_state_library.clone());
         //self.render_selected_item(item_area, buf, &self.titles_library.clone(), self.auth_names_library.clone());
     }
+
+    /// AppView::Library rendering
+    fn render_auth(&mut self, area: Rect, buf: &mut Buffer) {
+
+        self.auth();
+
+    }
+
+//        App::render_footer(footer_area, buf, text_render_footer);
+        //self.render_selected_item(item_area, buf, &self.titles_library.clone(), self.auth_names_library.clone());
+    
 
     /// AppView::Libraries rendering
     fn render_libraries(&mut self, area: Rect, buf: &mut Buffer) {
