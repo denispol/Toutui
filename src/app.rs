@@ -16,6 +16,7 @@ use crate::logic::handle_input::handle_l_pod_home::*;
 use crate::main;
 use crate::config::load_config;
 use crate::db::db::*;
+use crate::db::database_struct::Database;
 use color_eyre::Result;
 use ratatui::{
     crossterm::event::{self, Event, KeyCode, KeyEvent, KeyEventKind},
@@ -24,7 +25,6 @@ use ratatui::{
 };
 use serde::{Serialize, Deserialize};
 use rusqlite::Connection;
-use crate::Database;
 use std::thread;
 use std::time::Duration;
 
@@ -82,7 +82,7 @@ impl App {
         // init config
         let config = load_config()?;
 
-        // init Database (data from database)
+        // init database from Database struct
         let mut database = Database::new().await?;
 
         // init token 
@@ -125,9 +125,6 @@ impl App {
          auth_names_cnt_list = collect_auth_names_cnt_list(&continue_listening).await;
          ids_cnt_list = collect_ids_cnt_list(&continue_listening).await;
          }
-
-
-
 
          //init for `Library ` (all books  or podcasts of a Library (shelf))
          let all_books = get_all_books(&token, &id_selected_lib).await?;
@@ -262,8 +259,11 @@ pub fn handle_key(&mut self, key: KeyEvent) {
             };
             self.toggle_view()
         }
-        KeyCode::Char('Q') => self.should_exit = true,
-        KeyCode::Char('R') => self.should_exit = true,
+        KeyCode::Char('Q') => self.should_exit = true, // need to exit run function once, and after
+                                                       // should quit once again the run from loop main function :
+                                                       // (`let result = app.run(&mut terminal);`)
+        KeyCode::Char('R') => self.should_exit = true, // same as above, need to quit once before
+                                                       // be able to execute `R` from main function 
         KeyCode::Char('j') | KeyCode::Down => self.select_next(),
         KeyCode::Char('k') | KeyCode::Up => self.select_previous(),
         KeyCode::Char('g') | KeyCode::Home => self.select_first(),
@@ -305,7 +305,7 @@ pub fn handle_key(&mut self, key: KeyEvent) {
                     }}
                 AppView::Libraries => {
                     if let Ok(conn) = Connection::open("db/db.sqlite3") {
-                        if let Err(e) = update_id_selected_lib(&conn, "5d80300e-e228-402e-9b6e-1356ff1f4243", "luc") {
+                        if let Err(e) = update_id_selected_lib(&conn, "64c39f84-9c58-4045-a89c-e17a6d99076", "luc") {
                             println!("Error updating selected library: {}", e);
                         } else {
                             println!("Selected library updated successfully!");
