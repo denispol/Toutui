@@ -27,7 +27,7 @@ pub struct User {
     pub  id_selected_lib: String,
 }
 
-pub struct UserManager  {
+pub struct Database  {
    pub users: Vec<User>,
    pub default_usr: Vec<String>,
 }
@@ -36,7 +36,7 @@ pub struct UserManager  {
 #[tokio::main]
 async fn main() -> Result<()> {
 
-    impl UserManager {
+    impl Database {
         pub async fn new() -> Result<Self> {
             // db test
             let _ = db();
@@ -74,6 +74,9 @@ async fn main() -> Result<()> {
                 default_usr = result;
             }
 
+            // init should_exit
+            let should_exit = false;
+
             Ok(Self {
                 users,
                 default_usr,
@@ -96,13 +99,14 @@ async fn main() -> Result<()> {
         }
 
         if crossterm::event::poll(Duration::from_millis(200))? {
-            if let crossterm::event::Event::Key(key_event) = crossterm::event::read()? {
-                match key_event.code {
-                    crossterm::event::KeyCode::Char('r') => {
+            if let crossterm::event::Event::Key(key) = crossterm::event::read()? {
+                match key.code {
+                    crossterm::event::KeyCode::Char('R') => {
                        // println!("Refreshing app...");
+                        
                         app = App::new().await?; 
                     }
-                    crossterm::event::KeyCode::Char('q') => {
+                    crossterm::event::KeyCode::Char('Q') | KeyCode::Esc => {
                        // println!("Exiting app...");
                         break;
                     }

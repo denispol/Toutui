@@ -24,7 +24,9 @@ use ratatui::{
 };
 use serde::{Serialize, Deserialize};
 use rusqlite::Connection;
-use crate::UserManager;
+use crate::Database;
+use std::thread;
+use std::time::Duration;
 
 
 pub enum AppView {
@@ -38,8 +40,10 @@ pub enum AppView {
 
 pub struct App {
    pub view_state: AppView,
-   pub should_exit: bool,
+   pub database: Database,
+   pub id_selected_lib: String,
    pub token: Option<String>,
+   pub should_exit: bool,
    pub list_state_cnt_list: ListState,
    pub list_state_library: ListState,
    pub list_state_search_results: ListState,
@@ -75,45 +79,27 @@ pub struct App {
 impl App {
     pub async fn new() -> Result<Self> {
 
-        // init UserManager (data from database)
-        let mut user_manager = UserManager::new().await?;
+        // init config
         let config = load_config()?;
-        // token 
-        let mut token: String = String::new();
 
-        if let Some(default_user) = user_manager.default_usr.get(3) {
-            println!("{:?}", default_user);
-            token = default_user.clone();
+        // init Database (data from database)
+        let mut database = Database::new().await?;
+
+        // init token 
+        let mut token: String = String::new();
+        if let Some(var_token) = database.default_usr.get(3) {
+            token = var_token.clone();
 
         }
 
+        // init id_selected_lib
+        let mut id_selected_lib: String = String::new();
+        if let Some(var_id_selected_lib) = database.default_usr.get(6) {
+            id_selected_lib = var_id_selected_lib.clone();
 
+        }
 
-//let users = vec![
-//        User {
-//            server_adress: "https://nuagemagique.duckdns.org".to_string(),
-//            username: "luc".to_string(),
-//            password: "acac".to_string(),
-//            token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI3MzBlNDIzYS1mY2ZhLTQ0MjQtYmY0Yi03YWI5NGJmODIzZGYiLCJ1c2VybmFtZSI6Imx1YyIsImlhdCI6MTczMjQ1OTE4NX0.hvkolaE_yCNqgfvdqsycWC981ybwNME8GzkH6s5XOMU"
-//            is_default_usr: true,
-//            name_selected_lib: "LeNuageMagique".to_string(),
-//            id_selected_lib: "5d80300e-e228-402e-9b6e-1356ff1f4243".to_string(),
-//        },
-//        User {
-//            server_adress: "https://example.com".to_string(),
-//            username: "alice".to_string(),
-//            password: "securepassword".to_string(),
-//            token: "123",
-//            is_default_usr: false,
-//            name_selected_lib: "Library2".to_string(),
-//            id_selected_lib: "12345678-aaaa-bbbb-cccc-1356ff1f4243".to_string(),
-//        },
-//    ];
-//
-        // insert users in db :
-//        db_insert_usr(&users);
-
-
+    
         // init for `Shelf`
         let is_podcast = false;
 
@@ -144,21 +130,11 @@ impl App {
 
 
          //init for `Library ` (all books  or podcasts of a Library (shelf))
-         let mut titles_library: Vec<String> = Vec::new();
-         let mut ids_library: Vec<String> = Vec::new();
-         let mut auth_names_library: Vec<String> = Vec::new();
-         if let Some(default_user) = user_manager.default_usr.get(6) {
-             let all_books = get_all_books(&token, default_user).await?;
+         let all_books = get_all_books(&token, &id_selected_lib).await?;
+         let titles_library = collect_titles_library(&all_books).await;
+         let ids_library = collect_ids_library(&all_books).await;
+         let auth_names_library = collect_auth_names_library(&all_books).await;
 
-             // Collecte des titres, identifiants et noms d'auteurs
-             titles_library = collect_titles_library(&all_books).await;
-             ids_library = collect_ids_library(&all_books).await;
-             auth_names_library = collect_auth_names_library(&all_books).await;
-
-             println!("Titres : {:?}", titles_library);
-         } else {
-             eprintln!("Pas d'utilisateur par défaut à l'indice 6.");
-         }
 
          // init for `SearchBook`
          let ids_search_book: Vec<String> = Vec::new();
@@ -217,8 +193,10 @@ impl App {
          list_state_libraries.select(Some(0));
 
         Ok(Self {
-            should_exit: false,
+            database,
+            id_selected_lib,
             token: Some(token),
+            should_exit: false,
             list_state_cnt_list,
             list_state_library,
             list_state_search_results,
@@ -284,7 +262,8 @@ pub fn handle_key(&mut self, key: KeyEvent) {
             };
             self.toggle_view()
         }
-        KeyCode::Char('q') | KeyCode::Esc => self.should_exit = true,
+        KeyCode::Char('Q') => self.should_exit = true,
+        KeyCode::Char('R') => self.should_exit = true,
         KeyCode::Char('j') | KeyCode::Down => self.select_next(),
         KeyCode::Char('k') | KeyCode::Up => self.select_previous(),
         KeyCode::Char('g') | KeyCode::Home => self.select_first(),
@@ -326,7 +305,7 @@ pub fn handle_key(&mut self, key: KeyEvent) {
                     }}
                 AppView::Libraries => {
                     if let Ok(conn) = Connection::open("db/db.sqlite3") {
-                        if let Err(e) = update_id_selected_lib(&conn, "64c39f84-9c58-4045-a89c-e17a6d990768", "luc") {
+                        if let Err(e) = update_id_selected_lib(&conn, "5d80300e-e228-402e-9b6e-1356ff1f4243", "luc") {
                             println!("Error updating selected library: {}", e);
                         } else {
                             println!("Selected library updated successfully!");
