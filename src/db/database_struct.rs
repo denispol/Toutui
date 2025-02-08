@@ -24,7 +24,7 @@ pub struct Database  {
     impl Database {
         pub async fn new() -> Result<Self> {
             // open db and create table if there is none
-            let _ = db();
+            let _ = init_db();
 
             // init empty Vec<User> for future addition of users
             let users: Vec<User> = vec![];

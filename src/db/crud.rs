@@ -109,14 +109,14 @@ pub fn select_default_usr() -> Result<Vec<String>> {
     Ok(result)  // Retourne le vecteur des utilisateurs par défaut
 }
 
-// General 
-pub fn db() -> Result<()> {
-    // Ouvre ou crée une base de données SQLite
+// Init db and table if not exist
+pub fn init_db() -> Result<()> {
+    // Open or create db
     let conn = Connection::open("db/db.sqlite3")?;
-  //conn.execute("DROP TABLE IF EXISTS users", [])?;
-//     Crée une table pour les utilisateurs si elle n'existe pas
-        conn.execute(
-            "CREATE TABLE IF NOT EXISTS users (
+
+    //Create a table if there is none 
+    conn.execute(
+        "CREATE TABLE IF NOT EXISTS users (
                 username TEXT PRIMARY KEY,
                 server_adress TEXT NOT NULL,
                 password TEXT NOT NULL,
@@ -129,49 +129,6 @@ pub fn db() -> Result<()> {
     )?;
 
 
-//    // Récupérer un utilisateur spécifique (par exemple "luc")
-//    let username = "luc";
-//    let mut stmt = conn.prepare("SELECT username, server_adress, password, is_default_usr, name_selected_lib, id_selected_lib FROM users WHERE username = ?1")?;
-//    let user_iter = stmt.query_map(params![username], |row| {
-//        Ok(User {
-//            username: row.get(0)?,
-//            server_adress: row.get(1)?,
-//            password: row.get(2)?,
-//            is_default_usr: row.get::<_, i32>(3)? != 0,  // Forcer le type i32 pour is_default_usr
-//            name_selected_lib: row.get(4)?,
-//            id_selected_lib: row.get(5)?,
-//        })
-//    })?;
-//
-//    for user in user_iter {
-//        match user {
-//            Ok(user) => println!("User found: {:?}", user),
-//            Err(e) => println!("Error occurred: {}", e),
-//        }
-//    }
-//
-//    // Afficher tous les utilisateurs
-//    let mut stmt = conn.prepare("SELECT username, server_adress, password, is_default_usr, name_selected_lib, id_selected_lib FROM users")?;
-//    let user_iter = stmt.query_map([], |row| {
-//        Ok(User {
-//            username: row.get(0)?,
-//            server_adress: row.get(1)?,
-//            password: row.get(2)?,
-//            token: row.get(3)?,
-//            is_default_usr: row.get::<_, i32>(4)? != 0,  // Forcer le type i32 pour is_default_usr
-//            name_selected_lib: row.get(5)?,
-//            id_selected_lib: row.get(6)?,
-//        })
-//    })?;
-//
-//    for user in user_iter {
-//        match user {
-//            Ok(user) => println!("User: {:?}", user),
-//            Err(e) => println!("Error occurred: {}", e),
-//        }
-//    }
-//
-//
     Ok(())
 }
 
