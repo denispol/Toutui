@@ -25,7 +25,7 @@ pub struct Database  {
             // open db and create table if there is none
             let _ = init_db();
 
-            // init empty Vec<User> for future addition of users
+            // init empty Vec<User> for future add of users
             let users: Vec<User> = vec![];
 //            let users = vec![
 //                User {

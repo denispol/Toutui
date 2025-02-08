@@ -146,17 +146,10 @@ impl App {
 
 
          //init for `PodcastEpisode`
-         let mut all_titles_pod_ep: Vec<Vec<String>> = Vec::new();
+         let mut all_titles_pod_ep: Vec<Vec<String>> = Vec::new(); // fetch titles for all podcast episodes. Ex: {titles_pod1_ep1, title_pod1_ep2}, {titles_pod2_ep1, title_pod2_ep2} 
          let mut all_ids_pod_ep: Vec<Vec<String>> = Vec::new();
-         let titles_pod_ep: Vec<String> = Vec::new();
+         let titles_pod_ep: Vec<String> = Vec::new(); // fetch episode titles for a podcast. {titles_pod1_ep1}, {title_pod1_ep2} 
          let ids_pod_ep: Vec<String> = Vec::new();
-
-         // init for `Libraries`
-         let all_libraries = get_all_libraries(&token).await?;
-         let library_names = collect_library_names(&all_libraries).await;
-         let media_types = collect_media_types(&all_libraries).await;
-         let library_ids = collect_library_ids(&all_libraries).await;
- 
 
          for i in 0..ids_library.len() 
          {let podcast_episode = get_pod_ep(&token, ids_library[i].as_str()).await?;
@@ -165,6 +158,14 @@ impl App {
          let id = collect_ids_pod_ep(&podcast_episode).await;
          all_ids_pod_ep.push(id);
          }
+
+         // init for `Libraries`
+         let all_libraries = get_all_libraries(&token).await?;
+         let library_names = collect_library_names(&all_libraries).await;
+         let media_types = collect_media_types(&all_libraries).await;
+         let library_ids = collect_library_ids(&all_libraries).await;
+ 
+
 
 
          // Default view_state
