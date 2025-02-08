@@ -1,6 +1,5 @@
 use tokio::time::sleep;
 use serde::{Serialize, Deserialize};
-use crate::db::db::*;
 use tokio::io::{self, AsyncBufReadExt};
 use crate::db::crud::*;
 use color_eyre::Result;

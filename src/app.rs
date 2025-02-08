@@ -15,7 +15,7 @@ use crate::logic::handle_input::handle_l_pod::*;
 use crate::logic::handle_input::handle_l_pod_home::*;
 use crate::main;
 use crate::config::load_config;
-use crate::db::db::*;
+use crate::db::crud::*;
 use crate::db::database_struct::Database;
 use color_eyre::Result;
 use ratatui::{
