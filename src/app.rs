@@ -24,6 +24,7 @@ use ratatui::{
 };
 use serde::{Serialize, Deserialize};
 use rusqlite::Connection;
+use crate::UserManager;
 
 
 pub enum AppView {
@@ -34,19 +35,8 @@ pub enum AppView {
     Libraries,
 }
 
-#[derive(Serialize, Deserialize, Debug)]
-pub struct User {
-  pub  server_adress: String,
-  pub  username: String,
-  pub  password: String,
-  pub  is_default_usr: bool,
-  pub  name_selected_lib: String,
-  pub  id_selected_lib: String,
-}
 
 pub struct App {
-   pub users: Vec<User>,
-   pub default_usr: Vec<String>,
    pub view_state: AppView,
    pub should_exit: bool,
    pub token: Option<String>,
@@ -84,21 +74,27 @@ pub struct App {
 /// Init app
 impl App {
     pub async fn new() -> Result<Self> {
+
+        // init UserManager (data from database)
+        let mut user_manager = UserManager::new().await?;
         let config = load_config()?;
-        let token =
-            login(&config.credentials.id.to_string(), &config.credentials.password.to_string())
-            .await?;
+        // token 
+        let mut token: String = String::new();
 
-        // db test
-        let _  = db();
+        if let Some(default_user) = user_manager.default_usr.get(3) {
+            println!("{:?}", default_user);
+            token = default_user.clone();
 
-        // init emply Vec<User> for future add of users
-        let users = vec! [];
+        }
+
+
+
 //let users = vec![
 //        User {
 //            server_adress: "https://nuagemagique.duckdns.org".to_string(),
 //            username: "luc".to_string(),
 //            password: "acac".to_string(),
+//            token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI3MzBlNDIzYS1mY2ZhLTQ0MjQtYmY0Yi03YWI5NGJmODIzZGYiLCJ1c2VybmFtZSI6Imx1YyIsImlhdCI6MTczMjQ1OTE4NX0.hvkolaE_yCNqgfvdqsycWC981ybwNME8GzkH6s5XOMU"
 //            is_default_usr: true,
 //            name_selected_lib: "LeNuageMagique".to_string(),
 //            id_selected_lib: "5d80300e-e228-402e-9b6e-1356ff1f4243".to_string(),
@@ -107,6 +103,7 @@ impl App {
 //            server_adress: "https://example.com".to_string(),
 //            username: "alice".to_string(),
 //            password: "securepassword".to_string(),
+//            token: "123",
 //            is_default_usr: false,
 //            name_selected_lib: "Library2".to_string(),
 //            id_selected_lib: "12345678-aaaa-bbbb-cccc-1356ff1f4243".to_string(),
@@ -115,17 +112,10 @@ impl App {
 //
         // insert users in db :
 //        db_insert_usr(&users);
-        let _  = db();
 
-        // retrieve default user
-        let mut default_usr: Vec<String> = Vec::new();
-
-        if let Ok(mut result) = select_default_usr() {
-            default_usr = result;
-        }
 
         // init for `Shelf`
-        let is_podcast = true;
+        let is_podcast = false;
 
 
         // init for `Home` (continue listening)
@@ -150,11 +140,25 @@ impl App {
          ids_cnt_list = collect_ids_cnt_list(&continue_listening).await;
          }
 
+
+
+
          //init for `Library ` (all books  or podcasts of a Library (shelf))
-         let all_books = get_all_books(&token, &default_usr[5]).await?;
-         let titles_library = collect_titles_library(&all_books).await;
-         let ids_library = collect_ids_library(&all_books).await;
-         let auth_names_library = collect_auth_names_library(&all_books).await;
+         let mut titles_library: Vec<String> = Vec::new();
+         let mut ids_library: Vec<String> = Vec::new();
+         let mut auth_names_library: Vec<String> = Vec::new();
+         if let Some(default_user) = user_manager.default_usr.get(6) {
+             let all_books = get_all_books(&token, default_user).await?;
+
+             // Collecte des titres, identifiants et noms d'auteurs
+             titles_library = collect_titles_library(&all_books).await;
+             ids_library = collect_ids_library(&all_books).await;
+             auth_names_library = collect_auth_names_library(&all_books).await;
+
+             println!("Titres : {:?}", titles_library);
+         } else {
+             eprintln!("Pas d'utilisateur par défaut à l'indice 6.");
+         }
 
          // init for `SearchBook`
          let ids_search_book: Vec<String> = Vec::new();
@@ -244,69 +248,9 @@ impl App {
             library_names,
             library_ids,
             media_types,
-            users,
-            default_usr,
         })
     }
 
-    pub async fn reset(&mut self) -> Result<()> {
-        // Réinitialiser les variables à leurs valeurs par défaut ou vides
-
-        // Recharger les données nécessaires
-        let config = load_config()?;
-        let token = login(&config.credentials.id.to_string(), &config.credentials.password.to_string()).await?;
-
-
-        // Initialisation de `Shelf` et `Home`
-        let is_podcast = true;
-
-        // Continue Listening
-        if is_podcast {
-            let continue_listening_pod = get_continue_listening_pod(&token).await?;
-            self.ids_cnt_list = collect_ids_pod_cnt_list(&continue_listening_pod).await;
-            self.titles_cnt_list = collect_titles_cnt_list_pod(&continue_listening_pod).await;
-            self.ids_ep_cnt_list = collect_ids_ep_pod_cnt_list(&continue_listening_pod).await;
-        } else {
-            let continue_listening = get_continue_listening(&token).await?;
-            self.titles_cnt_list = collect_titles_cnt_list(&continue_listening).await;
-            self.auth_names_cnt_list = collect_auth_names_cnt_list(&continue_listening).await;
-            self.ids_cnt_list = collect_ids_cnt_list(&continue_listening).await;
-        }
-
-        // Initialiser `Library`
-        let all_books = get_all_books(&token, &self.default_usr[5]).await?;
-        self.titles_library = collect_titles_library(&all_books).await;
-        self.ids_library = collect_ids_library(&all_books).await;
-        self.auth_names_library = collect_auth_names_library(&all_books).await;
-
-        // Récupérer les bibliothèques
-        let all_libraries = get_all_libraries(&token).await?;
-        self.library_names = collect_library_names(&all_libraries).await;
-        self.media_types = collect_media_types(&all_libraries).await;
-        self.library_ids = collect_library_ids(&all_libraries).await;
-
-        // Pour chaque bibliothèque, récupérer les épisodes de podcasts
-        for i in 0..self.ids_library.len() {
-            let podcast_episode = get_pod_ep(&token, &self.ids_library[i]).await?;
-            let title = collect_titles_pod_ep(&podcast_episode).await;
-            self.all_titles_pod_ep.push(title);
-            let id = collect_ids_pod_ep(&podcast_episode).await;
-            self.all_ids_pod_ep.push(id);
-        }
-
-        // Re-initialiser le `view_state` à la page d'accueil par défaut
-        self.view_state = AppView::Home;
-
-        // Initialiser `ListState` pour les différentes listes
-        self.list_state_cnt_list.select(Some(0));
-        self.list_state_library.select(Some(0));
-        self.list_state_search_results.select(Some(0));
-        self.list_state_pod_ep.select(Some(0));
-        self.list_state_libraries.select(Some(0));
-
-        Ok(())
-    
-}
 
    /// handle events
    pub fn run(&mut self, terminal: &mut DefaultTerminal) -> Result<()> {
@@ -382,7 +326,7 @@ pub fn handle_key(&mut self, key: KeyEvent) {
                     }}
                 AppView::Libraries => {
                     if let Ok(conn) = Connection::open("db/db.sqlite3") {
-                        if let Err(e) = update_id_selected_lib(&conn, "5d80300e-e228-402e-9b6e-1356ff1f4243", "luc") {
+                        if let Err(e) = update_id_selected_lib(&conn, "64c39f84-9c58-4045-a89c-e17a6d990768", "luc") {
                             println!("Error updating selected library: {}", e);
                         } else {
                             println!("Selected library updated successfully!");
