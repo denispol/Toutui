@@ -9,11 +9,12 @@ use ratatui::{
     layout::Rect,
     style::{Color, Style},
 };
-
+use crate::api::server::auth::*;
 use crossterm::event::{self, KeyEvent, KeyCode};  
 
 impl App {
-    pub fn auth(&mut self) -> io::Result<String> {
+    pub fn auth(&mut self) -> io::Result<()> {
+        /// init input area
         let stdout = io::stdout();
         let stdout = stdout.lock();
 
@@ -54,8 +55,14 @@ impl App {
             height: 3,
         };
 
+        /// init variables
         let mut textareas = vec![textarea1, textarea2, textarea3];
         let mut current_index = 0;
+
+        let mut collected_data : Vec<String> = Vec::new();
+
+
+
 
         loop {
             term.draw(|f| {
@@ -65,6 +72,8 @@ impl App {
             match crossterm::event::read()? {
                 event::Event::Key(KeyEvent { code: KeyCode::Enter, .. }) => {
                     if current_index < textareas.len() - 1 {
+                        // will just take textarea 1 and 2, 3 will take after break loop
+                        collected_data.push(textareas[current_index].lines().join("\n"));
                         current_index += 1;
                     } else {
                         break; 
@@ -84,9 +93,38 @@ impl App {
             }
         }
 
-        
+        // save the last input (from textearea3)
+        collected_data.push(textareas[current_index].lines().join("\n"));
+
+        // make disappear search_area (the input bar) after the break loop
+        term.draw(|f| {
+            let empty_block = Block::default();
+            f.render_widget(empty_block, search_area); 
+        })?;
+
+        /// Fetch data from api and insert them in database
+
+
+        // send result
         if let Some(active_textarea) = textareas.get(current_index) {
-            Ok(active_textarea.lines().join("\n")) 
+            let collected_data_clone = collected_data.clone();
+            tokio::spawn(async move {
+                println!("Wait...");
+                match login(
+                    collected_data_clone[1].as_str(),
+                    collected_data_clone[2].as_str(),
+                    collected_data_clone[0].as_str(),
+                ).await {
+                    Ok(response) => {
+                        println!("Login successful");
+                    }
+                    Err(e) => {
+                        eprintln!("Login failed: {}", e);
+                    }
+                }});
+
+
+            Ok(())
         } else {
             Err(io::Error::new(io::ErrorKind::Other, "Invalid textarea"))
         }

@@ -38,7 +38,6 @@ pub enum AppView {
     Auth,
 }
 
-
 pub struct App {
    pub view_state: AppView,
    pub database: Database,
@@ -83,9 +82,12 @@ impl App {
         // init config
         let config = load_config()?;
 
+        let bool_test = true;
+        let mut view_state = AppView::Home; // By default, Home will be the first AppView launched when the app start
+        // Default view_state
         // init database from Database struct
         let mut database = Database::new().await?;
-
+                                        
         // init token 
         let mut token: String = String::new();
         if let Some(var_token) = database.default_usr.get(3) {
@@ -159,7 +161,7 @@ impl App {
          all_ids_pod_ep.push(id);
          }
 
-         // init for `Libraries`
+         // init for `Libraries` (get all Libraries (shelf), can be a podcast or book type)
          let all_libraries = get_all_libraries(&token).await?;
          let library_names = collect_library_names(&all_libraries).await;
          let media_types = collect_media_types(&all_libraries).await;
@@ -168,8 +170,6 @@ impl App {
 
 
 
-         // Default view_state
-         let view_state = AppView::Auth; // By default, Home will be the first AppView launched when the app start
 
          // Init ListeState for `Home` list (continue listening)
          let mut list_state_cnt_list = ListState::default(); // init the ListState ratatui's widget

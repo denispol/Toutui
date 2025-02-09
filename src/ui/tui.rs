@@ -89,7 +89,14 @@ impl App {
     /// AppView::Library rendering
     fn render_auth(&mut self, area: Rect, buf: &mut Buffer) {
 
+        let bool_test = true;
+        if bool_test {
         self.auth();
+        } else {
+           self.view_state = AppView::Home;
+        };
+
+
 
     }
 
