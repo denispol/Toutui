@@ -34,11 +34,6 @@ const SELECTED_STYLE: Style = Style::new().bg(SLATE.c800).add_modifier(Modifier:
 impl Widget for &mut App {
   fn render(self, area: Rect, buf: &mut Buffer) {
         match self.view_state {
-            AppView::Home => self.render_home(area, buf),
-            AppView::Library => self.render_library(area, buf),
-            AppView::SearchBook => self.render_search_book(area, buf),
-            AppView::PodcastEpisode => self.render_pod_ep(area, buf),
-            AppView::Libraries => self.render_libraries(area, buf),
             AppView::Auth => self.render_auth(area, buf),
         }
     }
@@ -48,53 +43,10 @@ impl Widget for &mut App {
 /// Rendering logic
 
 impl App {
-    /// AppView::Home rendering
-    fn render_home(&mut self, area: Rect, buf: &mut Buffer) {
-        let [header_area, main_area, footer_area] = Layout::vertical([
-            Constraint::Length(2),
-            Constraint::Fill(1),
-            Constraint::Length(1),
-        ]).areas(area);
 
-        let [list_area, item_area] = Layout::vertical([Constraint::Fill(1), Constraint::Fill(1)]).areas(main_area);
-
-        let render_list_title = "Continue Listening";
-        let text_render_footer = "Use ↓↑ to move, → to play, s to search, q to quit.";
-
-        App::render_header(header_area, buf);
-        App::render_footer(footer_area, buf, text_render_footer);
-        self.render_list(list_area, buf, render_list_title, &self.titles_cnt_list.clone(), &mut self.list_state_cnt_list.clone());
-//        self.render_selected_item(item_area, buf, &mut self.list_state.clone());
-    }
-
-    /// AppView::Library rendering
-    fn render_library(&mut self, area: Rect, buf: &mut Buffer) {
-        let [header_area, main_area, footer_area] = Layout::vertical([
-            Constraint::Length(2),
-            Constraint::Fill(1),
-            Constraint::Length(1),
-        ]).areas(area);
-        
-        let [list_area, item_area] = Layout::vertical([Constraint::Fill(1), Constraint::Fill(1)]).areas(main_area);
-
-        let render_list_title = "Library";
-        let text_render_footer = "Use ↓↑ to move, → to play, s to search, q to quit.";
-
-        App::render_header(header_area, buf);
-        App::render_footer(footer_area, buf, text_render_footer);
-        self.render_list(list_area, buf, render_list_title, &self.titles_library.clone(), &mut self.list_state_library.clone());
-        //self.render_selected_item(item_area, buf, &self.titles_library.clone(), self.auth_names_library.clone());
-    }
-
-    /// AppView::Library rendering
     fn render_auth(&mut self, area: Rect, buf: &mut Buffer) {
 
-        let bool_test = true;
-        if bool_test {
         self.auth();
-        } else {
-           self.view_state = AppView::Home;
-        };
 
 
 
@@ -104,119 +56,6 @@ impl App {
         //self.render_selected_item(item_area, buf, &self.titles_library.clone(), self.auth_names_library.clone());
     
 
-    /// AppView::Libraries rendering
-    fn render_libraries(&mut self, area: Rect, buf: &mut Buffer) {
-        let [header_area, main_area, footer_area] = Layout::vertical([
-            Constraint::Length(2),
-            Constraint::Fill(1),
-            Constraint::Length(1),
-        ]).areas(area);
-        
-        let [list_area, item_area] = Layout::vertical([Constraint::Fill(1), Constraint::Fill(1),]).areas(main_area);
-
-        let render_list_title = "Libraries";
-        let text_render_footer = "Use ↓↑ to move, → to play, s to search, q to quit.";
-
-        App::render_header(header_area, buf);
-        App::render_footer(footer_area, buf, text_render_footer);
-        self.render_list(list_area, buf, render_list_title, &self.library_names.clone(), &mut self.list_state_libraries.clone());
-        //self.render_selected_item(item_area, buf, &self.titles_library.clone(), self.auth_names_library.clone());
-    }
-
-    /// AppView::SearchBook rendering
-    fn render_search_book(&mut self, area: Rect, buf: &mut Buffer) {
-        let [header_area, main_area, footer_area] = Layout::vertical([
-            Constraint::Length(2),
-            Constraint::Fill(1),
-            Constraint::Length(1),
-        ]).areas(area);
-
-        let [list_area, item_area] = Layout::vertical([Constraint::Fill(1), Constraint::Fill(1)]).areas(main_area);
-
-        let render_list_title = "Search result";
-        let text_render_footer = "Use Tab to back home, ↓↑ to move, → to play, s to search, q to quit.";
-
-        if self.search_mode {
-            if let Ok(query) = self.search_active() {
-                self.search_query = query.to_string();
-                self.search_mode = false; 
-            }
-        }
-
-        // init variables for search result (search by a book by title)
-        let idx_and_titles: Vec<(usize, String)> = self.titles_library
-            .iter()
-            .enumerate() 
-            .filter(|(_, x)| x.to_lowercase().contains(&self.search_query.to_lowercase())) 
-            .map(|(index, title)| (index, title.clone())) 
-            .collect();
-
-        let mut titles_search_book: Vec<String> = Vec::new();
-        let mut index_to_keep: Vec<usize> = Vec::new();
-        for (index, title) in idx_and_titles {
-            titles_search_book.push(title.to_string());
-            index_to_keep.push(index)
-        }
-
-        let titles_search_book: &[String] = &titles_search_book;
-
-        // for book
-        self.ids_search_book = self.ids_library
-            .iter()
-            .enumerate()
-            .filter(|(index, _)| index_to_keep.contains(&index))
-            .map(|(_, value)| value.clone())
-            .collect();
-
-        // for podacst
-        self.all_titles_pod_ep_search = self.all_titles_pod_ep
-            .iter()
-            .enumerate()
-            .filter(|(index, _)| index_to_keep.contains(&index))
-            .map(|(_, value)| value.clone())
-            .collect();
-        self.all_ids_pod_ep_search = self.all_ids_pod_ep
-            .iter()
-            .enumerate()
-            .filter(|(index, _)| index_to_keep.contains(&index))
-            .map(|(_, value)| value.clone())
-            .collect();
-        self.ids_library_pod_search = self.ids_library
-            .iter()
-            .enumerate()
-            .filter(|(index, _)| index_to_keep.contains(&index))
-            .map(|(_, value)| value.clone())
-            .collect();
-
-        App::render_header(header_area, buf);
-        App::render_footer(footer_area, buf, text_render_footer);
-        self.render_list(list_area, buf, render_list_title, titles_search_book, &mut self.list_state_search_results.clone());
-        //self.render_selected_item(item_area, buf, &self.titles_library.clone(), self.auth_names_library.clone());
-
-    }
-
-    /// AppView::PodcastEpisode
-    fn render_pod_ep(&mut self, area: Rect, buf: &mut Buffer) {
-        let [header_area, main_area, footer_area] = Layout::vertical([
-            Constraint::Length(2),
-            Constraint::Fill(1),
-            Constraint::Length(1),
-        ]).areas(area);
-        
-        let [list_area, item_area] = Layout::vertical([Constraint::Fill(1), Constraint::Fill(1)]).areas(main_area);
-
-        let render_list_title = "Pod Ep";
-        let text_render_footer = "Use ↓↑ to move, → to play, s to search, q to quit.";
-
-        App::render_header(header_area, buf);
-        App::render_footer(footer_area, buf, text_render_footer);
-        if self.is_from_search_pod {
-        self.render_list(list_area, buf, render_list_title, &self.titles_pod_ep_search.clone(), &mut self.list_state_pod_ep.clone());
-        } else {
-        self.render_list(list_area, buf, render_list_title, &self.titles_pod_ep.clone(), &mut self.list_state_pod_ep.clone());
-        }
-        //self.render_selected_item(item_area, buf, &self.titles_library.clone(), self.auth_names_library.clone());
-    }
 
     /// General functions for rendering 
 

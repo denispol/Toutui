@@ -31,6 +31,7 @@ struct UserInfo {
 pub async fn login(username: &str, password: &str, url: &str) -> Result<()> {
     let login_url = format!("{}/login", url);
     let client = Client::new();
+    println!("{:?}", url);
     // Struct for data request
     let login_data = LoginRequest {
         username: username.to_string(),
@@ -61,7 +62,7 @@ pub async fn login(username: &str, password: &str, url: &str) -> Result<()> {
                 username: username.to_string(),
                 password: password.to_string(),
                 token: login_response.user.token.clone(),
-                is_default_usr: false,
+                is_default_usr: true,
                 name_selected_lib: library_names[0].clone(), // by default we take the first library
                 id_selected_lib: library_ids[0].clone(),
             }
