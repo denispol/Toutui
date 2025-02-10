@@ -36,6 +36,8 @@ async fn main() -> Result<()> {
             // Wait for 1 second before checking again
             // If database is reinit to quickly before `auth_process.rs` is finished
             // it can be buggy and mark as failed. Maybe add more time to be sure (like 6 sec).
+            // But normally, even it's failed, data are written in db. It will work at the second
+            // attempt...
             tokio::time::sleep(Duration::from_secs(1)).await;
 
             // Reload or update the database
