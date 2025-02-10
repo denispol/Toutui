@@ -1,5 +1,5 @@
-use crate::App;
-use crate::app::AppView;
+use crate::login_app::AppLogin;
+use crate::login_app::AppViewLogin;
 use ratatui::{
     buffer::Buffer,
     layout::{Constraint, Layout, Rect},
@@ -31,10 +31,10 @@ const ALT_ROW_BG_COLOR: Color = SLATE.c900;
 const SELECTED_STYLE: Style = Style::new().bg(SLATE.c800).add_modifier(Modifier::BOLD);
 
 /// init widget for selected AppView 
-impl Widget for &mut App {
+impl Widget for &mut AppLogin {
   fn render(self, area: Rect, buf: &mut Buffer) {
         match self.view_state {
-            AppView::Auth => self.render_auth(area, buf),
+            AppViewLogin::Auth => self.render_auth(area, buf),
         }
     }
 }
@@ -42,7 +42,7 @@ impl Widget for &mut App {
 
 /// Rendering logic
 
-impl App {
+impl AppLogin {
 
     fn render_auth(&mut self, area: Rect, buf: &mut Buffer) {
 

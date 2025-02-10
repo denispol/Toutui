@@ -5,8 +5,8 @@ use crate::db::crud::*;
 use crate::db::database_struct::User;
 use crate::api::libraries::get_all_libraries::*;
 use crate::api::utils::collect_get_all_libraries::*;
-use crate::app::App;
-use crate::app::AppView;
+use crate::login_app::AppLogin;
+use crate::login_app::AppViewLogin;
 
 #[derive(Serialize)]
 struct LoginRequest {

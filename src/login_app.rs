@@ -29,21 +29,21 @@ use std::thread;
 use std::time::Duration;
 
 
-pub enum AppView {
+pub enum AppViewLogin {
     Auth,
 }
 
-pub struct App {
-   pub view_state: AppView,
+pub struct AppLogin {
+    pub view_state: AppViewLogin,
     pub database: Database,
-   pub should_exit: bool,
+    pub should_exit: bool,
 }
 
 /// Init app
-impl App {
+impl AppLogin {
     pub async fn new() -> Result<Self> {
 
-        let mut view_state = AppView::Auth; // By default, Home will be the first AppView launched when the app start
+        let mut view_state = AppViewLogin::Auth; // By default, Home will be the first AppView launched when the app start
          let mut database = Database::new().await?;
         Ok(Self {
             database,

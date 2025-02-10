@@ -1,7 +1,7 @@
 use rusqlite::{params, Connection, Result};
 use serde::{Serialize, Deserialize};
 use crate::db::database_struct::User;
-use crate::app::App;
+use crate::login_app::AppLogin;
 
 // Update id_selected_lib
 pub fn update_id_selected_lib(conn: &Connection, id_selected_lib: &str, username: &str) -> Result<()> {
