@@ -67,10 +67,12 @@ pub struct App {
    pub is_from_search_pod: bool,
    pub ids_library_pod_search: Vec<String>,
    pub all_ids_pod_ep_search: Vec<Vec<String>>,
-   pub library_names: Vec<String>,
+   pub libraries_names: Vec<String>,
    pub media_types: Vec<String>,
-   pub library_ids: Vec<String>,
-
+   pub libraries_ids: Vec<String>,
+   pub library_name: String,
+   pub media_type: String,
+   pub lib_name_type: String,
 }
 
 /// Init app
@@ -100,8 +102,30 @@ impl App {
         }
 
     
-        // init for `Shelf`
-        let is_podcast = false;
+         // init for `Libraries` (get all Libraries (shelf), can be a podcast or book type)
+         let all_libraries = get_all_libraries(&token).await?;
+         let libraries_names = collect_library_names(&all_libraries).await; // all the libraries names of the user ex : {name1, name2}
+         let media_types = collect_media_types(&all_libraries).await; // all media type of libraries ex : {book, podcast}
+         let libraries_ids = collect_library_ids(&all_libraries).await; // all all libraries ids
+         let mut library_name = String::new(); // library name of the selected library
+         let mut media_type = String::new(); // media type of the selected library
+
+         let target = id_selected_lib.clone();
+
+         // retrieve name and mediatype of the current librarie
+         if let Some(index) = libraries_ids.iter().position(|x| x == &target) {
+             println!("found '{}' at index {}", target, index);
+             library_name = libraries_names[index].clone();
+             media_type = media_types[index].clone();
+         }         
+         let lib_name_type = format!("{} ({})", library_name, media_type);
+
+         // init is_podcast
+         let is_podcast = if media_type == "podcast" {
+             true
+         } else {
+             false
+         };
 
 
         // init for `Home` (continue listening)
@@ -158,12 +182,6 @@ impl App {
          all_ids_pod_ep.push(id);
          }
 
-         // init for `Libraries` (get all Libraries (shelf), can be a podcast or book type)
-         let all_libraries = get_all_libraries(&token).await?;
-         let library_names = collect_library_names(&all_libraries).await;
-         let media_types = collect_media_types(&all_libraries).await;
-         let library_ids = collect_library_ids(&all_libraries).await;
- 
 
 
 
@@ -219,9 +237,12 @@ impl App {
             is_from_search_pod,
             ids_library_pod_search,
             all_ids_pod_ep_search,
-            library_names,
-            library_ids,
+            libraries_names,
+            libraries_ids,
             media_types,
+            library_name,
+            media_type,
+            lib_name_type,
         })
     }
 
@@ -304,7 +325,7 @@ pub fn handle_key(&mut self, key: KeyEvent) {
                     }}
                 AppView::Libraries => {
                     if let Ok(conn) = Connection::open("db/db.sqlite3") {
-                        if let Err(e) = update_id_selected_lib(&conn, "64c39f84-9c58-4045-a89c-e17a6d99076", "luc") {
+                        if let Err(e) = update_id_selected_lib(&conn, "64c39f84-9c58-4045-a89c-e17a6d990768", "alban") {
                             println!("Error updating selected library: {}", e);
                         } else {
                             println!("Selected library updated successfully!");

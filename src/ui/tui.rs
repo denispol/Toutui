@@ -60,7 +60,7 @@ impl App {
         let render_list_title = "Continue Listening";
         let text_render_footer = "Use ↓↑ to move, → to play, s to search, q to quit.";
 
-        App::render_header(header_area, buf);
+        App::render_header(header_area, buf, self.lib_name_type.clone());
         App::render_footer(footer_area, buf, text_render_footer);
         self.render_list(list_area, buf, render_list_title, &self.titles_cnt_list.clone(), &mut self.list_state_cnt_list.clone());
 //        self.render_selected_item(item_area, buf, &mut self.list_state.clone());
@@ -79,7 +79,7 @@ impl App {
         let render_list_title = "Library";
         let text_render_footer = "Use ↓↑ to move, → to play, s to search, q to quit.";
 
-        App::render_header(header_area, buf);
+        App::render_header(header_area, buf, self.lib_name_type.clone());
         App::render_footer(footer_area, buf, text_render_footer);
         self.render_list(list_area, buf, render_list_title, &self.titles_library.clone(), &mut self.list_state_library.clone());
         //self.render_selected_item(item_area, buf, &self.titles_library.clone(), self.auth_names_library.clone());
@@ -100,9 +100,9 @@ impl App {
         let render_list_title = "Libraries";
         let text_render_footer = "Use ↓↑ to move, → to play, s to search, q to quit.";
 
-        App::render_header(header_area, buf);
+        App::render_header(header_area, buf, self.lib_name_type.clone());
         App::render_footer(footer_area, buf, text_render_footer);
-        self.render_list(list_area, buf, render_list_title, &self.library_names.clone(), &mut self.list_state_libraries.clone());
+        self.render_list(list_area, buf, render_list_title, &self.libraries_names.clone(), &mut self.list_state_libraries.clone());
         //self.render_selected_item(item_area, buf, &self.titles_library.clone(), self.auth_names_library.clone());
     }
 
@@ -171,7 +171,7 @@ impl App {
             .map(|(_, value)| value.clone())
             .collect();
 
-        App::render_header(header_area, buf);
+        App::render_header(header_area, buf, self.lib_name_type.clone());
         App::render_footer(footer_area, buf, text_render_footer);
         self.render_list(list_area, buf, render_list_title, titles_search_book, &mut self.list_state_search_results.clone());
         //self.render_selected_item(item_area, buf, &self.titles_library.clone(), self.auth_names_library.clone());
@@ -191,7 +191,7 @@ impl App {
         let render_list_title = "Pod Ep";
         let text_render_footer = "Use ↓↑ to move, → to play, s to search, q to quit.";
 
-        App::render_header(header_area, buf);
+        App::render_header(header_area, buf, self.lib_name_type.clone());
         App::render_footer(footer_area, buf, text_render_footer);
         if self.is_from_search_pod {
         self.render_list(list_area, buf, render_list_title, &self.titles_pod_ep_search.clone(), &mut self.list_state_pod_ep.clone());
@@ -203,8 +203,8 @@ impl App {
 
     /// General functions for rendering 
 
-    fn render_header(area: Rect, buf: &mut Buffer) {
-        Paragraph::new("< Home >")
+    fn render_header(area: Rect, buf: &mut Buffer, library_name: String) {
+        Paragraph::new(library_name)
             .bold()
             .centered()
             .render(area, buf);
