@@ -5,7 +5,7 @@ use color_eyre::eyre::{Result, Report};
 use serde::Deserialize;
 use serde::Serialize;
 
-/// Get a PersonalizedView's Personalized View (allow to have continue linstening)
+/// Get a PersonalizedView's Personalized View for book (allow to have continue linstening)
 /// https://api.audiobookshelf.org/#get-a-library-39-s-personalized-view
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]

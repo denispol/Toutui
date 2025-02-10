@@ -14,6 +14,15 @@ use ratatui::{
     },
 };
 
+// Auth
+use tui_textarea::{Input, Key, TextArea};
+use std::io;
+use ratatui::backend::CrosstermBackend;
+use ratatui::Terminal;
+
+
+
+
 
 // const for color theme
 const TODO_HEADER_STYLE: Style = Style::new().fg(SLATE.c100).bg(BLUE.c800);
@@ -28,6 +37,8 @@ impl Widget for &mut App {
             AppView::Home => self.render_home(area, buf),
             AppView::Library => self.render_library(area, buf),
             AppView::SearchBook => self.render_search_book(area, buf),
+            AppView::PodcastEpisode => self.render_pod_ep(area, buf),
+            AppView::Libraries => self.render_libraries(area, buf),
         }
     }
 }
@@ -49,7 +60,7 @@ impl App {
         let render_list_title = "Continue Listening";
         let text_render_footer = "Use ↓↑ to move, → to play, s to search, q to quit.";
 
-        App::render_header(header_area, buf);
+        App::render_header(header_area, buf, self.lib_name_type.clone());
         App::render_footer(footer_area, buf, text_render_footer);
         self.render_list(list_area, buf, render_list_title, &self.titles_cnt_list.clone(), &mut self.list_state_cnt_list.clone());
 //        self.render_selected_item(item_area, buf, &mut self.list_state.clone());
@@ -68,9 +79,30 @@ impl App {
         let render_list_title = "Library";
         let text_render_footer = "Use ↓↑ to move, → to play, s to search, q to quit.";
 
-        App::render_header(header_area, buf);
+        App::render_header(header_area, buf, self.lib_name_type.clone());
         App::render_footer(footer_area, buf, text_render_footer);
         self.render_list(list_area, buf, render_list_title, &self.titles_library.clone(), &mut self.list_state_library.clone());
+        //self.render_selected_item(item_area, buf, &self.titles_library.clone(), self.auth_names_library.clone());
+    }
+
+    
+
+    /// AppView::Libraries rendering
+    fn render_libraries(&mut self, area: Rect, buf: &mut Buffer) {
+        let [header_area, main_area, footer_area] = Layout::vertical([
+            Constraint::Length(2),
+            Constraint::Fill(1),
+            Constraint::Length(1),
+        ]).areas(area);
+        
+        let [list_area, item_area] = Layout::vertical([Constraint::Fill(1), Constraint::Fill(1),]).areas(main_area);
+
+        let render_list_title = "Libraries";
+        let text_render_footer = "Use ↓↑ to move, → to play, s to search, q to quit.";
+
+        App::render_header(header_area, buf, self.lib_name_type.clone());
+        App::render_footer(footer_area, buf, text_render_footer);
+        self.render_list(list_area, buf, render_list_title, &self.libraries_names.clone(), &mut self.list_state_libraries.clone());
         //self.render_selected_item(item_area, buf, &self.titles_library.clone(), self.auth_names_library.clone());
     }
 
@@ -111,6 +143,7 @@ impl App {
 
         let titles_search_book: &[String] = &titles_search_book;
 
+        // for book
         self.ids_search_book = self.ids_library
             .iter()
             .enumerate()
@@ -118,17 +151,60 @@ impl App {
             .map(|(_, value)| value.clone())
             .collect();
 
-        App::render_header(header_area, buf);
+        // for podacst
+        self.all_titles_pod_ep_search = self.all_titles_pod_ep
+            .iter()
+            .enumerate()
+            .filter(|(index, _)| index_to_keep.contains(&index))
+            .map(|(_, value)| value.clone())
+            .collect();
+        self.all_ids_pod_ep_search = self.all_ids_pod_ep
+            .iter()
+            .enumerate()
+            .filter(|(index, _)| index_to_keep.contains(&index))
+            .map(|(_, value)| value.clone())
+            .collect();
+        self.ids_library_pod_search = self.ids_library
+            .iter()
+            .enumerate()
+            .filter(|(index, _)| index_to_keep.contains(&index))
+            .map(|(_, value)| value.clone())
+            .collect();
+
+        App::render_header(header_area, buf, self.lib_name_type.clone());
         App::render_footer(footer_area, buf, text_render_footer);
-        self.render_list(list_area, buf, render_list_title, titles_search_book, &mut self.list_state_search_book.clone());
+        self.render_list(list_area, buf, render_list_title, titles_search_book, &mut self.list_state_search_results.clone());
         //self.render_selected_item(item_area, buf, &self.titles_library.clone(), self.auth_names_library.clone());
 
     }
 
+    /// AppView::PodcastEpisode
+    fn render_pod_ep(&mut self, area: Rect, buf: &mut Buffer) {
+        let [header_area, main_area, footer_area] = Layout::vertical([
+            Constraint::Length(2),
+            Constraint::Fill(1),
+            Constraint::Length(1),
+        ]).areas(area);
+        
+        let [list_area, item_area] = Layout::vertical([Constraint::Fill(1), Constraint::Fill(1)]).areas(main_area);
+
+        let render_list_title = "Pod Ep";
+        let text_render_footer = "Use ↓↑ to move, → to play, s to search, q to quit.";
+
+        App::render_header(header_area, buf, self.lib_name_type.clone());
+        App::render_footer(footer_area, buf, text_render_footer);
+        if self.is_from_search_pod {
+        self.render_list(list_area, buf, render_list_title, &self.titles_pod_ep_search.clone(), &mut self.list_state_pod_ep.clone());
+        } else {
+        self.render_list(list_area, buf, render_list_title, &self.titles_pod_ep.clone(), &mut self.list_state_pod_ep.clone());
+        }
+        //self.render_selected_item(item_area, buf, &self.titles_library.clone(), self.auth_names_library.clone());
+    }
+
     /// General functions for rendering 
 
-    fn render_header(area: Rect, buf: &mut Buffer) {
-        Paragraph::new("< Home >")
+    fn render_header(area: Rect, buf: &mut Buffer, library_name: String) {
+        Paragraph::new(library_name)
             .bold()
             .centered()
             .render(area, buf);
@@ -187,4 +263,3 @@ impl App {
         }
     }
 }
-

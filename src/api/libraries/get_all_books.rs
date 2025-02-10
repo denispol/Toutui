@@ -7,6 +7,7 @@ use serde::Serialize;
 use serde_json::json;
 
 
+
 /// Get all books from a library
 /// https://api.audiobookshelf.org/#get-a-library-39-s-items
 
@@ -93,10 +94,10 @@ pub struct CollapsedSeries {
     pub num_books: Option<i64>,
 }
 
-
-pub async fn get_all_books(token: &str) -> Result<Root> {
+// get all books or podcasts
+pub async fn get_all_books(token: &str, id_selected_lib: &String) -> Result<Root> {
     let client = Client::new();
-    let url = "https://audiobook.nuagemagique.duckdns.org/api/libraries/64c39f84-9c58-4045-a89c-e17a6d990768/items";
+    let url = format!("https://audiobook.nuagemagique.duckdns.org/api/libraries/{}/items", id_selected_lib);
 
     // json bosy
     let body = json!({
