@@ -11,6 +11,10 @@ use ratatui::{
 };
 use crate::api::server::auth::*;
 use crossterm::event::{self, KeyEvent, KeyCode};  
+use std::thread;
+use std::time::Duration;
+use std::process;
+
 
 impl AppLogin {
     pub fn auth(&mut self) -> io::Result<()> {
@@ -81,7 +85,7 @@ impl AppLogin {
                 }
                 
                 event::Event::Key(KeyEvent { code: KeyCode::Esc, .. }) => {
-                    break; 
+                process::exit(0);
                 }
                 
                 event::Event::Key(input) => {
@@ -102,6 +106,7 @@ impl AppLogin {
             f.render_widget(empty_block, search_area); 
         })?;
 
+
         /// Fetch data from api and insert them in database
 
 
@@ -109,20 +114,21 @@ impl AppLogin {
         if let Some(active_textarea) = textareas.get(current_index) {
             let collected_data_clone = collected_data.clone();
             tokio::spawn(async move {
-                println!("Wait...");
+  //              println!("Wait...");
                 match login(
                     collected_data_clone[1].as_str(),
                     collected_data_clone[2].as_str(),
                     collected_data_clone[0].as_str(),
                 ).await {
                     Ok(response) => {
-                        println!("Login successful");
+//                        println!("Login successful");
                     }
                     Err(e) => {
                         eprintln!("Login failed: {}", e);
                     }
                 }});
-
+           // thread::sleep(Duration::from_secs(3));
+self.should_exit = true;
 
             Ok(())
         } else {

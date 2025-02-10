@@ -14,7 +14,6 @@ use crate::logic::handle_input::handle_l_book::*;
 use crate::logic::handle_input::handle_l_pod::*;
 use crate::logic::handle_input::handle_l_pod_home::*;
 use crate::main;
-use crate::config::load_config;
 use crate::db::crud::*;
 use crate::db::database_struct::Database;
 use color_eyre::Result;
@@ -35,7 +34,6 @@ pub enum AppViewLogin {
 
 pub struct AppLogin {
     pub view_state: AppViewLogin,
-    pub database: Database,
     pub should_exit: bool,
 }
 
@@ -44,41 +42,18 @@ impl AppLogin {
     pub async fn new() -> Result<Self> {
 
         let mut view_state = AppViewLogin::Auth; // By default, Home will be the first AppView launched when the app start
-         let mut database = Database::new().await?;
         Ok(Self {
-            database,
             should_exit: false,
             view_state,
         })
     }
 
 
-   /// handle events
-   pub fn run(mut self, mut terminal: DefaultTerminal) -> Result<()> {
+    /// handle events
+    pub fn run(mut self, mut terminal: DefaultTerminal) -> Result<()> {
         while !self.should_exit {
             terminal.draw(|frame| frame.render_widget(&mut self, frame.area()))?;
-            if let Event::Key(key) = event::read()? {
-                self.handle_key(key);
-            }
         }
         Ok(())
     }
-   /// handle key
-pub fn handle_key(&mut self, key: KeyEvent) {
-    if key.kind != KeyEventKind::Press {
-        return;
-    }
-
-
-
-    match key.code {
-        KeyCode::Char('Q') => self.should_exit = true, // need to exit run function once, and after
-                                                       // should quit once again the run from loop main function :
-                                                       // (`let result = app.run(&mut terminal);`)
-        
-        _ => {}
-    }
 }
-
-
- }

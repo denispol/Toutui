@@ -104,7 +104,7 @@ pub fn select_default_usr() -> Result<Vec<String>> {
 
     // Si aucun utilisateur trouvé, retourne un vecteur vide
     if result.is_empty() {
-        println!("No default user found.");
+        //println!("No default user found.");
     }
 
     Ok(result)  // Retourne le vecteur des utilisateurs par défaut
