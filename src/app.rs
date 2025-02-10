@@ -324,7 +324,7 @@ pub fn handle_key(&mut self, key: KeyEvent) {
                     }}
                 AppView::Libraries => {
                     if let Ok(conn) = Connection::open("db/db.sqlite3") {
-                        if let Err(e) = update_id_selected_lib(&conn, "64c39f84-9c58-4045-a89c-e17a6d990768", "alban") {
+                        if let Err(e) = update_id_selected_lib(&conn, "5d80300e-e228-402e-9b6e-1356ff1f4243", "alban") {
                             println!("Error updating selected library: {}", e);
                         } else {
                             println!("Selected library updated successfully!");
