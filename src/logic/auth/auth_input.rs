@@ -9,7 +9,7 @@ use ratatui::{
     layout::Rect,
     style::{Color, Style},
 };
-use crate::api::server::auth::*;
+use crate::api::server::auth_process::*;
 use crossterm::event::{self, KeyEvent, KeyCode};  
 use std::thread;
 use std::time::Duration;
@@ -114,21 +114,23 @@ impl AppLogin {
         if let Some(active_textarea) = textareas.get(current_index) {
             let collected_data_clone = collected_data.clone();
             tokio::spawn(async move {
-  //              println!("Wait...");
-                match login(
+                //              println!("Wait...");
+                match auth_process(
                     collected_data_clone[1].as_str(),
                     collected_data_clone[2].as_str(),
                     collected_data_clone[0].as_str(),
                 ).await {
                     Ok(response) => {
-//                        println!("Login successful");
+                        //                        println!("Login successful");
                     }
                     Err(e) => {
                         eprintln!("Login failed: {}", e);
                     }
                 }});
-           // thread::sleep(Duration::from_secs(3));
-self.should_exit = true;
+
+            // to quit the current thread and back to login or home (if connection is successful)
+            // should_exit allow to quit the terminal in login_app.rs
+            self.should_exit = true;
 
             Ok(())
         } else {

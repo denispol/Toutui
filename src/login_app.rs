@@ -9,7 +9,7 @@ use crate::api::libraries::get_library_perso_view_pod::*;
 use crate::api::libraries::get_all_books::*;
 use crate::api::libraries::get_all_libraries::*;
 use crate::api::library_items::get_pod_ep::*;
-use crate::api::server::auth::*;
+use crate::api::server::auth_process::*;
 use crate::logic::handle_input::handle_l_book::*;
 use crate::logic::handle_input::handle_l_pod::*;
 use crate::logic::handle_input::handle_l_pod_home::*;
@@ -41,7 +41,7 @@ pub struct AppLogin {
 impl AppLogin {
     pub async fn new() -> Result<Self> {
 
-        let mut view_state = AppViewLogin::Auth; // By default, Home will be the first AppView launched when the app start
+        let mut view_state = AppViewLogin::Auth;
         Ok(Self {
             should_exit: false,
             view_state,

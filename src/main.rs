@@ -34,6 +34,8 @@ async fn main() -> Result<()> {
             let app_result = app_login.run(terminal);
             app_result; // Process login result here
             // Wait for 1 second before checking again
+            // If database is reinit to quickly before `auth_process.rs` is finished
+            // it can be buggy and mark as failed. Maybe add more time to be sure (like 6 sec).
             tokio::time::sleep(Duration::from_secs(1)).await;
 
             // Reload or update the database
@@ -53,6 +55,8 @@ async fn main() -> Result<()> {
 
         // Running the app in a loop
         loop {
+            // If `app` variable is reinitialized below (`app = App::new().await?`), it will be taken into account and data will be refreshed
+            // Otherwise, the current `app` variable will still be used.
             let result = app.run(&mut terminal);
 
             if let Err(e) = result {

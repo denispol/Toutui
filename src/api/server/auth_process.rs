@@ -27,8 +27,9 @@ struct UserInfo {
 /// Login
 /// https://api.audiobookshelf.org/#server
 
-/// The login function takes a username and password, makes a POST request and returns a token.
-pub async fn login(username: &str, password: &str, url: &str) -> Result<()> {
+/// The login function takes a username, password, url ans  makes a POST request and returns a token.
+/// After, some data are fetched with this token and written in database
+pub async fn auth_process(username: &str, password: &str, url: &str) -> Result<()> {
     let login_url = format!("{}/login", url);
     let client = Client::new();
     println!("{:?}", username);
@@ -48,7 +49,7 @@ pub async fn login(username: &str, password: &str, url: &str) -> Result<()> {
         .send()
         .await?;
 
-    // Checking the status of the response
+    // Checking the status of the response and fetch data
     if response.status().is_success() {
         let login_response: LoginResponse = response.json().await?;
 
@@ -57,8 +58,10 @@ pub async fn login(username: &str, password: &str, url: &str) -> Result<()> {
         let media_types = collect_media_types(&all_libraries).await;
         let library_ids = collect_library_ids(&all_libraries).await;
 
-                // init a new user
-                let users = vec![
+    /// writting in database : 
+
+    // init a new user
+        let users = vec![
             User {
                 server_adress: url.to_string(),
                 username: username.to_string(),

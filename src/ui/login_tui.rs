@@ -20,10 +20,6 @@ use std::io;
 use ratatui::backend::CrosstermBackend;
 use ratatui::Terminal;
 
-
-
-
-
 // const for color theme
 const TODO_HEADER_STYLE: Style = Style::new().fg(SLATE.c100).bg(BLUE.c800);
 const NORMAL_ROW_BG: Color = SLATE.c950;
@@ -52,11 +48,7 @@ impl AppLogin {
 
     }
 
-//        App::render_footer(footer_area, buf, text_render_footer);
-        //self.render_selected_item(item_area, buf, &self.titles_library.clone(), self.auth_names_library.clone());
     
-
-
     /// General functions for rendering 
 
     fn render_header(area: Rect, buf: &mut Buffer) {
