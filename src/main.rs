@@ -22,14 +22,12 @@ async fn main() -> Result<()> {
     // Initial database creation
     let mut database = Database::new().await?;
     let mut database_ready = false;
-    let mut message = "";
 
     // Wait for the database to be ready, waiting for the user to enter their credentials
     loop {
         database = Database::new().await?;
         if database.default_usr.is_empty() {
-            message = "Authentification failed";
-            print!("{}", message);
+            print!("Authentification failed");
             let app_login = AppLogin::new().await?;
             let terminal = ratatui::init();
             let app_result = app_login.run(terminal);
@@ -44,9 +42,8 @@ async fn main() -> Result<()> {
             // Reload or update the database
         } else {
             // If the database is ready, exit the loop
-            print!("\x1B[2J\x1B[1;1H");
-            message = "";
-            print!("{}", message);
+            print!("\x1B[2J\x1B[1;1H"); // clear all stdout (avoid to sill have the previous print
+                                        // when the app is launched)
             database_ready = true;
             break;
         }
@@ -75,9 +72,10 @@ async fn main() -> Result<()> {
                         KeyCode::Char('R') => {
                             let mut stdout = stdout();
                             let (_cols, rows) = terminal::size()?;
-                            execute!(stdout, cursor::MoveTo(0, rows.saturating_sub(2)))?;
+                            execute!(stdout, cursor::MoveTo(0, rows.saturating_sub(2)))?; 
                             println!("Refreshing app...");
                             app = App::new().await?; // Reinitialize to refresh
+                            // clear the lice above when refresh is finished.
                             execute!(stdout, cursor::MoveTo(0, rows.saturating_sub(2)), terminal::Clear(terminal::ClearType::CurrentLine))?;
                         }
                         // If 'Q' or 'Esc' is pressed, exit the app
