@@ -2,6 +2,7 @@ use crate::login_app::AppLogin;
 use crate::login_app::AppViewLogin;
 use ratatui::backend::CrosstermBackend;
 use ratatui::widgets::{Block, Borders};
+use ratatui::{text::Line };
 use ratatui::Terminal;
 use std::io;
 use tui_textarea::{Input, Key, TextArea};
@@ -18,6 +19,7 @@ use std::process;
 
 impl AppLogin {
     pub fn auth(&mut self) -> io::Result<()> {
+
         /// init input area
         let stdout = io::stdout();
         let stdout = stdout.lock();
@@ -25,12 +27,15 @@ impl AppLogin {
         let backend = CrosstermBackend::new(stdout);
         let mut term = Terminal::new(backend)?;
 
+
         let mut textarea1 = TextArea::default();
         textarea1.set_block(
             Block::default()
             .borders(Borders::ALL)
             .title("Server address")
+            .title_bottom(Line::from("Toutui v0.1.0 - Esc to quit.").right_aligned())
             .border_style(Style::default().fg(Color::LightBlue)),
+            
         );
 
         let mut textarea2 = TextArea::default();
@@ -38,6 +43,7 @@ impl AppLogin {
             Block::default()
             .borders(Borders::ALL)
             .title("Username")
+            .title_bottom(Line::from("Toutui v0.1.0 - Esc to quit.").right_aligned())
             .border_style(Style::default().fg(Color::LightBlue)),
         );
 
@@ -46,13 +52,14 @@ impl AppLogin {
             Block::default()
             .borders(Borders::ALL)
             .title("Password")
+            .title_bottom(Line::from("Toutui v0.1.0 - Esc to quit.").right_aligned())
             .border_style(Style::default().fg(Color::LightBlue)),
         );
         textarea3.set_mask_char('\u{2022}');
 
         // display 
         let size = term.size()?;
-        let search_area = Rect {
+        let input_area = Rect {
             x: (size.width - size.width / 2) / 2,
             y: (size.height - 3) / 2,
             width: size.width / 2,
@@ -70,13 +77,14 @@ impl AppLogin {
 
         loop {
             term.draw(|f| {
-                f.render_widget(&textareas[current_index], search_area);
+                f.render_widget(&textareas[current_index], input_area);
             })?;
 
             match crossterm::event::read()? {
                 event::Event::Key(KeyEvent { code: KeyCode::Enter, .. }) => {
                     if current_index < textareas.len() - 1 {
                         // will just take textarea 1 and 2, 3 will take after break loop
+
                         collected_data.push(textareas[current_index].lines().join("\n"));
                         current_index += 1;
                     } else {
@@ -103,7 +111,7 @@ impl AppLogin {
         // make disappear search_area (the input bar) after the break loop
         term.draw(|f| {
             let empty_block = Block::default();
-            f.render_widget(empty_block, search_area); 
+            f.render_widget(empty_block, input_area); 
         })?;
 
 
@@ -130,7 +138,7 @@ impl AppLogin {
 
             // to quit the current thread and back to login or home (if connection is successful)
             // should_exit allow to quit the terminal in login_app.rs
-            print!("\x1B[2J\x1B[1;1H");
+            print!("\x1B[2J\x1B[1;1H"); // clean all prints displayed
             self.should_exit = true;
 
             Ok(())
