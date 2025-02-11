@@ -14,8 +14,9 @@ use crate::db::database_struct::Database;
 use color_eyre::Result;
 use std::time::Duration;
 use crossterm::event::{self, Event, KeyCode};
+use std::io::{stdout, Write};
 
-use crossterm::{execute, terminal, ExecutableCommand};
+use crossterm::{cursor, execute, terminal, ExecutableCommand};
 #[tokio::main]
 async fn main() -> Result<()> {
     // Initial database creation
@@ -25,7 +26,7 @@ async fn main() -> Result<()> {
 
     // Wait for the database to be ready, waiting for the user to enter their credentials
     loop {
-            database = Database::new().await?;
+        database = Database::new().await?;
         if database.default_usr.is_empty() {
             message = "Authentification failed";
             print!("{}", message);
@@ -43,6 +44,7 @@ async fn main() -> Result<()> {
             // Reload or update the database
         } else {
             // If the database is ready, exit the loop
+            print!("\x1B[2J\x1B[1;1H");
             message = "";
             print!("{}", message);
             database_ready = true;
@@ -71,8 +73,12 @@ async fn main() -> Result<()> {
                     match key.code {
                         // If the 'R' key is pressed, refresh the app
                         KeyCode::Char('R') => {
+                            let mut stdout = stdout();
+                            let (_cols, rows) = terminal::size()?;
+                            execute!(stdout, cursor::MoveTo(0, rows.saturating_sub(2)))?;
                             println!("Refreshing app...");
                             app = App::new().await?; // Reinitialize to refresh
+                            execute!(stdout, cursor::MoveTo(0, rows.saturating_sub(2)), terminal::Clear(terminal::ClearType::CurrentLine))?;
                         }
                         // If 'Q' or 'Esc' is pressed, exit the app
                         KeyCode::Char('Q') | KeyCode::Esc => {

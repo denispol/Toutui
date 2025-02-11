@@ -32,9 +32,7 @@ struct UserInfo {
 pub async fn auth_process(username: &str, password: &str, url: &str) -> Result<()> {
     let login_url = format!("{}/login", url);
     let client = Client::new();
-    println!("{:?}", username);
-    println!("{:?}", password);
-    println!("{:?}", url);
+
     // Struct for data request
     let login_data = LoginRequest {
         username: username.to_string(),

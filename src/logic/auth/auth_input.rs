@@ -121,7 +121,7 @@ impl AppLogin {
                     collected_data_clone[0].as_str(),
                 ).await {
                     Ok(response) => {
-                        //                        println!("Login successful");
+                        println!("Login successful");
                     }
                     Err(e) => {
                         eprintln!("Login failed: {}", e);
@@ -130,6 +130,7 @@ impl AppLogin {
 
             // to quit the current thread and back to login or home (if connection is successful)
             // should_exit allow to quit the terminal in login_app.rs
+            print!("\x1B[2J\x1B[1;1H");
             self.should_exit = true;
 
             Ok(())

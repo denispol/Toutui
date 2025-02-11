@@ -113,7 +113,6 @@ impl App {
 
          // retrieve name and mediatype of the current librarie
          if let Some(index) = libraries_ids.iter().position(|x| x == &target) {
-             println!("found '{}' at index {}", target, index);
              library_name = libraries_names[index].clone();
              media_type = media_types[index].clone();
          }         
