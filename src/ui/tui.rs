@@ -39,6 +39,8 @@ impl Widget for &mut App {
             AppView::SearchBook => self.render_search_book(area, buf),
             AppView::PodcastEpisode => self.render_pod_ep(area, buf),
             AppView::Settings => self.render_settings(area, buf),
+            AppView::SettingsAccount => self.render_settings_account(area, buf),
+            AppView::SettingsLibrary => self.render_settings_library(area, buf),
         }
     }
 }
@@ -85,8 +87,6 @@ impl App {
         //self.render_selected_item(item_area, buf, &self.titles_library.clone(), self.auth_names_library.clone());
     }
 
-    
-
     /// AppView::Settings rendering
     fn render_settings(&mut self, area: Rect, buf: &mut Buffer) {
         let [header_area, main_area, footer_area] = Layout::vertical([
@@ -102,7 +102,45 @@ impl App {
 
         App::render_header(header_area, buf, self.lib_name_type.clone());
         App::render_footer(footer_area, buf, text_render_footer);
-        self.render_list(list_area, buf, render_list_title, &self.libraries_names.clone(), &mut self.list_state_settings.clone());
+        self.render_list(list_area, buf, render_list_title, &self.settings.clone(), &mut self.list_state_settings.clone());
+        //self.render_selected_item(item_area, buf, &self.titles_library.clone(), self.auth_names_library.clone());
+    }
+
+    /// AppView::SettingsAccount rendering
+    fn render_settings_account(&mut self, area: Rect, buf: &mut Buffer) {
+        let [header_area, main_area, footer_area] = Layout::vertical([
+            Constraint::Length(2),
+            Constraint::Fill(1),
+            Constraint::Length(1),
+        ]).areas(area);
+        
+        let [list_area, item_area] = Layout::vertical([Constraint::Fill(1), Constraint::Fill(1),]).areas(main_area);
+
+        let render_list_title = "Settings account";
+        let text_render_footer = "Use ↓↑ to move, → to play, s to search, q to quit.";
+
+        App::render_header(header_area, buf, self.lib_name_type.clone());
+        App::render_footer(footer_area, buf, text_render_footer);
+        self.render_list(list_area, buf, render_list_title, &self.all_usernames.clone(), &mut &mut self.list_state_settings_account.clone());
+        //self.render_selected_item(item_area, buf, &self.titles_library.clone(), self.auth_names_library.clone());
+    }
+
+    /// AppView::SettingsLibrary rendering
+    fn render_settings_library(&mut self, area: Rect, buf: &mut Buffer) {
+        let [header_area, main_area, footer_area] = Layout::vertical([
+            Constraint::Length(2),
+            Constraint::Fill(1),
+            Constraint::Length(1),
+        ]).areas(area);
+        
+        let [list_area, item_area] = Layout::vertical([Constraint::Fill(1), Constraint::Fill(1),]).areas(main_area);
+
+        let render_list_title = "Settings library";
+        let text_render_footer = "Use ↓↑ to move, → to play, s to search, q to quit.";
+
+        App::render_header(header_area, buf, self.lib_name_type.clone());
+        App::render_footer(footer_area, buf, text_render_footer);
+        self.render_list(list_area, buf, render_list_title, &self.libraries_names.clone(), &mut &mut self.list_state_settings_library.clone());
         //self.render_selected_item(item_area, buf, &self.titles_library.clone(), self.auth_names_library.clone());
     }
 

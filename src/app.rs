@@ -35,6 +35,8 @@ pub enum AppView {
     SearchBook,
     PodcastEpisode,
     Settings,
+    SettingsAccount,
+    SettingsLibrary,
 }
 
 pub struct App {
@@ -48,6 +50,8 @@ pub struct App {
    pub list_state_search_results: ListState,
    pub list_state_pod_ep: ListState,
    pub list_state_settings: ListState,
+   pub list_state_settings_account: ListState,
+   pub list_state_settings_library: ListState,
    pub titles_cnt_list: Vec<String>,
    pub auth_names_cnt_list: Vec<String>,
    pub ids_cnt_list: Vec<String>,
@@ -74,6 +78,10 @@ pub struct App {
    pub library_name: String,
    pub media_type: String,
    pub lib_name_type: String,
+   pub settings: Vec<String>,
+   pub all_usernames: Vec<String>,
+   pub all_server_addresses: Vec<String>,
+   pub username: String,
 }
 
 /// Init app
@@ -99,6 +107,13 @@ impl App {
         let mut id_selected_lib: String = String::new();
         if let Some(var_id_selected_lib) = database.default_usr.get(6) {
             id_selected_lib = var_id_selected_lib.clone();
+
+        }
+
+        // init current username
+        let mut username: String = String::new();
+        if let Some(var_username) = database.default_usr.get(0) {
+            username = var_username.clone();
 
         }
 
@@ -171,7 +186,7 @@ impl App {
          //init for `PodcastEpisode`
          let mut all_titles_pod_ep: Vec<Vec<String>> = Vec::new(); // fetch titles for all podcast episodes. Ex: {titles_pod1_ep1, title_pod1_ep2}, {titles_pod2_ep1, title_pod2_ep2} 
          let mut all_ids_pod_ep: Vec<Vec<String>> = Vec::new();
-         let titles_pod_ep: Vec<String> = Vec::new(); // fetch episode titles for a podcast. {titles_pod1_ep1}, {title_pod1_ep2} 
+         let titles_pod_ep: Vec<String> = Vec::new(); // fetch episode titles for a podcast. {titles_pod1_ep1, title_pod1_ep2} 
          let ids_pod_ep: Vec<String> = Vec::new();
 
          for i in 0..ids_library.len() 
@@ -182,9 +197,18 @@ impl App {
          all_ids_pod_ep.push(id);
          }
 
+         // init for `Settings`
+         let settings = vec!["Account".to_string(), "Library".to_string()];
 
-
-
+         // init for `SettingsAccount`
+         let mut all_usernames: Vec<String> = Vec::new();
+         let mut all_server_addresses: Vec<String> = Vec::new();
+         if let Some(var_username) = database.default_usr.get(0) {
+             all_usernames.push(var_username.clone());
+         }
+         if let Some(var_server_address) = database.default_usr.get(1) {
+             all_server_addresses.push(var_server_address.clone());
+         }
 
          // Init ListeState for `Home` list (continue listening)
          let mut list_state_cnt_list = ListState::default(); // init the ListState ratatui's widget
@@ -206,6 +230,14 @@ impl App {
          let mut list_state_settings = ListState::default();
          list_state_settings.select(Some(0));
 
+         // Init ListState for `SettingsAccount` list
+         let mut list_state_settings_account = ListState::default();
+         list_state_settings_account.select(Some(0));
+
+         // Init ListState for `SettingsLibrary` list
+         let mut list_state_settings_library = ListState::default();
+         list_state_settings_library.select(Some(0));
+
         Ok(Self {
             database,
             id_selected_lib,
@@ -216,6 +248,8 @@ impl App {
             list_state_search_results,
             list_state_pod_ep,
             list_state_settings,
+            list_state_settings_account,
+            list_state_settings_library,
             titles_cnt_list,
             auth_names_cnt_list,
             ids_cnt_list,
@@ -243,6 +277,10 @@ impl App {
             library_name,
             media_type,
             lib_name_type,
+            settings,
+            all_usernames,
+            all_server_addresses,
+            username,
         })
     }
 
@@ -310,6 +348,12 @@ pub fn handle_key(&mut self, key: KeyEvent) {
             let selected_pod_ep = self.list_state_pod_ep.selected();
             let ids_ep_cnt_list = self.ids_ep_cnt_list.clone();
 
+            // Init for `SettingsAccount`
+            let selected_account = self.list_state_settings_account.selected();
+
+            // Init for `SettingsLibrary`
+            let selected_settings_library = self.list_state_settings_library.selected();
+
             // loading message 
             pub fn loading_message() {
                 let mut stdout = stdout();
@@ -335,14 +379,22 @@ pub fn handle_key(&mut self, key: KeyEvent) {
                     });
                     }}
                 AppView::Settings => {
-                    if let Ok(conn) = Connection::open("db/db.sqlite3") {
-                        if let Err(e) = update_id_selected_lib(&conn, "5d80300e-e228-402e-9b6e-1356ff1f4243", "luc") {
-                            println!("Error updating selected library: {}", e);
-                        } else {
-                            println!("Selected library updated successfully!");
-                        }
-                    } else {
-                        println!("Error connecting to the database.");
+                    match self.list_state_settings.selected() {
+                        Some(0) => self.view_state = AppView::SettingsAccount,
+                        Some(1) => self.view_state = AppView::SettingsLibrary,
+                        _ => {}
+                    }
+                }
+                AppView::SettingsAccount => {
+                    if let Some(index) = selected_account {
+                    let usr_to_delete = &self.all_usernames[index];
+                    delete_user(usr_to_delete.as_str());
+                    }
+                }
+                AppView::SettingsLibrary => {
+                  if let Some(index) = selected_settings_library {
+                    let new_selected_lib = &self.libraries_ids[index];
+                    update_id_selected_lib(&new_selected_lib, &self.username);
                     }
                 }
                 AppView::Library => {
@@ -381,9 +433,9 @@ pub fn handle_key(&mut self, key: KeyEvent) {
                         // ids_library_pod_search because we need the pod id and he is given by
                         // this variable
                         if let Some(id_pod) = self.ids_library_pod_search.get(index) {
-                            println!("{:?}", id_pod);
+                        //    println!("{:?}", id_pod);
                             let all_ids_pod_ep_search_clone = self.all_ids_pod_ep_search.clone();
-                            println!("{:?}", all_ids_pod_ep_search_clone[index]);
+                         //   println!("{:?}", all_ids_pod_ep_search_clone[index]);
                             let id_pod_clone = id_pod.clone();
                             loading_message();
                             tokio::spawn(async move {
@@ -423,6 +475,8 @@ pub fn handle_key(&mut self, key: KeyEvent) {
             AppView::SearchBook => AppView::Home,
             AppView::PodcastEpisode => AppView::Home,
             AppView::Settings => AppView::Home,
+            AppView::SettingsAccount => AppView::Home,
+            AppView::SettingsLibrary => AppView::Home,
 
         };
     }
@@ -436,6 +490,8 @@ pub fn handle_key(&mut self, key: KeyEvent) {
             AppView::SearchBook => self.list_state_search_results.select_next(),
             AppView::PodcastEpisode => self.list_state_pod_ep.select_next(),
             AppView::Settings => self.list_state_settings.select_next(),
+            AppView::SettingsAccount => self.list_state_settings_account.select_next(),
+            AppView::SettingsLibrary => self.list_state_settings_library.select_next(),
         }
     }
 
@@ -446,6 +502,8 @@ pub fn handle_key(&mut self, key: KeyEvent) {
             AppView::SearchBook => self.list_state_search_results.select_previous(),
             AppView::PodcastEpisode => self.list_state_pod_ep.select_previous(),
             AppView::Settings => self.list_state_settings.select_previous(),
+            AppView::SettingsAccount => self.list_state_settings_account.select_previous(),
+            AppView::SettingsLibrary => self.list_state_settings_library.select_previous(),
         }
     }
 
@@ -456,6 +514,8 @@ pub fn handle_key(&mut self, key: KeyEvent) {
             AppView::SearchBook => self.list_state_search_results.select_first(),
             AppView::PodcastEpisode => self.list_state_pod_ep.select_first(),
             AppView::Settings => self.list_state_settings.select_first(),
+            AppView::SettingsAccount => self.list_state_settings_account.select_first(),
+            AppView::SettingsLibrary => self.list_state_settings_library.select_first(),
         }
     }
 
@@ -466,6 +526,8 @@ pub fn handle_key(&mut self, key: KeyEvent) {
             AppView::SearchBook => self.list_state_search_results.select_last(),
             AppView::PodcastEpisode => self.list_state_pod_ep.select_last(),
             AppView::Settings => self.list_state_settings.select_last(),
+            AppView::SettingsAccount => self.list_state_settings_account.select_last(),
+            AppView::SettingsLibrary => self.list_state_settings_library.select_last(),
         }
     }
 

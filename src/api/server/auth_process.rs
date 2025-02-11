@@ -61,7 +61,7 @@ pub async fn auth_process(username: &str, password: &str, url: &str) -> Result<(
     // init a new user
         let users = vec![
             User {
-                server_adress: url.to_string(),
+                server_address: url.to_string(),
                 username: username.to_string(),
                 password: password.to_string(),
                 token: login_response.user.token.clone(),
