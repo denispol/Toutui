@@ -6,7 +6,7 @@ use color_eyre::Result;
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct User {
-    pub  server_adress: String,
+    pub  server_address: String,
     pub  username: String,
     pub  password: String,
     pub  token: String,
@@ -29,7 +29,7 @@ pub struct Database  {
            let users: Vec<User> = vec![];
      //       let users = vec![
      //           User {
-     //               server_adress: "https://nuagemagique.duckdns.org".to_string(),
+     //               server_address: "https://nuagemagique.duckdns.org".to_string(),
      //               username: "jean".to_string(),
      //               password: "acac".to_string(),
      //               token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI3MzBlNDIzYS1mY2ZhLTQ0MjQtYmY0Yi03YWI5NGJmODIzZGYiLCJ1c2VybmFtZSI6Imx1YyIsImlhdCI6MTczMjQ1OTE4NX0.hvkolaE_yCNqgfvdqsycWC981ybwNME8GzkH6s5XOMU".to_string(),
@@ -38,7 +38,7 @@ pub struct Database  {
      //                   id_selected_lib: "5d80300e-e228-402e-9b6e-1356ff1f4243".to_string(),
      //           },
      //           User {
-     //               server_adress: "https://example.com".to_string(),
+     //               server_address: "https://example.com".to_string(),
      //               username: "alice".to_string(),
      //               password: "securepassword".to_string(),
      //               token: "123".to_string(),

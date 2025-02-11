@@ -3,6 +3,27 @@ use serde::{Serialize, Deserialize};
 use crate::db::database_struct::User;
 use crate::login_app::AppLogin;
 
+// Delete an user
+pub fn delete_user(username: &str) -> Result<()> {
+    if let Ok(conn) = Connection::open("db/db.sqlite3") {
+
+        let rows_deleted = conn.execute(
+            "DELETE FROM users WHERE username = ?1",
+            params![username],
+        )?;
+
+        if rows_deleted > 0 {
+            println!("User '{}' deleted.\nPlease restart the app to apply the changes.", username);
+        } else {
+            //println!("No user found with this username '{}'.", username);
+        }
+    } else {
+        println!("Error connecting to the database.");
+    }
+
+    Ok(())
+}
+
 // Update id_selected_lib
 pub fn update_id_selected_lib(conn: &Connection, id_selected_lib: &str, username: &str) -> Result<()> {
 
@@ -37,11 +58,11 @@ pub fn db_insert_usr(users : &Vec<User>)  -> Result<()> {
     let conn = Connection::open("db/db.sqlite3")?;
     for user in users {
         conn.execute(
-            "INSERT OR REPLACE INTO users (username, server_adress, password, token, is_default_usr, name_selected_lib, id_selected_lib) 
+            "INSERT OR REPLACE INTO users (username, server_address, password, token, is_default_usr, name_selected_lib, id_selected_lib) 
             VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7)",
             params![
             user.username,
-            user.server_adress,
+            user.server_address,
             user.password,
             user.token,
             if user.is_default_usr { 1 } else { 0 },
@@ -60,7 +81,7 @@ pub fn select_default_usr() -> Result<Vec<String>> {
 
     // Prépare la requête SQL
     let mut stmt = conn.prepare(
-        "SELECT username, server_adress, password, token, is_default_usr, name_selected_lib, id_selected_lib
+        "SELECT username, server_address, password, token, is_default_usr, name_selected_lib, id_selected_lib
          FROM users WHERE is_default_usr = 1 LIMIT 1"
     )?;
 
@@ -68,7 +89,7 @@ pub fn select_default_usr() -> Result<Vec<String>> {
     let user_iter = stmt.query_map([], |row| {
         Ok(User {
             username: row.get(0)?,
-            server_adress: row.get(1)?,
+            server_address: row.get(1)?,
             password: row.get(2)?,
             token: row.get(3)?,
             is_default_usr: row.get::<_, i32>(4)? != 0,  // Convertir 0/1 en bool
@@ -86,7 +107,7 @@ pub fn select_default_usr() -> Result<Vec<String>> {
             Ok(user) => {
                 // Nous extrayons les informations sous forme de String (par exemple, username)
                 result.push(user.username);
-                result.push(user.server_adress);
+                result.push(user.server_address);
                 result.push(user.password);
                 result.push(user.token);
                 result.push(user.is_default_usr.to_string());
@@ -119,7 +140,7 @@ pub fn init_db() -> Result<()> {
     conn.execute(
         "CREATE TABLE IF NOT EXISTS users (
                 username TEXT PRIMARY KEY,
-                server_adress TEXT NOT NULL,
+                server_address TEXT NOT NULL,
                 password TEXT NOT NULL,
                 token TEXT NOT NULL,
                 is_default_usr INTEGER NOT NULL DEFAULT 0,
