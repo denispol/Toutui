@@ -266,7 +266,7 @@ pub fn handle_key(&mut self, key: KeyEvent) {
 
 
     match key.code {
-        KeyCode::Char('s') => {
+        KeyCode::Char('/') | KeyCode::Char(' ') => {
             let _ = self.search_active();
         }
         KeyCode::Char('c') => {
