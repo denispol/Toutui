@@ -15,8 +15,10 @@ use color_eyre::Result;
 use std::time::Duration;
 use crossterm::event::{self, Event, KeyCode};
 use std::io::{stdout, Write};
-
 use crossterm::{cursor, execute, terminal, ExecutableCommand};
+
+const VERSION: &str = env!("CARGO_PKG_VERSION");
+
 #[tokio::main]
 async fn main() -> Result<()> {
     // Initial database creation

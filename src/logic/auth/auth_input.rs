@@ -16,6 +16,8 @@ use std::thread;
 use std::time::Duration;
 use std::process;
 
+const VERSION: &str = env!("CARGO_PKG_VERSION");
+
 
 impl AppLogin {
     pub fn auth(&mut self) -> io::Result<()> {
@@ -33,7 +35,7 @@ impl AppLogin {
             Block::default()
             .borders(Borders::ALL)
             .title("Server address")
-            .title_bottom(Line::from("Toutui v0.1.0 - Esc to quit.").right_aligned())
+            .title_bottom(Line::from(format!("Toutui v{} - Esc to quit.", VERSION)).right_aligned())
             .border_style(Style::default().fg(Color::LightBlue)),
             
         );
@@ -43,7 +45,7 @@ impl AppLogin {
             Block::default()
             .borders(Borders::ALL)
             .title("Username")
-            .title_bottom(Line::from("Toutui v0.1.0 - Esc to quit.").right_aligned())
+            .title_bottom(Line::from(format!("Toutui v{} - Esc to quit.", VERSION)).right_aligned())
             .border_style(Style::default().fg(Color::LightBlue)),
         );
 
@@ -52,7 +54,7 @@ impl AppLogin {
             Block::default()
             .borders(Borders::ALL)
             .title("Password")
-            .title_bottom(Line::from("Toutui v0.1.0 - Esc to quit.").right_aligned())
+            .title_bottom(Line::from(format!("Toutui v{} - Esc to quit.", VERSION)).right_aligned())
             .border_style(Style::default().fg(Color::LightBlue)),
         );
         textarea3.set_mask_char('\u{2022}');
