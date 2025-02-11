@@ -34,7 +34,7 @@ pub enum AppView {
     Library,
     SearchBook,
     PodcastEpisode,
-    Libraries,
+    Settings,
 }
 
 pub struct App {
@@ -47,7 +47,7 @@ pub struct App {
    pub list_state_library: ListState,
    pub list_state_search_results: ListState,
    pub list_state_pod_ep: ListState,
-   pub list_state_libraries: ListState,
+   pub list_state_settings: ListState,
    pub titles_cnt_list: Vec<String>,
    pub auth_names_cnt_list: Vec<String>,
    pub ids_cnt_list: Vec<String>,
@@ -202,9 +202,9 @@ impl App {
          let mut list_state_pod_ep = ListState::default();
          list_state_pod_ep.select(Some(0));
 
-         // Init ListState for `Libraries` list
-         let mut list_state_libraries = ListState::default();
-         list_state_libraries.select(Some(0));
+         // Init ListState for `Settings` list
+         let mut list_state_settings = ListState::default();
+         list_state_settings.select(Some(0));
 
         Ok(Self {
             database,
@@ -215,7 +215,7 @@ impl App {
             list_state_library,
             list_state_search_results,
             list_state_pod_ep,
-            list_state_libraries,
+            list_state_settings,
             titles_cnt_list,
             auth_names_cnt_list,
             ids_cnt_list,
@@ -270,8 +270,8 @@ pub fn handle_key(&mut self, key: KeyEvent) {
         KeyCode::Char('/') | KeyCode::Char(' ') => {
             let _ = self.search_active();
         }
-        KeyCode::Char('c') => {
-            self.view_state = AppView::Libraries;
+        KeyCode::Char('S') => {
+            self.view_state = AppView::Settings;
         }
         KeyCode::Tab => {
             if self.is_from_search_pod {
@@ -334,7 +334,7 @@ pub fn handle_key(&mut self, key: KeyEvent) {
                         handle_l_book(token.as_ref(), ids_cnt_list, selected_cnt_list, port).await;
                     });
                     }}
-                AppView::Libraries => {
+                AppView::Settings => {
                     if let Ok(conn) = Connection::open("db/db.sqlite3") {
                         if let Err(e) = update_id_selected_lib(&conn, "5d80300e-e228-402e-9b6e-1356ff1f4243", "luc") {
                             println!("Error updating selected library: {}", e);
@@ -422,7 +422,7 @@ pub fn handle_key(&mut self, key: KeyEvent) {
             AppView::Library => AppView::Home,
             AppView::SearchBook => AppView::Home,
             AppView::PodcastEpisode => AppView::Home,
-            AppView::Libraries => AppView::Home,
+            AppView::Settings => AppView::Home,
 
         };
     }
@@ -435,7 +435,7 @@ pub fn handle_key(&mut self, key: KeyEvent) {
             AppView::Library => self.list_state_library.select_next(),
             AppView::SearchBook => self.list_state_search_results.select_next(),
             AppView::PodcastEpisode => self.list_state_pod_ep.select_next(),
-            AppView::Libraries => self.list_state_libraries.select_next(),
+            AppView::Settings => self.list_state_settings.select_next(),
         }
     }
 
@@ -445,7 +445,7 @@ pub fn handle_key(&mut self, key: KeyEvent) {
             AppView::Library => self.list_state_library.select_previous(),
             AppView::SearchBook => self.list_state_search_results.select_previous(),
             AppView::PodcastEpisode => self.list_state_pod_ep.select_previous(),
-            AppView::Libraries => self.list_state_libraries.select_previous(),
+            AppView::Settings => self.list_state_settings.select_previous(),
         }
     }
 
@@ -455,7 +455,7 @@ pub fn handle_key(&mut self, key: KeyEvent) {
             AppView::Library => self.list_state_library.select_first(),
             AppView::SearchBook => self.list_state_search_results.select_first(),
             AppView::PodcastEpisode => self.list_state_pod_ep.select_first(),
-            AppView::Libraries => self.list_state_libraries.select_first(),
+            AppView::Settings => self.list_state_settings.select_first(),
         }
     }
 
@@ -465,7 +465,7 @@ pub fn handle_key(&mut self, key: KeyEvent) {
             AppView::Library => self.list_state_library.select_last(),
             AppView::SearchBook => self.list_state_search_results.select_last(),
             AppView::PodcastEpisode => self.list_state_pod_ep.select_last(),
-            AppView::Libraries => self.list_state_libraries.select_last(),
+            AppView::Settings => self.list_state_settings.select_last(),
         }
     }
 

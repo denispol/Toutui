@@ -70,12 +70,14 @@ async fn main() -> Result<()> {
                     match key.code {
                         // If the 'R' key is pressed, refresh the app
                         KeyCode::Char('R') => {
+                            // pop up message
                             let mut stdout = stdout();
                             let (_cols, rows) = terminal::size()?;
                             execute!(stdout, cursor::MoveTo(0, rows.saturating_sub(2)))?; 
                             println!("Refreshing app...");
-                            app = App::new().await?; // Reinitialize to refresh
-                            // clear the lice above when refresh is finished.
+                            // Reinitialize app to refresh
+                            app = App::new().await?; 
+                            // clear the line above when refresh is finished.
                             execute!(stdout, cursor::MoveTo(0, rows.saturating_sub(2)), terminal::Clear(terminal::ClearType::CurrentLine))?;
                         }
                         // If 'Q' or 'Esc' is pressed, exit the app
