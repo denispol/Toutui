@@ -23,7 +23,7 @@ impl App {
         textarea.set_block(
             Block::default()
             .borders(Borders::ALL)
-            .title("Search a book")
+            .title("Search")
             .border_style(Style::default().fg(Color::LightBlue)),
         );
 
