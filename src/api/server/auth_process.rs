@@ -63,7 +63,6 @@ pub async fn auth_process(username: &str, password: &str, url: &str) -> Result<(
             User {
                 server_address: url.to_string(),
                 username: username.to_string(),
-                password: password.to_string(),
                 token: login_response.user.token.clone(),
                 is_default_usr: true,
                 name_selected_lib: library_names[0].clone(), // by default we take the first library

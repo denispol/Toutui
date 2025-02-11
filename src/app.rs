@@ -98,14 +98,14 @@ impl App {
                                         
         // init token 
         let mut token: String = String::new();
-        if let Some(var_token) = database.default_usr.get(3) {
+        if let Some(var_token) = database.default_usr.get(2) {
             token = var_token.clone();
 
         }
 
         // init id_selected_lib
         let mut id_selected_lib: String = String::new();
-        if let Some(var_id_selected_lib) = database.default_usr.get(6) {
+        if let Some(var_id_selected_lib) = database.default_usr.get(5) {
             id_selected_lib = var_id_selected_lib.clone();
 
         }

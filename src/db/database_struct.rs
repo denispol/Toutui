@@ -8,7 +8,6 @@ use color_eyre::Result;
 pub struct User {
     pub  server_address: String,
     pub  username: String,
-    pub  password: String,
     pub  token: String,
     pub  is_default_usr: bool,
     pub  name_selected_lib: String,

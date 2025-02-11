@@ -64,12 +64,11 @@ pub fn db_insert_usr(users : &Vec<User>)  -> Result<()> {
     let conn = Connection::open("db/db.sqlite3")?;
     for user in users {
         conn.execute(
-            "INSERT OR REPLACE INTO users (username, server_address, password, token, is_default_usr, name_selected_lib, id_selected_lib) 
-            VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7)",
+            "INSERT OR REPLACE INTO users (username, server_address, token, is_default_usr, name_selected_lib, id_selected_lib) 
+            VALUES (?1, ?2, ?3, ?4, ?5, ?6)",
             params![
             user.username,
             user.server_address,
-            user.password,
             user.token,
             if user.is_default_usr { 1 } else { 0 },
             user.name_selected_lib,
@@ -87,7 +86,7 @@ pub fn select_default_usr() -> Result<Vec<String>> {
 
     // Prépare la requête SQL
     let mut stmt = conn.prepare(
-        "SELECT username, server_address, password, token, is_default_usr, name_selected_lib, id_selected_lib
+        "SELECT username, server_address, token, is_default_usr, name_selected_lib, id_selected_lib
          FROM users WHERE is_default_usr = 1 LIMIT 1"
     )?;
 
@@ -96,11 +95,10 @@ pub fn select_default_usr() -> Result<Vec<String>> {
         Ok(User {
             username: row.get(0)?,
             server_address: row.get(1)?,
-            password: row.get(2)?,
-            token: row.get(3)?,
-            is_default_usr: row.get::<_, i32>(4)? != 0,  // Convertir 0/1 en bool
-            name_selected_lib: row.get(5)?,
-            id_selected_lib: row.get(6)?,
+            token: row.get(2)?,
+            is_default_usr: row.get::<_, i32>(3)? != 0,  // Convertir 0/1 en bool
+            name_selected_lib: row.get(4)?,
+            id_selected_lib: row.get(5)?,
         })
     })?;
 
@@ -114,7 +112,6 @@ pub fn select_default_usr() -> Result<Vec<String>> {
                 // Nous extrayons les informations sous forme de String (par exemple, username)
                 result.push(user.username);
                 result.push(user.server_address);
-                result.push(user.password);
                 result.push(user.token);
                 result.push(user.is_default_usr.to_string());
                 result.push(user.name_selected_lib);
@@ -147,7 +144,6 @@ pub fn init_db() -> Result<()> {
         "CREATE TABLE IF NOT EXISTS users (
                 username TEXT PRIMARY KEY,
                 server_address TEXT NOT NULL,
-                password TEXT NOT NULL,
                 token TEXT NOT NULL,
                 is_default_usr INTEGER NOT NULL DEFAULT 0,
                 name_selected_lib TEXT NOT NULL,
