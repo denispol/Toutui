@@ -26,6 +26,8 @@ use rusqlite::Connection;
 use std::thread;
 use std::time::Duration;
 use std::process;
+use std::io::{stdout, Write};
+use crossterm::{cursor, execute, terminal};
 
 pub enum AppView {
     Home,
@@ -308,22 +310,33 @@ pub fn handle_key(&mut self, key: KeyEvent) {
             let selected_pod_ep = self.list_state_pod_ep.selected();
             let ids_ep_cnt_list = self.ids_ep_cnt_list.clone();
 
+            // loading message 
+            pub fn loading_message() {
+                let mut stdout = stdout();
+                if let Ok((cols, rows)) = terminal::size() {
+                    execute!(stdout, cursor::MoveTo(0, rows.saturating_sub(2)));
+                    println!("Loading...");
+                }                         
+            }
+
 
             // Now, spawn the async task based on the current view state
             match self.view_state {
                 AppView::Home => {
                     if self.is_podcast {
+                        loading_message();
                         tokio::spawn(async move {
                             handle_l_pod_home(token.as_ref(), &ids_cnt_list, selected_cnt_list, port, ids_ep_cnt_list).await;
                         });
                     } else {
-                    tokio::spawn(async move {
+                        loading_message();
+                        tokio::spawn(async move {
                         handle_l_book(token.as_ref(), ids_cnt_list, selected_cnt_list, port).await;
                     });
                     }}
                 AppView::Libraries => {
                     if let Ok(conn) = Connection::open("db/db.sqlite3") {
-                        if let Err(e) = update_id_selected_lib(&conn, "5d80300e-e228-402e-9b6e-1356ff1f4243", "alban") {
+                        if let Err(e) = update_id_selected_lib(&conn, "5d80300e-e228-402e-9b6e-1356ff1f4243", "luc") {
                             println!("Error updating selected library: {}", e);
                         } else {
                             println!("Selected library updated successfully!");
@@ -339,6 +352,7 @@ pub fn handle_key(&mut self, key: KeyEvent) {
                         self.list_state_pod_ep.select(Some(0));
                         self.view_state = AppView::PodcastEpisode;
                     }} else {
+                        loading_message();
                         tokio::spawn(async move {
                             handle_l_book(token.as_ref(), ids_library, selected_library, port).await;
                         });
@@ -352,6 +366,7 @@ pub fn handle_key(&mut self, key: KeyEvent) {
                             self.list_state_pod_ep.select(Some(0));
                             self.view_state = AppView::PodcastEpisode;
                         }} else {   
+                            loading_message();
                             tokio::spawn(async move {
                                 handle_l_book(token.as_ref(), ids_search_book, selected_search_book, port).await;
                             });
@@ -370,6 +385,7 @@ pub fn handle_key(&mut self, key: KeyEvent) {
                             let all_ids_pod_ep_search_clone = self.all_ids_pod_ep_search.clone();
                             println!("{:?}", all_ids_pod_ep_search_clone[index]);
                             let id_pod_clone = id_pod.clone();
+                            loading_message();
                             tokio::spawn(async move {
                                 handle_l_pod(token.as_ref(), &all_ids_pod_ep_search_clone[index], selected_pod_ep, port, id_pod_clone.as_str()).await;
                             });
@@ -385,6 +401,7 @@ pub fn handle_key(&mut self, key: KeyEvent) {
                             let all_ids_pod_ep_clone = self.all_ids_pod_ep.clone();
                             let id_pod_clone = id_pod.clone();
                             tokio::spawn(async move {
+                                loading_message();
                                 handle_l_pod(token.as_ref(), &all_ids_pod_ep_clone[index], selected_pod_ep, port, id_pod_clone.as_str()).await;
                             });
                         }

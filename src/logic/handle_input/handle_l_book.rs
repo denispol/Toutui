@@ -18,7 +18,7 @@ pub async fn handle_l_book(
                     let token_clone = token.clone();
                     let port_clone = port.clone();
                     let info_item_clone = info_item.clone() ;
-                    // Start VLC is launched in a spawn to allow fetch_vlc_data to start at the same time
+                    // start_vlc is launched in a spawn to allow fetch_vlc_data to start at the same time
                     tokio::spawn(async move {
                         start_vlc(&info_item_clone[0], &port_clone, &info_item_clone[1], Some(&token_clone)).await;
                     });
