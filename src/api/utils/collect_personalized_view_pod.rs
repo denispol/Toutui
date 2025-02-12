@@ -1,4 +1,5 @@
 use crate::api::libraries::get_library_perso_view_pod::Root;
+use crate::utils::convert_seconds::*;
 
 /// collect id pod for continue listening
 pub async fn collect_ids_pod_cnt_list(roots: &[Root]) -> Vec<String> {
@@ -19,7 +20,154 @@ pub async fn collect_ids_pod_cnt_list(roots: &[Root]) -> Vec<String> {
  ids_pod_cnt_list
 }
 
-/// collect id episode pod for continue listening
+/// Collect subtitles from recent episodes
+pub async fn collect_subtitles_pod_cnt_list(roots: &[Root]) -> Vec<String> {
+    let mut subtitles_pod_cnt_list = Vec::new();
+
+    for root in roots {
+        if let Some(entities) = &root.entities {
+            for entity in entities {
+                if let Some(recent_episode) = &entity.recent_episode {
+                    if let Some(subtitle) = &recent_episode.subtitle {
+                        subtitles_pod_cnt_list.push(subtitle.clone());
+                    }
+                }
+            }
+        }
+    }
+
+    subtitles_pod_cnt_list
+}
+
+/// Collect num episode 
+pub async fn collect_nums_ep_pod_cnt_list(roots: &[Root]) -> Vec<String> {
+    let mut nums_ep_pod_cnt_list = Vec::new();
+
+    for root in roots {
+        if let Some(entities) = &root.entities {
+            for entity in entities {
+                if let Some(recent_episode) = &entity.recent_episode {
+                    if let Some(episode) = &recent_episode.episode {
+                        nums_ep_pod_cnt_list.push(episode.clone());
+                    }
+                }
+            }
+        }
+    }
+
+    nums_ep_pod_cnt_list
+}
+
+/// collect season
+pub async fn collect_seasons_pod_cnt_list(roots: &[Root]) -> Vec<String> {
+    let mut seasons_pod_cnt_list = Vec::new();
+
+    for root in roots {
+        if let Some(entities) = &root.entities {
+            for entity in entities {
+                if let Some(recent_episode) = &entity.recent_episode {
+                    if let Some(season) = &recent_episode.season {
+                        seasons_pod_cnt_list.push(season.clone());
+                    }
+                }
+            }
+        }
+    }
+
+    seasons_pod_cnt_list
+}
+
+/// Collect authors
+pub async fn collect_authors_pod_cnt_list(roots: &[Root]) -> Vec<String> {
+    let mut authors_pod_cnt_list = Vec::new();
+
+    for root in roots {
+        if let Some(entities) = &root.entities {
+            for entity in entities {
+                if let Some(recent_episode) = &entity.recent_episode {
+                    if let Some(media) = &entity.media {
+                        if let Some(metadata) = &media.metadata {
+                            if let Some(author) = &metadata.author {
+                                authors_pod_cnt_list.push(author.clone());
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    authors_pod_cnt_list
+}
+
+/// Collect description
+pub async fn collect_descs_pod_cnt_list(roots: &[Root]) -> Vec<String> {
+    let mut descs_pod_cnt_list = Vec::new();
+
+    for root in roots {
+        if let Some(entities) = &root.entities {
+            for entity in entities {
+                if let Some(recent_episode) = &entity.recent_episode {
+                    if let Some(media) = &entity.media {
+                        if let Some(metadata) = &media.metadata {
+                            if let Some(desc) = &metadata.description {
+                                descs_pod_cnt_list.push(desc.clone());
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    descs_pod_cnt_list
+}
+
+/// Collect podcast title
+pub async fn collect_titles_pod_cnt_list(roots: &[Root]) -> Vec<String> {
+    let mut titles_pod_cnt_list = Vec::new();
+
+    for root in roots {
+        if let Some(entities) = &root.entities {
+            for entity in entities {
+                if let Some(recent_episode) = &entity.recent_episode {
+                    if let Some(media) = &entity.media {
+                        if let Some(metadata) = &media.metadata {
+                            if let Some(title) = &metadata.title {
+                                titles_pod_cnt_list.push(title.clone());
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    titles_pod_cnt_list
+}
+
+pub async fn collect_durations_pod_cnt_list(roots: &[Root]) -> Vec<String> {
+    let mut durations = Vec::new();
+
+    for root in roots {
+        if let Some(entities) = &root.entities {
+            for entity in entities {
+                if let Some(recent_episode) = &entity.recent_episode {
+                    if let Some(audio_file) = &recent_episode.audio_file {
+                        if let Some(duration) = audio_file.duration {
+                            durations.push(duration);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    let durations_pod_cnt_list = convert_seconds(durations);
+    durations_pod_cnt_list
+}
+
+/// collect ids ep 
 pub async fn collect_ids_ep_pod_cnt_list(roots: &[Root]) -> Vec<String> {
     let mut ids_ep_pod_cnt_list = Vec::new();
 

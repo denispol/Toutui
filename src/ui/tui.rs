@@ -301,17 +301,27 @@ impl App {
 //        }
 //    }
 
-    // info about the book or podcast
+    // info about the book or podacst
     fn render_info(&self, area: Rect, buf: &mut Buffer, list_state: &ListState) {
 
         if let Some(selected) = list_state.selected() {
-
+            if self.is_podcast {
+            Paragraph::new(format!("[{}] - Author: {} - Episode: {} -  Duration: {}", 
+                    self.titles_pod_cnt_list[selected], 
+                    self.authors_pod_cnt_list[selected], 
+                    self.nums_ep_pod_cnt_list[selected],
+                    self.durations_pod_cnt_list[selected],
+                    ))
+                .left_aligned()
+                .render(area, buf);
+            } else {
             Paragraph::new(format!("Author: {} - Year: {} -  Duration: {}", 
                     self.auth_names_cnt_list[selected], 
                     self.pub_year_cnt_list[selected], 
                     self.duration_cnt_list[selected]))
                 .left_aligned()
                 .render(area, buf);
+            }
         }
     }
 
@@ -319,7 +329,12 @@ impl App {
     fn render_desc(&self, area: Rect, buf: &mut Buffer, list_state: &ListState) {
 
         if let Some(selected) = list_state.selected() {
-            let content = self.desc_cnt_list[selected].clone();
+            let mut content: String = String::new();
+            if self.is_podcast {
+            content = self.subtitles_pod_cnt_list[selected].clone();
+            } else {
+            content = self.desc_cnt_list[selected].clone();
+            }
 
             Paragraph::new(content.clone())
                 .scroll((self.scroll_offset as u16, 0))

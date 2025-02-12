@@ -87,6 +87,13 @@ pub struct App {
    pub username: String,
    pub server_address: String,
    pub scroll_offset: u16,
+   pub subtitles_pod_cnt_list: Vec<String>,
+   pub nums_ep_pod_cnt_list: Vec<String>,
+   pub seasons_pod_cnt_list: Vec<String>,
+   pub authors_pod_cnt_list: Vec<String>,
+   pub descs_pod_cnt_list: Vec<String>,
+   pub titles_pod_cnt_list: Vec<String>,
+   pub durations_pod_cnt_list: Vec<String>,
 }
 
 /// Init app
@@ -168,14 +175,28 @@ impl App {
         let mut desc_cnt_list: Vec<String> = Vec::new();
         let mut ids_cnt_list: Vec<String> = Vec::new();
         let mut ids_ep_cnt_list: Vec<String> = Vec::new();
+        let mut subtitles_pod_cnt_list: Vec<String> = Vec::new();
+        let mut nums_ep_pod_cnt_list: Vec<String> = Vec::new();
+        let mut seasons_pod_cnt_list: Vec<String> = Vec::new();
+        let mut authors_pod_cnt_list: Vec<String> = Vec::new();
+        let mut descs_pod_cnt_list: Vec<String> = Vec::new();
+        let mut titles_pod_cnt_list: Vec<String> = Vec::new();
+        let mut durations_pod_cnt_list: Vec<String> = Vec::new();
 
 
         if is_podcast {
          // init for  `Home` (continue listening) for podcasts
          let continue_listening_pod = get_continue_listening_pod(&token).await?;
          ids_cnt_list = collect_ids_pod_cnt_list(&continue_listening_pod).await; // id of a podcast
-         titles_cnt_list = collect_titles_cnt_list_pod(&continue_listening_pod).await;
+         titles_cnt_list = collect_titles_cnt_list_pod(&continue_listening_pod).await; // title of podcast ep
          ids_ep_cnt_list = collect_ids_ep_pod_cnt_list(&continue_listening_pod).await; // id of a podcast episode
+         subtitles_pod_cnt_list = collect_subtitles_pod_cnt_list(&continue_listening_pod).await;
+         nums_ep_pod_cnt_list = collect_nums_ep_pod_cnt_list(&continue_listening_pod).await;
+         seasons_pod_cnt_list = collect_seasons_pod_cnt_list(&continue_listening_pod).await;
+         authors_pod_cnt_list = collect_authors_pod_cnt_list(&continue_listening_pod).await;
+         descs_pod_cnt_list = collect_descs_pod_cnt_list(&continue_listening_pod).await;
+         titles_pod_cnt_list = collect_titles_pod_cnt_list(&continue_listening_pod).await; // title of a podcast
+         durations_pod_cnt_list = collect_durations_pod_cnt_list(&continue_listening_pod).await;
          }
          else {
          // init for  `Home` (continue listening) for books
@@ -314,6 +335,13 @@ impl App {
             username,
             server_address,
             scroll_offset,
+            subtitles_pod_cnt_list,
+            nums_ep_pod_cnt_list,
+            seasons_pod_cnt_list,
+            authors_pod_cnt_list,
+            descs_pod_cnt_list,
+            titles_pod_cnt_list,
+            durations_pod_cnt_list,
         })
     }
 
