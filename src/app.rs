@@ -248,7 +248,7 @@ Quare talis improborum consensio non modo excusatione amicitiae tegenda non est 
              all_server_addresses.push(var_server_address.clone());
          }
 
-         // init scroll offset (to scroll the description paragraph)
+         // init variables for for scrolling into description section 
          let scroll_offset = 0;
          let max_scroll = lorme.len().saturating_sub(5);
 
@@ -371,17 +371,20 @@ pub fn handle_key(&mut self, key: KeyEvent) {
         KeyCode::Char('R') => self.should_exit = true, // same as above, need to quit once before
                                                        // be able to execute `R` from main function 
         KeyCode::Char('j') | KeyCode::Down => self.select_next(),
+        // scroll up into description section
         KeyCode::Char('J') =>{
             if usize::from(self.scroll_offset) < self.max_scroll {
                 self.scroll_offset += 1;
             }
         }        
+        // go start description section
         KeyCode::Char('H') =>{
             if usize::from(self.scroll_offset) < self.max_scroll {
                 self.scroll_offset = 0;
             }
         }        
         KeyCode::Char('k') | KeyCode::Up => self.select_previous(),
+        // scroll down into description section
         KeyCode::Char('K') => {
             if usize::from(self.scroll_offset) > 0 {
                 self.scroll_offset -= 1;
