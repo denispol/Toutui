@@ -65,8 +65,8 @@ impl App {
         let render_list_title = "Continue Listening";
         let text_render_footer = "Use ↓↑ to move, → to play, s to search, q to quit.";
 
-        App::render_header(header_area, buf, self.lib_name_type.clone());
-        App::render_footer(footer_area, buf, text_render_footer, &self.username, VERSION);
+        App::render_header(header_area, buf, self.lib_name_type.clone(), &self.username, &self.server_address, VERSION);
+        App::render_footer(footer_area, buf, text_render_footer);
         self.render_list(list_area, buf, render_list_title, &self.titles_cnt_list.clone(), &mut self.list_state_cnt_list.clone());
 //        self.render_selected_item(item_area, buf, &mut self.list_state.clone());
     }
@@ -84,8 +84,8 @@ impl App {
         let render_list_title = "Library";
         let text_render_footer = "Use ↓↑ to move, → to play, s to search, q to quit.";
 
-        App::render_header(header_area, buf, self.lib_name_type.clone());
-        App::render_footer(footer_area, buf, text_render_footer, &self.username, VERSION);
+        App::render_header(header_area, buf, self.lib_name_type.clone(), &self.username, &self.server_address, VERSION);
+        App::render_footer(footer_area, buf, text_render_footer);
         self.render_list(list_area, buf, render_list_title, &self.titles_library.clone(), &mut self.list_state_library.clone());
         //self.render_selected_item(item_area, buf, &self.titles_library.clone(), self.auth_names_library.clone());
     }
@@ -103,8 +103,8 @@ impl App {
         let render_list_title = "Settings";
         let text_render_footer = "Use ↓↑ to move, → to play, s to search, q to quit.";
 
-        App::render_header(header_area, buf, self.lib_name_type.clone());
-        App::render_footer(footer_area, buf, text_render_footer, &self.username, VERSION);
+        App::render_header(header_area, buf, self.lib_name_type.clone(), &self.username, &self.server_address, VERSION);
+        App::render_footer(footer_area, buf, text_render_footer);
         self.render_list(list_area, buf, render_list_title, &self.settings.clone(), &mut self.list_state_settings.clone());
         //self.render_selected_item(item_area, buf, &self.titles_library.clone(), self.auth_names_library.clone());
     }
@@ -122,8 +122,8 @@ impl App {
         let render_list_title = "Settings account";
         let text_render_footer = "Use ↓↑ to move, → to play, s to search, q to quit.";
 
-        App::render_header(header_area, buf, self.lib_name_type.clone());
-        App::render_footer(footer_area, buf, text_render_footer, &self.username, VERSION);
+        App::render_header(header_area, buf, self.lib_name_type.clone(), &self.username, &self.server_address, VERSION);
+        App::render_footer(footer_area, buf, text_render_footer);
         self.render_list(list_area, buf, render_list_title, &self.all_usernames.clone(), &mut &mut self.list_state_settings_account.clone());
         //self.render_selected_item(item_area, buf, &self.titles_library.clone(), self.auth_names_library.clone());
     }
@@ -141,8 +141,8 @@ impl App {
         let render_list_title = "Settings library";
         let text_render_footer = "Use ↓↑ to move, → to play, s to search, q to quit.";
 
-        App::render_header(header_area, buf, self.lib_name_type.clone());
-        App::render_footer(footer_area, buf, text_render_footer, &self.username, VERSION);
+        App::render_header(header_area, buf, self.lib_name_type.clone(), &self.username, &self.server_address, VERSION);
+        App::render_footer(footer_area, buf, text_render_footer);
         self.render_list(list_area, buf, render_list_title, &self.libraries_names.clone(), &mut &mut self.list_state_settings_library.clone());
         //self.render_selected_item(item_area, buf, &self.titles_library.clone(), self.auth_names_library.clone());
     }
@@ -212,8 +212,8 @@ impl App {
             .map(|(_, value)| value.clone())
             .collect();
 
-        App::render_header(header_area, buf, self.lib_name_type.clone());
-        App::render_footer(footer_area, buf, text_render_footer, &self.username, VERSION);
+        App::render_header(header_area, buf, self.lib_name_type.clone(), &self.username, &self.server_address, VERSION);
+        App::render_footer(footer_area, buf, text_render_footer);
         self.render_list(list_area, buf, render_list_title, titles_search_book, &mut self.list_state_search_results.clone());
         //self.render_selected_item(item_area, buf, &self.titles_library.clone(), self.auth_names_library.clone());
 
@@ -232,8 +232,8 @@ impl App {
         let render_list_title = "Pod Ep";
         let text_render_footer = "Use ↓↑ to move, → to play, s to search, q to quit.";
 
-        App::render_header(header_area, buf, self.lib_name_type.clone());
-        App::render_footer(footer_area, buf, text_render_footer, &self.username, VERSION);
+        App::render_header(header_area, buf, self.lib_name_type.clone(), &self.username, &self.server_address, VERSION);
+        App::render_footer(footer_area, buf, text_render_footer);
         if self.is_from_search_pod {
         self.render_list(list_area, buf, render_list_title, &self.titles_pod_ep_search.clone(), &mut self.list_state_pod_ep.clone());
         } else {
@@ -244,22 +244,23 @@ impl App {
 
     /// General functions for rendering 
 
-    fn render_header(area: Rect, buf: &mut Buffer, library_name: String) {
+    fn render_header(area: Rect, buf: &mut Buffer, library_name: String, username: &str, server_address: &str, version: &str) {
         Paragraph::new(library_name)
             .bold()
             .centered()
             .render(area, buf);
-    }
-
-    fn render_footer(area: Rect, buf: &mut Buffer, text_render_footer: &str, username: &str, version: &str) {
-        Paragraph::new(text_render_footer)
-            .centered()
+        Paragraph::new(format!("Connected as {}\n{}", &username, &server_address))
+            .not_bold()
+            .left_aligned()
             .render(area, buf);
         Paragraph::new(format!("Toutui v{}", version))
             .right_aligned()
             .render(area, buf);
-        Paragraph::new(format!("Connected as {}", &username))
-            .left_aligned()
+    }
+
+    fn render_footer(area: Rect, buf: &mut Buffer, text_render_footer: &str) {
+        Paragraph::new(text_render_footer)
+            .centered()
             .render(area, buf);
     }
 

@@ -82,6 +82,7 @@ pub struct App {
    pub all_usernames: Vec<String>,
    pub all_server_addresses: Vec<String>,
    pub username: String,
+   pub server_address: String,
 }
 
 /// Init app
@@ -117,7 +118,19 @@ impl App {
 
         }
 
-    
+        // init server address (without prefix)
+        let mut server_address: String = String::new();
+        if let Some(var_server_address) = database.default_usr.get(1) {
+            server_address = var_server_address.clone();
+
+            // Remove "http://" or "https://"
+            if let Some(stripped) = server_address.strip_prefix("http://") {
+                server_address = stripped.to_string();
+            } else if let Some(stripped) = server_address.strip_prefix("https://") {
+                server_address = stripped.to_string();
+            }
+        }
+
          // init for `Libraries` (get all Libraries (shelf), can be a podcast or book type)
          let all_libraries = get_all_libraries(&token).await?;
          let libraries_names = collect_library_names(&all_libraries).await; // all the libraries names of the user ex : {name1, name2}
@@ -281,6 +294,7 @@ impl App {
             all_usernames,
             all_server_addresses,
             username,
+            server_address,
         })
     }
 
