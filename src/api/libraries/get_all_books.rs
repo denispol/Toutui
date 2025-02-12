@@ -72,6 +72,7 @@ pub struct Metadata {
     pub title_ignore_prefix: Option<String>,
     pub subtitle: Option<Value>,
     pub author_name: Option<String>,
+    pub author: Option<String>,
     pub narrator_name: Option<String>,
     pub series_name: Option<String>,
     pub genres: Option<Vec<String>>,

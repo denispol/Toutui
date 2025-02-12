@@ -94,6 +94,10 @@ pub struct App {
    pub descs_pod_cnt_list: Vec<String>,
    pub titles_pod_cnt_list: Vec<String>,
    pub durations_pod_cnt_list: Vec<String>,
+   pub published_year_library: Vec<String>,
+   pub desc_library: Vec<String>,
+   pub duration_library: Vec<String>,
+   pub auth_names_library_pod: Vec<String>,
 }
 
 /// Init app
@@ -213,7 +217,12 @@ impl App {
          let all_books = get_all_books(&token, &id_selected_lib).await?;
          let titles_library = collect_titles_library(&all_books).await;
          let ids_library = collect_ids_library(&all_books).await;
-         let auth_names_library = collect_auth_names_library(&all_books).await;
+         let auth_names_library = collect_auth_names_library(&all_books).await; // for a book
+         let auth_names_library_pod = collect_auth_names_library_pod(&all_books).await; // for a podcast
+         let published_year_library = collect_published_year_library(&all_books).await;
+         let desc_library = collect_desc_library(&all_books).await;
+         let duration_library = collect_duration_library(&all_books).await;
+         
 
 
          // init for `SearchBook`
@@ -342,6 +351,10 @@ impl App {
             descs_pod_cnt_list,
             titles_pod_cnt_list,
             durations_pod_cnt_list,
+            published_year_library,
+            desc_library,
+            duration_library,
+            auth_names_library_pod,
         })
     }
 

@@ -69,19 +69,20 @@ impl App {
         App::render_header(header_area, buf, self.lib_name_type.clone(), &self.username, &self.server_address, VERSION);
         App::render_footer(footer_area, buf, text_render_footer);
         self.render_list(list_area, buf, render_list_title, &self.titles_cnt_list.clone(), &mut self.list_state_cnt_list.clone());
-        self.render_info(item_area1, buf, &mut self.list_state_cnt_list.clone());
-        self.render_desc(item_area2, buf, &mut self.list_state_cnt_list.clone());
+        self.render_info_home(item_area1, buf, &mut self.list_state_cnt_list.clone());
+        self.render_desc_home(item_area2, buf, &mut self.list_state_cnt_list.clone());
     }
 
     /// AppView::Library rendering
     fn render_library(&mut self, area: Rect, buf: &mut Buffer) {
-        let [header_area, main_area, footer_area] = Layout::vertical([
+        let [header_area, main_area, refresh_area, footer_area] = Layout::vertical([
             Constraint::Length(2),
             Constraint::Fill(1),
             Constraint::Length(1),
+            Constraint::Length(1),
         ]).areas(area);
         
-        let [list_area, item_area] = Layout::vertical([Constraint::Fill(1), Constraint::Fill(1)]).areas(main_area);
+        let [list_area, item_area1, item_area2] = Layout::vertical([Constraint::Fill(1), Constraint::Length(2), Constraint::Fill(1)]).areas(main_area);
 
         let render_list_title = "Library";
         let text_render_footer = "Use ↓↑ to move, → to play, s to search, q to quit.";
@@ -89,7 +90,8 @@ impl App {
         App::render_header(header_area, buf, self.lib_name_type.clone(), &self.username, &self.server_address, VERSION);
         App::render_footer(footer_area, buf, text_render_footer);
         self.render_list(list_area, buf, render_list_title, &self.titles_library.clone(), &mut self.list_state_library.clone());
-        //self.render_selected_item(item_area, buf, &self.titles_library.clone(), self.auth_names_library.clone());
+        self.render_info_library(item_area1, buf, &mut self.list_state_library.clone());
+        self.render_desc_library(item_area2, buf, &mut self.list_state_library.clone());
     }
 
     /// AppView::Settings rendering
@@ -301,12 +303,12 @@ impl App {
 //        }
 //    }
 
-    // info about the book or podacst
-    fn render_info(&self, area: Rect, buf: &mut Buffer, list_state: &ListState) {
+    // info about the book or podacst for `Home`
+    fn render_info_home(&self, area: Rect, buf: &mut Buffer, list_state: &ListState) {
 
         if let Some(selected) = list_state.selected() {
             if self.is_podcast {
-            Paragraph::new(format!("[{}] - Author: {} - Episode: {} -  Duration: {}", 
+            Paragraph::new(format!("[{}] - Author: {} - Episode: {} - Duration: {}", 
                     self.titles_pod_cnt_list[selected], 
                     self.authors_pod_cnt_list[selected], 
                     self.nums_ep_pod_cnt_list[selected],
@@ -315,7 +317,7 @@ impl App {
                 .left_aligned()
                 .render(area, buf);
             } else {
-            Paragraph::new(format!("Author: {} - Year: {} -  Duration: {}", 
+            Paragraph::new(format!("Author: {} - Year: {} - Duration: {}", 
                     self.auth_names_cnt_list[selected], 
                     self.pub_year_cnt_list[selected], 
                     self.duration_cnt_list[selected]))
@@ -325,8 +327,8 @@ impl App {
         }
     }
 
-    // description of the book or podcast
-    fn render_desc(&self, area: Rect, buf: &mut Buffer, list_state: &ListState) {
+    // description of the book or podcast `Home`
+    fn render_desc_home(&self, area: Rect, buf: &mut Buffer, list_state: &ListState) {
 
         if let Some(selected) = list_state.selected() {
             let mut content: String = String::new();
@@ -343,6 +345,39 @@ impl App {
         }
     }
 
+    // info about the book or podacst for `Library`
+    fn render_info_library(&self, area: Rect, buf: &mut Buffer, list_state: &ListState) {
+
+        if let Some(selected) = list_state.selected() {
+            if self.is_podcast {
+            Paragraph::new(format!("Author: {}", 
+                    self.auth_names_library_pod[selected], 
+                    ))
+                .left_aligned()
+                .render(area, buf);
+            } 
+            else {
+            Paragraph::new(format!("Author: {} - Year: {} - Duration: {}", 
+                    self.auth_names_library[selected], 
+                    self.published_year_library[selected], 
+                    self.duration_library[selected]))
+                .left_aligned()
+                .render(area, buf);
+            }
+        }
+    }
+
+    // description of the book or podcast `Home`
+    fn render_desc_library(&self, area: Rect, buf: &mut Buffer, list_state: &ListState) {
+
+        if let Some(selected) = list_state.selected() {
+
+            Paragraph::new(self.desc_library[selected].clone())
+                .scroll((self.scroll_offset as u16, 0))
+                .wrap(Wrap { trim: true })
+                .render(area, buf);
+        }
+    }
     const fn alternate_colors(i: usize) -> Color {
         if i % 2 == 0 {
             NORMAL_ROW_BG
