@@ -10,7 +10,7 @@ use ratatui::{
     text::Line,
     widgets::{
         Block, Borders, HighlightSpacing, List, ListItem , ListState,  Paragraph, StatefulWidget,
-        Widget,
+        Widget, Wrap
     },
 };
 
@@ -54,9 +54,10 @@ impl Widget for &mut App {
 impl App {
     /// AppView::Home rendering
     fn render_home(&mut self, area: Rect, buf: &mut Buffer) {
-        let [header_area, main_area, footer_area] = Layout::vertical([
+        let [header_area, main_area, refresh_area, footer_area] = Layout::vertical([
             Constraint::Length(2),
             Constraint::Fill(1),
+            Constraint::Length(1),
             Constraint::Length(1),
         ]).areas(area);
 
@@ -68,7 +69,7 @@ impl App {
         App::render_header(header_area, buf, self.lib_name_type.clone(), &self.username, &self.server_address, VERSION);
         App::render_footer(footer_area, buf, text_render_footer);
         self.render_list(list_area, buf, render_list_title, &self.titles_cnt_list.clone(), &mut self.list_state_cnt_list.clone());
-//        self.render_selected_item(item_area, buf, &mut self.list_state.clone());
+        self.render_selected_item(item_area, buf, &mut self.list_state_cnt_list.clone());
     }
 
     /// AppView::Library rendering
@@ -298,6 +299,18 @@ impl App {
 //                .render(area, buf);
 //        }
 //    }
+
+    fn render_selected_item(&self, area: Rect, buf: &mut Buffer, list_state: &ListState) {
+
+        
+        if let Some(selected) = list_state.selected() {
+            let content = self.lorme.clone();
+            Paragraph::new(content.clone())
+                .scroll((self.scroll_offset as u16, 0))
+                .wrap(Wrap { trim: true })
+                .render(area, buf);
+        }
+    }
 
     const fn alternate_colors(i: usize) -> Color {
         if i % 2 == 0 {
