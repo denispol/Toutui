@@ -8,7 +8,7 @@ use serde_json::json;
 
 
 
-/// Get all books from a library
+/// Get all books or podcasts from a library
 /// https://api.audiobookshelf.org/#get-a-library-39-s-items
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]

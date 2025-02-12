@@ -303,26 +303,24 @@ impl App {
 
     // info about the book or podcast
     fn render_info(&self, area: Rect, buf: &mut Buffer, list_state: &ListState) {
-        
-        if let Some(selected) = list_state.selected() {
-            let content = self.lorme.clone();
 
-            Paragraph::new(format!("toto \n bismi"))
+        if let Some(selected) = list_state.selected() {
+
+            Paragraph::new(format!("Author: {} - Year: {} -  Duration: {}", 
+                    self.auth_names_cnt_list[selected], 
+                    self.pub_year_cnt_list[selected], 
+                    self.duration_cnt_list[selected]))
                 .left_aligned()
                 .render(area, buf);
         }
     }
 
-    // descption of the book or podcast
+    // description of the book or podcast
     fn render_desc(&self, area: Rect, buf: &mut Buffer, list_state: &ListState) {
 
-        
         if let Some(selected) = list_state.selected() {
-            let content = self.lorme.clone();
+            let content = self.desc_cnt_list[selected].clone();
 
-            Paragraph::new(format!("toto \n bismi"))
-                .left_aligned()
-                .render(area, buf);
             Paragraph::new(content.clone())
                 .scroll((self.scroll_offset as u16, 0))
                 .wrap(Wrap { trim: true })

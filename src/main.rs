@@ -6,6 +6,7 @@ mod ui;
 mod player;
 mod logic;
 mod db;
+mod utils;
 
 use login_app::AppLogin;
 use std::process;

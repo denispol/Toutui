@@ -54,6 +54,9 @@ pub struct App {
    pub list_state_settings_library: ListState,
    pub titles_cnt_list: Vec<String>,
    pub auth_names_cnt_list: Vec<String>,
+   pub pub_year_cnt_list: Vec<String>,
+   pub duration_cnt_list: Vec<String>,
+   pub desc_cnt_list: Vec<String>,
    pub ids_cnt_list: Vec<String>,
    pub titles_library: Vec<String>,
    pub ids_library: Vec<String>,
@@ -84,35 +87,11 @@ pub struct App {
    pub username: String,
    pub server_address: String,
    pub scroll_offset: u16,
-   pub max_scroll: usize,
-   pub lorme: String,
 }
 
 /// Init app
 impl App {
     pub async fn new() -> Result<Self> {
-            let lorme = r#"Quod opera consulta cogitabatur astute, ut hoc insidiarum genere Galli periret avunculus, ne eum ut praepotens acueret in fiduciam exitiosa coeptantem. verum navata est opera diligens hocque dilato Eusebius praepositus cubiculi missus est Cabillona aurum secum perferens, quo per turbulentos seditionum concitores occultius distributo et tumor consenuit militum et salus est in tuto locata praefecti. deinde cibo abunde perlato castra die praedicto sunt mota.
-Quaestione igitur per multiplices dilatata fortunas cum ambigerentur quaedam, non nulla levius actitata constaret, post multorum clades Apollinares ambo pater et filius in exilium acti cum ad locum Crateras nomine pervenissent, villam scilicet suam quae ab Antiochia vicensimo et quarto disiungitur lapide, ut mandatum est, fractis cruribus occiduntur.
-Et eodem impetu Domitianum praecipitem per scalas itidem funibus constrinxerunt, eosque coniunctos per ampla spatia civitatis acri raptavere discursu. iamque artuum et membrorum divulsa conpage superscandentes corpora mortuorum ad ultimam truncata deformitatem velut exsaturati mox abiecerunt in flumen.
-Incenderat autem audaces usque ad insaniam homines ad haec, quae nefariis egere conatibus, Luscus quidam curator urbis subito visus: eosque ut heiulans baiolorum praecentor ad expediendum quod orsi sunt incitans vocibus crebris. qui haut longe postea ideo vivus exustus est.
-Eodem tempore Serenianus ex duce, cuius ignavia populatam in Phoenice Celsen ante rettulimus, pulsatae maiestatis imperii reus iure postulatus ac lege, incertum qua potuit suffragatione absolvi, aperte convictus familiarem suum cum pileo, quo caput operiebat, incantato vetitis artibus ad templum misisse fatidicum, quaeritatum expresse an ei firmum portenderetur imperium, ut cupiebat, et cunctum.
-Novo denique perniciosoque exemplo idem Gallus ausus est inire flagitium grave, quod Romae cum ultimo dedecore temptasse aliquando dicitur Gallienus, et adhibitis paucis clam ferro succinctis vesperi per tabernas palabatur et conpita quaeritando Graeco sermone, cuius erat inpendio gnarus, quid de Caesare quisque sentiret. et haec confidenter agebat in urbe ubi pernoctantium luminum claritudo dierum solet imitari fulgorem. postremo agnitus saepe iamque, si prodisset, conspicuum se fore contemplans, non nisi luce palam egrediens ad agenda quae putabat seria cernebatur. et haec quidem medullitus multis gementibus agebantur.
-Horum adventum praedocti speculationibus fidis rectores militum tessera data sollemni armatos omnes celeri eduxere procursu et agiliter praeterito Calycadni fluminis ponte, cuius undarum magnitudo murorum adluit turres, in speciem locavere pugnandi. neque tamen exiluit quisquam nec permissus est congredi. formidabatur enim flagrans vesania manus et superior numero et ruitura sine respectu salutis in ferrum.
-Montius nos tumore inusitato quodam et novo ut rebellis et maiestati recalcitrantes Augustae per haec quae strepit incusat iratus nimirum quod contumacem praefectum, quid rerum ordo postulat ignorare dissimulantem formidine tenus iusserim custodiri.
-Et quoniam mirari posse quosdam peregrinos existimo haec lecturos forsitan, si contigerit, quamobrem cum oratio ad ea monstranda deflexerit quae Romae gererentur, nihil praeter seditiones narratur et tabernas et vilitates harum similis alias, summatim causas perstringam nusquam a veritate sponte propria digressurus.
-Dumque ibi diu moratur commeatus opperiens, quorum translationem ex Aquitania verni imbres solito crebriores prohibebant auctique torrentes, Herculanus advenit protector domesticus, Hermogenis ex magistro equitum filius, apud Constantinopolim, ut supra rettulimus, populari quondam turbela discerpti. quo verissime referente quae Gallus egerat, damnis super praeteritis maerens et futurorum timore suspensus angorem animi quam diu potuit emendabat.
-Ut enim quisque sibi plurimum confidit et ut quisque maxime virtute et sapientia sic munitus est, ut nullo egeat suaque omnia in se ipso posita iudicet, ita in amicitiis expetendis colendisque maxime excellit. Quid enim? Africanus indigens mei? Minime hercule! ac ne ego quidem illius; sed ego admiratione quadam virtutis eius, ille vicissim opinione fortasse non nulla, quam de meis moribus habebat, me dilexit; auxit benevolentiam consuetudo. Sed quamquam utilitates multae et magnae consecutae sunt, non sunt tamen ab earum spe causae diligendi profectae.
-Latius iam disseminata licentia onerosus bonis omnibus Caesar nullum post haec adhibens modum orientis latera cuncta vexabat nec honoratis parcens nec urbium primatibus nec plebeiis.
-Haec et huius modi quaedam innumerabilia ultrix facinorum impiorum bonorumque praemiatrix aliquotiens operatur Adrastia atque utinam semper quam vocabulo duplici etiam Nemesim appellamus: ius quoddam sublime numinis efficacis, humanarum mentium opinione lunari circulo superpositum, vel ut definiunt alii, substantialis tutela generali potentia partilibus praesidens fatis, quam theologi veteres fingentes Iustitiae filiam ex abdita quadam aeternitate tradunt omnia despectare terrena.
-Quam ob rem circumspecta cautela observatum est deinceps et cum edita montium petere coeperint grassatores, loci iniquitati milites cedunt. ubi autem in planitie potuerint reperiri, quod contingit adsidue, nec exsertare lacertos nec crispare permissi tela, quae vehunt bina vel terna, pecudum ritu inertium trucidantur.
-Etenim si attendere diligenter, existimare vere de omni hac causa volueritis, sic constituetis, iudices, nec descensurum quemquam ad hanc accusationem fuisse, cui, utrum vellet, liceret, nec, cum descendisset, quicquam habiturum spei fuisse, nisi alicuius intolerabili libidine et nimis acerbo odio niteretur. Sed ego Atratino, humanissimo atque optimo adulescenti meo necessario, ignosco, qui habet excusationem vel pietatis vel necessitatis vel aetatis. Si voluit accusare, pietati tribuo, si iussus est, necessitati, si speravit aliquid, pueritiae. Ceteris non modo nihil ignoscendum, sed etiam acriter est resistendum.
-Montius nos tumore inusitato quodam et novo ut rebellis et maiestati recalcitrantes Augustae per haec quae strepit incusat iratus nimirum quod contumacem praefectum, quid rerum ordo postulat ignorare dissimulantem formidine tenus iusserim custodiri.
-Sed ut tum ad senem senex de senectute, sic hoc libro ad amicum amicissimus scripsi de amicitia. Tum est Cato locutus, quo erat nemo fere senior temporibus illis, nemo prudentior; nunc Laelius et sapiens (sic enim est habitus) et amicitiae gloria excellens de amicitia loquetur. Tu velim a me animum parumper avertas, Laelium loqui ipsum putes. C. Fannius et Q. Mucius ad socerum veniunt post mortem Africani; ab his sermo oritur, respondet Laelius, cuius tota disputatio est de amicitia, quam legens te ipse cognosces.
-Procedente igitur mox tempore cum adventicium nihil inveniretur, relicta ora maritima in Lycaoniam adnexam Isauriae se contulerunt ibique densis intersaepientes itinera praetenturis provincialium et viatorum opibus pascebantur.
-Quam ob rem ut ii qui superiores sunt submittere se debent in amicitia, sic quodam modo inferiores extollere. Sunt enim quidam qui molestas amicitias faciunt, cum ipsi se contemni putant; quod non fere contingit nisi iis qui etiam contemnendos se arbitrantur; qui hac opinione non modo verbis sed etiam opere levandi sunt.
-Quare talis improborum consensio non modo excusatione amicitiae tegenda non est sed potius supplicio omni vindicanda est, ut ne quis concessum putet amicum vel bellum patriae inferentem sequi; quod quidem, ut res ire coepit, haud scio an aliquando futurum sit. Mihi autem non minori curae est, qualis res publica post mortem meam futura, quam qualis hodie sit.
-"#.to_string();
-
 
         // init config
         let config = load_config()?;
@@ -184,6 +163,9 @@ Quare talis improborum consensio non modo excusatione amicitiae tegenda non est 
         // init for `Home` (continue listening)
         let mut titles_cnt_list: Vec<String> = Vec::new();
         let mut auth_names_cnt_list: Vec<String> = Vec::new();
+        let mut pub_year_cnt_list: Vec<String> = Vec::new();
+        let mut duration_cnt_list: Vec<String> = Vec::new();
+        let mut desc_cnt_list: Vec<String> = Vec::new();
         let mut ids_cnt_list: Vec<String> = Vec::new();
         let mut ids_ep_cnt_list: Vec<String> = Vec::new();
 
@@ -200,6 +182,9 @@ Quare talis improborum consensio non modo excusatione amicitiae tegenda non est 
          let continue_listening = get_continue_listening(&token).await?;
          titles_cnt_list = collect_titles_cnt_list(&continue_listening).await;
          auth_names_cnt_list = collect_auth_names_cnt_list(&continue_listening).await;
+         pub_year_cnt_list = collect_pub_year_cnt_list(&continue_listening).await;
+         duration_cnt_list = collect_duration_cnt_list(&continue_listening).await;
+         desc_cnt_list = collect_desc_cnt_list(&continue_listening).await;
          ids_cnt_list = collect_ids_cnt_list(&continue_listening).await;
          }
 
@@ -250,7 +235,6 @@ Quare talis improborum consensio non modo excusatione amicitiae tegenda non est 
 
          // init variables for for scrolling into description section 
          let scroll_offset = 0;
-         let max_scroll = lorme.len().saturating_sub(5);
 
 
 
@@ -296,6 +280,9 @@ Quare talis improborum consensio non modo excusatione amicitiae tegenda non est 
             list_state_settings_library,
             titles_cnt_list,
             auth_names_cnt_list,
+            pub_year_cnt_list,
+            duration_cnt_list,
+            desc_cnt_list,
             ids_cnt_list,
             view_state,
             titles_library,
@@ -327,8 +314,6 @@ Quare talis improborum consensio non modo excusatione amicitiae tegenda non est 
             username,
             server_address,
             scroll_offset,
-            max_scroll,
-            lorme,
         })
     }
 
@@ -370,20 +355,28 @@ pub fn handle_key(&mut self, key: KeyEvent) {
                                                        // (`let result = app.run(&mut terminal);`)
         KeyCode::Char('R') => self.should_exit = true, // same as above, need to quit once before
                                                        // be able to execute `R` from main function 
-        KeyCode::Char('j') | KeyCode::Down => self.select_next(),
+        KeyCode::Char('j') | KeyCode::Down => {
+            self.select_next();
+            self.scroll_offset = 0; 
+
+        }
         // scroll up into description section
         KeyCode::Char('J') =>{
-            if usize::from(self.scroll_offset) < self.max_scroll {
+         {
                 self.scroll_offset += 1;
             }
         }        
         // go start description section
         KeyCode::Char('H') =>{
-            if usize::from(self.scroll_offset) < self.max_scroll {
+             {
                 self.scroll_offset = 0;
             }
         }        
-        KeyCode::Char('k') | KeyCode::Up => self.select_previous(),
+        KeyCode::Char('k') | KeyCode::Up => {
+            self.select_previous(); 
+            self.scroll_offset = 0; 
+        }
+
         // scroll down into description section
         KeyCode::Char('K') => {
             if usize::from(self.scroll_offset) > 0 {
