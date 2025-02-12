@@ -61,7 +61,7 @@ impl App {
             Constraint::Length(1),
         ]).areas(area);
 
-        let [list_area, item_area] = Layout::vertical([Constraint::Fill(1), Constraint::Fill(1)]).areas(main_area);
+        let [list_area, item_area1, item_area2] = Layout::vertical([Constraint::Fill(1), Constraint::Length(2), Constraint::Fill(1)]).areas(main_area);
 
         let render_list_title = "Continue Listening";
         let text_render_footer = "Use ↓↑ to move, → to play, s to search, q to quit.";
@@ -69,7 +69,8 @@ impl App {
         App::render_header(header_area, buf, self.lib_name_type.clone(), &self.username, &self.server_address, VERSION);
         App::render_footer(footer_area, buf, text_render_footer);
         self.render_list(list_area, buf, render_list_title, &self.titles_cnt_list.clone(), &mut self.list_state_cnt_list.clone());
-        self.render_selected_item(item_area, buf, &mut self.list_state_cnt_list.clone());
+        self.render_info(item_area1, buf, &mut self.list_state_cnt_list.clone());
+        self.render_desc(item_area2, buf, &mut self.list_state_cnt_list.clone());
     }
 
     /// AppView::Library rendering
@@ -300,11 +301,28 @@ impl App {
 //        }
 //    }
 
-    fn render_selected_item(&self, area: Rect, buf: &mut Buffer, list_state: &ListState) {
+    // info about the book or podcast
+    fn render_info(&self, area: Rect, buf: &mut Buffer, list_state: &ListState) {
+        
+        if let Some(selected) = list_state.selected() {
+            let content = self.lorme.clone();
+
+            Paragraph::new(format!("toto \n bismi"))
+                .left_aligned()
+                .render(area, buf);
+        }
+    }
+
+    // descption of the book or podcast
+    fn render_desc(&self, area: Rect, buf: &mut Buffer, list_state: &ListState) {
 
         
         if let Some(selected) = list_state.selected() {
             let content = self.lorme.clone();
+
+            Paragraph::new(format!("toto \n bismi"))
+                .left_aligned()
+                .render(area, buf);
             Paragraph::new(content.clone())
                 .scroll((self.scroll_offset as u16, 0))
                 .wrap(Wrap { trim: true })
