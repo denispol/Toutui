@@ -361,17 +361,9 @@ pub fn handle_key(&mut self, key: KeyEvent) {
 
         }
         // scroll up into description section
-        KeyCode::Char('J') =>{
-         {
-                self.scroll_offset += 1;
-            }
-        }        
+        KeyCode::Char('J') => self.scroll_offset += 1,
         // go start description section
-        KeyCode::Char('H') =>{
-             {
-                self.scroll_offset = 0;
-            }
-        }        
+        KeyCode::Char('H') => self.scroll_offset = 0,
         KeyCode::Char('k') | KeyCode::Up => {
             self.select_previous(); 
             self.scroll_offset = 0; 
@@ -383,8 +375,14 @@ pub fn handle_key(&mut self, key: KeyEvent) {
                 self.scroll_offset -= 1;
             }
         }
-        KeyCode::Char('g') | KeyCode::Home => self.select_first(),
-        KeyCode::Char('G') | KeyCode::End => self.select_last(),
+        KeyCode::Char('g') | KeyCode::Home => {
+            self.select_first();
+            self.scroll_offset = 0; 
+        }        
+        KeyCode::Char('G') | KeyCode::End => {
+            self.select_last();
+            self.scroll_offset = 0; 
+        }
         KeyCode::Char('l') | KeyCode::Right | KeyCode::Enter => {
             // Clone needed because variables will be used in a spawn
             let token = self.token.clone();
