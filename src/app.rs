@@ -3,6 +3,8 @@ use crate::api::utils::collect_personalized_view_pod::*;
 use crate::api::utils::collect_get_all_books::*;
 use crate::api::utils::collect_get_pod_ep::*;
 use crate::api::utils::collect_get_all_libraries::*;
+use crate::api::utils::collect_get_media_progress::*;
+use crate::api::me::get_media_progress::*;
 use crate::api::libraries::get_library_perso_view::*;
 use crate::api::libraries::get_library_perso_view_pod::*;
 use crate::api::libraries::get_all_books::*;
@@ -131,6 +133,7 @@ pub struct App {
    pub published_year_library_search_book: Vec<String>,
    pub desc_library_search_book: Vec<String>,
    pub duration_library_search_book: Vec<String>,
+   pub book_progress: Vec<Vec<String>>,
 }
 
 /// Init app
@@ -219,6 +222,9 @@ impl App {
         let mut descs_pod_cnt_list: Vec<String> = Vec::new();
         let mut titles_pod_cnt_list: Vec<String> = Vec::new();
         let mut durations_pod_cnt_list: Vec<String> = Vec::new();
+        let mut book_progress: Vec<Vec<String>> = Vec::new();
+        
+                 let mut values: Vec<String> = Vec::new();
 
 
         if is_podcast {
@@ -244,6 +250,16 @@ impl App {
          duration_cnt_list = collect_duration_cnt_list(&continue_listening).await;
          desc_cnt_list = collect_desc_cnt_list(&continue_listening).await;
          ids_cnt_list = collect_ids_cnt_list(&continue_listening).await;
+         for id in ids_cnt_list.clone() {
+             if let Ok(val) = get_book_progress(&token, &id).await {
+                 let mut values: Vec<String> = Vec::new();
+                 values.push(collect_progress_percentage_book(&val).await);
+                 values.push(collect_is_finished_book(&val).await);
+                 values.push(collect_remaining_time(&val).await);
+                 book_progress.push(values);
+             }
+         }
+
          }
 
          //init for `Library ` (all books  or podcasts of a Library (shelf))
@@ -264,13 +280,11 @@ impl App {
          let auth_names_search_book: Vec<String> = Vec::new();
          let published_year_library_search_book: Vec<String> = Vec::new();
          let desc_library_search_book: Vec<String> = Vec::new();
+         let auth_names_search_book: Vec<String> = Vec::new();
+         let auth_names_pod_search_book: Vec<String> = Vec::new();
+         let published_year_library_search_book: Vec<String> = Vec::new();
+         let desc_library_search_book: Vec<String> = Vec::new();
          let duration_library_search_book: Vec<String> = Vec::new();
-         let ids_search_book: Vec<String> = Vec::new();
-         let ids_search_book: Vec<String> = Vec::new();
-         let ids_search_book: Vec<String> = Vec::new();
-         let ids_search_book: Vec<String> = Vec::new();
-         let ids_search_book: Vec<String> = Vec::new();
-         let ids_search_book: Vec<String> = Vec::new();
          let search_mode = false;
          let search_query = "  ".to_string();
          let all_titles_pod_ep_search: Vec<Vec<String>> = Vec::new(); // init in tui.rs in render search book function
@@ -475,6 +489,7 @@ impl App {
             published_year_library_search_book,
             desc_library_search_book,
             duration_library_search_book,
+            book_progress,
         })
     }
 

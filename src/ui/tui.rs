@@ -387,10 +387,14 @@ impl App {
                 .left_aligned()
                 .render(area, buf);
             } else {
-            Paragraph::new(format!("Author: {} - Year: {} - Duration: {}", 
+            Paragraph::new(format!("Author: {} - Year: {} - Duration: {} - Progress: {}, {}, {}", 
                     self.auth_names_cnt_list[selected], 
                     self.pub_year_cnt_list[selected], 
-                    self.duration_cnt_list[selected]))
+                    self.duration_cnt_list[selected],
+                    self.book_progress[selected][0], // precentage progression
+                    self.book_progress[selected][2], // time left
+                    self.book_progress[selected][1], // is finished
+                    ))
                 .left_aligned()
                 .render(area, buf);
             }
