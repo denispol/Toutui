@@ -153,13 +153,14 @@ impl App {
 
     /// AppView::SearchBook rendering
     fn render_search_book(&mut self, area: Rect, buf: &mut Buffer) {
-        let [header_area, main_area, footer_area] = Layout::vertical([
+        let [header_area, main_area, refresh_area, footer_area] = Layout::vertical([
             Constraint::Length(2),
             Constraint::Fill(1),
             Constraint::Length(1),
+            Constraint::Length(1),
         ]).areas(area);
 
-        let [list_area, item_area] = Layout::vertical([Constraint::Fill(1), Constraint::Fill(1)]).areas(main_area);
+        let [list_area, item_area1, item_area2] = Layout::vertical([Constraint::Fill(1), Constraint::Length(2), Constraint::Fill(1)]).areas(main_area);
 
         let render_list_title = "Search result";
         let text_render_footer = "Use Tab to back home, ↓↑ to move, → to play, s to search, q to quit.";
@@ -179,17 +180,47 @@ impl App {
             .map(|(index, title)| (index, title.clone())) 
             .collect();
 
-        let mut titles_search_book: Vec<String> = Vec::new();
+        let mut titles_search_book_or_pod: Vec<String> = Vec::new();
         let mut index_to_keep: Vec<usize> = Vec::new();
         for (index, title) in idx_and_titles {
-            titles_search_book.push(title.to_string());
+            titles_search_book_or_pod.push(title.to_string());
             index_to_keep.push(index)
         }
 
-        let titles_search_book: &[String] = &titles_search_book;
+        let titles_search_book_or_pod: &[String] = &titles_search_book_or_pod;
 
         // for book
         self.ids_search_book = self.ids_library
+            .iter()
+            .enumerate()
+            .filter(|(index, _)| index_to_keep.contains(&index))
+            .map(|(_, value)| value.clone())
+            .collect();
+        self.auth_names_pod_search_book = self.auth_names_library_pod
+            .iter()
+            .enumerate()
+            .filter(|(index, _)| index_to_keep.contains(&index))
+            .map(|(_, value)| value.clone())
+            .collect();
+        self.auth_names_search_book = self.auth_names_library
+            .iter()
+            .enumerate()
+            .filter(|(index, _)| index_to_keep.contains(&index))
+            .map(|(_, value)| value.clone())
+            .collect();
+        self.published_year_library_search_book = self.published_year_library
+            .iter()
+            .enumerate()
+            .filter(|(index, _)| index_to_keep.contains(&index))
+            .map(|(_, value)| value.clone())
+            .collect();
+        self.desc_library_search_book = self.desc_library
+            .iter()
+            .enumerate()
+            .filter(|(index, _)| index_to_keep.contains(&index))
+            .map(|(_, value)| value.clone())
+            .collect();
+        self.duration_library_search_book = self.duration_library
             .iter()
             .enumerate()
             .filter(|(index, _)| index_to_keep.contains(&index))
@@ -260,8 +291,9 @@ impl App {
 
         App::render_header(header_area, buf, self.lib_name_type.clone(), &self.username, &self.server_address, VERSION);
         App::render_footer(footer_area, buf, text_render_footer);
-        self.render_list(list_area, buf, render_list_title, titles_search_book, &mut self.list_state_search_results.clone());
-        //self.render_selected_item(item_area, buf, &self.titles_library.clone(), self.auth_names_library.clone());
+        self.render_list(list_area, buf, render_list_title, titles_search_book_or_pod, &mut self.list_state_search_results.clone());
+        self.render_info_search_book(item_area1, buf, &mut &self.list_state_search_results.clone());
+        self.render_desc_search_book(item_area2, buf, &mut &self.list_state_search_results.clone());
 
     }
 
@@ -340,14 +372,6 @@ impl App {
         StatefulWidget::render(list, area, buf, list_state);
     }
 
-//    fn render_selected_item(&self, area: Rect, buf: &mut Buffer, list_state: &ListState, author_name: Vec<&String>) {
-//        if let Some(selected) = list_state.selected() {
-//            let content = author_name[selected];
-//            Paragraph::new(content.clone())
-//                .wrap(Wrap { trim: true })
-//                .render(area, buf);
-//        }
-//    }
 
     // info about the book or podacst for `Home`
     fn render_info_home(&self, area: Rect, buf: &mut Buffer, list_state: &ListState) {
@@ -485,6 +509,39 @@ impl App {
         }
     }
 
+    // info about the book or podacst for `SearchBook`
+    fn render_info_search_book(&self, area: Rect, buf: &mut Buffer, list_state: &ListState) {
+
+        if let Some(selected) = list_state.selected() {
+            if self.is_podcast {
+            Paragraph::new(format!("Author: {}", 
+                    self.auth_names_pod_search_book[selected], 
+                    ))
+                .left_aligned()
+                .render(area, buf);
+            } 
+            else {
+            Paragraph::new(format!("Author: {} - Year: {} - Duration: {}", 
+                    self.auth_names_search_book[selected], 
+                    self.published_year_library_search_book[selected], 
+                    self.duration_library_search_book[selected]))
+                .left_aligned()
+                .render(area, buf);
+            }
+        }
+    }
+
+    // description of the book or podcast `SearchBook`
+    fn render_desc_search_book(&self, area: Rect, buf: &mut Buffer, list_state: &ListState) {
+
+        if let Some(selected) = list_state.selected() {
+
+            Paragraph::new(self.desc_library_search_book[selected].clone())
+                .scroll((self.scroll_offset as u16, 0))
+                .wrap(Wrap { trim: true })
+                .render(area, buf);
+        }
+    }
     const fn alternate_colors(i: usize) -> Color {
         if i % 2 == 0 {
             NORMAL_ROW_BG

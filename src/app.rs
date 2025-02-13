@@ -126,6 +126,11 @@ pub struct App {
    pub all_descs_pod_ep_search: Vec<Vec<String>>,
    pub all_titles_pod_search: Vec<Vec<String>>,
    pub all_durations_pod_ep_search: Vec<Vec<String>>,
+   pub auth_names_pod_search_book: Vec<String>,
+   pub auth_names_search_book: Vec<String>,
+   pub published_year_library_search_book: Vec<String>,
+   pub desc_library_search_book: Vec<String>,
+   pub duration_library_search_book: Vec<String>,
 }
 
 /// Init app
@@ -254,6 +259,17 @@ impl App {
 
 
          // init for `SearchBook`
+         let ids_search_book: Vec<String> = Vec::new();
+         let auth_names_pod_search_book: Vec<String> = Vec::new();
+         let auth_names_search_book: Vec<String> = Vec::new();
+         let published_year_library_search_book: Vec<String> = Vec::new();
+         let desc_library_search_book: Vec<String> = Vec::new();
+         let duration_library_search_book: Vec<String> = Vec::new();
+         let ids_search_book: Vec<String> = Vec::new();
+         let ids_search_book: Vec<String> = Vec::new();
+         let ids_search_book: Vec<String> = Vec::new();
+         let ids_search_book: Vec<String> = Vec::new();
+         let ids_search_book: Vec<String> = Vec::new();
          let ids_search_book: Vec<String> = Vec::new();
          let search_mode = false;
          let search_query = "  ".to_string();
@@ -454,6 +470,11 @@ impl App {
             all_descs_pod_ep_search,
             all_titles_pod_search,
             all_durations_pod_ep_search,
+            auth_names_pod_search_book,
+            auth_names_search_book,
+            published_year_library_search_book,
+            desc_library_search_book,
+            duration_library_search_book,
         })
     }
 
