@@ -6,11 +6,11 @@ pub fn convert_seconds(vec_seconds: Vec<f64>) -> Vec<String> {
             let minutes = total_minutes % 60;
 
             if hours == 0 {
-                format!("{} minutes", minutes)
+                format!("{}m", minutes)
             } else if minutes == 0 {
-                format!("{} hours", hours)
+                format!("{}h", hours)
             } else {
-                format!("{} hours {} minutes", hours, minutes)
+                format!("{}h{}m", hours, minutes)
             }
         })
         .collect()
