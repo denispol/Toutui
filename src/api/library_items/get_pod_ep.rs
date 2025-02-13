@@ -106,7 +106,7 @@ pub struct Enclosure {
 #[serde(rename_all = "camelCase")]
 pub struct AudioFile {
     pub path: Option<String>,
-    pub duration_ms: Option<i64>,
+    pub duration: Option<f64>,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]

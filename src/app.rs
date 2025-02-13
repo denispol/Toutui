@@ -67,8 +67,22 @@ pub struct App {
    pub is_podcast: bool,
    pub all_titles_pod_ep: Vec<Vec<String>>,
    pub all_ids_pod_ep: Vec<Vec<String>>,
+   pub all_subtitles_pod_ep: Vec<Vec<String>>,
+   pub all_seasons_pod_ep: Vec<Vec<String>>,
+   pub all_episodes_pod_ep: Vec<Vec<String>>,
+   pub all_authors_pod_ep: Vec<Vec<String>>,
+   pub all_descs_pod_ep: Vec<Vec<String>>,
+   pub all_titles_pod: Vec<Vec<String>>,
+   pub all_durations_pod_ep: Vec<Vec<String>>,
    pub titles_pod_ep: Vec<String>,
    pub ids_pod_ep: Vec<String>,
+   pub subtitles_pod_ep: Vec<String>,
+   pub seasons_pod_ep: Vec<String>,
+   pub episodes_pod_ep: Vec<String>,
+   pub authors_pod_ep: Vec<String>,
+   pub descs_pod_ep: Vec<String>,
+   pub titles_pod: Vec<String>,
+   pub durations_pod_ep: Vec<String>,
    pub ids_ep_cnt_list: Vec<String>,
    pub all_titles_pod_ep_search: Vec<Vec<String>>,
    pub titles_pod_ep_search: Vec<String>,
@@ -229,18 +243,33 @@ impl App {
          let ids_search_book: Vec<String> = Vec::new();
          let search_mode = false;
          let search_query = "  ".to_string();
-         let all_titles_pod_ep_search: Vec<Vec<String>> = Vec::new();
+         let all_titles_pod_ep_search: Vec<Vec<String>> = Vec::new(); // init in tui.rs in render search book function
+         let all_ids_pod_ep_search: Vec<Vec<String>> = Vec::new(); // init in tui.rs in render search book function
          let titles_pod_ep_search: Vec<String> = Vec::new();
          let is_from_search_pod = false;
          let ids_library_pod_search: Vec<String> = Vec::new();
-         let mut all_ids_pod_ep_search: Vec<Vec<String>> = Vec::new();
+
 
 
          //init for `PodcastEpisode`
          let mut all_titles_pod_ep: Vec<Vec<String>> = Vec::new(); // fetch titles for all podcast episodes. Ex: {titles_pod1_ep1, title_pod1_ep2}, {titles_pod2_ep1, title_pod2_ep2} 
          let mut all_ids_pod_ep: Vec<Vec<String>> = Vec::new();
+         let mut all_subtitles_pod_ep: Vec<Vec<String>> = Vec::new();
+         let mut all_seasons_pod_ep: Vec<Vec<String>> = Vec::new();
+         let mut all_episodes_pod_ep: Vec<Vec<String>> = Vec::new();
+         let mut all_authors_pod_ep: Vec<Vec<String>> = Vec::new();
+         let mut all_descs_pod_ep: Vec<Vec<String>> = Vec::new();
+         let mut all_titles_pod: Vec<Vec<String>> = Vec::new(); // fetch title of a podcast (not episode)
+         let mut all_durations_pod_ep: Vec<Vec<String>> = Vec::new();
          let titles_pod_ep: Vec<String> = Vec::new(); // fetch episode titles for a podcast. {titles_pod1_ep1, title_pod1_ep2} 
          let ids_pod_ep: Vec<String> = Vec::new();
+         let subtitles_pod_ep: Vec<String> = Vec::new();
+         let seasons_pod_ep: Vec<String> = Vec::new();
+         let episodes_pod_ep: Vec<String> = Vec::new();
+         let authors_pod_ep: Vec<String> = Vec::new();
+         let descs_pod_ep: Vec<String> = Vec::new();
+         let titles_pod: Vec<String> = Vec::new();
+         let durations_pod_ep: Vec<String> = Vec::new();
 
          for i in 0..ids_library.len() 
          {let podcast_episode = get_pod_ep(&token, ids_library[i].as_str()).await?;
@@ -248,6 +277,20 @@ impl App {
          all_titles_pod_ep.push(title);
          let id = collect_ids_pod_ep(&podcast_episode).await;
          all_ids_pod_ep.push(id);
+         let sub = collect_subtitles_pod_ep(&podcast_episode).await;
+         all_subtitles_pod_ep.push(sub);
+         let seasons = collect_seasons_pod_ep(&podcast_episode).await;
+         all_seasons_pod_ep.push(seasons);
+         let numep = collect_episodes_pod_ep(&podcast_episode).await;
+         all_episodes_pod_ep.push(numep);
+         let authors = collect_authors_pod_ep(&podcast_episode).await;
+         all_authors_pod_ep.push(authors);
+         let desc = collect_descs_pod_ep(&podcast_episode).await;
+         all_descs_pod_ep.push(desc);
+         let title_pod = collect_titles_pod(&podcast_episode).await;
+         all_titles_pod.push(title_pod);
+         let duration = collect_durations_pod_ep(&podcast_episode).await;
+         all_durations_pod_ep.push(duration);
          }
 
          // init for `Settings`
@@ -355,6 +398,20 @@ impl App {
             desc_library,
             duration_library,
             auth_names_library_pod,
+            all_subtitles_pod_ep,
+            all_seasons_pod_ep,
+            all_episodes_pod_ep,
+            all_authors_pod_ep,
+            all_descs_pod_ep,
+            all_titles_pod,
+            all_durations_pod_ep,
+            subtitles_pod_ep,
+            seasons_pod_ep,
+            episodes_pod_ep,
+            authors_pod_ep,
+            descs_pod_ep,
+            titles_pod,
+            durations_pod_ep,
         })
     }
 
@@ -499,6 +556,13 @@ pub fn handle_key(&mut self, key: KeyEvent) {
                     if self.is_podcast {
                     if let Some(index) = selected_library {
                         self.titles_pod_ep = self.all_titles_pod_ep[index].clone();
+                        self.subtitles_pod_ep = self.all_subtitles_pod_ep[index].clone();
+                        self.seasons_pod_ep = self.all_seasons_pod_ep[index].clone();
+                        self.episodes_pod_ep = self.all_episodes_pod_ep[index].clone();
+                        self.authors_pod_ep = self.all_authors_pod_ep[index].clone();
+                        self.descs_pod_ep = self.all_descs_pod_ep[index].clone();
+                        self.titles_pod = self.all_titles_pod[index].clone();
+                        self.durations_pod_ep = self.all_durations_pod_ep[index].clone();
                         self.list_state_pod_ep.select(Some(0));
                         self.view_state = AppView::PodcastEpisode;
                     }} else {

@@ -225,15 +225,16 @@ impl App {
 
     /// AppView::PodcastEpisode
     fn render_pod_ep(&mut self, area: Rect, buf: &mut Buffer) {
-        let [header_area, main_area, footer_area] = Layout::vertical([
+        let [header_area, main_area, refresh_area, footer_area] = Layout::vertical([
             Constraint::Length(2),
             Constraint::Fill(1),
             Constraint::Length(1),
+            Constraint::Length(1),
         ]).areas(area);
-        
-        let [list_area, item_area] = Layout::vertical([Constraint::Fill(1), Constraint::Fill(1)]).areas(main_area);
 
-        let render_list_title = "Pod Ep";
+        let [list_area, item_area1, item_area2] = Layout::vertical([Constraint::Fill(1), Constraint::Length(2), Constraint::Fill(1)]).areas(main_area);
+
+        let render_list_title = "Episodes";
         let text_render_footer = "Use ↓↑ to move, → to play, s to search, q to quit.";
 
         App::render_header(header_area, buf, self.lib_name_type.clone(), &self.username, &self.server_address, VERSION);
@@ -242,8 +243,9 @@ impl App {
         self.render_list(list_area, buf, render_list_title, &self.titles_pod_ep_search.clone(), &mut self.list_state_pod_ep.clone());
         } else {
         self.render_list(list_area, buf, render_list_title, &self.titles_pod_ep.clone(), &mut self.list_state_pod_ep.clone());
+        self.render_info_pod_ep(item_area1, buf, &mut &self.list_state_pod_ep.clone());
+        self.render_desc_pod_ep(item_area2, buf, &mut &self.list_state_pod_ep.clone());
         }
-        //self.render_selected_item(item_area, buf, &self.titles_library.clone(), self.auth_names_library.clone());
     }
 
     /// General functions for rendering 
@@ -367,12 +369,51 @@ impl App {
         }
     }
 
-    // description of the book or podcast `Home`
+    // description of the book or podcast `Library`
     fn render_desc_library(&self, area: Rect, buf: &mut Buffer, list_state: &ListState) {
 
         if let Some(selected) = list_state.selected() {
 
             Paragraph::new(self.desc_library[selected].clone())
+                .scroll((self.scroll_offset as u16, 0))
+                .wrap(Wrap { trim: true })
+                .render(area, buf);
+        }
+    }
+
+    // info about the podcast for `PodcastEpisode`
+    fn render_info_pod_ep(&self, area: Rect, buf: &mut Buffer, list_state: &ListState) {
+
+        let n = self.durations_pod_ep.len();
+        let duplicated_titles = vec![self.titles_pod[0].clone(); n];
+        let duplicated_authors = vec![self.authors_pod_ep[0].clone(); n];
+        if let Some(selected) = list_state.selected() {
+    //        if self.is_podcast {
+    //        Paragraph::new(format!("Author: {}", 
+    //                self.auth_names_library_pod[selected], 
+    //                ))
+    //            .left_aligned()
+    //            .render(area, buf);
+    //        } 
+    //        else {
+            Paragraph::new(format!("[{}] - Author: {} - Episode: {} - Duration: {} ", 
+                    duplicated_titles[selected].trim(), 
+                    duplicated_authors[selected].trim(), 
+                    self.episodes_pod_ep[selected].trim(),
+                    self.durations_pod_ep[selected].trim(),
+                    ))
+                .left_aligned()
+                .render(area, buf);
+            }
+    //    }
+    }
+
+    // desc of the podcast for `PodcastEpisode`
+    fn render_desc_pod_ep(&self, area: Rect, buf: &mut Buffer, list_state: &ListState) {
+
+        if let Some(selected) = list_state.selected() {
+
+            Paragraph::new(self.subtitles_pod_ep[selected].clone())
                 .scroll((self.scroll_offset as u16, 0))
                 .wrap(Wrap { trim: true })
                 .render(area, buf);
