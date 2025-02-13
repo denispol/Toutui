@@ -391,9 +391,9 @@ impl App {
                     self.auth_names_cnt_list[selected], 
                     self.pub_year_cnt_list[selected], 
                     self.duration_cnt_list[selected],
-                    self.book_progress[selected][0], // precentage progression
-                    self.book_progress[selected][2], // time left
-                    self.book_progress[selected][1], // is finished
+                    self.book_progress_cnt_list[selected][0], // precentage progression
+                    self.book_progress_cnt_list[selected][2], // time left
+                    self.book_progress_cnt_list[selected][1], // is finished
                     ))
                 .left_aligned()
                 .render(area, buf);
@@ -431,10 +431,13 @@ impl App {
                 .render(area, buf);
             } 
             else {
-            Paragraph::new(format!("Author: {} - Year: {} - Duration: {}", 
+            Paragraph::new(format!("Author: {} - Year: {} - Duration: {}\nProgress: {}%, {}, {}", 
                     self.auth_names_library[selected], 
                     self.published_year_library[selected], 
-                    self.duration_library[selected]))
+                    self.duration_library[selected],
+                    self.book_progress_library[selected][0], // precentage progression
+                    self.book_progress_library[selected][2], // time left
+                    self.book_progress_library[selected][1],)) // is finished
                 .left_aligned()
                 .render(area, buf);
             }

@@ -133,7 +133,8 @@ pub struct App {
    pub published_year_library_search_book: Vec<String>,
    pub desc_library_search_book: Vec<String>,
    pub duration_library_search_book: Vec<String>,
-   pub book_progress: Vec<Vec<String>>,
+   pub book_progress_cnt_list: Vec<Vec<String>>,
+   pub book_progress_library: Vec<Vec<String>>,
 }
 
 /// Init app
@@ -222,11 +223,8 @@ impl App {
         let mut descs_pod_cnt_list: Vec<String> = Vec::new();
         let mut titles_pod_cnt_list: Vec<String> = Vec::new();
         let mut durations_pod_cnt_list: Vec<String> = Vec::new();
-        let mut book_progress: Vec<Vec<String>> = Vec::new();
+        let mut book_progress_cnt_list: Vec<Vec<String>> = Vec::new();
         
-                 let mut values: Vec<String> = Vec::new();
-
-
         if is_podcast {
          // init for  `Home` (continue listening) for podcasts
          let continue_listening_pod = get_continue_listening_pod(&token).await?;
@@ -256,7 +254,7 @@ impl App {
                  values.push(collect_progress_percentage_book(&val).await);
                  values.push(collect_is_finished_book(&val).await);
                  values.push(collect_remaining_time(&val).await);
-                 book_progress.push(values);
+                 book_progress_cnt_list.push(values);
              }
          }
 
@@ -271,7 +269,19 @@ impl App {
          let published_year_library = collect_published_year_library(&all_books).await;
          let desc_library = collect_desc_library(&all_books).await;
          let duration_library = collect_duration_library(&all_books).await;
-         
+         let mut book_progress_library: Vec<Vec<String>> = Vec::new();
+         if !is_podcast{
+         for id in ids_library.clone() {
+             if let Ok(val) = get_book_progress(&token, &id).await {
+                 let mut values: Vec<String> = Vec::new();
+                 values.push(collect_progress_percentage_book(&val).await);
+                 values.push(collect_is_finished_book(&val).await);
+                 values.push(collect_remaining_time(&val).await);
+                 book_progress_library.push(values);
+             }
+         }
+
+         }            
 
 
          // init for `SearchBook`
@@ -489,7 +499,8 @@ impl App {
             published_year_library_search_book,
             desc_library_search_book,
             duration_library_search_book,
-            book_progress,
+            book_progress_cnt_list,
+            book_progress_library,
         })
     }
 
