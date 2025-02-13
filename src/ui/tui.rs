@@ -61,7 +61,7 @@ impl App {
             Constraint::Length(1),
         ]).areas(area);
 
-        let [list_area, item_area1, item_area2] = Layout::vertical([Constraint::Fill(1), Constraint::Length(2), Constraint::Fill(1)]).areas(main_area);
+        let [list_area, item_area1, item_area2] = Layout::vertical([Constraint::Fill(1), Constraint::Length(3), Constraint::Fill(1)]).areas(main_area);
 
         let render_list_title = "Continue Listening";
         let text_render_footer = "Use ↓↑ to move, → to play, s to search, q to quit.";
@@ -82,7 +82,7 @@ impl App {
             Constraint::Length(1),
         ]).areas(area);
         
-        let [list_area, item_area1, item_area2] = Layout::vertical([Constraint::Fill(1), Constraint::Length(2), Constraint::Fill(1)]).areas(main_area);
+        let [list_area, item_area1, item_area2] = Layout::vertical([Constraint::Fill(1), Constraint::Length(3), Constraint::Fill(1)]).areas(main_area);
 
         let render_list_title = "Library";
         let text_render_footer = "Use ↓↑ to move, → to play, s to search, q to quit.";
@@ -160,7 +160,7 @@ impl App {
             Constraint::Length(1),
         ]).areas(area);
 
-        let [list_area, item_area1, item_area2] = Layout::vertical([Constraint::Fill(1), Constraint::Length(2), Constraint::Fill(1)]).areas(main_area);
+        let [list_area, item_area1, item_area2] = Layout::vertical([Constraint::Fill(1), Constraint::Length(3), Constraint::Fill(1)]).areas(main_area);
 
         let render_list_title = "Search result";
         let text_render_footer = "Use Tab to back home, ↓↑ to move, → to play, s to search, q to quit.";
@@ -306,7 +306,7 @@ impl App {
             Constraint::Length(1),
         ]).areas(area);
 
-        let [list_area, item_area1, item_area2] = Layout::vertical([Constraint::Fill(1), Constraint::Length(2), Constraint::Fill(1)]).areas(main_area);
+        let [list_area, item_area1, item_area2] = Layout::vertical([Constraint::Fill(1), Constraint::Length(3), Constraint::Fill(1)]).areas(main_area);
 
         let render_list_title = "Episodes";
         let text_render_footer = "Use ↓↑ to move, → to play, s to search, q to quit.";
@@ -387,7 +387,7 @@ impl App {
                 .left_aligned()
                 .render(area, buf);
             } else {
-            Paragraph::new(format!("Author: {} - Year: {} - Duration: {} - Progress: {}, {}, {}", 
+            Paragraph::new(format!("Author: {} - Year: {} - Duration: {}\nProgress: {}%, {}, {}", 
                     self.auth_names_cnt_list[selected], 
                     self.pub_year_cnt_list[selected], 
                     self.duration_cnt_list[selected],
