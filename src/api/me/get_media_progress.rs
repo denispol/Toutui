@@ -28,6 +28,8 @@ pub struct Root {
     pub finished_at: Value,
 }
 
+/// This endpoint retrieves your media progress that is associated with the given library item ID or podcast episode ID.
+/// https://api.audiobookshelf.org/#get-a-media-progress
 
 // get progress for a book
 pub async fn get_book_progress(token: &str, book_id: &String) -> Result<Root> {
