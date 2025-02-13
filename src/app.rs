@@ -112,6 +112,20 @@ pub struct App {
    pub desc_library: Vec<String>,
    pub duration_library: Vec<String>,
    pub auth_names_library_pod: Vec<String>,
+   pub subtitles_pod_ep_search: Vec<String>,
+   pub seasons_pod_ep_search: Vec<String>,
+   pub episodes_pod_ep_search: Vec<String>,
+   pub authors_pod_ep_search: Vec<String>,
+   pub descs_pod_ep_search: Vec<String>,
+   pub titles_pod_search: Vec<String>,
+   pub durations_pod_ep_search: Vec<String>,
+   pub all_subtitles_pod_ep_search: Vec<Vec<String>>,
+   pub all_seasons_pod_ep_search: Vec<Vec<String>>,
+   pub all_episodes_pod_ep_search: Vec<Vec<String>>,
+   pub all_authors_pod_ep_search: Vec<Vec<String>>,
+   pub all_descs_pod_ep_search: Vec<Vec<String>>,
+   pub all_titles_pod_search: Vec<Vec<String>>,
+   pub all_durations_pod_ep_search: Vec<Vec<String>>,
 }
 
 /// Init app
@@ -244,10 +258,24 @@ impl App {
          let search_mode = false;
          let search_query = "  ".to_string();
          let all_titles_pod_ep_search: Vec<Vec<String>> = Vec::new(); // init in tui.rs in render search book function
-         let all_ids_pod_ep_search: Vec<Vec<String>> = Vec::new(); // init in tui.rs in render search book function
+         let all_ids_pod_ep_search: Vec<Vec<String>> = Vec::new(); 
+         let all_subtitles_pod_ep_search: Vec<Vec<String>> = Vec::new(); 
+         let all_seasons_pod_ep_search: Vec<Vec<String>> = Vec::new(); 
+         let all_episodes_pod_ep_search: Vec<Vec<String>> = Vec::new(); 
+         let all_authors_pod_ep_search: Vec<Vec<String>> = Vec::new(); 
+         let all_descs_pod_ep_search: Vec<Vec<String>> = Vec::new(); 
+         let all_titles_pod_search: Vec<Vec<String>> = Vec::new(); 
+         let all_durations_pod_ep_search: Vec<Vec<String>> = Vec::new(); 
          let titles_pod_ep_search: Vec<String> = Vec::new();
+         let ids_library_pod_search: Vec<String> = Vec::new(); // library because we take index of library
+         let subtitles_pod_ep_search: Vec<String> = Vec::new();
+         let seasons_pod_ep_search: Vec<String> = Vec::new();
+         let episodes_pod_ep_search: Vec<String> = Vec::new();
+         let authors_pod_ep_search: Vec<String> = Vec::new();
+         let descs_pod_ep_search: Vec<String> = Vec::new();
+         let titles_pod_search: Vec<String> = Vec::new();
+         let durations_pod_ep_search: Vec<String> = Vec::new();
          let is_from_search_pod = false;
-         let ids_library_pod_search: Vec<String> = Vec::new();
 
 
 
@@ -412,6 +440,20 @@ impl App {
             descs_pod_ep,
             titles_pod,
             durations_pod_ep,
+            subtitles_pod_ep_search,
+            seasons_pod_ep_search,
+            episodes_pod_ep_search,
+            authors_pod_ep_search,
+            descs_pod_ep_search,
+            titles_pod_search,
+            durations_pod_ep_search,
+            all_subtitles_pod_ep_search,
+            all_seasons_pod_ep_search,
+            all_episodes_pod_ep_search,
+            all_authors_pod_ep_search,
+            all_descs_pod_ep_search,
+            all_titles_pod_search,
+            all_durations_pod_ep_search,
         })
     }
 
@@ -577,6 +619,13 @@ pub fn handle_key(&mut self, key: KeyEvent) {
                         self.is_from_search_pod = true;
                         if let Some(index) = selected_search_book {
                             self.titles_pod_ep_search = self.all_titles_pod_ep_search[index].clone();
+                            self.subtitles_pod_ep_search = self.all_subtitles_pod_ep_search[index].clone();
+                            self.seasons_pod_ep_search = self.all_seasons_pod_ep_search[index].clone();
+                            self.episodes_pod_ep_search = self.all_episodes_pod_ep_search[index].clone();
+                            self.authors_pod_ep_search = self.all_authors_pod_ep_search[index].clone();
+                            self.descs_pod_ep_search = self.all_descs_pod_ep_search[index].clone();
+                            self.titles_pod_search = self.all_titles_pod_search[index].clone();
+                            self.durations_pod_ep_search = self.all_durations_pod_ep_search[index].clone();
                             self.list_state_pod_ep.select(Some(0));
                             self.view_state = AppView::PodcastEpisode;
                         }} else {   

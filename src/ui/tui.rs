@@ -209,6 +209,48 @@ impl App {
             .filter(|(index, _)| index_to_keep.contains(&index))
             .map(|(_, value)| value.clone())
             .collect();
+        self.all_subtitles_pod_ep_search = self.all_subtitles_pod_ep
+            .iter()
+            .enumerate()
+            .filter(|(index, _)| index_to_keep.contains(&index))
+            .map(|(_, value)| value.clone())
+            .collect();
+        self.all_seasons_pod_ep_search = self.all_seasons_pod_ep
+            .iter()
+            .enumerate()
+            .filter(|(index, _)| index_to_keep.contains(&index))
+            .map(|(_, value)| value.clone())
+            .collect();
+        self.all_episodes_pod_ep_search = self.all_episodes_pod_ep
+            .iter()
+            .enumerate()
+            .filter(|(index, _)| index_to_keep.contains(&index))
+            .map(|(_, value)| value.clone())
+            .collect();
+        self.all_authors_pod_ep_search = self.all_authors_pod_ep
+            .iter()
+            .enumerate()
+            .filter(|(index, _)| index_to_keep.contains(&index))
+            .map(|(_, value)| value.clone())
+            .collect();
+        self.all_descs_pod_ep_search = self.all_descs_pod_ep
+            .iter()
+            .enumerate()
+            .filter(|(index, _)| index_to_keep.contains(&index))
+            .map(|(_, value)| value.clone())
+            .collect();
+        self.all_titles_pod_search = self.all_titles_pod
+            .iter()
+            .enumerate()
+            .filter(|(index, _)| index_to_keep.contains(&index))
+            .map(|(_, value)| value.clone())
+            .collect();
+        self.all_durations_pod_ep_search = self.all_durations_pod_ep
+            .iter()
+            .enumerate()
+            .filter(|(index, _)| index_to_keep.contains(&index))
+            .map(|(_, value)| value.clone())
+            .collect();
         self.ids_library_pod_search = self.ids_library
             .iter()
             .enumerate()
@@ -241,6 +283,8 @@ impl App {
         App::render_footer(footer_area, buf, text_render_footer);
         if self.is_from_search_pod {
         self.render_list(list_area, buf, render_list_title, &self.titles_pod_ep_search.clone(), &mut self.list_state_pod_ep.clone());
+        self.render_info_pod_ep_search(item_area1, buf, &mut &self.list_state_pod_ep.clone());
+        self.render_desc_pod_ep_search(item_area2, buf, &mut &self.list_state_pod_ep.clone());
         } else {
         self.render_list(list_area, buf, render_list_title, &self.titles_pod_ep.clone(), &mut self.list_state_pod_ep.clone());
         self.render_info_pod_ep(item_area1, buf, &mut &self.list_state_pod_ep.clone());
@@ -388,14 +432,7 @@ impl App {
         let duplicated_titles = vec![self.titles_pod[0].clone(); n];
         let duplicated_authors = vec![self.authors_pod_ep[0].clone(); n];
         if let Some(selected) = list_state.selected() {
-    //        if self.is_podcast {
-    //        Paragraph::new(format!("Author: {}", 
-    //                self.auth_names_library_pod[selected], 
-    //                ))
-    //            .left_aligned()
-    //            .render(area, buf);
-    //        } 
-    //        else {
+            
             Paragraph::new(format!("[{}] - Author: {} - Episode: {} - Duration: {} ", 
                     duplicated_titles[selected].trim(), 
                     duplicated_authors[selected].trim(), 
@@ -404,8 +441,25 @@ impl App {
                     ))
                 .left_aligned()
                 .render(area, buf);
-            }
-    //    }
+        }
+    }
+    // info about the podcast for `PodcastEpisode` (from search)
+    fn render_info_pod_ep_search(&self, area: Rect, buf: &mut Buffer, list_state: &ListState) {
+
+        let n = self.durations_pod_ep_search.len();
+        let duplicated_titles_search = vec![self.titles_pod_search[0].clone(); n];
+        let duplicated_authors_search = vec![self.authors_pod_ep_search[0].clone(); n];
+        if let Some(selected) = list_state.selected() {
+            
+            Paragraph::new(format!("[{}] - Author: {} - Episode: {} - Duration: {} ", 
+                    duplicated_titles_search[selected].trim(), 
+                    duplicated_authors_search[selected].trim(), 
+                    self.episodes_pod_ep_search[selected].trim(),
+                    self.durations_pod_ep_search[selected].trim(),
+                    ))
+                .left_aligned()
+                .render(area, buf);
+        }
     }
 
     // desc of the podcast for `PodcastEpisode`
@@ -419,6 +473,18 @@ impl App {
                 .render(area, buf);
         }
     }
+    // desc of the podcast for `PodcastEpisode` (from search)
+    fn render_desc_pod_ep_search(&self, area: Rect, buf: &mut Buffer, list_state: &ListState) {
+
+        if let Some(selected) = list_state.selected() {
+
+            Paragraph::new(self.subtitles_pod_ep_search[selected].clone())
+                .scroll((self.scroll_offset as u16, 0))
+                .wrap(Wrap { trim: true })
+                .render(area, buf);
+        }
+    }
+
     const fn alternate_colors(i: usize) -> Color {
         if i % 2 == 0 {
             NORMAL_ROW_BG
