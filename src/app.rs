@@ -78,6 +78,7 @@ pub struct App {
    pub all_durations_pod_ep: Vec<Vec<String>>,
    pub titles_pod_ep: Vec<String>,
    pub ids_pod_ep: Vec<String>,
+   pub ids_pod_ep_search: Vec<String>,
    pub subtitles_pod_ep: Vec<String>,
    pub seasons_pod_ep: Vec<String>,
    pub episodes_pod_ep: Vec<String>,
@@ -135,6 +136,7 @@ pub struct App {
    pub duration_library_search_book: Vec<String>,
    pub book_progress_cnt_list: Vec<Vec<String>>,
    pub book_progress_library: Vec<Vec<String>>,
+   pub book_progress_search_book: Vec<Vec<String>>,
 }
 
 /// Init app
@@ -295,6 +297,7 @@ impl App {
          let published_year_library_search_book: Vec<String> = Vec::new();
          let desc_library_search_book: Vec<String> = Vec::new();
          let duration_library_search_book: Vec<String> = Vec::new();
+         let book_progress_search_book: Vec<Vec<String>> = Vec::new(); 
          let search_mode = false;
          let search_query = "  ".to_string();
          let all_titles_pod_ep_search: Vec<Vec<String>> = Vec::new(); // init in tui.rs in render search book function
@@ -331,6 +334,7 @@ impl App {
          let mut all_durations_pod_ep: Vec<Vec<String>> = Vec::new();
          let titles_pod_ep: Vec<String> = Vec::new(); // fetch episode titles for a podcast. {titles_pod1_ep1, title_pod1_ep2} 
          let ids_pod_ep: Vec<String> = Vec::new();
+         let ids_pod_ep_search: Vec<String> = Vec::new();
          let subtitles_pod_ep: Vec<String> = Vec::new();
          let seasons_pod_ep: Vec<String> = Vec::new();
          let episodes_pod_ep: Vec<String> = Vec::new();
@@ -437,6 +441,7 @@ impl App {
             all_ids_pod_ep,
             titles_pod_ep,
             ids_pod_ep,
+            ids_pod_ep_search,
             ids_ep_cnt_list, 
             all_titles_pod_ep_search,
             titles_pod_ep_search,
@@ -501,6 +506,7 @@ impl App {
             duration_library_search_book,
             book_progress_cnt_list,
             book_progress_library,
+            book_progress_search_book,
         })
     }
 
@@ -588,10 +594,22 @@ pub fn handle_key(&mut self, key: KeyEvent) {
             let selected_search_book = self.list_state_search_results.selected();
 
             // Init for `PodcastEpisode`
-            let ids_pod_ep = self.ids_pod_ep.clone();
             let selected_pod_ep = self.list_state_pod_ep.selected();
             let ids_ep_cnt_list = self.ids_ep_cnt_list.clone();
-
+            if let Some(index) = selected_library {
+                if let Some(id_pod) = ids_library.get(index) {
+                    let all_ids_pod_ep_clone = self.all_ids_pod_ep.clone();
+                    self.ids_pod_ep = all_ids_pod_ep_clone[index].clone();
+                }}
+            if let Some(index) = selected_search_book {
+                // ids_library_pod_search because we need the pod id and he is given by
+                // this variable
+                if let Some(id_pod) = self.ids_library_pod_search.get(index) {
+                    //    println!("{:?}", id_pod);
+                    let all_ids_pod_ep_search_clone = self.all_ids_pod_ep_search.clone();
+                    self.ids_pod_ep_search = all_ids_pod_ep_search_clone[index].clone();
+                    //   println!("{:?}", all_ids_pod_ep_search_clone[index]);
+                }}
             // Init for `SettingsAccount`
             let selected_account = self.list_state_settings_account.selected();
 
@@ -709,6 +727,7 @@ pub fn handle_key(&mut self, key: KeyEvent) {
                     if let Some(index) = selected_library {
                         if let Some(id_pod) = ids_library.get(index) {
                             let all_ids_pod_ep_clone = self.all_ids_pod_ep.clone();
+                            self.ids_pod_ep = all_ids_pod_ep_clone[index].clone();
                             let id_pod_clone = id_pod.clone();
                             tokio::spawn(async move {
                                 loading_message();
@@ -743,10 +762,37 @@ pub fn handle_key(&mut self, key: KeyEvent) {
     /// all select functions are from ListState widget
     pub fn select_next(&mut self) {
         match self.view_state {
-            AppView::Home => self.list_state_cnt_list.select_next(),
-            AppView::Library => self.list_state_library.select_next(),
-            AppView::SearchBook => self.list_state_search_results.select_next(),
-            AppView::PodcastEpisode => self.list_state_pod_ep.select_next(),
+            AppView::Home => { if let Some(selected) = self.list_state_cnt_list.selected() {
+                if selected + 1  < self.ids_cnt_list.len() {
+                    self.list_state_cnt_list.select_next();
+                } else {
+                    self.list_state_cnt_list.select_first();
+                }}}
+            AppView::Library => { if let Some(selected) = self.list_state_library.selected() {
+                if selected + 1  < self.ids_library.len() {
+                    self.list_state_library.select_next();
+                } else {
+                    self.list_state_library.select_first();
+                }}}
+            AppView::SearchBook => { if let Some(selected) = self.list_state_search_results.selected() {
+                if selected + 1  < self.ids_search_book.len() {
+                    self.list_state_search_results.select_next();
+                } else {
+                    self.list_state_search_results.select_first();
+                }}}
+            AppView::PodcastEpisode => { if let Some(selected) = self.list_state_pod_ep.selected() {
+                if self.is_from_search_pod {
+                    if selected + 1  < self.ids_pod_ep_search.len() {
+                        self.list_state_pod_ep.select_next();
+                    } else {
+                        self.list_state_pod_ep.select_first();
+                    }
+                } else {
+                    if selected + 1  < self.ids_pod_ep.len() {
+                        self.list_state_pod_ep.select_next();
+                    } else {
+                    self.list_state_pod_ep.select_first();
+                }}}}
             AppView::Settings => self.list_state_settings.select_next(),
             AppView::SettingsAccount => self.list_state_settings_account.select_next(),
             AppView::SettingsLibrary => self.list_state_settings_library.select_next(),

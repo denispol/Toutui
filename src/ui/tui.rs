@@ -226,6 +226,12 @@ impl App {
             .filter(|(index, _)| index_to_keep.contains(&index))
             .map(|(_, value)| value.clone())
             .collect();
+        self.book_progress_search_book = self.book_progress_library
+            .iter()
+            .enumerate()
+            .filter(|(index, _)| index_to_keep.contains(&index))
+            .map(|(_, value)| value.clone())
+            .collect();
 
         // for podacst
         self.all_titles_pod_ep_search = self.all_titles_pod_ep
@@ -377,9 +383,10 @@ impl App {
     fn render_info_home(&self, area: Rect, buf: &mut Buffer, list_state: &ListState) {
 
         if let Some(selected) = list_state.selected() {
+
             if self.is_podcast {
-            Paragraph::new(format!("[{}] - Author: {} - Episode: {} - Duration: {}", 
-                    self.titles_pod_cnt_list[selected], 
+                Paragraph::new(format!("[{}] - Author: {} - Episode: {} - Duration: {}", 
+                        self.titles_pod_cnt_list[selected], 
                     self.authors_pod_cnt_list[selected], 
                     self.nums_ep_pod_cnt_list[selected],
                     self.durations_pod_cnt_list[selected],
@@ -528,10 +535,13 @@ impl App {
                 .render(area, buf);
             } 
             else {
-            Paragraph::new(format!("Author: {} - Year: {} - Duration: {}", 
+            Paragraph::new(format!("Author: {} - Year: {} - Duration: {}\nProgress: {}%, {}, {}", 
                     self.auth_names_search_book[selected], 
                     self.published_year_library_search_book[selected], 
-                    self.duration_library_search_book[selected]))
+                    self.duration_library_search_book[selected],
+                    self.book_progress_search_book[selected][0], // precentage progression
+                    self.book_progress_search_book[selected][2], // time left
+                    self.book_progress_search_book[selected][1],)) // is finished
                 .left_aligned()
                 .render(area, buf);
             }
