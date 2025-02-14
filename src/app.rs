@@ -825,10 +825,26 @@ pub fn handle_key(&mut self, key: KeyEvent) {
 
     pub fn select_last(&mut self) {
         match self.view_state {
-            AppView::Home => self.list_state_cnt_list.select_last(),
-            AppView::Library => self.list_state_library.select_last(),
-            AppView::SearchBook => self.list_state_search_results.select_last(),
-            AppView::PodcastEpisode => self.list_state_pod_ep.select_last(),
+            AppView::Home => {
+                let last_index = self.ids_cnt_list.len() - 1;
+                self.list_state_cnt_list.select(Some(last_index));
+            }            
+            AppView::Library => {
+                let last_index = self.ids_library.len() - 1;
+                self.list_state_library.select(Some(last_index));
+            }            
+            AppView::SearchBook => {
+                let last_index = self.ids_search_book.len() - 1;
+                self.list_state_search_results.select(Some(last_index));
+            }            
+            AppView::PodcastEpisode => {
+                if self.is_from_search_pod {
+                let last_index = self.ids_pod_ep_search.len() - 1;
+                self.list_state_pod_ep.select(Some(last_index));
+                } else {
+                let last_index = self.ids_pod_ep.len() - 1;
+                self.list_state_pod_ep.select(Some(last_index));
+                }}            
             AppView::Settings => self.list_state_settings.select_last(),
             AppView::SettingsAccount => self.list_state_settings_account.select_last(),
             AppView::SettingsLibrary => self.list_state_settings_library.select_last(),
