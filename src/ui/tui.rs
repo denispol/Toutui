@@ -543,10 +543,10 @@ impl App {
                 Paragraph::new(format!("Author: {} - Year: {} - Duration: {}\nProgress:{}{}{}", 
                         self.auth_names_search_book[selected], 
                         self.published_year_library_search_book[selected], 
-                    self.duration_library_search_book[selected],
-                    self.book_progress_search_book[selected][0], // percentage progression
-                    self.book_progress_search_book[selected][2], // time left
-                    self.book_progress_search_book[selected][1],)) // is finished
+                        self.duration_library_search_book[selected],
+                        self.book_progress_search_book[selected][0], // percentage progression
+                        self.book_progress_search_book[selected][2], // time left
+                        self.book_progress_search_book[selected][1],)) // is finished
                 .left_aligned()
                 .render(area, buf);
             }
