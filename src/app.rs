@@ -146,8 +146,6 @@ impl App {
         // init config
         let config = load_config()?;
 
-        let mut view_state = AppView::Home; // By default, Home will be the first AppView launched when the app start
-        // Default view_state
         // init database from Database struct
         let mut database = Database::new().await?;
                                         
@@ -381,6 +379,12 @@ impl App {
          // init variables for for scrolling into description section 
          let scroll_offset = 0;
 
+         // Default view_state at launch
+         let mut view_state = AppView::Home; // By default, Home will be the first AppView launched when the app start
+         if ids_cnt_list.is_empty() {
+
+             view_state = AppView::Library; // If `Home` is empty (no book or podcast to continue)
+         }
 
 
          // Init ListeState for `Home` list (continue listening)
@@ -793,7 +797,12 @@ pub fn handle_key(&mut self, key: KeyEvent) {
                     } else {
                     self.list_state_pod_ep.select_first();
                 }}}}
-            AppView::Settings => self.list_state_settings.select_next(),
+            AppView::Settings => { if let Some(selected) = self.list_state_settings.selected() {
+                if selected + 1  < self.settings.len() {
+                    self.list_state_settings.select_next();
+                } else {
+                    self.list_state_settings.select_first();
+                }}}
             AppView::SettingsAccount => self.list_state_settings_account.select_next(),
             AppView::SettingsLibrary => self.list_state_settings_library.select_next(),
         }
@@ -845,7 +854,10 @@ pub fn handle_key(&mut self, key: KeyEvent) {
                 let last_index = self.ids_pod_ep.len() - 1;
                 self.list_state_pod_ep.select(Some(last_index));
                 }}            
-            AppView::Settings => self.list_state_settings.select_last(),
+            AppView::Settings => {
+                let last_index = self.settings.len() - 1;
+                self.list_state_settings.select(Some(last_index));
+            }            
             AppView::SettingsAccount => self.list_state_settings_account.select_last(),
             AppView::SettingsLibrary => self.list_state_settings_library.select_last(),
         }

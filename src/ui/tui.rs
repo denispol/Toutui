@@ -69,8 +69,10 @@ impl App {
         App::render_header(header_area, buf, self.lib_name_type.clone(), &self.username, &self.server_address, VERSION);
         App::render_footer(footer_area, buf, text_render_footer);
         self.render_list(list_area, buf, render_list_title, &self.titles_cnt_list.clone(), &mut self.list_state_cnt_list.clone());
+        if !&self.titles_cnt_list.is_empty() {
         self.render_info_home(item_area1, buf, &mut self.list_state_cnt_list.clone());
         self.render_desc_home(item_area2, buf, &mut self.list_state_cnt_list.clone());
+        }
     }
 
     /// AppView::Library rendering
@@ -90,8 +92,10 @@ impl App {
         App::render_header(header_area, buf, self.lib_name_type.clone(), &self.username, &self.server_address, VERSION);
         App::render_footer(footer_area, buf, text_render_footer);
         self.render_list(list_area, buf, render_list_title, &self.titles_library.clone(), &mut self.list_state_library.clone());
+        if !&self.titles_library.is_empty() {
         self.render_info_library(item_area1, buf, &mut self.list_state_library.clone());
         self.render_desc_library(item_area2, buf, &mut self.list_state_library.clone());
+        }
     }
 
     /// AppView::Settings rendering
@@ -298,9 +302,10 @@ impl App {
         App::render_header(header_area, buf, self.lib_name_type.clone(), &self.username, &self.server_address, VERSION);
         App::render_footer(footer_area, buf, text_render_footer);
         self.render_list(list_area, buf, render_list_title, titles_search_book_or_pod, &mut self.list_state_search_results.clone());
+        if !titles_search_book_or_pod.is_empty() {
         self.render_info_search_book(item_area1, buf, &mut &self.list_state_search_results.clone());
         self.render_desc_search_book(item_area2, buf, &mut &self.list_state_search_results.clone());
-
+        }
     }
 
     /// AppView::PodcastEpisode
