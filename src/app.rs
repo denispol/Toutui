@@ -271,16 +271,24 @@ impl App {
          let duration_library = collect_duration_library(&all_books).await;
          let mut book_progress_library: Vec<Vec<String>> = Vec::new();
          if !is_podcast{
-         for id in ids_library.clone() {
-             if let Ok(val) = get_book_progress(&token, &id).await {
-                 let mut values: Vec<String> = Vec::new();
-                 values.push(collect_progress_percentage_book(&val).await);
-                 values.push(collect_is_finished_book(&val).await);
-                 values.push(collect_remaining_time(&val).await);
-                 book_progress_library.push(values);
-             }
-         }
+             for id in ids_library.clone() {
+                 if let Ok(val) = get_book_progress(&token, &id).await {
+                     let mut values: Vec<String> = Vec::new();
+                     values.push(format!(" {}%,",collect_progress_percentage_book(&val).await));
+                     values.push(format!(" {}",collect_is_finished_book(&val).await));
+                     values.push(format!(" {},",collect_remaining_time(&val).await));
+                     book_progress_library.push(values);
+                 } else {
+                     // if the book is not starded, `get book progress` is not fetched
+                     // so the empty values are handled here : 
+                     let mut values: Vec<String> = Vec::new();
+                     values.push(format!(" Not started yet"));
+                     values.push(format!(""));
+                     values.push(format!(""));
 
+                     book_progress_library.push(values);
+                 }
+             }
          }            
 
 

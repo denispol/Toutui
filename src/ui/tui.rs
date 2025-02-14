@@ -436,22 +436,22 @@ impl App {
 
         if let Some(selected) = list_state.selected() {
             if self.is_podcast {
-            Paragraph::new(format!("Author: {}", 
-                    self.auth_names_library_pod[selected], 
-                    ))
-                .left_aligned()
-                .render(area, buf);
+                Paragraph::new(format!("Author: {}", 
+                        self.auth_names_library_pod[selected], 
+                ))
+                    .left_aligned()
+                    .render(area, buf);
             } 
             else {
-            Paragraph::new(format!("Author: {} - Year: {} - Duration: {}\nProgress: {}%, {}, {}", 
-                    self.auth_names_library[selected], 
-                    self.published_year_library[selected], 
-                    self.duration_library[selected],
-                    self.book_progress_library[selected][0], // precentage progression
-                    self.book_progress_library[selected][2], // time left
-                    self.book_progress_library[selected][1],)) // is finished
-                .left_aligned()
-                .render(area, buf);
+                Paragraph::new(format!("Author: {} - Year: {} - Duration: {}\nProgress:{}{}{}", 
+                        self.auth_names_library[selected], 
+                        self.published_year_library[selected], 
+                        self.duration_library[selected],
+                        self.book_progress_library[selected][0], // precentage progression
+                        self.book_progress_library[selected][2], // time left
+                        self.book_progress_library[selected][1],)) // is finished
+                    .left_aligned()
+                    .render(area, buf);
             }
         }
     }
@@ -540,9 +540,9 @@ impl App {
                 .render(area, buf);
             } 
             else {
-            Paragraph::new(format!("Author: {} - Year: {} - Duration: {}\nProgress: {}%, {}, {}", 
-                    self.auth_names_search_book[selected], 
-                    self.published_year_library_search_book[selected], 
+                Paragraph::new(format!("Author: {} - Year: {} - Duration: {}\nProgress:{}{}{}", 
+                        self.auth_names_search_book[selected], 
+                        self.published_year_library_search_book[selected], 
                     self.duration_library_search_book[selected],
                     self.book_progress_search_book[selected][0], // precentage progression
                     self.book_progress_search_book[selected][2], // time left
