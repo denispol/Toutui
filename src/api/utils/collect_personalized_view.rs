@@ -65,24 +65,24 @@ pub async fn collect_pub_year_cnt_list(continue_listening: &[Root]) -> Vec<Strin
 }
 
 /// collect duration
-pub async fn collect_duration_cnt_list(continue_listening: &[Root]) -> Vec<String> {
-    let mut duration_cnt_list = Vec::new(); 
+pub async fn collect_duration_cnt_list(continue_listening: &[Root]) -> Vec<f64> {
+
+    let mut duration_cnt_list = vec![];
 
     for library in continue_listening {
         if let Some(entities) = &library.entities {
             for entity in entities {
                 if let Some(media) = &entity.media {  
-                        if let Some(duration) = &media.duration { 
-                            duration_cnt_list.push(duration.clone()); 
-                        }
+                    if let Some(duration) = &media.duration { 
+                        duration_cnt_list.push(duration.clone()); 
+                    }
                 }
             }
         }
     }
 
-    let duration_cnt_list_converted = convert_seconds(duration_cnt_list);
-    duration_cnt_list_converted
-    
+     duration_cnt_list
+
 }
 
 /// collect description

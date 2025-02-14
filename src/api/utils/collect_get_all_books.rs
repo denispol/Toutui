@@ -111,8 +111,8 @@ pub async fn collect_desc_library(library: &Root) -> Vec<String> {
 }
 
 /// collect published year
-pub async fn collect_duration_library(library: &Root) -> Vec<String> {
-    let mut duration = Vec::new();
+pub async fn collect_duration_library(library: &Root) -> Vec<f64> {
+    let mut duration = vec![];
 
     if let Some(results) = &library.results {
         for item in results {
@@ -124,7 +124,5 @@ pub async fn collect_duration_library(library: &Root) -> Vec<String> {
         }
     }
 
-   let duration_library = convert_seconds(duration);
-   duration_library
-    
+   duration 
 }

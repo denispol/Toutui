@@ -13,7 +13,7 @@ use ratatui::{
         Widget, Wrap
     },
 };
-
+use crate::utils::convert_seconds::*;
 // Auth
 use tui_textarea::{Input, Key, TextArea};
 use std::io;
@@ -236,6 +236,18 @@ impl App {
             .filter(|(index, _)| index_to_keep.contains(&index))
             .map(|(_, value)| value.clone())
             .collect();
+        self.book_progress_search_book_cur_time = self.book_progress_library_cur_time
+            .iter()
+            .enumerate()
+            .filter(|(index, _)| index_to_keep.contains(&index))
+            .map(|(_, value)| value.clone())
+            .collect();
+        self.book_progress_search_book = self.book_progress_library
+            .iter()
+            .enumerate()
+            .filter(|(index, _)| index_to_keep.contains(&index))
+            .map(|(_, value)| value.clone())
+            .collect();
 
         // for podacst
         self.all_titles_pod_ep_search = self.all_titles_pod_ep
@@ -386,6 +398,7 @@ impl App {
 
     // info about the book or podacst for `Home`
     fn render_info_home(&self, area: Rect, buf: &mut Buffer, list_state: &ListState) {
+        let duration_cnt_list_conv = convert_seconds(self.duration_cnt_list.clone());
 
         if let Some(selected) = list_state.selected() {
 
@@ -399,12 +412,12 @@ impl App {
                 .left_aligned()
                 .render(area, buf);
             } else {
-            Paragraph::new(format!("Author: {} - Year: {} - Duration: {}\nProgress: {}%, {}, {}", 
+            Paragraph::new(format!("Author: {} - Year: {} - Duration: {}\nProgress: {}%, {} {}", 
                     self.auth_names_cnt_list[selected], 
                     self.pub_year_cnt_list[selected], 
-                    self.duration_cnt_list[selected],
+                    duration_cnt_list_conv[selected].to_string(),
                     self.book_progress_cnt_list[selected][0], // percentage progression
-                    self.book_progress_cnt_list[selected][2], // time left
+                    format!("{}",convert_seconds_for_prg(self.duration_cnt_list[selected], self.book_progress_cnt_list_cur_time[selected][0])), // time left
                     self.book_progress_cnt_list[selected][1], // is finished
                     ))
                 .left_aligned()
@@ -433,6 +446,7 @@ impl App {
 
     // info about the book or podacst for `Library`
     fn render_info_library(&self, area: Rect, buf: &mut Buffer, list_state: &ListState) {
+        let duration_library_conv = convert_seconds(self.duration_library.clone());
 
         if let Some(selected) = list_state.selected() {
             if self.is_podcast {
@@ -443,12 +457,12 @@ impl App {
                     .render(area, buf);
             } 
             else {
-                Paragraph::new(format!("Author: {} - Year: {} - Duration: {}\nProgress:{}{}{}", 
+                Paragraph::new(format!("Author: {} - Year: {} - Duration: {}\nProgress:{} {}{}", 
                         self.auth_names_library[selected], 
                         self.published_year_library[selected], 
-                        self.duration_library[selected],
+                        duration_library_conv[selected],
                         self.book_progress_library[selected][0], // percentage progression
-                        self.book_progress_library[selected][2], // time left
+                        format!("{}",convert_seconds_for_prg(self.duration_library[selected], self.book_progress_library_cur_time[selected][0])), // time left
                         self.book_progress_library[selected][1],)) // is finished
                     .left_aligned()
                     .render(area, buf);
@@ -530,6 +544,7 @@ impl App {
 
     // info about the book or podacst for `SearchBook`
     fn render_info_search_book(&self, area: Rect, buf: &mut Buffer, list_state: &ListState) {
+        let duration_library_search_book_conv = convert_seconds(self.duration_library_search_book.clone());
 
         if let Some(selected) = list_state.selected() {
             if self.is_podcast {
@@ -540,14 +555,14 @@ impl App {
                 .render(area, buf);
             } 
             else {
-                Paragraph::new(format!("Author: {} - Year: {} - Duration: {}\nProgress:{}{}{}", 
+                Paragraph::new(format!("Author: {} - Year: {} - Duration: {}\nProgress:{} {}{}", 
                         self.auth_names_search_book[selected], 
                         self.published_year_library_search_book[selected], 
-                        self.duration_library_search_book[selected],
+                        duration_library_search_book_conv[selected],
                         self.book_progress_search_book[selected][0], // percentage progression
-                        self.book_progress_search_book[selected][2], // time left
+                        format!("{}",convert_seconds_for_prg(self.duration_library_search_book[selected], self.book_progress_search_book_cur_time[selected][0])), // time left
                         self.book_progress_search_book[selected][1],)) // is finished
-                .left_aligned()
+                    .left_aligned()
                 .render(area, buf);
             }
         }

@@ -57,7 +57,7 @@ pub struct App {
    pub titles_cnt_list: Vec<String>,
    pub auth_names_cnt_list: Vec<String>,
    pub pub_year_cnt_list: Vec<String>,
-   pub duration_cnt_list: Vec<String>,
+   pub duration_cnt_list: Vec<f64>,
    pub desc_cnt_list: Vec<String>,
    pub ids_cnt_list: Vec<String>,
    pub titles_library: Vec<String>,
@@ -113,7 +113,7 @@ pub struct App {
    pub durations_pod_cnt_list: Vec<String>,
    pub published_year_library: Vec<String>,
    pub desc_library: Vec<String>,
-   pub duration_library: Vec<String>,
+   pub duration_library: Vec<f64>,
    pub auth_names_library_pod: Vec<String>,
    pub subtitles_pod_ep_search: Vec<String>,
    pub seasons_pod_ep_search: Vec<String>,
@@ -133,10 +133,13 @@ pub struct App {
    pub auth_names_search_book: Vec<String>,
    pub published_year_library_search_book: Vec<String>,
    pub desc_library_search_book: Vec<String>,
-   pub duration_library_search_book: Vec<String>,
+   pub duration_library_search_book: Vec<f64>,
    pub book_progress_cnt_list: Vec<Vec<String>>,
+   pub book_progress_cnt_list_cur_time: Vec<Vec<f64>>,
    pub book_progress_library: Vec<Vec<String>>,
+   pub book_progress_library_cur_time: Vec<Vec<f64>>,
    pub book_progress_search_book: Vec<Vec<String>>,
+   pub book_progress_search_book_cur_time: Vec<Vec<f64>>,
 }
 
 /// Init app
@@ -212,7 +215,7 @@ impl App {
         let mut titles_cnt_list: Vec<String> = Vec::new();
         let mut auth_names_cnt_list: Vec<String> = Vec::new();
         let mut pub_year_cnt_list: Vec<String> = Vec::new();
-        let mut duration_cnt_list: Vec<String> = Vec::new();
+        let mut duration_cnt_list: Vec<f64> = Vec::new();
         let mut desc_cnt_list: Vec<String> = Vec::new();
         let mut ids_cnt_list: Vec<String> = Vec::new();
         let mut ids_ep_cnt_list: Vec<String> = Vec::new();
@@ -224,6 +227,7 @@ impl App {
         let mut titles_pod_cnt_list: Vec<String> = Vec::new();
         let mut durations_pod_cnt_list: Vec<String> = Vec::new();
         let mut book_progress_cnt_list: Vec<Vec<String>> = Vec::new();
+        let mut book_progress_cnt_list_cur_time: Vec<Vec<f64>> = Vec::new();
         
         if is_podcast {
          // init for  `Home` (continue listening) for podcasts
@@ -251,10 +255,12 @@ impl App {
          for id in ids_cnt_list.clone() {
              if let Ok(val) = get_book_progress(&token, &id).await {
                  let mut values: Vec<String> = Vec::new();
+                 let mut values_f64: Vec<f64> = Vec::new();
                  values.push(collect_progress_percentage_book(&val).await);
                  values.push(collect_is_finished_book(&val).await);
-                 values.push(collect_remaining_time(&val).await);
+                 values_f64.push(collect_current_time_prg(&val).await);
                  book_progress_cnt_list.push(values);
+                 book_progress_cnt_list_cur_time.push(values_f64);
              }
          }
 
@@ -270,23 +276,27 @@ impl App {
          let desc_library = collect_desc_library(&all_books).await;
          let duration_library = collect_duration_library(&all_books).await;
          let mut book_progress_library: Vec<Vec<String>> = Vec::new();
+         let mut book_progress_library_cur_time: Vec<Vec<f64>> = Vec::new();
          if !is_podcast{
              for id in ids_library.clone() {
                  if let Ok(val) = get_book_progress(&token, &id).await {
                      let mut values: Vec<String> = Vec::new();
+                     let mut values_f64: Vec<f64> = Vec::new();
                      values.push(format!(" {}%,",collect_progress_percentage_book(&val).await));
                      values.push(format!(" {}",collect_is_finished_book(&val).await));
-                     values.push(format!(" {},",collect_remaining_time(&val).await));
+                     values_f64.push(collect_current_time_prg(&val).await);
                      book_progress_library.push(values);
+                     book_progress_library_cur_time.push(values_f64);
                  } else {
                      // if the book is not starded, `get book progress` is not fetched
                      // so the empty values are handled here : 
                      let mut values: Vec<String> = Vec::new();
+                     let mut values_f64: Vec<f64> = Vec::new();
                      values.push(format!(" Not started yet"));
                      values.push(format!(""));
-                     values.push(format!(""));
-
+                     values_f64.push(0.0);
                      book_progress_library.push(values);
+                     book_progress_library_cur_time.push(values_f64);
                  }
              }
          }            
@@ -302,8 +312,9 @@ impl App {
          let auth_names_pod_search_book: Vec<String> = Vec::new();
          let published_year_library_search_book: Vec<String> = Vec::new();
          let desc_library_search_book: Vec<String> = Vec::new();
-         let duration_library_search_book: Vec<String> = Vec::new();
+         let duration_library_search_book: Vec<f64> = Vec::new();
          let book_progress_search_book: Vec<Vec<String>> = Vec::new(); 
+         let book_progress_search_book_cur_time: Vec<Vec<f64>> = Vec::new(); 
          let search_mode = false;
          let search_query = "  ".to_string();
          let all_titles_pod_ep_search: Vec<Vec<String>> = Vec::new(); // init in tui.rs in render search book function
@@ -517,8 +528,11 @@ impl App {
             desc_library_search_book,
             duration_library_search_book,
             book_progress_cnt_list,
+            book_progress_cnt_list_cur_time,
             book_progress_library,
+            book_progress_library_cur_time,
             book_progress_search_book,
+            book_progress_search_book_cur_time,
         })
     }
 
