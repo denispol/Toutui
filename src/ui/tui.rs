@@ -403,7 +403,7 @@ impl App {
                     self.auth_names_cnt_list[selected], 
                     self.pub_year_cnt_list[selected], 
                     self.duration_cnt_list[selected],
-                    self.book_progress_cnt_list[selected][0], // precentage progression
+                    self.book_progress_cnt_list[selected][0], // percentage progression
                     self.book_progress_cnt_list[selected][2], // time left
                     self.book_progress_cnt_list[selected][1], // is finished
                     ))
@@ -447,7 +447,7 @@ impl App {
                         self.auth_names_library[selected], 
                         self.published_year_library[selected], 
                         self.duration_library[selected],
-                        self.book_progress_library[selected][0], // precentage progression
+                        self.book_progress_library[selected][0], // percentage progression
                         self.book_progress_library[selected][2], // time left
                         self.book_progress_library[selected][1],)) // is finished
                     .left_aligned()
@@ -544,7 +544,7 @@ impl App {
                         self.auth_names_search_book[selected], 
                         self.published_year_library_search_book[selected], 
                     self.duration_library_search_book[selected],
-                    self.book_progress_search_book[selected][0], // precentage progression
+                    self.book_progress_search_book[selected][0], // percentage progression
                     self.book_progress_search_book[selected][2], // time left
                     self.book_progress_search_book[selected][1],)) // is finished
                 .left_aligned()
