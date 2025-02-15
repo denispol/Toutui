@@ -5,6 +5,8 @@ use tokio::net::TcpStream;
 use std::process::Command;
 use std::str;
 use regex::Regex;
+use crate::api::sessions::close_open_session::*;
+
 
 
 /// TODO : PUT ALL PRINT IN LOG ///
