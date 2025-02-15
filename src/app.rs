@@ -201,7 +201,7 @@ impl App {
              library_name = libraries_names[index].clone();
              media_type = media_types[index].clone();
          }         
-         let lib_name_type = format!("{} ({})", library_name, media_type);
+         let lib_name_type = format!("📖 {} ({})", library_name, media_type);
 
          // init is_podcast
          let is_podcast = if media_type == "podcast" {

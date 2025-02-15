@@ -354,11 +354,11 @@ impl App {
             .bold()
             .centered()
             .render(area, buf);
-        Paragraph::new(format!("Connected as {}\n{}", &username, &server_address))
+        Paragraph::new(format!("👋Connected as {}\n🔗{}", &username, &server_address))
             .not_bold()
             .left_aligned()
             .render(area, buf);
-        Paragraph::new(format!("Toutui v{}", version))
+        Paragraph::new(format!("🦜Toutui v{}", version))
             .right_aligned()
             .render(area, buf);
     }
