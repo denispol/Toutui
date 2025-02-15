@@ -2,6 +2,8 @@ use std::fs::OpenOptions;
 use std::io::{self, Write};
 use vlc_rc::Client;
 use tokio::net::TcpStream;
+use std::process::Command;
+use std::str;
 
 
 /// TODO : PUT ALL PRINT IN LOG ///
@@ -89,6 +91,25 @@ pub async fn is_vlc_running(port: String) -> bool {
     }
 }
 
+// get vlc version
+pub async fn get_vlc_version() -> Result<String, std::io::Error> {
+    let output = Command::new("vlc")
+        .arg("--version")
+        .output()?;
+
+    if !output.status.success() {
+        return Err(std::io::Error::new(
+            std::io::ErrorKind::Other,
+            "Failed to fetch VLC version",
+        ));
+    }
+
+    let version = str::from_utf8(&output.stdout)
+        .map_err(|e| std::io::Error::new(std::io::ErrorKind::InvalidData, e))?; 
+    println!("{}", version);
+
+    Ok(version.to_string())
+}
 
 fn log_error_to_file(error_message: &str) -> io::Result<()> {
     let mut file = OpenOptions::new()

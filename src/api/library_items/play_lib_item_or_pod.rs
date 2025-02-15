@@ -3,7 +3,9 @@ use color_eyre::eyre::{Result};
 use reqwest::header::AUTHORIZATION;
 use serde_json::Value;
 use serde_json::json;
+use crate::player::vlc::fetch_vlc_data::get_vlc_version;
 
+const VERSION: &str = env!("CARGO_PKG_VERSION");
 
 /// Play a Library Item or Podcast Episode
 /// This endpoint starts a playback session for a library item or podcast episode.
@@ -11,16 +13,21 @@ use serde_json::json;
 
 // play book 
 pub async fn post_start_playback_session_book(token: Option<&String>, id_library_item: &str) -> Result<Vec<String>, reqwest::Error> {
+    let vlc_version = String::new();
+    match get_vlc_version().await {
+        Ok(version) => {let vlc_version = version;}
+        Err(e) => {
+            //eprintln!("{}", e),
+        }
+    }
     let client = Client::new();
 
     let params = json!({
         "forceDirectPlay": true, // avoid latency load, allow view chapter, cover etc.(the .m3u8 stream the original format, ex: .m4b) when playing with vlc
-        "mediaPlayer": "vlc",
+        "mediaPlayer": format!("VLC v{}", vlc_version),
         "deviceInfo": {  
-            "deviceId": "Toutui v0.1.0",
             "clientName": "Toutui",
-            "clientVersion": "v0.1.0",
-            "osName": "Linux"
+            "clientVersion": format!("v{}", VERSION),
     }});
 
     let response = client
@@ -58,11 +65,18 @@ pub async fn post_start_playback_session_book(token: Option<&String>, id_library
 }
 // play podcast episode
 pub async fn post_start_playback_session_pod(token: Option<&String>, id_library_item: &str, pod_ep_id: &str) -> Result<Vec<String>, reqwest::Error> {
+    let vlc_version = String::new();
+    match get_vlc_version().await {
+        Ok(version) => {let vlc_version = version;}
+        Err(e) => {
+            //eprintln!("{}", e),
+        }
+    }
     let client = Client::new();
 
     let params = json!({
         "forceDirectPlay": true, // avoid latency load, allow view chapter, cover etc.(the .m3u8 stream the original format, ex: .m4b) when playing with vlc
-        "mediaPlayer": "vlc",
+        "mediaPlayer": format!("VLC v{}", vlc_version),
     });
 
     let response = client

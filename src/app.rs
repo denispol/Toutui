@@ -31,6 +31,7 @@ use std::process;
 use std::io::{stdout, Write};
 use crossterm::{cursor, execute, terminal};
 
+
 pub enum AppView {
     Home,
     Library,
@@ -148,6 +149,7 @@ impl App {
 
         // init config
         let config = load_config()?;
+
 
         // init database from Database struct
         let mut database = Database::new().await?;
