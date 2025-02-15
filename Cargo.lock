@@ -10,6 +10,7 @@ dependencies = [
  "config",
  "crossterm",
  "ratatui",
+ "regex",
  "reqwest",
  "rusqlite",
  "serde",
