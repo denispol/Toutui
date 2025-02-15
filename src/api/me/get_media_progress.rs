@@ -53,7 +53,6 @@ pub async fn get_book_progress(token: &str, book_id: &String) -> Result<Root> {
 
     // Deserialize JSON response into Vec<Root>
     let book_progress: Root = response.json().await?;
-
     Ok(book_progress)
 }
 
