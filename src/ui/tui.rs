@@ -405,23 +405,23 @@ impl App {
             if self.is_podcast {
                 Paragraph::new(format!("[{}] - Author: {} - Episode: {} - Duration: {}", 
                         self.titles_pod_cnt_list[selected], 
-                    self.authors_pod_cnt_list[selected], 
-                    self.nums_ep_pod_cnt_list[selected],
-                    self.durations_pod_cnt_list[selected],
+                        self.authors_pod_cnt_list[selected], 
+                        self.nums_ep_pod_cnt_list[selected],
+                        self.durations_pod_cnt_list[selected],
+                ))
+                    .left_aligned()
+                    .render(area, buf);
+                } else {
+                    Paragraph::new(format!("Author: {} - Year: {} - Duration: {}\nProgress: {}%, {} {}", 
+                            self.auth_names_cnt_list[selected], 
+                            self.pub_year_cnt_list[selected], 
+                            duration_cnt_list_conv[selected].to_string(),
+                            self.book_progress_cnt_list[selected][0], // percentage progression
+                            format!("{}",convert_seconds_for_prg(self.duration_cnt_list[selected], self.book_progress_cnt_list_cur_time[selected][0])), // time left
+                            self.book_progress_cnt_list[selected][1], // is finished
                     ))
-                .left_aligned()
-                .render(area, buf);
-            } else {
-            Paragraph::new(format!("Author: {} - Year: {} - Duration: {}\nProgress: {}%, {} {}", 
-                    self.auth_names_cnt_list[selected], 
-                    self.pub_year_cnt_list[selected], 
-                    duration_cnt_list_conv[selected].to_string(),
-                    self.book_progress_cnt_list[selected][0], // percentage progression
-                    format!("{}",convert_seconds_for_prg(self.duration_cnt_list[selected], self.book_progress_cnt_list_cur_time[selected][0])), // time left
-                    self.book_progress_cnt_list[selected][1], // is finished
-                    ))
-                .left_aligned()
-                .render(area, buf);
+                        .left_aligned()
+                        .render(area, buf);
             }
         }
     }
