@@ -16,7 +16,12 @@ pub async fn post_start_playback_session_book(token: Option<&String>, id_library
     let params = json!({
         "forceDirectPlay": true, // avoid latency load, allow view chapter, cover etc.(the .m3u8 stream the original format, ex: .m4b) when playing with vlc
         "mediaPlayer": "vlc",
-    });
+        "deviceInfo": {  
+            "deviceId": "Toutui v0.1.0",
+            "clientName": "Toutui",
+            "clientVersion": "v0.1.0",
+            "osName": "Linux"
+    }});
 
     let response = client
         .post(format!(
@@ -33,6 +38,9 @@ pub async fn post_start_playback_session_book(token: Option<&String>, id_library
     let v: Value = response.json().await?;
 
     // Retrieve data
+    let id_session = v["id"]
+        .as_str()
+        .unwrap_or("");
     let current_time = v["currentTime"]
         .as_f64()
         .unwrap_or(0.0);
@@ -44,7 +52,7 @@ pub async fn post_start_playback_session_book(token: Option<&String>, id_library
         .unwrap_or(0.0);
     let duration: u32 = duration as u32;
 
-    let info_item = vec![current_time.to_string(), content_url.to_string(), duration.to_string()];
+    let info_item = vec![current_time.to_string(), content_url.to_string(), duration.to_string(), id_session.to_string()];
 
     Ok(info_item)
 }
@@ -71,6 +79,9 @@ pub async fn post_start_playback_session_pod(token: Option<&String>, id_library_
     let v: Value = response.json().await?;
 
     // Retrieve data
+    let id_session = v["id"]
+        .as_str()
+        .unwrap_or("");
     let current_time = v["currentTime"]
         .as_f64()
         .unwrap_or(0.0);
@@ -82,7 +93,7 @@ pub async fn post_start_playback_session_pod(token: Option<&String>, id_library_
         .unwrap_or(0.0);
     let duration: u32 = duration as u32;
 
-    let info_item = vec![current_time.to_string(), content_url.to_string(), duration.to_string()];
+    let info_item = vec![current_time.to_string(), content_url.to_string(), duration.to_string(), id_session.to_string()];
 
     Ok(info_item)
 }

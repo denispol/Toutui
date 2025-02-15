@@ -2,6 +2,7 @@ use crate::player::vlc::start_vlc::*;
 use crate::player::vlc::fetch_vlc_data::*;
 use crate::api::me::update_media_progress::*;
 use crate::api::library_items::play_lib_item_or_pod::*;
+use crate::api::sessions::sync_open_session::*;
 
 pub async fn handle_l_book(
   token: Option<&String>,
@@ -36,6 +37,7 @@ pub async fn handle_l_book(
                                 match fetch_vlc_is_playing(port.clone()).await {
                                     Ok(true) => {
                                         let _ = update_media_progress_book(id, Some(&token), Some(data_fetched_from_vlc), &info_item[2]).await;
+                                        let _ = sync_session(Some(&token), &info_item[3],Some(data_fetched_from_vlc), 1).await;
                                         //println!("{:?}", data_fetched_from_vlc);
                                     },
                                     Ok(false) => {
