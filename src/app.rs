@@ -263,7 +263,18 @@ impl App {
                  values_f64.push(collect_current_time_prg(&val).await);
                  book_progress_cnt_list.push(values);
                  book_progress_cnt_list_cur_time.push(values_f64);
-             }
+             }else {
+                     // if the book is not starded, `get book progress` is not fetched
+                     // so the empty values are handled here : 
+                     let mut values: Vec<String> = Vec::new();
+                     let mut values_f64: Vec<f64> = Vec::new();
+                     values.push(format!(" N/A"));
+                     values.push(format!(" N/A"));
+                     values_f64.push(0.0);
+                     book_progress_cnt_list.push(values);
+                     book_progress_cnt_list_cur_time.push(values_f64);
+                 }
+
          }
 
          }

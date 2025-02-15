@@ -13,13 +13,14 @@ const VERSION: &str = env!("CARGO_PKG_VERSION");
 
 // play book 
 pub async fn post_start_playback_session_book(token: Option<&String>, id_library_item: &str) -> Result<Vec<String>, reqwest::Error> {
-    let vlc_version = String::new();
+    let mut vlc_version = String::new();
     match get_vlc_version().await {
-        Ok(version) => {let vlc_version = version;}
+        Ok(version) => {vlc_version = version;}
         Err(e) => {
             //eprintln!("{}", e),
         }
     }
+    println!("{:?}", vlc_version);
     let client = Client::new();
 
     let params = json!({
@@ -65,9 +66,9 @@ pub async fn post_start_playback_session_book(token: Option<&String>, id_library
 }
 // play podcast episode
 pub async fn post_start_playback_session_pod(token: Option<&String>, id_library_item: &str, pod_ep_id: &str) -> Result<Vec<String>, reqwest::Error> {
-    let vlc_version = String::new();
+    let mut vlc_version = String::new();
     match get_vlc_version().await {
-        Ok(version) => {let vlc_version = version;}
+        Ok(version) => {vlc_version = version;}
         Err(e) => {
             //eprintln!("{}", e),
         }
@@ -77,7 +78,10 @@ pub async fn post_start_playback_session_pod(token: Option<&String>, id_library_
     let params = json!({
         "forceDirectPlay": true, // avoid latency load, allow view chapter, cover etc.(the .m3u8 stream the original format, ex: .m4b) when playing with vlc
         "mediaPlayer": format!("VLC v{}", vlc_version),
-    });
+        "deviceInfo": {  
+            "clientName": "Toutui",
+            "clientVersion": format!("v{}", VERSION),
+    }});
 
     let response = client
         .post(format!(

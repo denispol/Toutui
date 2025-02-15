@@ -4,6 +4,7 @@ use vlc_rc::Client;
 use tokio::net::TcpStream;
 use std::process::Command;
 use std::str;
+use regex::Regex;
 
 
 /// TODO : PUT ALL PRINT IN LOG ///
@@ -92,23 +93,34 @@ pub async fn is_vlc_running(port: String) -> bool {
 }
 
 // get vlc version
-pub async fn get_vlc_version() -> Result<String, std::io::Error> {
+pub async fn get_vlc_version() -> Result<String, io::Error> {
     let output = Command::new("vlc")
         .arg("--version")
         .output()?;
 
     if !output.status.success() {
-        return Err(std::io::Error::new(
-            std::io::ErrorKind::Other,
+        return Err(io::Error::new(
+            io::ErrorKind::Other,
             "Failed to fetch VLC version",
         ));
     }
 
-    let version = str::from_utf8(&output.stdout)
-        .map_err(|e| std::io::Error::new(std::io::ErrorKind::InvalidData, e))?; 
-    println!("{}", version);
+    let version_output = str::from_utf8(&output.stdout)
+        .map_err(|e| io::Error::new(io::ErrorKind::InvalidData, e))?; 
 
-    Ok(version.to_string())
+    // Expression régulière pour capturer uniquement le numéro de version
+    let re = Regex::new(r"VLC (?:media player |version )?([\d.]+)").unwrap();
+    
+    if let Some(captures) = re.captures(version_output) {
+        if let Some(version) = captures.get(1) {
+            return Ok(version.as_str().to_string());
+        }
+    }
+
+    Err(io::Error::new(
+        io::ErrorKind::InvalidData,
+        "Could not extract VLC version",
+    ))
 }
 
 fn log_error_to_file(error_message: &str) -> io::Result<()> {
