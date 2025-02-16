@@ -67,10 +67,17 @@ pub async fn fetch_vlc_is_playing(port: String) -> Result<bool, String> {
             true
         }
         Ok(false) => {
+            // vlc is still open but we have reached the end of the audio playback
+            // allow to be check is the track is finished. But different from the case where VLC is
+            // stopped by the user.
             //println!("The track is currently stopped.");
             false
         }
         Err(e) => {
+            // vlc is closed ba the the user, as VLC is not open anymore. Indeed, match Client::connect(format!("localhost:{}", &port))
+            // will send an error because VLC is not open anymore. Allow to differenciate from an
+            // reach the end of audio just above. Here, the VLC vlc is closed be the user so we
+            // want to make sur to differienciate from a normal reached of the audio playback
             return Err(format!("Failed to check the play status of VLC: {}", e))
         }
     };

@@ -46,16 +46,28 @@ pub async fn handle_l_book(
 
                                         }
                                     },
+                                    // `Ok(false)` means that the track is stopped but VLC still
+                                    // open. Allow to track when the audio reached the end. And
+                                    // differ from the case where the user just close VLC
+                                    // during a playing (in this case we don't want to mark the
+                                    // track as finished)
                                     Ok(false) => {
                                         let is_finised = true;
+                                        let _ =  close_session(Some(&token), &info_item[3], Some(data_fetched_from_vlc), 1).await;
                                         let _ = update_media_progress2_book(id, Some(&token), Some(data_fetched_from_vlc), &info_item[2], is_finised).await;
                                         break; 
                                     },
-                                    // Err means :  VLC is close (because if VLC is not playing
-                                    // anymore an error is send by `fetch_vlc_is_playing`)
+                                    // `Err` means :  VLC is close (because if VLC is not playing
+                                    // anymore an error is send by `fetch_vlc_is_playing`).
+                                    // The track is not finished. VLC is just stopped by the user.
+                                    // Differ from the case above where the track reched the end.
+                                    // can be buggy if we want to make sure that VLC is closed. not really reliable sometimes.
                                     Err(_) => {
                                         //TODO minor bug : be sure to close the session above
+                                        // close session when VLC is quitted
                                         let _ =  close_session(Some(&token), &info_item[3], Some(data_fetched_from_vlc), 1).await;
+                                        // send one last time media progress (bug to retrieve media
+                                        // progress otherwise)
                                         let _ = update_media_progress_book(id, Some(&token), Some(data_fetched_from_vlc), &info_item[2]).await;
                                         //eprintln!("Error fetching play status: {}", e);
                                         break; 
