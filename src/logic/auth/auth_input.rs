@@ -16,6 +16,7 @@ use std::thread;
 use std::time::Duration;
 use std::process;
 
+
 const VERSION: &str = env!("CARGO_PKG_VERSION");
 
 
@@ -80,6 +81,8 @@ impl AppLogin {
         loop {
             term.draw(|f| {
                 f.render_widget(&textareas[current_index], input_area);
+                let background = Block::default().style(Style::default().bg(Color::Rgb(40, 40, 40)));
+                f.render_widget(background, f.size());
             })?;
 
             match crossterm::event::read()? {

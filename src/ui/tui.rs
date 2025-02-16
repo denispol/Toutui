@@ -25,11 +25,15 @@ use ratatui::Terminal;
 
 
 // const for color theme
-const TODO_HEADER_STYLE: Style = Style::new().fg(SLATE.c100).bg(BLUE.c800);
-const NORMAL_ROW_BG: Color = SLATE.c950;
-const ALT_ROW_BG_COLOR: Color = SLATE.c900;
-const SELECTED_STYLE: Style = Style::new().bg(SLATE.c800).add_modifier(Modifier::BOLD);
 
+const TODO_HEADER_STYLE: Style = Style::new().fg(Color::Rgb(180, 180, 180)).bg(Color::Rgb(60, 60, 60)); // Texte clair sur fond sombre
+const NORMAL_ROW_BG: Color = Color::Rgb(50, 50, 50);  // Gris très foncé pour les lignes normales
+const ALT_ROW_BG_COLOR: Color = Color::Rgb(60, 60, 60); // Gris foncé pour les lignes alternées
+const SELECTED_STYLE: Style = Style::new()
+    .bg(Color::Rgb(80, 80, 80))  // Fond sélectionné plus doux
+    .fg(Color::Rgb(220, 220, 220)) // Texte plus clair mais pas blanc pur
+    .add_modifier(Modifier::BOLD);  // Texte en gras
+ 
 // const version
 const VERSION: &str = env!("CARGO_PKG_VERSION");
 

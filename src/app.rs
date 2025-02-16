@@ -30,6 +30,8 @@ use std::time::Duration;
 use std::process;
 use std::io::{stdout, Write};
 use crossterm::{cursor, execute, terminal};
+use ratatui::widgets::Block;
+use ratatui::style::{Color, Style};
 
 
 pub enum AppView {
@@ -553,16 +555,20 @@ impl App {
 
 
    /// handle events
-   pub fn run(&mut self, terminal: &mut DefaultTerminal) -> Result<()> {
-        while !self.should_exit {
-            terminal.draw(|frame| frame.render_widget(&mut *self, frame.area()))?;
-            if let Event::Key(key) = event::read()? {
-                self.handle_key(key);
-            }
-        }
-        Ok(())
-    }
+pub fn run(&mut self, terminal: &mut DefaultTerminal) -> Result<()> {
+    while !self.should_exit {
+        terminal.draw(|frame| {
+            let background = Block::default().style(Style::default().bg(Color::Rgb(40, 40, 40)));
+            frame.render_widget(background, frame.size());
+            frame.render_widget(&mut *self, frame.area());
+        })?;
 
+        if let Event::Key(key) = event::read()? {
+            self.handle_key(key);
+        }
+    }
+    Ok(())
+}
    /// handle key
 pub fn handle_key(&mut self, key: KeyEvent) {
     if key.kind != KeyEventKind::Press {
