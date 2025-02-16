@@ -266,6 +266,7 @@ impl App {
              }else {
                      // if the book is not starded, `get book progress` is not fetched
                      // so the empty values are handled here : 
+                     // avoid an out of bound panick
                      let mut values: Vec<String> = Vec::new();
                      let mut values_f64: Vec<f64> = Vec::new();
                      values.push(format!(" N/A"));
@@ -303,6 +304,7 @@ impl App {
                  } else {
                      // if the book is not starded, `get book progress` is not fetched
                      // so the empty values are handled here : 
+                     // avoid an out of bound panick
                      let mut values: Vec<String> = Vec::new();
                      let mut values_f64: Vec<f64> = Vec::new();
                      values.push(format!(" Not started yet"));
