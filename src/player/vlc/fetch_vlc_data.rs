@@ -117,7 +117,6 @@ pub async fn get_vlc_version() -> Result<String, io::Error> {
     let version_output = str::from_utf8(&output.stdout)
         .map_err(|e| io::Error::new(io::ErrorKind::InvalidData, e))?; 
 
-    // Expression régulière pour capturer uniquement le numéro de version
     let re = Regex::new(r"VLC (?:media player |version )?([\d.]+)").unwrap();
     
     if let Some(captures) = re.captures(version_output) {

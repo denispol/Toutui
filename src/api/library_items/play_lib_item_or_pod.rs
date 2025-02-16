@@ -28,9 +28,9 @@ pub async fn post_start_playback_session_book(token: Option<&String>, id_library
         "deviceInfo": {  
             "clientName": "Toutui",
             "clientVersion": format!("v{}", VERSION),
-            // to have Toutui displayed in user activity pannel (audiobookshelf/config/users/)
-            "manufacturer": format!("v{}", VERSION),
-            "model": "Toutui",
+            // to have OS displayed in user activity pannel (audiobookshelf/config/users/)
+            "manufacturer": format!("{}", std::env::consts::OS),
+            "model": format!("{}", std::env::consts::ARCH),
     }});
 
     let response = client
@@ -100,9 +100,9 @@ pub async fn post_start_playback_session_pod(token: Option<&String>, id_library_
         "deviceInfo": {  
             "clientName": "Toutui",
             "clientVersion": format!("v{}", VERSION),
-            // to have Toutui displayed in user activity pannel (audiobookshelf/config/users/)
-            "manufacturer": format!("v{}", VERSION),
-            "model": "Toutui",
+            // to have OS displayed in user activity pannel (audiobookshelf/config/users/)
+            "manufacturer": format!("{}", std::env::consts::OS),
+            "model": format!("{}", std::env::consts::ARCH),
     }});
 
     let response = client
