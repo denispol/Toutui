@@ -8,7 +8,7 @@ use serde_json::json;
 /// https://api.audiobookshelf.org/#close-an-open-session
 
 // close an open session
-pub async fn close_session(token: Option<&String>, session_id: &str, current_time: Option<u32>, time_listened: u32) -> Result<(), reqwest::Error> {
+pub async fn close_session(token: Option<&String>, session_id: &str, current_time: Option<u32>, time_listened: u64) -> Result<(), reqwest::Error> {
     let client = Client::new();
     let params = json!({
         "currentTime": format!("{}", current_time.unwrap_or(0)), 

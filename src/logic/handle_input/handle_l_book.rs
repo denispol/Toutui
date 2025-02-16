@@ -34,14 +34,15 @@ pub async fn handle_l_book(
                             Ok(Some(data_fetched_from_vlc)) => {
                                 //println!("Fetched data: {}", data_fetched.to_string());
 
-                                // Important, sleep time to 1s otherwise connection to vlc player will not have time to connect
-                                tokio::time::sleep(tokio::time::Duration::from_secs(5)).await;
+                                // Important, sleep time to 1s min, otherwise connection to vlc player will not have time to connect
+                                let sleep_time: u64 = 5;
+                                tokio::time::sleep(tokio::time::Duration::from_secs(sleep_time)).await;
                                 match fetch_vlc_is_playing(port.clone()).await {
                                     Ok(true) => {
                                         // the first datra fetched is sometimes 0 secondes, so we
                                         // want to be sure no send 0 secondes
                                         if Some(data_fetched_from_vlc) != Some(0) {
-                                        let _ = sync_session(Some(&token), &info_item[3],Some(data_fetched_from_vlc), 1).await;
+                                        let _ = sync_session(Some(&token), &info_item[3],Some(data_fetched_from_vlc), sleep_time).await;
                                         let _ = update_media_progress_book(id, Some(&token), Some(data_fetched_from_vlc), &info_item[2]).await;
 
                                         }
@@ -53,7 +54,7 @@ pub async fn handle_l_book(
                                     // track as finished)
                                     Ok(false) => {
                                         let is_finised = true;
-                                        let _ =  close_session(Some(&token), &info_item[3], Some(data_fetched_from_vlc), 1).await;
+                                        let _ =  close_session(Some(&token), &info_item[3], Some(data_fetched_from_vlc), sleep_time).await;
                                         let _ = update_media_progress2_book(id, Some(&token), Some(data_fetched_from_vlc), &info_item[2], is_finised).await;
                                         break; 
                                     },
@@ -65,7 +66,7 @@ pub async fn handle_l_book(
                                     Err(_) => {
                                         //TODO minor bug : be sure to close the session above
                                         // close session when VLC is quitted
-                                        let _ =  close_session(Some(&token), &info_item[3], Some(data_fetched_from_vlc), 1).await;
+                                        let _ =  close_session(Some(&token), &info_item[3], Some(data_fetched_from_vlc), sleep_time).await;
                                         // send one last time media progress (bug to retrieve media
                                         // progress otherwise)
                                         let _ = update_media_progress_book(id, Some(&token), Some(data_fetched_from_vlc), &info_item[2]).await;
