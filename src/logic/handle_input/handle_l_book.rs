@@ -35,7 +35,7 @@ pub async fn handle_l_book(
                                 //println!("Fetched data: {}", data_fetched.to_string());
 
                                 // Important, sleep time to 1s otherwise connection to vlc player will not have time to connect
-                                tokio::time::sleep(tokio::time::Duration::from_secs(1)).await;
+                                tokio::time::sleep(tokio::time::Duration::from_secs(5)).await;
                                 match fetch_vlc_is_playing(port.clone()).await {
                                     Ok(true) => {
                                         // the first datra fetched is sometimes 0 secondes, so we

@@ -35,7 +35,7 @@ impl AppLogin {
             Block::default()
             .borders(Borders::ALL)
             .title("Server address")
-            .title_bottom(Line::from(format!("Toutui v{} - Esc to quit.", VERSION)).right_aligned())
+            .title_bottom(Line::from(format!("🦜Toutui v{} - Esc to quit.", VERSION)).right_aligned())
             .border_style(Style::default().fg(Color::LightBlue)),
             
         );
@@ -45,7 +45,7 @@ impl AppLogin {
             Block::default()
             .borders(Borders::ALL)
             .title("Username")
-            .title_bottom(Line::from(format!("Toutui v{} - Esc to quit.", VERSION)).right_aligned())
+            .title_bottom(Line::from(format!("🦜Toutui v{} - Esc to quit.", VERSION)).right_aligned())
             .border_style(Style::default().fg(Color::LightBlue)),
         );
 
@@ -54,7 +54,7 @@ impl AppLogin {
             Block::default()
             .borders(Borders::ALL)
             .title("Password")
-            .title_bottom(Line::from(format!("Toutui v{} - Esc to quit.", VERSION)).right_aligned())
+            .title_bottom(Line::from(format!("🦜Toutui v{} - Esc to quit.", VERSION)).right_aligned())
             .border_style(Style::default().fg(Color::LightBlue)),
         );
         textarea3.set_mask_char('\u{2022}');
