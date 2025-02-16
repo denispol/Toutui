@@ -34,7 +34,8 @@ pub async fn handle_l_book(
                             Ok(Some(data_fetched_from_vlc)) => {
                                 //println!("Fetched data: {}", data_fetched.to_string());
 
-                                // Important, sleep time to 1s min, otherwise connection to vlc player will not have time to connect
+                                // Important, sleep time to 1s minimum, otherwise connection to vlc player will not have time to connect
+                                // sleep time : every how many seconds the data will be sent to the server
                                 let sleep_time: u64 = 5;
                                 tokio::time::sleep(tokio::time::Duration::from_secs(sleep_time)).await;
                                 match fetch_vlc_is_playing(port.clone()).await {
@@ -62,7 +63,6 @@ pub async fn handle_l_book(
                                     // anymore an error is send by `fetch_vlc_is_playing`).
                                     // The track is not finished. VLC is just stopped by the user.
                                     // Differ from the case above where the track reched the end.
-                                    // can be buggy if we want to make sure that VLC is closed. not really reliable sometimes.
                                     Err(_) => {
                                         //TODO minor bug : be sure to close the session above
                                         // close session when VLC is quitted
