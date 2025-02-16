@@ -48,9 +48,6 @@ pub async fn post_start_playback_session_book(token: Option<&String>, id_library
     let v: Value = response.json().await?;
 
     // Retrieve data
-    let id_session = v["id"]
-        .as_str()
-        .unwrap_or("");
     let current_time = v["currentTime"]
         .as_f64()
         .unwrap_or(0.0);
@@ -61,8 +58,28 @@ pub async fn post_start_playback_session_book(token: Option<&String>, id_library
         .as_f64()
         .unwrap_or(0.0);
     let duration: u32 = duration as u32;
+    let id_session = v["id"]
+        .as_str()
+        .unwrap_or("");
+    let title = v["title"]
+        .as_str()
+        .unwrap_or("N/A");
+    let subtitle = v["title"]
+        .as_str()
+        .unwrap_or("N/A");
+    let author = v["authors"]["name"]
+        .as_str()
+        .unwrap_or("N/A");
 
-    let info_item = vec![current_time.to_string(), content_url.to_string(), duration.to_string(), id_session.to_string()];
+    let info_item = vec![
+    current_time.to_string(), 
+    content_url.to_string(), 
+    duration.to_string(), 
+    id_session.to_string(), 
+    title.to_string(), 
+    subtitle.to_string(), 
+    author.to_string()
+    ];
 
     Ok(info_item)
 }
@@ -102,9 +119,6 @@ pub async fn post_start_playback_session_pod(token: Option<&String>, id_library_
     let v: Value = response.json().await?;
 
     // Retrieve data
-    let id_session = v["id"]
-        .as_str()
-        .unwrap_or("");
     let current_time = v["currentTime"]
         .as_f64()
         .unwrap_or(0.0);
@@ -115,8 +129,28 @@ pub async fn post_start_playback_session_pod(token: Option<&String>, id_library_
         .as_f64()
         .unwrap_or(0.0);
     let duration: u32 = duration as u32;
+    let id_session = v["id"]
+        .as_str()
+        .unwrap_or("");
+    let title = v["mediaMetadata"]["title"]
+        .as_str()
+        .unwrap_or("N/A");
+    let subtitle = v["displayTitle"]
+        .as_str()
+        .unwrap_or("N/A");
+    let author = v["displayAuthor"]
+        .as_str()
+        .unwrap_or("N/A");
 
-    let info_item = vec![current_time.to_string(), content_url.to_string(), duration.to_string(), id_session.to_string()];
+    let info_item = vec![
+    current_time.to_string(), 
+    content_url.to_string(), 
+    duration.to_string(), 
+    id_session.to_string(), 
+    title.to_string(), 
+    subtitle.to_string(), 
+    author.to_string()
+    ];
 
     Ok(info_item)
 }

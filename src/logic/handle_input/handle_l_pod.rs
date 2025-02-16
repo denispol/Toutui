@@ -27,7 +27,14 @@ pub async fn handle_l_pod(
                     let info_item_clone = info_item.clone() ;
                     // Start VLC is launched in a spawn to allow fetch_vlc_data to start at the same time
                     tokio::spawn(async move {
-                        start_vlc(&info_item_clone[0], &port_clone, &info_item_clone[1], Some(&token_clone)).await;
+                        start_vlc(
+                            &info_item_clone[0], 
+                            &port_clone, &info_item_clone[1], 
+                            Some(&token_clone), 
+                            info_item_clone[4].clone(),
+                            info_item_clone[5].clone(),
+                            info_item_clone[6].clone(),
+                        ).await;
                     });
 
                     // Important, sleep time to 1s otherwise connection to vlc player will not have time to connect
