@@ -32,9 +32,9 @@ pub struct Root {
 /// https://api.audiobookshelf.org/#get-a-media-progress
 
 // get progress for a book
-pub async fn get_book_progress(token: &str, book_id: &String) -> Result<Root> {
+pub async fn get_book_progress(token: &str, book_id: &String, server_address: String) -> Result<Root> {
     let client = Client::new();
-    let url = format!("https://audiobook.nuagemagique.duckdns.org/api/me/progress/{}", book_id);
+    let url = format!("{}/api/me/progress/{}", server_address, book_id);
 
     // Send GET request
     let response = client

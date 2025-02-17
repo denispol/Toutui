@@ -26,6 +26,7 @@ pub async fn handle_l_pod(
                     let token_clone = token.clone();
                     let port_clone = port.clone();
                     let info_item_clone = info_item.clone() ;
+                    let server_address_clone = server_address.clone() ;
                     // Start VLC is launched in a spawn to allow fetch_vlc_data to start at the same time
                     tokio::spawn(async move {
                         start_vlc(
@@ -36,7 +37,7 @@ pub async fn handle_l_pod(
                             info_item_clone[4].clone(), //title
                             info_item_clone[5].clone(), // subtitle
                             info_item_clone[6].clone(), //title
-                            server_address, // server address
+                            server_address_clone, // server address
                         ).await;
                     });
 
@@ -57,7 +58,7 @@ pub async fn handle_l_pod(
                                         // the first datra fetched is sometimes 0 secondes, so we
                                         // want to be sure no send 0 secondes
                                         if Some(data_fetched_from_vlc) != Some(0) {
-                                            let _ = update_media_progress_pod(id_pod, Some(&token), Some(data_fetched_from_vlc), &info_item[2], &id).await;
+                                            let _ = update_media_progress_pod(id_pod, Some(&token), Some(data_fetched_from_vlc), &info_item[2], &id, server_address.clone()).await;
                                             let _ = sync_session(Some(&token), &info_item[3],Some(data_fetched_from_vlc), sleep_time).await;
                                             //println!("{:?}", data_fetched_from_vlc);
                                         }},
@@ -69,7 +70,7 @@ pub async fn handle_l_pod(
                                     Ok(false) => {
                                         let is_finised = true;
                                         let _ =  close_session(Some(&token), &info_item[3], Some(data_fetched_from_vlc), sleep_time).await;
-                                        let _ = update_media_progress2_pod(id_pod, Some(&token), Some(data_fetched_from_vlc), &info_item[2], is_finised, &id).await;
+                                        let _ = update_media_progress2_pod(id_pod, Some(&token), Some(data_fetched_from_vlc), &info_item[2], is_finised, &id, server_address).await;
                                         break; 
                                     },
                                     // `Err` means :  VLC is close (because if VLC is not playing
@@ -82,7 +83,7 @@ pub async fn handle_l_pod(
                                         let _ =  close_session(Some(&token), &info_item[3], Some(data_fetched_from_vlc), sleep_time).await;
                                         // send one last time media progress (bug to retrieve media
                                         // progress otherwise)
-                                        let _ = update_media_progress_pod(id_pod, Some(&token), Some(data_fetched_from_vlc), &info_item[2], &id).await;
+                                        let _ = update_media_progress_pod(id_pod, Some(&token), Some(data_fetched_from_vlc), &info_item[2], &id, server_address).await;
                                         //eprintln!("Error fetching play status: {}", e);
                                         break; 
                                     }

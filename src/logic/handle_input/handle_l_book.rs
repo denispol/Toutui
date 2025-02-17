@@ -22,6 +22,7 @@ pub async fn handle_l_book(
                     let token_clone = token.clone();
                     let port_clone = port.clone();
                     let info_item_clone = info_item.clone() ;
+                    let server_address_clone = server_address.clone() ;
                     // start_vlc is launched in a spawn to allow fetch_vlc_data to start at the same time
                     tokio::spawn(async move {
                         start_vlc(
@@ -32,7 +33,7 @@ pub async fn handle_l_book(
                             info_item_clone[4].clone(), //title
                             info_item_clone[5].clone(), // subtitle
                             info_item_clone[6].clone(), //title
-                            server_address, // server address
+                            server_address_clone.clone(), // server address
                         ).await;
                     });
 
@@ -54,7 +55,7 @@ pub async fn handle_l_book(
                                         // want to be sure no send 0 secondes
                                         if Some(data_fetched_from_vlc) != Some(0) {
                                         let _ = sync_session(Some(&token), &info_item[3],Some(data_fetched_from_vlc), sleep_time).await;
-                                        let _ = update_media_progress_book(id, Some(&token), Some(data_fetched_from_vlc), &info_item[2]).await;
+                                        let _ = update_media_progress_book(id, Some(&token), Some(data_fetched_from_vlc), &info_item[2], server_address.clone()).await;
 
                                         }
                                     },
@@ -66,7 +67,7 @@ pub async fn handle_l_book(
                                     Ok(false) => {
                                         let is_finised = true;
                                         let _ =  close_session(Some(&token), &info_item[3], Some(data_fetched_from_vlc), sleep_time).await;
-                                        let _ = update_media_progress2_book(id, Some(&token), Some(data_fetched_from_vlc), &info_item[2], is_finised).await;
+                                        let _ = update_media_progress2_book(id, Some(&token), Some(data_fetched_from_vlc), &info_item[2], is_finised, server_address).await;
                                         break; 
                                     },
                                     // `Err` means :  VLC is close (because if VLC is not playing
@@ -79,7 +80,7 @@ pub async fn handle_l_book(
                                         let _ =  close_session(Some(&token), &info_item[3], Some(data_fetched_from_vlc), sleep_time).await;
                                         // send one last time media progress (bug to retrieve media
                                         // progress otherwise)
-                                        let _ = update_media_progress_book(id, Some(&token), Some(data_fetched_from_vlc), &info_item[2]).await;
+                                        let _ = update_media_progress_book(id, Some(&token), Some(data_fetched_from_vlc), &info_item[2], server_address).await;
                                         //eprintln!("Error fetching play status: {}", e);
                                         break; 
                                     }

@@ -262,7 +262,7 @@ impl App {
          desc_cnt_list = collect_desc_cnt_list(&continue_listening).await;
          ids_cnt_list = collect_ids_cnt_list(&continue_listening).await;
          for id in ids_cnt_list.clone() {
-             if let Ok(val) = get_book_progress(&token, &id).await {
+             if let Ok(val) = get_book_progress(&token, &id, server_address.clone()).await {
                  let mut values: Vec<String> = Vec::new();
                  let mut values_f64: Vec<f64> = Vec::new();
                  values.push(collect_progress_percentage_book(&val).await);
@@ -296,7 +296,7 @@ impl App {
          let mut book_progress_library_cur_time: Vec<Vec<f64>> = Vec::new();
          if !is_podcast{
              for id in ids_library.clone() {
-                 if let Ok(val) = get_book_progress(&token, &id).await {
+                 if let Ok(val) = get_book_progress(&token, &id, server_address.clone()).await {
                      let mut values: Vec<String> = Vec::new();
                      let mut values_f64: Vec<f64> = Vec::new();
                      values.push(format!(" {}%,",collect_progress_percentage_book(&val).await));

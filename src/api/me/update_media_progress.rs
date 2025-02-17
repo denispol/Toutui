@@ -7,7 +7,7 @@ use std::error::Error;
 /// https://api.audiobookshelf.org/#create-update-media-progress
 
 // for a book 
-pub async fn update_media_progress_book(id_library_item: &str, token: Option<&String>, current_time: Option<u32>, duration: &String) -> Result<(), Box<dyn Error>> {
+pub async fn update_media_progress_book(id_library_item: &str, token: Option<&String>, current_time: Option<u32>, duration: &String, server_adress: String) -> Result<(), Box<dyn Error>> {
 
     // Build client reqwest
     let client = reqwest::Client::new();
@@ -28,7 +28,8 @@ pub async fn update_media_progress_book(id_library_item: &str, token: Option<&St
     // Patch request
     let _response = client
         .patch(format!(
-                "https://audiobook.nuagemagique.duckdns.org/api/me/progress/{}", 
+                "{}/api/me/progress/{}", 
+                server_adress,
                 id_library_item
         ))
         .header(AUTHORIZATION, format!("Bearer {}", token.unwrap()))
@@ -48,7 +49,7 @@ pub async fn update_media_progress_book(id_library_item: &str, token: Option<&St
 }
 
 // for a book (to mark as finished)
-pub async fn update_media_progress2_book(id_library_item: &str, token: Option<&String>, current_time: Option<u32>, duration: &String, is_finished: bool) -> Result<(), Box<dyn Error>> {
+pub async fn update_media_progress2_book(id_library_item: &str, token: Option<&String>, current_time: Option<u32>, duration: &String, is_finished: bool, server_adress: String) -> Result<(), Box<dyn Error>> {
 
     // Build client reqwest
     let client = reqwest::Client::new();
@@ -70,7 +71,8 @@ pub async fn update_media_progress2_book(id_library_item: &str, token: Option<&S
     // Patch request
     let _response = client
         .patch(format!(
-                "https://audiobook.nuagemagique.duckdns.org/api/me/progress/{}",
+                "{}/api/me/progress/{}",
+                server_adress,
                 id_library_item
         ))
         .header(AUTHORIZATION, format!("Bearer {}", token.unwrap()))
@@ -89,7 +91,7 @@ pub async fn update_media_progress2_book(id_library_item: &str, token: Option<&S
 }
 
 // for a podcast : 
-pub async fn update_media_progress_pod(id_library_item: &str , token: Option<&String>, current_time: Option<u32>, duration: &String, ep_id : &str) -> Result<(), Box<dyn Error>> {
+pub async fn update_media_progress_pod(id_library_item: &str , token: Option<&String>, current_time: Option<u32>, duration: &String, ep_id : &str, server_adress: String) -> Result<(), Box<dyn Error>> {
 
     // Build client reqwest
     let client = reqwest::Client::new();
@@ -110,7 +112,8 @@ pub async fn update_media_progress_pod(id_library_item: &str , token: Option<&St
     // Patch request
     let _response = client
         .patch(format!(
-                "https://audiobook.nuagemagique.duckdns.org/api/me/progress/{}/{}", 
+                "{}/api/me/progress/{}/{}", 
+                server_adress,
                 id_library_item, ep_id
         ))
         .header(AUTHORIZATION, format!("Bearer {}", token.unwrap()))
@@ -130,7 +133,7 @@ pub async fn update_media_progress_pod(id_library_item: &str , token: Option<&St
 }
 
 // for a podcast (to mark as finished) : 
-pub async fn update_media_progress2_pod(id_library_item: &str, token: Option<&String>, current_time: Option<u32>, duration: &String, is_finished: bool, ep_id: &str) -> Result<(), Box<dyn Error>> {
+pub async fn update_media_progress2_pod(id_library_item: &str, token: Option<&String>, current_time: Option<u32>, duration: &String, is_finished: bool, ep_id: &str, server_adress: String) -> Result<(), Box<dyn Error>> {
 
     // Build client reqwest
     let client = reqwest::Client::new();
@@ -152,8 +155,10 @@ pub async fn update_media_progress2_pod(id_library_item: &str, token: Option<&St
     // Patch request
     let _response = client
         .patch(format!(
-                "https://audiobook.nuagemagique.duckdns.org/api/me/progress/{}/{}",
-                id_library_item, ep_id
+                "{}/api/me/progress/{}/{}",
+                server_adress,
+                id_library_item, 
+                ep_id
         ))
         .header(AUTHORIZATION, format!("Bearer {}", token.unwrap()))
         .json(&body)
