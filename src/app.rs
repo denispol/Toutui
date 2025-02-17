@@ -106,6 +106,7 @@ pub struct App {
    pub all_server_addresses: Vec<String>,
    pub username: String,
    pub server_address: String,
+   pub server_address_pretty: String,
    pub scroll_offset: u16,
    pub subtitles_pod_cnt_list: Vec<String>,
    pub nums_ep_pod_cnt_list: Vec<String>,
@@ -160,33 +161,37 @@ impl App {
         let mut token: String = String::new();
         if let Some(var_token) = database.default_usr.get(2) {
             token = var_token.clone();
+        }
 
+        // init server_address
+        let mut server_address: String = String::new();
+        if let Some(var_server_address) = database.default_usr.get(1) {
+            server_address = var_server_address.clone();
         }
 
         // init id_selected_lib
         let mut id_selected_lib: String = String::new();
         if let Some(var_id_selected_lib) = database.default_usr.get(5) {
             id_selected_lib = var_id_selected_lib.clone();
-
         }
 
         // init current username
         let mut username: String = String::new();
         if let Some(var_username) = database.default_usr.get(0) {
             username = var_username.clone();
-
         }
 
         // init server address (without prefix)
         let mut server_address: String = String::new();
+        let mut server_address_pretty: String = String::new();
         if let Some(var_server_address) = database.default_usr.get(1) {
             server_address = var_server_address.clone();
 
             // Remove "http://" or "https://"
             if let Some(stripped) = server_address.strip_prefix("http://") {
-                server_address = stripped.to_string();
+                server_address_pretty = stripped.to_string();
             } else if let Some(stripped) = server_address.strip_prefix("https://") {
-                server_address = stripped.to_string();
+                server_address_pretty = stripped.to_string();
             }
         }
 
@@ -265,7 +270,7 @@ impl App {
                  values_f64.push(collect_current_time_prg(&val).await);
                  book_progress_cnt_list.push(values);
                  book_progress_cnt_list_cur_time.push(values_f64);
-             }else {
+             } else {
                      // if the book is not starded, `get book progress` is not fetched
                      // so the empty values are handled here : 
                      // avoid an out of bound panick
@@ -276,11 +281,7 @@ impl App {
                      values_f64.push(0.0);
                      book_progress_cnt_list.push(values);
                      book_progress_cnt_list_cur_time.push(values_f64);
-                 }
-
-         }
-
-         }
+                 }}}
 
          //init for `Library ` (all books  or podcasts of a Library (shelf))
          let all_books = get_all_books(&token, &id_selected_lib).await?;
@@ -499,6 +500,7 @@ impl App {
             all_server_addresses,
             username,
             server_address,
+            server_address_pretty,
             scroll_offset,
             subtitles_pod_cnt_list,
             nums_ep_pod_cnt_list,
@@ -627,6 +629,7 @@ pub fn handle_key(&mut self, key: KeyEvent) {
             // Clone needed because variables will be used in a spawn
             let token = self.token.clone();
             let port = "1234".to_string();
+            let server_address = self.server_address.clone();
 
             // Init for `Continue Listening` (AppView::Home)
             let ids_cnt_list = self.ids_cnt_list.clone();
@@ -679,12 +682,12 @@ pub fn handle_key(&mut self, key: KeyEvent) {
                     if self.is_podcast {
                         loading_message();
                         tokio::spawn(async move {
-                            handle_l_pod_home(token.as_ref(), &ids_cnt_list, selected_cnt_list, port, ids_ep_cnt_list).await;
+                            handle_l_pod_home(token.as_ref(), &ids_cnt_list, selected_cnt_list, port, ids_ep_cnt_list, server_address).await;
                         });
                     } else {
                         loading_message();
                         tokio::spawn(async move {
-                        handle_l_book(token.as_ref(), ids_cnt_list, selected_cnt_list, port).await;
+                        handle_l_book(token.as_ref(), ids_cnt_list, selected_cnt_list, port, server_address).await;
                     });
                     }}
                 AppView::Settings => {
@@ -722,7 +725,7 @@ pub fn handle_key(&mut self, key: KeyEvent) {
                     }} else {
                         loading_message();
                         tokio::spawn(async move {
-                            handle_l_book(token.as_ref(), ids_library, selected_library, port).await;
+                            handle_l_book(token.as_ref(), ids_library, selected_library, port, server_address).await;
                         });
                     }
                 }
@@ -743,7 +746,7 @@ pub fn handle_key(&mut self, key: KeyEvent) {
                         }} else {   
                             loading_message();
                             tokio::spawn(async move {
-                                handle_l_book(token.as_ref(), ids_search_book, selected_search_book, port).await;
+                                handle_l_book(token.as_ref(), ids_search_book, selected_search_book, port, server_address).await;
                             });
 
                         }
@@ -762,7 +765,7 @@ pub fn handle_key(&mut self, key: KeyEvent) {
                             let id_pod_clone = id_pod.clone();
                             loading_message();
                             tokio::spawn(async move {
-                                handle_l_pod(token.as_ref(), &all_ids_pod_ep_search_clone[index], selected_pod_ep, port, id_pod_clone.as_str()).await;
+                                handle_l_pod(token.as_ref(), &all_ids_pod_ep_search_clone[index], selected_pod_ep, port, id_pod_clone.as_str(), server_address).await;
                             });
                         }
                     }
@@ -778,7 +781,7 @@ pub fn handle_key(&mut self, key: KeyEvent) {
                             let id_pod_clone = id_pod.clone();
                             tokio::spawn(async move {
                                 loading_message();
-                                handle_l_pod(token.as_ref(), &all_ids_pod_ep_clone[index], selected_pod_ep, port, id_pod_clone.as_str()).await;
+                                handle_l_pod(token.as_ref(), &all_ids_pod_ep_clone[index], selected_pod_ep, port, id_pod_clone.as_str(), server_address).await;
                             });
                         }
                     }

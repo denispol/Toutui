@@ -14,6 +14,7 @@ pub async fn handle_l_pod(
     selected: Option<usize>,
     port: String,
     id_pod: &str,
+    server_address: String,
 ) {
     if let Some(index) = selected {
         if let Some(id) = ids_library_items.get(index) {
@@ -28,12 +29,14 @@ pub async fn handle_l_pod(
                     // Start VLC is launched in a spawn to allow fetch_vlc_data to start at the same time
                     tokio::spawn(async move {
                         start_vlc(
-                            &info_item_clone[0], 
-                            &port_clone, &info_item_clone[1], 
-                            Some(&token_clone), 
-                            info_item_clone[4].clone(),
-                            info_item_clone[5].clone(),
-                            info_item_clone[6].clone(),
+                            &info_item_clone[0], // current_time
+                            &port_clone, // vlc port
+                            &info_item_clone[1], // content url 
+                            Some(&token_clone), //token
+                            info_item_clone[4].clone(), //title
+                            info_item_clone[5].clone(), // subtitle
+                            info_item_clone[6].clone(), //title
+                            server_address, // server address
                         ).await;
                     });
 
