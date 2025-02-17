@@ -20,7 +20,7 @@ pub async fn handle_l_pod(
         if let Some(id) = ids_library_items.get(index) {
             // id is id of the podcast episode and id_pod is the id id of the podcast
             if let Some(token) = token {
-                if let Ok(info_item) = post_start_playback_session_pod(Some(&token),id_pod, &id).await {
+                if let Ok(info_item) = post_start_playback_session_pod(Some(&token),id_pod, &id, server_address.clone()).await {
                     // clone otherwise, these variable will  be consumed and not available anymore
                     // for use outside start_vlc spawn
                     let token_clone = token.clone();
@@ -59,7 +59,7 @@ pub async fn handle_l_pod(
                                         // want to be sure no send 0 secondes
                                         if Some(data_fetched_from_vlc) != Some(0) {
                                             let _ = update_media_progress_pod(id_pod, Some(&token), Some(data_fetched_from_vlc), &info_item[2], &id, server_address.clone()).await;
-                                            let _ = sync_session(Some(&token), &info_item[3],Some(data_fetched_from_vlc), sleep_time).await;
+                                            let _ = sync_session(Some(&token), &info_item[3],Some(data_fetched_from_vlc), sleep_time, server_address.clone()).await;
                                             //println!("{:?}", data_fetched_from_vlc);
                                         }},
                                         // `Ok(false)` means that the track is stopped but VLC still
@@ -69,7 +69,7 @@ pub async fn handle_l_pod(
                                         // track as finished)
                                     Ok(false) => {
                                         let is_finised = true;
-                                        let _ =  close_session(Some(&token), &info_item[3], Some(data_fetched_from_vlc), sleep_time).await;
+                                        let _ =  close_session(Some(&token), &info_item[3], Some(data_fetched_from_vlc), sleep_time, server_address.clone()).await;
                                         let _ = update_media_progress2_pod(id_pod, Some(&token), Some(data_fetched_from_vlc), &info_item[2], is_finised, &id, server_address).await;
                                         break; 
                                     },
@@ -80,7 +80,7 @@ pub async fn handle_l_pod(
                                     Err(_e) => {
                                         //TODO minor bug : be sure to close the session above
                                         // close session when VLC is quitted
-                                        let _ =  close_session(Some(&token), &info_item[3], Some(data_fetched_from_vlc), sleep_time).await;
+                                        let _ =  close_session(Some(&token), &info_item[3], Some(data_fetched_from_vlc), sleep_time, server_address.clone()).await;
                                         // send one last time media progress (bug to retrieve media
                                         // progress otherwise)
                                         let _ = update_media_progress_pod(id_pod, Some(&token), Some(data_fetched_from_vlc), &info_item[2], &id, server_address).await;

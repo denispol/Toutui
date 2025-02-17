@@ -12,7 +12,7 @@ const VERSION: &str = env!("CARGO_PKG_VERSION");
 /// https://api.audiobookshelf.org/#play-a-library-item-or-podcast-episode
 
 // play book 
-pub async fn post_start_playback_session_book(token: Option<&String>, id_library_item: &str) -> Result<Vec<String>, reqwest::Error> {
+pub async fn post_start_playback_session_book(token: Option<&String>, id_library_item: &str, server_address: String) -> Result<Vec<String>, reqwest::Error> {
     let mut vlc_version = String::new();
     match get_vlc_version().await {
         Ok(version) => {vlc_version = version;}
@@ -35,7 +35,8 @@ pub async fn post_start_playback_session_book(token: Option<&String>, id_library
 
     let response = client
         .post(format!(
-            "https://audiobook.nuagemagique.duckdns.org/api/items/{}/play", 
+            "{}/api/items/{}/play", 
+            server_address,
             id_library_item
         ))
         .header("Content-Type", "application/json")
@@ -84,7 +85,7 @@ pub async fn post_start_playback_session_book(token: Option<&String>, id_library
     Ok(info_item)
 }
 // play podcast episode
-pub async fn post_start_playback_session_pod(token: Option<&String>, id_library_item: &str, pod_ep_id: &str) -> Result<Vec<String>, reqwest::Error> {
+pub async fn post_start_playback_session_pod(token: Option<&String>, id_library_item: &str, pod_ep_id: &str, server_address: String) -> Result<Vec<String>, reqwest::Error> {
     let mut vlc_version = String::new();
     match get_vlc_version().await {
         Ok(version) => {vlc_version = version;}
@@ -107,8 +108,11 @@ pub async fn post_start_playback_session_pod(token: Option<&String>, id_library_
 
     let response = client
         .post(format!(
-            "https://audiobook.nuagemagique.duckdns.org/api/items/{}/play/{}", 
-            id_library_item, pod_ep_id))
+            "{}/api/items/{}/play/{}", 
+            id_library_item, 
+            pod_ep_id,
+            server_address,
+            ))
         .header("Content-Type", "application/json")
         .header(AUTHORIZATION, format!("Bearer {}", token.unwrap()))
         .json(&params)

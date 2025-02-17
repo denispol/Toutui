@@ -8,7 +8,7 @@ use serde_json::json;
 /// https://api.audiobookshelf.org/#close-an-open-session
 
 // close an open session
-pub async fn close_session(token: Option<&String>, session_id: &str, current_time: Option<u32>, time_listened: u64) -> Result<(), reqwest::Error> {
+pub async fn close_session(token: Option<&String>, session_id: &str, current_time: Option<u32>, time_listened: u64, server_address: String) -> Result<(), reqwest::Error> {
     let client = Client::new();
     let params = json!({
         "currentTime": format!("{}", current_time.unwrap_or(0)), 
@@ -17,7 +17,8 @@ pub async fn close_session(token: Option<&String>, session_id: &str, current_tim
 
     let response = client
         .post(format!(
-            "https://audiobook.nuagemagique.duckdns.org/api/session/{}/close", 
+            "{}/api/session/{}/close", 
+            server_address,
             session_id
         ))
         .header("Content-Type", "application/json")
