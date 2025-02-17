@@ -29,8 +29,8 @@ struct UserInfo {
 
 /// The login function takes a username, password, url ans  makes a POST request and returns a token.
 /// After, some data are fetched with this token and written in database
-pub async fn auth_process(username: &str, password: &str, url: &str) -> Result<()> {
-    let login_url = format!("{}/login", url);
+pub async fn auth_process(username: &str, password: &str, server_address: &str) -> Result<()> {
+    let login_url = format!("{}/login", server_address);
     let client = Client::new();
 
     // Struct for data request
@@ -51,7 +51,7 @@ pub async fn auth_process(username: &str, password: &str, url: &str) -> Result<(
     if response.status().is_success() {
         let login_response: LoginResponse = response.json().await?;
 
-        let all_libraries = get_all_libraries(login_response.user.token.as_str()).await?;
+        let all_libraries = get_all_libraries(login_response.user.token.as_str(), server_address.to_string()).await?;
         let library_names = collect_library_names(&all_libraries).await;
         let media_types = collect_media_types(&all_libraries).await;
         let library_ids = collect_library_ids(&all_libraries).await;
@@ -61,7 +61,7 @@ pub async fn auth_process(username: &str, password: &str, url: &str) -> Result<(
     // init a new user
         let users = vec![
             User {
-                server_address: url.to_string(),
+                server_address: server_address.to_string(),
                 username: username.to_string(),
                 token: login_response.user.token.clone(),
                 is_default_usr: true,

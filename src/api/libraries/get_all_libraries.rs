@@ -62,9 +62,9 @@ pub struct Settings {
 }
 
 // get all libraries (shelf). A library can be a Podcast or a Book type
-pub async fn get_all_libraries(token: &str) -> Result<Root> {
+pub async fn get_all_libraries(token: &str, server_address: String) -> Result<Root> {
     let client = Client::new();
-    let url = "https://audiobook.nuagemagique.duckdns.org/api/libraries";
+    let url = format!("{}/api/libraries", server_address);
 
     // Send GET request
     let response = client

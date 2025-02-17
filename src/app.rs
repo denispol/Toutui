@@ -196,7 +196,7 @@ impl App {
         }
 
          // init for `Libraries` (get all Libraries (shelf), can be a podcast or book type)
-         let all_libraries = get_all_libraries(&token).await?;
+         let all_libraries = get_all_libraries(&token, server_address.clone()).await?;
          let libraries_names = collect_library_names(&all_libraries).await; // all the libraries names of the user ex : {name1, name2}
          let media_types = collect_media_types(&all_libraries).await; // all media type of libraries ex : {book, podcast}
          let libraries_ids = collect_library_ids(&all_libraries).await; // all all libraries ids
@@ -240,7 +240,7 @@ impl App {
         
         if is_podcast {
          // init for  `Home` (continue listening) for podcasts
-         let continue_listening_pod = get_continue_listening_pod(&token, server_address.clone()).await?;
+         let continue_listening_pod = get_continue_listening_pod(&token, server_address.clone(), &id_selected_lib.clone()).await?;
          ids_cnt_list = collect_ids_pod_cnt_list(&continue_listening_pod).await; // id of a podcast
          titles_cnt_list = collect_titles_cnt_list_pod(&continue_listening_pod).await; // title of podcast ep
          ids_ep_cnt_list = collect_ids_ep_pod_cnt_list(&continue_listening_pod).await; // id of a podcast episode
@@ -254,7 +254,7 @@ impl App {
          }
          else {
          // init for  `Home` (continue listening) for books
-         let continue_listening = get_continue_listening(&token).await?;
+         let continue_listening = get_continue_listening(&token, server_address.clone(), &id_selected_lib.clone()).await?;
          titles_cnt_list = collect_titles_cnt_list(&continue_listening).await;
          auth_names_cnt_list = collect_auth_names_cnt_list(&continue_listening).await;
          pub_year_cnt_list = collect_pub_year_cnt_list(&continue_listening).await;
@@ -379,7 +379,7 @@ impl App {
          let durations_pod_ep: Vec<String> = Vec::new();
 
          for i in 0..ids_library.len() 
-         {let podcast_episode = get_pod_ep(&token, ids_library[i].as_str()).await?;
+         {let podcast_episode = get_pod_ep(&token, server_address.clone(), ids_library[i].as_str()).await?;
          let title = collect_titles_pod_ep(&podcast_episode).await;
          all_titles_pod_ep.push(title);
          let id = collect_ids_pod_ep(&podcast_episode).await;

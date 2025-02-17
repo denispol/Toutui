@@ -118,9 +118,9 @@ pub struct LibraryFile {
 
 
 
-pub async fn get_pod_ep(token: &str, id: &str) -> Result<Root> {
+pub async fn get_pod_ep(token: &str, server_address: String, id: &str) -> Result<Root> {
     let client = Client::new();
-    let url = format!("https://audiobook.nuagemagique.duckdns.org/api/items/{}", id);
+    let url = format!("{}/api/items/{}", server_address, id);
 
 
     // Send GET request

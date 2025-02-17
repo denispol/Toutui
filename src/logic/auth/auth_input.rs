@@ -129,9 +129,9 @@ impl AppLogin {
             tokio::spawn(async move {
                 //              println!("Wait...");
                 match auth_process(
-                    collected_data_clone[1].as_str(),
-                    collected_data_clone[2].as_str(),
-                    collected_data_clone[0].as_str(),
+                    collected_data_clone[1].as_str(), // username
+                    collected_data_clone[2].as_str(), // password
+                    collected_data_clone[0].as_str(), // server_address
                 ).await {
                     Ok(response) => {
                         println!("Login successful");

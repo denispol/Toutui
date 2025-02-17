@@ -95,9 +95,9 @@ pub struct Book {
 }
 
 // filter only book continue to listening from personalized view
-pub async fn get_continue_listening(token: &str) -> Result<Vec<Root>> {
+pub async fn get_continue_listening(token: &str, server_address: String, id_selected_lib: &String) -> Result<Vec<Root>> {
     let client = Client::new();
-    let url = "https://audiobook.nuagemagique.duckdns.org/api/libraries/64c39f84-9c58-4045-a89c-e17a6d990768/personalized";
+    let url = format!("{}/api/libraries/{}/personalized", server_address, id_selected_lib);
 
     // Send GET request
     let response = client

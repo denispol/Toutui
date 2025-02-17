@@ -150,9 +150,9 @@ pub struct AudioFile {
 }
 
 // filter only podcast continue to listening from personalized view
-pub async fn get_continue_listening_pod(token: &str, server_address: String) -> Result<Vec<Root>> {
+pub async fn get_continue_listening_pod(token: &str, server_address: String, id_selected_lib: &String) -> Result<Vec<Root>> {
     let client = Client::new();
-    let url = format!("{}/api/libraries/5d80300e-e228-402e-9b6e-1356ff1f4243/personalized", server_address);
+    let url = format!("{}/api/libraries/{}/personalized", server_address, id_selected_lib);
 
     // Send GET request
     let response = client
