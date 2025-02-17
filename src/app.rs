@@ -240,7 +240,7 @@ impl App {
         
         if is_podcast {
          // init for  `Home` (continue listening) for podcasts
-         let continue_listening_pod = get_continue_listening_pod(&token).await?;
+         let continue_listening_pod = get_continue_listening_pod(&token, server_address.clone()).await?;
          ids_cnt_list = collect_ids_pod_cnt_list(&continue_listening_pod).await; // id of a podcast
          titles_cnt_list = collect_titles_cnt_list_pod(&continue_listening_pod).await; // title of podcast ep
          ids_ep_cnt_list = collect_ids_ep_pod_cnt_list(&continue_listening_pod).await; // id of a podcast episode
