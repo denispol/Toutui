@@ -284,7 +284,7 @@ impl App {
                  }}}
 
          //init for `Library ` (all books  or podcasts of a Library (shelf))
-         let all_books = get_all_books(&token, &id_selected_lib).await?;
+         let all_books = get_all_books(&token, &id_selected_lib, server_address.clone()).await?;
          let titles_library = collect_titles_library(&all_books).await;
          let ids_library = collect_ids_library(&all_books).await;
          let auth_names_library = collect_auth_names_library(&all_books).await; // for a book
