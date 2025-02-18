@@ -109,9 +109,9 @@ pub async fn post_start_playback_session_pod(token: Option<&String>, id_library_
     let response = client
         .post(format!(
             "{}/api/items/{}/play/{}", 
+            server_address,
             id_library_item, 
             pod_ep_id,
-            server_address,
             ))
         .header("Content-Type", "application/json")
         .header(AUTHORIZATION, format!("Bearer {}", token.unwrap()))

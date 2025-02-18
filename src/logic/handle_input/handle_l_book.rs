@@ -50,7 +50,7 @@ pub async fn handle_l_book(
 
                                 // Important, sleep time to 1s minimum, otherwise connection to vlc player will not have time to connect
                                 // sleep time : every how many seconds the data will be sent to the server
-                                let sleep_time: u64 = 10;
+                                let sleep_time: u64 = 5;
                                 tokio::time::sleep(tokio::time::Duration::from_secs(sleep_time)).await;
                                 match fetch_vlc_is_playing(port.clone()).await {
                                     Ok(true) => {
