@@ -30,3 +30,21 @@ pub async fn close_session(token: Option<&String>, session_id: &str, current_tim
     Ok(())
 }
 
+
+
+pub async fn close_session_without_send_prg_data(token: Option<&String>, session_id: &str, server_address: String) -> Result<(), reqwest::Error> {
+    let client = Client::new();
+
+    let response = client
+        .post(format!(
+            "{}/api/session/{}/close", 
+            server_address,
+            session_id
+        ))
+        .header("Content-Type", "application/json")
+        .header(AUTHORIZATION, format!("Bearer {}", token.unwrap()))
+        .send()
+        .await?;
+
+    Ok(())
+}
