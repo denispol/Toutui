@@ -77,7 +77,8 @@ async fn main() -> Result<()> {
                         KeyCode::Char('R') => {
                             // pop up message
                             let mut stdout = stdout();
-                            pop_message(&mut stdout, 2, "Refreshing app..." );
+                            clear_message(&mut stdout, 2); // clear a message, if any, before print the message bellow
+                            pop_message(&mut stdout, 2, "Refreshing app...");
                             // Reinitialize app to refresh
                             app = App::new().await?; 
                             // clear message above

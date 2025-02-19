@@ -2,6 +2,9 @@ use rusqlite::{params, Connection, Result};
 use serde::{Serialize, Deserialize};
 use crate::db::database_struct::User;
 use crate::login_app::AppLogin;
+use crate::utils::pop_up_message::*;
+use std::io::{stdout, Write};
+
 
 
 // Delete an user
@@ -28,15 +31,20 @@ pub fn delete_user(username: &str) -> Result<()> {
 // Update id_selected_lib
 pub fn update_id_selected_lib(id_selected_lib: &str, username: &str) -> Result<()> {
 
+    let message = "The library has been updated. Please refresh the app to apply the changes.";
+    let err_message = "Error connecting to the database.";
     if let Ok(conn) = Connection::open("db/db.sqlite3") {
 
         conn.execute(
             "UPDATE users SET id_selected_lib = ?1 WHERE username = ?2",
             params![id_selected_lib, username],
         )?;
-        println!("The library has been updated.\nPlease refresh the app to apply the changes.");
+        let mut stdout = stdout();
+        pop_message(&mut stdout, 2, message);
+
     } else {
-        println!("Error connecting to the database.");
+        let mut stdout = stdout();
+        pop_message(&mut stdout, 2, err_message);
     }
 
     Ok(())
