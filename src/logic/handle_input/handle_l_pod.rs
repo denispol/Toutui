@@ -5,6 +5,9 @@ use crate::api::library_items::play_lib_item_or_pod::*;
 use crate::api::sessions::sync_open_session::*;
 use crate::api::sessions::close_open_session::*;
 use crate::player::vlc::exec_nc::*;
+use crate::utils::pop_up_message::*;
+use std::io::{stdout, Result, Stdout};
+
 
 
 
@@ -54,6 +57,11 @@ pub async fn handle_l_pod(
                             exec_nc(&port_clone).await;
                         });
                     }
+
+                    // clear loading message (from app.rs) when vlc is launched
+                    let mut stdout = stdout();
+                    let _ = move_and_clear_line(&mut stdout, 2);
+
 
                     // Important, sleep time to 1s otherwise connection to vlc player will not have time to connect
                     tokio::time::sleep(std::time::Duration::from_secs(1)).await;
