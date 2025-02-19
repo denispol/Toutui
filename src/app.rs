@@ -144,6 +144,9 @@ pub struct App {
    pub book_progress_library_cur_time: Vec<Vec<f64>>,
    pub book_progress_search_book: Vec<Vec<String>>,
    pub book_progress_search_book_cur_time: Vec<Vec<f64>>,
+   pub is_cvlc: String,
+   pub is_cvlc_term: String,
+   pub start_vlc_program: String,
 }
 
 /// Init app
@@ -423,6 +426,13 @@ impl App {
              view_state = AppView::Library; // If `Home` is empty (no book or podcast to continue)
          }
 
+         // init start_vlc variables
+         let mut is_cvlc = "0".to_string();
+         let mut is_cvlc_term = "0".to_string();
+         let mut start_vlc_program = "vlc".to_string();
+         if is_cvlc == "1" {
+             start_vlc_program = "cvlc".to_string()
+         } 
 
          // Init ListeState for `Home` list (continue listening)
          let mut list_state_cnt_list = ListState::default(); // init the ListState ratatui's widget
@@ -552,6 +562,9 @@ impl App {
             book_progress_library_cur_time,
             book_progress_search_book,
             book_progress_search_book_cur_time,
+            is_cvlc,
+            is_cvlc_term,
+            start_vlc_program,
         })
     }
 
@@ -666,6 +679,10 @@ pub fn handle_key(&mut self, key: KeyEvent) {
             // Init for `SettingsLibrary`
             let selected_settings_library = self.list_state_settings_library.selected();
 
+            // init for start_vlc
+            let start_vlc_program = self.start_vlc_program.clone();
+            let is_cvlc_term = self.is_cvlc_term.clone();
+
             // loading message 
             pub fn loading_message() {
                 let mut stdout = stdout();
@@ -682,12 +699,29 @@ pub fn handle_key(&mut self, key: KeyEvent) {
                     if self.is_podcast {
                         loading_message();
                         tokio::spawn(async move {
-                            handle_l_pod_home(token.as_ref(), &ids_cnt_list, selected_cnt_list, port, ids_ep_cnt_list, server_address).await;
+                            handle_l_pod_home(
+                                token.as_ref(), 
+                                &ids_cnt_list, 
+                                selected_cnt_list, 
+                                port, 
+                                ids_ep_cnt_list, 
+                                server_address,
+                                start_vlc_program,
+                                is_cvlc_term,
+                                ).await;
                         });
                     } else {
                         loading_message();
                         tokio::spawn(async move {
-                        handle_l_book(token.as_ref(), ids_cnt_list, selected_cnt_list, port, server_address).await;
+                        handle_l_book(
+                            token.as_ref(), 
+                            ids_cnt_list, 
+                            selected_cnt_list, 
+                            port, 
+                            server_address, 
+                            start_vlc_program,
+                            is_cvlc_term, 
+                            ).await;
                     });
                     }}
                 AppView::Settings => {
@@ -725,7 +759,15 @@ pub fn handle_key(&mut self, key: KeyEvent) {
                     }} else {
                         loading_message();
                         tokio::spawn(async move {
-                            handle_l_book(token.as_ref(), ids_library, selected_library, port, server_address).await;
+                            handle_l_book(
+                                token.as_ref(), 
+                                ids_library, 
+                                selected_library, 
+                                port, 
+                                server_address, 
+                                start_vlc_program,
+                                is_cvlc_term, 
+                                ).await;
                         });
                     }
                 }
@@ -746,7 +788,15 @@ pub fn handle_key(&mut self, key: KeyEvent) {
                         }} else {   
                             loading_message();
                             tokio::spawn(async move {
-                                handle_l_book(token.as_ref(), ids_search_book, selected_search_book, port, server_address).await;
+                                handle_l_book(
+                                    token.as_ref(), 
+                                    ids_search_book, 
+                                    selected_search_book, 
+                                    port, 
+                                    server_address, 
+                                    start_vlc_program,
+                                    is_cvlc_term, 
+                                    ).await;
                             });
 
                         }
@@ -765,7 +815,16 @@ pub fn handle_key(&mut self, key: KeyEvent) {
                             let id_pod_clone = id_pod.clone();
                             loading_message();
                             tokio::spawn(async move {
-                                handle_l_pod(token.as_ref(), &all_ids_pod_ep_search_clone[index], selected_pod_ep, port, id_pod_clone.as_str(), server_address).await;
+                                handle_l_pod(
+                                    token.as_ref(), 
+                                    &all_ids_pod_ep_search_clone[index], 
+                                    selected_pod_ep, 
+                                    port, 
+                                    id_pod_clone.as_str(), 
+                                    server_address, 
+                                    start_vlc_program,
+                                    is_cvlc_term, 
+                                    ).await;
                             });
                         }
                     }
@@ -781,7 +840,16 @@ pub fn handle_key(&mut self, key: KeyEvent) {
                             let id_pod_clone = id_pod.clone();
                             tokio::spawn(async move {
                                 loading_message();
-                                handle_l_pod(token.as_ref(), &all_ids_pod_ep_clone[index], selected_pod_ep, port, id_pod_clone.as_str(), server_address).await;
+                                handle_l_pod(
+                                    token.as_ref(), 
+                                    &all_ids_pod_ep_clone[index], 
+                                    selected_pod_ep, 
+                                    port, 
+                                    id_pod_clone.as_str(), 
+                                    server_address, 
+                                    start_vlc_program,
+                                    is_cvlc_term, 
+                                    ).await;
                             });
                         }
                     }

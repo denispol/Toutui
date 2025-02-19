@@ -1,5 +1,6 @@
 use crate::player::vlc::start_vlc::*;
 use crate::player::vlc::fetch_vlc_data::*;
+use crate::player::vlc::exec_nc::*;
 use crate::api::me::update_media_progress::*;
 use crate::api::library_items::play_lib_item_or_pod::*;
 use crate::api::sessions::sync_open_session::*;
@@ -9,11 +10,13 @@ use std::process;
 
 
 pub async fn handle_l_book(
-  token: Option<&String>,
+    token: Option<&String>,
     ids_library_items: Vec<String>,
     selected: Option<usize>,
     port: String,
     server_address: String,
+    program: String,
+    is_cvlc_term: String,
 ) {
     if let Some(index) = selected {
         if let Some(id) = ids_library_items.get(index) {
@@ -36,8 +39,17 @@ pub async fn handle_l_book(
                             info_item_clone[5].clone(), // subtitle
                             info_item_clone[6].clone(), //title
                             server_address_clone.clone(), // server address
+                            program.clone(),
                         ).await;
                     });
+
+                    if is_cvlc_term == "1" {
+                        let port_clone = port.clone();
+                        tokio::spawn(async move {
+
+                            exec_nc(&port_clone).await;
+                        });
+                    }
 
                     // Important, sleep time to 1s minimum otherwise connection to vlc player will not have time to connect
                     //tokio::time::sleep(std::time::Duration::from_secs(30)).await;

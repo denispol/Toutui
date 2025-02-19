@@ -1,8 +1,19 @@
 use std::process::Command;
 use std::process::Output;
 
-pub async fn start_vlc(current_time: &String, port: &str, content_url: &String, token: Option<&String>, title: String, subtitle: String, author: String, server_address: String) -> Output {
-    let output: Output = Command::new("vlc")
+pub async fn start_vlc(
+    current_time: &String, 
+    port: &str, 
+    content_url: &String, 
+    token: Option<&String>, 
+    title: String, 
+    subtitle: String, 
+    author: String, 
+    server_address: String, 
+    program: String, 
+    ) -> Output {
+
+    let output: Output = Command::new(format!("{}", program))
         .arg(format!("--start-time={}", current_time))
         .arg("--extraintf")
         .arg("rc")
@@ -20,3 +31,4 @@ pub async fn start_vlc(current_time: &String, port: &str, content_url: &String, 
 
     output
 }
+

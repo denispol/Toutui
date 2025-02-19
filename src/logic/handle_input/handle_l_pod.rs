@@ -4,6 +4,8 @@ use crate::api::me::update_media_progress::*;
 use crate::api::library_items::play_lib_item_or_pod::*;
 use crate::api::sessions::sync_open_session::*;
 use crate::api::sessions::close_open_session::*;
+use crate::player::vlc::exec_nc::*;
+
 
 
 /// handle l for App::View PodcastEpisode
@@ -15,6 +17,9 @@ pub async fn handle_l_pod(
     port: String,
     id_pod: &str,
     server_address: String,
+    program: String,
+    is_cvlc_term: String,
+
 ) {
     if let Some(index) = selected {
         if let Some(id) = ids_library_items.get(index) {
@@ -38,8 +43,17 @@ pub async fn handle_l_pod(
                             info_item_clone[5].clone(), // subtitle
                             info_item_clone[6].clone(), //title
                             server_address_clone.clone(), // server address
+                            program.clone(),
                         ).await;
                     });
+
+                    if is_cvlc_term == "1" {
+                        let port_clone = port.clone();
+                        tokio::spawn(async move {
+
+                            exec_nc(&port_clone).await;
+                        });
+                    }
 
                     // Important, sleep time to 1s otherwise connection to vlc player will not have time to connect
                     tokio::time::sleep(std::time::Duration::from_secs(1)).await;
