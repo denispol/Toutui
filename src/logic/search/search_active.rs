@@ -24,7 +24,9 @@ impl App {
             Block::default()
             .borders(Borders::ALL)
             .title("Search")
-            .border_style(Style::default().fg(Color::LightBlue)),
+            .border_style(Style::default().fg(Color::LightBlue))
+            .style(Style::default().bg(Color::Rgb(40, 40, 40)))
+
         );
 
         let size = term.size()?;
@@ -58,7 +60,7 @@ impl App {
             }
         }
         term.draw(|f| {
-            let empty_block = Block::default();
+            let empty_block = Block::default().style(Style::default().bg(Color::Rgb(40, 40, 40)));
             f.render_widget(empty_block, search_area); 
         })?;
 
