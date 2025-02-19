@@ -32,7 +32,6 @@ async fn main() -> Result<()> {
     loop {
         database = Database::new().await?;
         if database.default_usr.is_empty() {
-            print!("Authentification failed");
             let app_login = AppLogin::new().await?;
             let terminal = ratatui::init();
             let app_result = app_login.run(terminal);
@@ -42,6 +41,7 @@ async fn main() -> Result<()> {
             // it can be buggy and mark as failed. Maybe add more time to be sure (like 6 sec).
             // But normally, even it's failed, data are written in db. It will work at the second
             // attempt...
+            print!("Authentification failed");
             tokio::time::sleep(Duration::from_secs(1)).await;
 
             // Reload or update the database

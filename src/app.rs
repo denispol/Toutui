@@ -32,6 +32,8 @@ use std::io::{stdout, Write};
 use crossterm::{cursor, execute, terminal};
 use ratatui::widgets::Block;
 use ratatui::style::{Color, Style};
+use crate::utils::pop_up_message::*;
+
 
 
 pub enum AppView {
@@ -683,21 +685,15 @@ pub fn handle_key(&mut self, key: KeyEvent) {
             let start_vlc_program = self.start_vlc_program.clone();
             let is_cvlc_term = self.is_cvlc_term.clone();
 
-            // loading message 
-            pub fn loading_message() {
-                let mut stdout = stdout();
-                if let Ok((cols, rows)) = terminal::size() {
-                    execute!(stdout, cursor::MoveTo(0, rows.saturating_sub(2)));
-                    println!("Loading...");
-                }                         
-            }
-
+            // Init message 
+            let message = "Loading...";
 
             // Now, spawn the async task based on the current view state
             match self.view_state {
                 AppView::Home => {
                     if self.is_podcast {
-                        loading_message();
+                        let mut stdout = stdout();
+                        pop_message(&mut stdout, 2, message);
                         tokio::spawn(async move {
                             handle_l_pod_home(
                                 token.as_ref(), 
@@ -711,9 +707,10 @@ pub fn handle_key(&mut self, key: KeyEvent) {
                                 ).await;
                         });
                     } else {
-                        loading_message();
+                        let mut stdout = stdout();
+                        pop_message(&mut stdout, 2, message);
                         tokio::spawn(async move {
-                        handle_l_book(
+                            handle_l_book(
                             token.as_ref(), 
                             ids_cnt_list, 
                             selected_cnt_list, 
@@ -758,7 +755,8 @@ pub fn handle_key(&mut self, key: KeyEvent) {
                         self.list_state_pod_ep.select(Some(0));
                         self.view_state = AppView::PodcastEpisode;
                     }} else {
-                        loading_message();
+                        let mut stdout = stdout();
+                        pop_message(&mut stdout, 2, "Refreshing app..." );
                         tokio::spawn(async move {
                             handle_l_book(
                                 token.as_ref(), 
@@ -787,7 +785,8 @@ pub fn handle_key(&mut self, key: KeyEvent) {
                             self.list_state_pod_ep.select(Some(0));
                             self.view_state = AppView::PodcastEpisode;
                         }} else {   
-                            loading_message();
+                            let mut stdout = stdout();
+                            pop_message(&mut stdout, 2, "Refreshing app..." );
                             tokio::spawn(async move {
                                 handle_l_book(
                                     token.as_ref(), 
@@ -814,7 +813,8 @@ pub fn handle_key(&mut self, key: KeyEvent) {
                             let all_ids_pod_ep_search_clone = self.all_ids_pod_ep_search.clone();
                          //   println!("{:?}", all_ids_pod_ep_search_clone[index]);
                             let id_pod_clone = id_pod.clone();
-                            loading_message();
+                            let mut stdout = stdout();
+                            pop_message(&mut stdout, 2, "Refreshing app..." );
                             tokio::spawn(async move {
                                 handle_l_pod(
                                     token.as_ref(), 
@@ -840,7 +840,8 @@ pub fn handle_key(&mut self, key: KeyEvent) {
                             self.ids_pod_ep = all_ids_pod_ep_clone[index].clone();
                             let id_pod_clone = id_pod.clone();
                             tokio::spawn(async move {
-                                loading_message();
+                                let mut stdout = stdout();
+                                pop_message(&mut stdout, 2, "Refreshing app..." );
                                 handle_l_pod(
                                     token.as_ref(), 
                                     &all_ids_pod_ep_clone[index], 
