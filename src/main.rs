@@ -17,6 +17,8 @@ use std::time::Duration;
 use crossterm::event::{self, Event, KeyCode};
 use std::io::{stdout, Write};
 use crossterm::{cursor, execute, terminal, ExecutableCommand};
+use crate::utils::pop_up_message::*;
+
 
 const VERSION: &str = env!("CARGO_PKG_VERSION");
 
@@ -81,7 +83,7 @@ async fn main() -> Result<()> {
                             // Reinitialize app to refresh
                             app = App::new().await?; 
                             // clear the line above when refresh is finished.
-                            execute!(stdout, cursor::MoveTo(0, rows.saturating_sub(2)), terminal::Clear(terminal::ClearType::CurrentLine))?;
+                            let _ = move_and_clear_line(&mut stdout, 2);
                         }
                         // If 'Q' or 'Esc' is pressed, exit the app
                         KeyCode::Char('Q') | KeyCode::Esc => {
