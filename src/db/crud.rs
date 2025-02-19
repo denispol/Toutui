@@ -9,7 +9,10 @@ use std::io::{stdout, Write};
 
 // Delete an user
 pub fn delete_user(username: &str) -> Result<()> {
+    let message = format!("User '{}' deleted. Please restart the app to apply the changes.", &username);
+    let err_message = "Error connecting to the database.";
     if let Ok(conn) = Connection::open("db/db.sqlite3") {
+
 
         let rows_deleted = conn.execute(
             "DELETE FROM users WHERE username = ?1",
@@ -17,12 +20,14 @@ pub fn delete_user(username: &str) -> Result<()> {
         )?;
 
         if rows_deleted > 0 {
-            println!("User '{}' deleted.\nPlease restart the app to apply the changes.", username);
+            let mut stdout = stdout();
+            pop_message(&mut stdout, 2, message.as_str());
         } else {
             //println!("No user found with this username '{}'.", username);
         }
     } else {
-        println!("Error connecting to the database.");
+        let mut stdout = stdout();
+        pop_message(&mut stdout, 2, err_message);
     }
 
     Ok(())
