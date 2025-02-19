@@ -1,11 +1,15 @@
 use crate::player::vlc::start_vlc::*;
 use crate::player::vlc::fetch_vlc_data::*;
 use crate::player::vlc::exec_nc::*;
+use crate::utils::pop_up_message::*;
 use crate::api::me::update_media_progress::*;
 use crate::api::library_items::play_lib_item_or_pod::*;
 use crate::api::sessions::sync_open_session::*;
 use crate::api::sessions::close_open_session::*;
+use crate::utils::pop_up_message::*;
 use std::process;
+use std::io::{stdout, Result, Stdout};
+
 
 
 
@@ -50,6 +54,11 @@ pub async fn handle_l_book(
                             exec_nc(&port_clone).await;
                         });
                     }
+                    
+                    // clear loading message (from app.rs) when vlc is launched
+                    let mut stdout = stdout(); 
+                    let _ = move_and_clear_line(&mut stdout, 2);
+
 
                     // Important, sleep time to 1s minimum otherwise connection to vlc player will not have time to connect
                     //tokio::time::sleep(std::time::Duration::from_secs(30)).await;

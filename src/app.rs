@@ -723,6 +723,7 @@ pub fn handle_key(&mut self, key: KeyEvent) {
                             is_cvlc_term, 
                             ).await;
                     });
+
                     }}
                 AppView::Settings => {
                     match self.list_state_settings.selected() {
