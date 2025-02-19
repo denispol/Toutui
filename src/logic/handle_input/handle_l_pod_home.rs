@@ -59,7 +59,7 @@ pub async fn handle_l_pod_home(
 
                 // clear loading message (from app.rs) when vlc is launched
                 let mut stdout = stdout();
-                let _ = move_and_clear_line(&mut stdout, 2);
+                let _ = clear_message(&mut stdout, 2);
 
 
                 // Important, sleep time to 1s otherwise connection to vlc player will not have time to connect

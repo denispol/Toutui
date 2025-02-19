@@ -83,7 +83,7 @@ async fn main() -> Result<()> {
                             // Reinitialize app to refresh
                             app = App::new().await?; 
                             // clear the line above when refresh is finished.
-                            let _ = move_and_clear_line(&mut stdout, 2);
+                            let _ = clear_message(&mut stdout, 2);
                         }
                         // If 'Q' or 'Esc' is pressed, exit the app
                         KeyCode::Char('Q') | KeyCode::Esc => {
