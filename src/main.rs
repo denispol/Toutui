@@ -77,12 +77,10 @@ async fn main() -> Result<()> {
                         KeyCode::Char('R') => {
                             // pop up message
                             let mut stdout = stdout();
-                            let (_cols, rows) = terminal::size()?;
-                            execute!(stdout, cursor::MoveTo(0, rows.saturating_sub(2)))?; 
-                            println!("Refreshing app...");
+                            pop_message(&mut stdout, 2, "Refreshing app..." );
                             // Reinitialize app to refresh
                             app = App::new().await?; 
-                            // clear the line above when refresh is finished.
+                            // clear message above
                             let _ = clear_message(&mut stdout, 2);
                         }
                         // If 'Q' or 'Esc' is pressed, exit the app
