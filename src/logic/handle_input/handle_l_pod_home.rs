@@ -56,30 +56,43 @@ pub async fn handle_l_pod_home(
 
                 // Important, sleep time to 1s otherwise connection to vlc player will not have time to connect
                 tokio::time::sleep(std::time::Duration::from_secs(1)).await;
+                // init var for decide to send 0 sec in sync session if player is in pause
+                // 3 sec is not very "pro" but it's because i'm sure for this first iteration
+                //   data_fetched_from_vlc will not be = to 3 (because a little delay is given
+                //   before sync progress, in my case 5 secs, others apps a little bit more)
+                //   futhermore, in the worst case, if data_fetched_from_vlc is equal ti 3 for
+                //   the first iteration, it will shift the progress sync to 5 secondes
+                let mut last_current_time: u32 = 3;
+                let mut progress_sync: u32 = 3;
 
                 loop {
-                        match fetch_vlc_data(port.clone()).await {
-                            Ok(Some(data_fetched_from_vlc)) => {
-                                //println!("Fetched data: {}", data_fetched.to_string());
+                    match fetch_vlc_data(port.clone()).await {
+                        Ok(Some(data_fetched_from_vlc)) => {
+                            // println!("Fetched data: {}", data_fetched_from_vlc.to_string());
 
-                                // Important, sleep time to 1s minimum, otherwise connection to vlc player will not have time to connect
-                                // sleep time : every how many seconds the data will be sent to the
-                                // server
-                                let sleep_time: u64 = 5;
-                                tokio::time::sleep(tokio::time::Duration::from_secs(sleep_time)).await;
-                                match fetch_vlc_is_playing(port.clone()).await {
-                                    Ok(true) => {
-                                        // the first datra fetched is sometimes 0 secondes, so we
-                                        // want to be sure no send 0 secondes
-                                        if Some(data_fetched_from_vlc) != Some(0) {
+                            // Important, sleep time to 1s minimum, otherwise connection to vlc player will not have time to connect
+                            // sleep time : every how many seconds the data will be sent to the server
+                            tokio::time::sleep(tokio::time::Duration::from_secs(5)).await;
+                            //  println!("last_curr: {}", last_current_time);
+                            if data_fetched_from_vlc == last_current_time {
+                                progress_sync = 0;
+                            } else {
+                                progress_sync = 5; // need to be equal to tokio time sleep just above
+                            }
+                            last_current_time = data_fetched_from_vlc;
+                            match fetch_vlc_is_playing(port.clone()).await {
+                                Ok(true) => {
+                                    // the first datra fetched is sometimes 0 secondes, so we
+                                    // want to be sure no send 0 secondes
+                                    if Some(data_fetched_from_vlc) != Some(0) {
                                         let _ = update_media_progress_pod(id, Some(&token), Some(data_fetched_from_vlc), &info_item[2], &id_pod_ep, server_address.clone()).await;
-                                        let _ = sync_session(Some(&token), &info_item[3],Some(data_fetched_from_vlc), sleep_time, server_address.clone()).await;
+                                        let _ = sync_session(Some(&token), &info_item[3],Some(data_fetched_from_vlc), progress_sync, server_address.clone()).await;
                                         //println!("{:?}", data_fetched_from_vlc);
-                                        }},
-                                        // `Ok(false)` means that the track is stopped but VLC still
-                                        // open. Allow to track when the audio reached the end. And
-                                        // differ from the case where the user just close VLC
-                                        // during a playing (in this case we don't want to mark the
+                                    }},
+                                    // `Ok(false)` means that the track is stopped but VLC still
+                                    // open. Allow to track when the audio reached the end. And
+                                    // differ from the case where the user just close VLC
+                                    // during a playing (in this case we don't want to mark the
                                         // track as finished)
                                     Ok(false) => {
                                         let is_finised = true;
