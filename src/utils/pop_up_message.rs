@@ -5,7 +5,7 @@ use crossterm::{
     terminal, cursor,
 };
 
-
+// to clear a pop up message
 pub fn move_and_clear_line(stdout: &mut Stdout, lines_from_bottom: u16) -> Result<()> {
     let (_cols, rows) = terminal::size()?; 
     let target_row = rows.saturating_sub(lines_from_bottom);
