@@ -647,7 +647,7 @@ pub fn handle_key(&mut self, key: KeyEvent) {
         KeyCode::Char('l') | KeyCode::Right | KeyCode::Enter => {
             // Clone needed because variables will be used in a spawn
             let token = self.token.clone();
-            let port = "1234".to_string();
+            let port = self.config.player.port.clone();
             let server_address = self.server_address.clone();
 
             // Init for `Continue Listening` (AppView::Home)

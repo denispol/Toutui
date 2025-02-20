@@ -26,6 +26,8 @@ pub struct Colors {
 pub struct Player {
     pub cvlc: String,
     pub cvlc_term: String,
+    pub address: String,
+    pub port: String,
 }
 
 /// load config from `config.toml` file
