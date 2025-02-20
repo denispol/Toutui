@@ -21,17 +21,6 @@ use ratatui::backend::CrosstermBackend;
 use ratatui::Terminal;
 use crate::config::*;
 
-
-
-
-// const for color theme
-
-const NORMAL_ROW_BG: Color = Color::Rgb(50, 50, 50);  
-const ALT_ROW_BG_COLOR: Color = Color::Rgb(60, 60, 60); 
-const SELECTED_STYLE: Style = Style::new()
-    .bg(Color::Rgb(80, 80, 80))  
-    .fg(Color::Rgb(220, 220, 220)) 
-    .add_modifier(Modifier::BOLD);
  
 // const version
 const VERSION: &str = env!("CARGO_PKG_VERSION");
@@ -373,16 +362,25 @@ impl App {
     }
 
     fn render_list(&mut self, area: Rect, buf: &mut Buffer, render_list_title: &str, render_list_items: &[String], list_state: &mut ListState) {
-        let bg_color = self.config.colors.header_background_color.clone();
-        let fg_color = self.config.colors.line_header_color.clone();
+        let bg_color_header = self.config.colors.header_background_color.clone();
+        let fg_color_header = self.config.colors.line_header_color.clone();
+        let bg_color_block = self.config.colors.list_background_color.clone();
+        let bg_selected = self.config.colors.list_selected_background_color.clone();
+        let fg_selected = self.config.colors.list_selected_foreground_color.clone();
+        let selected_style: Style = Style::new()
+            .bg(Color::Rgb(bg_selected[0], bg_selected[1], bg_selected[2]))  
+            .fg(Color::Rgb(fg_selected[0], fg_selected[1], fg_selected[2])) 
+            .add_modifier(Modifier::BOLD);
+
         let header_style: Style = Style::new()
-            .fg(Color::Rgb(fg_color[0], fg_color[1], fg_color[2]))
-            .bg(Color::Rgb(bg_color[0], bg_color[1], bg_color[2])); 
+            .fg(Color::Rgb(fg_color_header[0], fg_color_header[1], fg_color_header[2]))
+            .bg(Color::Rgb(bg_color_header[0], bg_color_header[1], bg_color_header[2])); 
+
         let block = Block::new()
             .title(Line::raw(format!("{}", render_list_title)).centered())
             .borders(Borders::TOP)
             .border_style(header_style)
-            .bg(NORMAL_ROW_BG);
+            .bg(Color::Rgb(bg_color_block[0], bg_color_block[1], bg_color_block[2]));
 
         let items: Vec<ListItem> = render_list_items
             .iter()
@@ -396,7 +394,7 @@ impl App {
 
         let list = List::new(items)
             .block(block)
-            .highlight_style(SELECTED_STYLE)
+            .highlight_style(selected_style)
             .highlight_symbol("➤")
             .highlight_spacing(HighlightSpacing::Always);
 
@@ -587,11 +585,17 @@ impl App {
                 .render(area, buf);
         }
     }
-    const fn alternate_colors(i: usize) -> Color {
+    fn alternate_colors(i: usize) -> Color {
+        let mut color_bg_list = Vec::new();
+        let mut color_alt_bg_list = Vec::new();
+        if let Ok(cfg) = load_config() {
+            color_bg_list = cfg.colors.list_background_color;
+            color_alt_bg_list = cfg.colors.list_background_color_alt_row;
+        }
         if i % 2 == 0 {
-            NORMAL_ROW_BG
+            Color::Rgb(color_bg_list[0], color_bg_list[1], color_bg_list[2])
         } else {
-            ALT_ROW_BG_COLOR
+            Color::Rgb(color_alt_bg_list[0], color_alt_bg_list[1], color_alt_bg_list[2])
         }
     }
 }

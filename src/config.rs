@@ -11,8 +11,12 @@ pub struct ConfigFile {
 pub struct Colors {
     pub background_color: Vec<u8>,
     pub log_background_color: Vec<u8>,
-    pub line_header_color: Vec<u8>,
     pub header_background_color: Vec<u8>,
+    pub line_header_color: Vec<u8>,
+    pub list_background_color: Vec<u8>,
+    pub list_background_color_alt_row: Vec<u8>,
+    pub list_selected_background_color: Vec<u8>,
+    pub list_selected_foreground_color: Vec<u8>,
 }
 
 /// load config from `config.toml` file
