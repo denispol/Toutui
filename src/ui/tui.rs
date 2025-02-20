@@ -50,13 +50,13 @@ impl App {
             Constraint::Length(2),
             Constraint::Fill(1),
             Constraint::Length(1),
-            Constraint::Length(1),
+            Constraint::Length(2),
         ]).areas(area);
 
         let [list_area, item_area1, item_area2] = Layout::vertical([Constraint::Fill(1), Constraint::Length(3), Constraint::Fill(1)]).areas(main_area);
 
         let render_list_title = "Continue Listening";
-        let text_render_footer = "Use ↓↑ to move, → to play, s to search, q to quit.";
+        let text_render_footer = "Use j/↓, k/↑ to move, l/→ to play, Tab to go to the library, RR to refresh,\n Space bar or '/' to search, Scroll the desc: J(down) K(up) H(top), Q/Esc to quit.";
 
         App::render_header(header_area, buf, self.lib_name_type.clone(), &self.username, &self.server_address_pretty, VERSION);
         App::render_footer(footer_area, buf, text_render_footer);
@@ -73,13 +73,19 @@ impl App {
             Constraint::Length(2),
             Constraint::Fill(1),
             Constraint::Length(1),
-            Constraint::Length(1),
+            Constraint::Length(2),
         ]).areas(area);
         
         let [list_area, item_area1, item_area2] = Layout::vertical([Constraint::Fill(1), Constraint::Length(3), Constraint::Fill(1)]).areas(main_area);
 
         let render_list_title = "Library";
-        let text_render_footer = "Use ↓↑ to move, → to play, s to search, q to quit.";
+        
+        let mut text_render_footer = "";
+        if self.is_podcast {
+        text_render_footer = "Use j/↓, k/↑ to move, l/→ to see episodes, Tab to back home, RR to refresh,\n Space bar or '/' to search, Scroll the desc: J(down) K(up) H(top), Q/Esc to quit.";
+        } else {
+        text_render_footer = "Use j/↓, k/↑ to move, l/→ to play, Tab to back home, RR to refresh,\n Space bar or '/' to search, Scroll the desc: J(down) K(up) H(top), Q/Esc to quit.";
+        }
 
         App::render_header(header_area, buf, self.lib_name_type.clone(), &self.username, &self.server_address_pretty, VERSION);
         App::render_footer(footer_area, buf, text_render_footer);
@@ -95,13 +101,13 @@ impl App {
         let [header_area, main_area, footer_area] = Layout::vertical([
             Constraint::Length(2),
             Constraint::Fill(1),
-            Constraint::Length(1),
+            Constraint::Length(2),
         ]).areas(area);
         
         let [list_area, item_area] = Layout::vertical([Constraint::Fill(1), Constraint::Fill(1),]).areas(main_area);
 
         let render_list_title = "Settings";
-        let text_render_footer = "Use ↓↑ to move, → to play, s to search, q to quit.";
+        let text_render_footer = "Use j/↓, k/↑ to move, l/→ to see options,\n Tab to back home, RR to refresh, Q/Esc to quit.";
 
         App::render_header(header_area, buf, self.lib_name_type.clone(), &self.username, &self.server_address_pretty, VERSION);
         App::render_footer(footer_area, buf, text_render_footer);
@@ -114,13 +120,13 @@ impl App {
         let [header_area, main_area, footer_area] = Layout::vertical([
             Constraint::Length(2),
             Constraint::Fill(1),
-            Constraint::Length(1),
+            Constraint::Length(2),
         ]).areas(area);
         
         let [list_area, item_area] = Layout::vertical([Constraint::Fill(1), Constraint::Fill(1),]).areas(main_area);
 
         let render_list_title = "Settings account";
-        let text_render_footer = "Use ↓↑ to move, → to play, s to search, q to quit.";
+        let text_render_footer = "Use h to back, l/→ to remove saved user,\n Tab to back home, RR to refresh, Q/Esc to quit.";
 
         App::render_header(header_area, buf, self.lib_name_type.clone(), &self.username, &self.server_address_pretty, VERSION);
         App::render_footer(footer_area, buf, text_render_footer);
@@ -133,13 +139,13 @@ impl App {
         let [header_area, main_area, footer_area] = Layout::vertical([
             Constraint::Length(2),
             Constraint::Fill(1),
-            Constraint::Length(1),
+            Constraint::Length(2),
         ]).areas(area);
         
         let [list_area, item_area] = Layout::vertical([Constraint::Fill(1), Constraint::Fill(1),]).areas(main_area);
 
         let render_list_title = "Settings library";
-        let text_render_footer = "Use ↓↑ to move, → to play, s to search, q to quit.";
+        let text_render_footer = "Use h to back, l/→ to change library,\n Tab to back home, RR to refresh, Q/Esc to quit.";
 
         App::render_header(header_area, buf, self.lib_name_type.clone(), &self.username, &self.server_address_pretty, VERSION);
         App::render_footer(footer_area, buf, text_render_footer);
@@ -153,13 +159,19 @@ impl App {
             Constraint::Length(2),
             Constraint::Fill(1),
             Constraint::Length(1),
-            Constraint::Length(1),
+            Constraint::Length(2),
         ]).areas(area);
 
         let [list_area, item_area1, item_area2] = Layout::vertical([Constraint::Fill(1), Constraint::Length(3), Constraint::Fill(1)]).areas(main_area);
 
         let render_list_title = "Search result";
-        let text_render_footer = "Use Tab to back home, ↓↑ to move, → to play, s to search, q to quit.";
+        let mut text_render_footer = "";
+        if self.is_podcast {
+        text_render_footer = "Use j/↓, k/↑ to move, l/→ to see episodes, Tab to back home, RR to refresh,\n Space bar or '/' to search, Scroll the desc: J(down) K(up) H(top), Q/Esc to quit.";
+        } else {
+        text_render_footer = "Use j/↓, k/↑ to move, l/→ to play, Tab to back home, RR to refresh,\n Space bar or '/' to search, Scroll the desc: J(down) K(up) H(top), Q/Esc to quit.";
+        } 
+        
 
         if self.search_mode {
             if let Ok(query) = self.search_active() {
@@ -318,13 +330,13 @@ impl App {
             Constraint::Length(2),
             Constraint::Fill(1),
             Constraint::Length(1),
-            Constraint::Length(1),
+            Constraint::Length(2),
         ]).areas(area);
 
         let [list_area, item_area1, item_area2] = Layout::vertical([Constraint::Fill(1), Constraint::Length(3), Constraint::Fill(1)]).areas(main_area);
 
         let render_list_title = "Episodes";
-        let text_render_footer = "Use ↓↑ to move, → to play, s to search, q to quit.";
+        let text_render_footer = "Use j/↓, k/↑ to move, l/→ to play, h to back, Tab to back home, RR to refresh,\n Space bar or '/' to search, Scroll the desc: J(down) K(up) H(top), Q/Esc to quit.";
 
         App::render_header(header_area, buf, self.lib_name_type.clone(), &self.username, &self.server_address_pretty, VERSION);
         App::render_footer(footer_area, buf, text_render_footer);
