@@ -102,7 +102,7 @@ pub async fn get_all_books(token: &str, id_selected_lib: &String, server_address
 
     // json bosy
     let body = json!({
-        "limit" : 0, // to fetch all the books
+        "limit" : 0, // to fetch all the books or podcasts
     });
 
     // Send GET request
