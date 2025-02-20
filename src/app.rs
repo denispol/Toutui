@@ -14,7 +14,7 @@ use crate::logic::handle_input::handle_l_book::*;
 use crate::logic::handle_input::handle_l_pod::*;
 use crate::logic::handle_input::handle_l_pod_home::*;
 use crate::main;
-use crate::config::load_config;
+use crate::config::*;
 use crate::db::crud::*;
 use crate::db::database_struct::Database;
 use color_eyre::Result;
@@ -149,6 +149,7 @@ pub struct App {
    pub is_cvlc: String,
    pub is_cvlc_term: String,
    pub start_vlc_program: String,
+   pub config: ConfigFile,
 }
 
 /// Init app
@@ -157,7 +158,6 @@ impl App {
 
         // init config
         let config = load_config()?;
-
 
         // init database from Database struct
         let mut database = Database::new().await?;
@@ -567,15 +567,19 @@ impl App {
             is_cvlc,
             is_cvlc_term,
             start_vlc_program,
+            config,
         })
     }
 
 
    /// handle events
 pub fn run(&mut self, terminal: &mut DefaultTerminal) -> Result<()> {
+    let bg_color = self.config.colors.background_color.clone();
     while !self.should_exit {
         terminal.draw(|frame| {
-            let background = Block::default().style(Style::default().bg(Color::Rgb(40, 40, 40)));
+            let background = Block::default()
+                .style(Style::default()
+                .bg(Color::Rgb(bg_color[0], bg_color[1], bg_color[2])));
             frame.render_widget(background, frame.size());
             frame.render_widget(&mut *self, frame.area());
         })?;

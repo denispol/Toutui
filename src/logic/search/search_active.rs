@@ -19,13 +19,15 @@ impl App {
         let backend = CrosstermBackend::new(stdout);
         let mut term = Terminal::new(backend)?;
 
+        let bg_color = self.config.colors.background_color.clone();
+
         let mut textarea = TextArea::default();
         textarea.set_block(
             Block::default()
             .borders(Borders::ALL)
             .title("Search")
             .border_style(Style::default().fg(Color::LightBlue))
-            .style(Style::default().bg(Color::Rgb(40, 40, 40)))
+            .style(Style::default().bg(Color::Rgb(bg_color[0], bg_color[1], bg_color[2])))
 
         );
 
@@ -60,7 +62,7 @@ impl App {
             }
         }
         term.draw(|f| {
-            let empty_block = Block::default().style(Style::default().bg(Color::Rgb(40, 40, 40)));
+            let empty_block = Block::default().style(Style::default().bg(Color::Rgb(bg_color[0], bg_color[1], bg_color[2])));
             f.render_widget(empty_block, search_area); 
         })?;
 

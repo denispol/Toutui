@@ -4,28 +4,27 @@ use color_eyre::eyre::{Result, Report};
 
 #[derive(Debug, Deserialize)]
 pub struct ConfigFile {
-    pub credentials: Credentials,
+    pub colors: Colors,
 }
 
 #[derive(Debug, Deserialize)]
-pub struct Credentials {
-    pub id: String,
-    pub password: String,
+pub struct Colors {
+    pub background_color: Vec<u8>,
+    pub log_background_color: Vec<u8>,
+    pub line_header_color: Vec<u8>,
+    pub header_background_color: Vec<u8>,
 }
 
-/// Fun to load config from `config.toml` file
+/// load config from `config.toml` file
 pub fn load_config() -> Result<ConfigFile> {
-    // Build config from a file
     let config = ConfigLib::builder()
         .add_source(File::with_name("../config.toml"))
         .build()
         .map_err(|e| Report::new(e))?;
 
-    // Extract infos `credentials` in the config 
-    let credentials: Credentials = config.get("credentials")
+    let colors: Colors = config.get("colors")
         .map_err(|e| Report::new(e))?;
 
-    // Return config struct
-    Ok(ConfigFile { credentials })
+    Ok(ConfigFile { colors })
 }
 

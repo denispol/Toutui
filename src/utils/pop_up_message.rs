@@ -4,12 +4,19 @@ use crossterm::{
     style::{Color, SetBackgroundColor, SetForegroundColor, PrintStyledContent, Stylize},
     terminal, cursor,
 };
+use crate::config::*;
 
 // pop up message
 pub fn pop_message(stdout: &mut Stdout, lines_from_bottom: u16, message: &str) -> Result<()> {
+    // import backgorund color
+    let mut color = Vec::new();
+    if let Ok(cfg) = load_config() {
+        color = cfg.colors.background_color;
+    }
+
     let (_cols, rows) = terminal::size()?; 
     let target_row = rows.saturating_sub(lines_from_bottom);
-    let bg_color = Color::Rgb { r: 40, g: 40, b: 40 };
+    let bg_color = Color::Rgb { r: color[0], g: color[1], b: color[2] };
 
     execute!(
         stdout,
@@ -27,9 +34,15 @@ pub fn pop_message(stdout: &mut Stdout, lines_from_bottom: u16, message: &str) -
 
 // to clear a pop up message
 pub fn clear_message(stdout: &mut Stdout, lines_from_bottom: u16) -> Result<()> {
+    // import backgorund color
+    let mut color = Vec::new();
+    if let Ok(cfg) = load_config() {
+        color = cfg.colors.background_color;
+    }
     let (_cols, rows) = terminal::size()?; 
     let target_row = rows.saturating_sub(lines_from_bottom);
-    let bg_color = Color::Rgb { r: 40, g: 40, b: 40 };
+    let bg_color = Color::Rgb { r: color[0], g: color[1], b: color[2] };
+
 
     execute!(
         stdout,

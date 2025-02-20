@@ -15,6 +15,7 @@ use crossterm::event::{self, KeyEvent, KeyCode};
 use std::thread;
 use std::time::Duration;
 use std::process;
+use crate::config::*;
 
 
 const VERSION: &str = env!("CARGO_PKG_VERSION");
@@ -72,15 +73,21 @@ impl AppLogin {
         /// init variables
         let mut textareas = vec![textarea1, textarea2, textarea3];
         let mut current_index = 0;
-
         let mut collected_data : Vec<String> = Vec::new();
+        let log_bg_color = self.config.colors.log_background_color.clone();
 
 
 
 
         loop {
             term.draw(|f| {
-                let background = Block::default().style(Style::default().bg(Color::Rgb(40, 40, 40)));
+                let background = Block::default()
+                    .style(Style::default()
+                    .bg(Color::Rgb(
+                            log_bg_color[0],
+                            log_bg_color[1],
+                            log_bg_color[2],
+                    )));
                 f.render_widget(&textareas[current_index], input_area);
                 f.render_widget(background, f.size());
             })?;

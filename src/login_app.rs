@@ -26,6 +26,7 @@ use serde::{Serialize, Deserialize};
 use rusqlite::Connection;
 use std::thread;
 use std::time::Duration;
+use crate::config::*;
 
 
 pub enum AppViewLogin {
@@ -35,16 +36,21 @@ pub enum AppViewLogin {
 pub struct AppLogin {
     pub view_state: AppViewLogin,
     pub should_exit: bool,
+    pub config: ConfigFile,
 }
 
 /// Init app
 impl AppLogin {
     pub async fn new() -> Result<Self> {
+        // init config
+        let config = load_config()?;
 
+        // init view_state
         let mut view_state = AppViewLogin::Auth;
         Ok(Self {
             should_exit: false,
             view_state,
+            config,
         })
     }
 

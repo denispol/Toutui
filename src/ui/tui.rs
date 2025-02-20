@@ -19,20 +19,19 @@ use tui_textarea::{Input, Key, TextArea};
 use std::io;
 use ratatui::backend::CrosstermBackend;
 use ratatui::Terminal;
-
+use crate::config::*;
 
 
 
 
 // const for color theme
 
-const TODO_HEADER_STYLE: Style = Style::new().fg(Color::Rgb(180, 180, 180)).bg(Color::Rgb(60, 60, 60)); // Texte clair sur fond sombre
-const NORMAL_ROW_BG: Color = Color::Rgb(50, 50, 50);  // Gris très foncé pour les lignes normales
-const ALT_ROW_BG_COLOR: Color = Color::Rgb(60, 60, 60); // Gris foncé pour les lignes alternées
+const NORMAL_ROW_BG: Color = Color::Rgb(50, 50, 50);  
+const ALT_ROW_BG_COLOR: Color = Color::Rgb(60, 60, 60); 
 const SELECTED_STYLE: Style = Style::new()
-    .bg(Color::Rgb(80, 80, 80))  // Fond sélectionné plus doux
-    .fg(Color::Rgb(220, 220, 220)) // Texte plus clair mais pas blanc pur
-    .add_modifier(Modifier::BOLD);  // Texte en gras
+    .bg(Color::Rgb(80, 80, 80))  
+    .fg(Color::Rgb(220, 220, 220)) 
+    .add_modifier(Modifier::BOLD);
  
 // const version
 const VERSION: &str = env!("CARGO_PKG_VERSION");
@@ -374,10 +373,15 @@ impl App {
     }
 
     fn render_list(&mut self, area: Rect, buf: &mut Buffer, render_list_title: &str, render_list_items: &[String], list_state: &mut ListState) {
+        let bg_color = self.config.colors.header_background_color.clone();
+        let fg_color = self.config.colors.line_header_color.clone();
+        let header_style: Style = Style::new()
+            .fg(Color::Rgb(fg_color[0], fg_color[1], fg_color[2]))
+            .bg(Color::Rgb(bg_color[0], bg_color[1], bg_color[2])); 
         let block = Block::new()
             .title(Line::raw(format!("{}", render_list_title)).centered())
             .borders(Borders::TOP)
-            .border_style(TODO_HEADER_STYLE)
+            .border_style(header_style)
             .bg(NORMAL_ROW_BG);
 
         let items: Vec<ListItem> = render_list_items
