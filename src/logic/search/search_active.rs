@@ -37,7 +37,7 @@ impl App {
         let size = term.size()?;
         let search_area = Rect {
             x: 1,
-            y: size.height - 4,
+            y: size.height - 5,
             width: size.width - 2,
             height: 3,
         };
