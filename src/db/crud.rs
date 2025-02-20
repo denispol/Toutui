@@ -4,15 +4,14 @@ use crate::db::database_struct::User;
 use crate::login_app::AppLogin;
 use crate::utils::pop_up_message::*;
 use std::io::{stdout, Write};
-
-
+use crate::utils::logs::*;
+use log::{info, warn, error, LevelFilter};
 
 // Delete an user
 pub fn delete_user(username: &str) -> Result<()> {
     let message = format!("User '{}' deleted. Please restart the app to apply the changes.", &username);
     let err_message = "Error connecting to the database.";
     if let Ok(conn) = Connection::open("db/db.sqlite3") {
-
 
         let rows_deleted = conn.execute(
             "DELETE FROM users WHERE username = ?1",
@@ -22,12 +21,14 @@ pub fn delete_user(username: &str) -> Result<()> {
         if rows_deleted > 0 {
             let mut stdout = stdout();
             pop_message(&mut stdout, 2, message.as_str());
+            info!("[delete_user] User '{}' deleted.", &username);
         } else {
             //println!("No user found with this username '{}'.", username);
         }
     } else {
         let mut stdout = stdout();
         pop_message(&mut stdout, 2, err_message);
+        error!("[delete user] {}", err_message);
     }
 
     Ok(())
@@ -46,10 +47,12 @@ pub fn update_id_selected_lib(id_selected_lib: &str, username: &str) -> Result<(
         )?;
         let mut stdout = stdout();
         pop_message(&mut stdout, 2, message);
+        info!("[update_id_selected_lib] The library has been updated");
 
     } else {
         let mut stdout = stdout();
         pop_message(&mut stdout, 2, err_message);
+        error!("[update_id_selected_lib] {}", err_message);
     }
 
     Ok(())
@@ -97,13 +100,13 @@ pub fn db_insert_usr(users : &Vec<User>)  -> Result<()> {
 pub fn select_default_usr() -> Result<Vec<String>> {
     let conn = Connection::open("db/db.sqlite3")?;
 
-    // Prépare la requête SQL
+    
     let mut stmt = conn.prepare(
         "SELECT username, server_address, token, is_default_usr, name_selected_lib, id_selected_lib
          FROM users WHERE is_default_usr = 1 LIMIT 1"
     )?;
 
-    // Effectue la requête et mappe les résultats
+
     let user_iter = stmt.query_map([], |row| {
         Ok(User {
             username: row.get(0)?,
@@ -115,36 +118,30 @@ pub fn select_default_usr() -> Result<Vec<String>> {
         })
     })?;
 
-    // Créer un vecteur pour stocker les résultats
     let mut result = Vec::new();
 
-    // Boucle sur les résultats et collecter les informations
     for user in user_iter {
         match user {
             Ok(user) => {
-                // Nous extrayons les informations sous forme de String (par exemple, username)
                 result.push(user.username);
                 result.push(user.server_address);
                 result.push(user.token);
                 result.push(user.is_default_usr.to_string());
                 result.push(user.name_selected_lib);
                 result.push(user.id_selected_lib);
-                //println!("Default user found: {:?}", &user);  // Affichage pour le débogage
             }
             Err(e) => {
-                // Gérer l'erreur et retourner un Result avec l'erreur
                 println!("Error occurred: {}", e);
                 //return Err(rusqlite::Error::FromSqlConversionFailure(0, "Failed to map user".to_string()));
             }
         }
     }
 
-    // Si aucun utilisateur trouvé, retourne un vecteur vide
     if result.is_empty() {
         //println!("No default user found.");
     }
 
-    Ok(result)  // Retourne le vecteur des utilisateurs par défaut
+    Ok(result)  
 }
 
 // Init db and table if not exist

@@ -49,3 +49,24 @@
 2025-02-20 16:58:16.742 [WARN] - [fetch_vlc_is_playing] Failed to connect to VLC at port 1234: Connection refused (os error 111)
 2025-02-20 16:58:16.841 [INFO] - [handle_l_pod_home] Session successfully closed
 2025-02-20 16:58:16.955 [INFO] - [handle_l_pod_home] VLC closed
+2025-02-20 17:17:56.705 [INFO] - Database ready
+2025-02-20 17:18:06.030 [INFO] - [update_id_selected_lib] The library has been updated
+2025-02-20 17:18:18.826 [INFO] - [delete_user] User 'alban' deleted.
+2025-02-20 17:18:43.437 [INFO] - [auth_process] Login successful
+2025-02-20 17:18:44.309 [INFO] - Database ready
+2025-02-20 17:19:20.548 [INFO] - Database ready
+2025-02-20 17:19:31.099 [INFO] - [delete_user] User 'alban' deleted.
+2025-02-20 17:20:28.261 [INFO] - [auth_process] Login successful
+2025-02-20 17:20:41.267 [INFO] - Database ready
+2025-02-20 17:20:41.295 [ERROR] - [auth_process] Login failed: builder error: relative URL without a base
+2025-02-20 17:21:05.942 [INFO] - [delete_user] User 'alban' deleted.
+2025-02-20 17:21:37.401 [ERROR] - [auth_process] Login failed: Login failed
+2025-02-20 17:21:53.749 [INFO] - [auth_process] Login successful
+2025-02-20 17:21:54.593 [INFO] - Database ready
+2025-02-20 17:28:34.701 [INFO] - Database ready
+2025-02-20 17:31:32.215 [INFO] - [handle_l_book][post_start_playback_session_book] OK
+2025-02-20 17:31:32.215 [INFO] - [handle_l_book][start_vlc] VLC successfully launched
+2025-02-20 17:31:38.218 [WARN] - [fetch_vlc_is_playing] Failed to connect to VLC at port 1234: Connection refused (os error 111)
+2025-02-20 17:31:38.261 [INFO] - [handle_l_book] Session successfully closed
+2025-02-20 17:31:38.343 [INFO] - [handle_l_book] VLC closed
+2025-02-20 17:32:18.064 [INFO] - [update_id_selected_lib] The library has been updated
