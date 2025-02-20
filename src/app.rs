@@ -714,7 +714,7 @@ pub fn handle_key(&mut self, key: KeyEvent) {
                 AppView::Home => {
                     if self.is_podcast {
                         let mut stdout = stdout();
-                        pop_message(&mut stdout, 2, message);
+                        pop_message(&mut stdout, 3, message);
                         tokio::spawn(async move {
                             handle_l_pod_home(
                                 token.as_ref(), 
@@ -730,7 +730,7 @@ pub fn handle_key(&mut self, key: KeyEvent) {
                         });
                     } else {
                         let mut stdout = stdout();
-                        pop_message(&mut stdout, 2, message);
+                        pop_message(&mut stdout, 3, message);
                         tokio::spawn(async move {
                             handle_l_book(
                             token.as_ref(), 
@@ -779,7 +779,7 @@ pub fn handle_key(&mut self, key: KeyEvent) {
                         self.view_state = AppView::PodcastEpisode;
                     }} else {
                         let mut stdout = stdout();
-                        pop_message(&mut stdout, 2, message);
+                        pop_message(&mut stdout, 3, message);
                         tokio::spawn(async move {
                             handle_l_book(
                                 token.as_ref(), 
@@ -810,7 +810,7 @@ pub fn handle_key(&mut self, key: KeyEvent) {
                             self.view_state = AppView::PodcastEpisode;
                         }} else {   
                             let mut stdout = stdout();
-                            pop_message(&mut stdout, 2, message);
+                            pop_message(&mut stdout, 3, message);
                             tokio::spawn(async move {
                                 handle_l_book(
                                     token.as_ref(), 
@@ -839,7 +839,7 @@ pub fn handle_key(&mut self, key: KeyEvent) {
                          //   println!("{:?}", all_ids_pod_ep_search_clone[index]);
                             let id_pod_clone = id_pod.clone();
                             let mut stdout = stdout();
-                            pop_message(&mut stdout, 2, message);
+                            pop_message(&mut stdout, 3, message);
                             tokio::spawn(async move {
                                 handle_l_pod(
                                     token.as_ref(), 
@@ -867,7 +867,7 @@ pub fn handle_key(&mut self, key: KeyEvent) {
                             let id_pod_clone = id_pod.clone();
                             tokio::spawn(async move {
                                 let mut stdout = stdout();
-                                pop_message(&mut stdout, 2, message);
+                                pop_message(&mut stdout, 3, message);
                                 handle_l_pod(
                                     token.as_ref(), 
                                     &all_ids_pod_ep_clone[index], 

@@ -20,14 +20,14 @@ pub fn delete_user(username: &str) -> Result<()> {
 
         if rows_deleted > 0 {
             let mut stdout = stdout();
-            pop_message(&mut stdout, 2, message.as_str());
+            pop_message(&mut stdout, 3, message.as_str());
             info!("[delete_user] User '{}' deleted.", &username);
         } else {
             //println!("No user found with this username '{}'.", username);
         }
     } else {
         let mut stdout = stdout();
-        pop_message(&mut stdout, 2, err_message);
+        pop_message(&mut stdout, 3, err_message);
         error!("[delete user] {}", err_message);
     }
 
@@ -46,12 +46,12 @@ pub fn update_id_selected_lib(id_selected_lib: &str, username: &str) -> Result<(
             params![id_selected_lib, username],
         )?;
         let mut stdout = stdout();
-        pop_message(&mut stdout, 2, message);
+        pop_message(&mut stdout, 3, message);
         info!("[update_id_selected_lib] The library has been updated");
 
     } else {
         let mut stdout = stdout();
-        pop_message(&mut stdout, 2, err_message);
+        pop_message(&mut stdout, 3, err_message);
         error!("[update_id_selected_lib] {}", err_message);
     }
 

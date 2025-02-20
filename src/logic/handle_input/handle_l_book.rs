@@ -65,7 +65,7 @@ pub async fn handle_l_book(
                     
                     // clear loading message (from app.rs) when vlc is launched
                     let mut stdout = stdout(); 
-                    let _ = clear_message(&mut stdout, 2);
+                    let _ = clear_message(&mut stdout, 3);
 
 
                     // Important, sleep time to 1s minimum otherwise connection to vlc player will not have time to connect

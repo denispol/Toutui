@@ -83,12 +83,12 @@ async fn main() -> Result<()> {
                         KeyCode::Char('R') => {
                             // pop up message
                             let mut stdout = stdout();
-                            clear_message(&mut stdout, 2); // clear a message, if any, before print the message bellow
-                            pop_message(&mut stdout, 2, "Refreshing app...");
+                            clear_message(&mut stdout, 3); // clear a message, if any, before print the message bellow
+                            pop_message(&mut stdout, 3, "Refreshing app...");
                             // Reinitialize app to refresh
                             app = App::new().await?; 
                             // clear message above
-                            let _ = clear_message(&mut stdout, 2);
+                            let _ = clear_message(&mut stdout, 3);
                         }
                         // If 'Q' or 'Esc' is pressed, exit the app
                         KeyCode::Char('Q') | KeyCode::Esc => {
