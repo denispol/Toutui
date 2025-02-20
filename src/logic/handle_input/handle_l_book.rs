@@ -52,9 +52,9 @@ pub async fn handle_l_book(
 
                     if is_cvlc_term == "1" {
                         let port_clone = port.clone();
+                        let address_player_clone = address_player.clone();
                         tokio::spawn(async move {
-
-                            exec_nc(&port_clone).await;
+                            exec_nc(&port_clone, address_player_clone).await;
                         });
                     }
                     

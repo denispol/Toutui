@@ -52,13 +52,13 @@ pub async fn handle_l_pod_home(
                     ).await;
                 });
 
-                if is_cvlc_term == "1" {
-                    let port_clone = port.clone();
-                    tokio::spawn(async move {
-
-                        exec_nc(&port_clone).await;
-                    });
-                }
+                    if is_cvlc_term == "1" {
+                        let port_clone = port.clone();
+                        let address_player_clone = address_player.clone();
+                        tokio::spawn(async move {
+                            exec_nc(&port_clone, address_player_clone).await;
+                        });
+                    }
 
                 // clear loading message (from app.rs) when vlc is launched
                 let mut stdout = stdout();
