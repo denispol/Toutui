@@ -648,6 +648,7 @@ pub fn handle_key(&mut self, key: KeyEvent) {
             // Clone needed because variables will be used in a spawn
             let token = self.token.clone();
             let port = self.config.player.port.clone();
+            let address_player = self.config.player.address.clone();
             let server_address = self.server_address.clone();
 
             // Init for `Continue Listening` (AppView::Home)
@@ -704,6 +705,7 @@ pub fn handle_key(&mut self, key: KeyEvent) {
                                 &ids_cnt_list, 
                                 selected_cnt_list, 
                                 port, 
+                                address_player,
                                 ids_ep_cnt_list, 
                                 server_address,
                                 start_vlc_program,
@@ -719,6 +721,7 @@ pub fn handle_key(&mut self, key: KeyEvent) {
                             ids_cnt_list, 
                             selected_cnt_list, 
                             port, 
+                            address_player,
                             server_address, 
                             start_vlc_program,
                             is_cvlc_term, 
@@ -767,6 +770,7 @@ pub fn handle_key(&mut self, key: KeyEvent) {
                                 ids_library, 
                                 selected_library, 
                                 port, 
+                                address_player,
                                 server_address, 
                                 start_vlc_program,
                                 is_cvlc_term, 
@@ -797,6 +801,7 @@ pub fn handle_key(&mut self, key: KeyEvent) {
                                     ids_search_book, 
                                     selected_search_book, 
                                     port, 
+                                    address_player,
                                     server_address, 
                                     start_vlc_program,
                                     is_cvlc_term, 
@@ -825,6 +830,7 @@ pub fn handle_key(&mut self, key: KeyEvent) {
                                     &all_ids_pod_ep_search_clone[index], 
                                     selected_pod_ep, 
                                     port, 
+                                    address_player,
                                     id_pod_clone.as_str(), 
                                     server_address, 
                                     start_vlc_program,
@@ -851,6 +857,7 @@ pub fn handle_key(&mut self, key: KeyEvent) {
                                     &all_ids_pod_ep_clone[index], 
                                     selected_pod_ep, 
                                     port, 
+                                    address_player,
                                     id_pod_clone.as_str(), 
                                     server_address, 
                                     start_vlc_program,

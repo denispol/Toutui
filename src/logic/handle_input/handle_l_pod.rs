@@ -18,6 +18,7 @@ pub async fn handle_l_pod(
     ids_library_items: &Vec<String>,
     selected: Option<usize>,
     port: String,
+    address_player: String,
     id_pod: &str,
     server_address: String,
     program: String,
@@ -35,11 +36,13 @@ pub async fn handle_l_pod(
                     let port_clone = port.clone();
                     let info_item_clone = info_item.clone() ;
                     let server_address_clone = server_address.clone() ;
+                    let address_player_clone = address_player.clone() ;
                     // Start VLC is launched in a spawn to allow fetch_vlc_data to start at the same time
                     tokio::spawn(async move {
                         start_vlc(
                             &info_item_clone[0], // current_time
-                            &port_clone, // vlc port
+                            &port_clone, // player port
+                            address_player_clone, // player address
                             &info_item_clone[1], // content url 
                             Some(&token_clone), //token
                             info_item_clone[4].clone(), //title
@@ -75,7 +78,7 @@ pub async fn handle_l_pod(
                     let mut progress_sync: u32 = 3;
 
                     loop {
-                        match fetch_vlc_data(port.clone()).await {
+                        match fetch_vlc_data(port.clone(), address_player.clone()).await {
                             Ok(Some(data_fetched_from_vlc)) => {
                                 // println!("Fetched data: {}", data_fetched_from_vlc.to_string());
 
@@ -89,7 +92,7 @@ pub async fn handle_l_pod(
                                     progress_sync = 5; // need to be equal to tokio time sleep just above
                                 }
                                 last_current_time = data_fetched_from_vlc;
-                                match fetch_vlc_is_playing(port.clone()).await {
+                                match fetch_vlc_is_playing(port.clone(), address_player.clone()).await {
                                     Ok(true) => {
                                         // the first datra fetched is sometimes 0 secondes, so we
                                         // want to be sure no send 0 secondes

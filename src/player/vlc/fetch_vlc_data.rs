@@ -11,18 +11,18 @@ use crate::api::sessions::close_open_session::*;
 
 /// TODO : PUT ALL PRINT IN LOG ///
 /// This function : 
-/// allow to connect and remotely ctrl VLC (with vlc-rc crate) on the port that was provided (Client::connect(format!("localhost:{}", port))) 
+/// allow to connect and remotely ctrl VLC (with vlc-rc crate) on the port that was provided (Client::connect(format!("{}:{}", port))) 
 /// if connection is successul, fecth data thanks to remotly control
 /// this fn is in the loop and run while vlc is running (bu checking if the port is still open)
-pub async fn fetch_vlc_data(port: String) -> Result<Option<u32>, io::Error> {
+pub async fn fetch_vlc_data(port: String, address: String) -> Result<Option<u32>, io::Error> {
     loop {
         // Check if VLC is running, if not, break the loop
-        if !is_vlc_running(port.clone()).await {
+        if !is_vlc_running(port.clone(), address.clone()).await {
             break Ok(None); // Exit loop if VLC is not running anymore
         }
 
         // Connect to VLC and fetch data
-        let mut player = match Client::connect(format!("localhost:{}", &port)) {
+        let mut player = match Client::connect(format!("{}:{}", address, &port)) {
             Ok(player) => player,
             Err(e) => {
                 if let Err(file_error) = log_error_to_file(&e.to_string()) {
@@ -53,9 +53,9 @@ pub async fn fetch_vlc_data(port: String) -> Result<Option<u32>, io::Error> {
 }
 
 // fetch if vlc is playing or stopped (return true if vlc is paused)
-pub async fn fetch_vlc_is_playing(port: String) -> Result<bool, String> {
+pub async fn fetch_vlc_is_playing(port: String, address: String) -> Result<bool, String> {
     // Tentative de connexion à VLC
-    let mut player = match Client::connect(format!("localhost:{}", &port)) {
+    let mut player = match Client::connect(format!("{}:{}", address, &port)) {
         Ok(player) => player,
         Err(e) => return Err(format!("Failed to connect to VLC at port {}: {}", port, e)),
     };
@@ -74,7 +74,7 @@ pub async fn fetch_vlc_is_playing(port: String) -> Result<bool, String> {
             false
         }
         Err(e) => {
-            // vlc is closed ba the the user, as VLC is not open anymore. Indeed, match Client::connect(format!("localhost:{}", &port))
+            // vlc is closed ba the the user, as VLC is not open anymore. Indeed, match Client::connect(format!("{}:{}", &port))
             // will send an error because VLC is not open anymore. Allow to differenciate from an
             // reach the end of audio just above. Here, the VLC vlc is closed be the user so we
             // want to make sur to differienciate from a normal reached of the audio playback
@@ -88,8 +88,8 @@ pub async fn fetch_vlc_is_playing(port: String) -> Result<bool, String> {
 
 
 // check if VLC is running by checking if the port used by the app to open VLC is open
-pub async fn is_vlc_running(port: String) -> bool {
-    match TcpStream::connect(format!("localhost:{}", port)).await {
+pub async fn is_vlc_running(port: String, address: String) -> bool {
+    match TcpStream::connect(format!("{}:{}", address, port)).await {
         Ok(_) => {
             //println!("VLC is still running (port {} is open).", port);
             true

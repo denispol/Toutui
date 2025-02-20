@@ -4,6 +4,7 @@ use std::process::Output;
 pub async fn start_vlc(
     current_time: &String, 
     port: &str, 
+    address: String,
     content_url: &String, 
     token: Option<&String>, 
     title: String, 
@@ -18,7 +19,7 @@ pub async fn start_vlc(
         .arg("--extraintf")
         .arg("rc")
         .arg("--rc-host")
-        .arg(format!("localhost:{}", port))
+        .arg(format!("{}:{}",address, port))
         .arg(format!("{}{}?token={}", server_address, content_url, token.unwrap()))
         .arg("--meta-description")
         .arg(author)
