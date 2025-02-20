@@ -644,6 +644,22 @@ pub fn handle_key(&mut self, key: KeyEvent) {
             self.select_last();
             self.scroll_offset = 0; 
         }
+        KeyCode::Char('h') => {
+            // To return to a page
+            match self.view_state {
+               AppView::SettingsAccount => {self.view_state = AppView::Settings} 
+               AppView::SettingsLibrary => {self.view_state = AppView::Settings} 
+               AppView::Settings => {self.view_state = AppView::Home} 
+               AppView::PodcastEpisode => {
+                   if self.is_from_search_pod {
+                       self.view_state = AppView::SearchBook
+                   } else {
+                       self.view_state = AppView::Library
+                   }
+               }
+               _ => {}
+            }
+        }        
         KeyCode::Char('l') | KeyCode::Right | KeyCode::Enter => {
             // Clone needed because variables will be used in a spawn
             let token = self.token.clone();
