@@ -11,6 +11,7 @@ cvlc_term = "0"
 
 #### PLAYER NETWORK ####
 # By default, the player is launched to "localhost:1234"
+# Address:
 address = "localhost"
 # Port:
 port = "1234"
