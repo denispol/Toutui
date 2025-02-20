@@ -36,6 +36,7 @@ impl Widget for &mut App {
             AppView::Settings => self.render_settings(area, buf),
             AppView::SettingsAccount => self.render_settings_account(area, buf),
             AppView::SettingsLibrary => self.render_settings_library(area, buf),
+            AppView::SettingsAbout => self.render_settings_about(area, buf),
         }
     }
 }
@@ -136,6 +137,25 @@ impl App {
 
     /// AppView::SettingsLibrary rendering
     fn render_settings_library(&mut self, area: Rect, buf: &mut Buffer) {
+        let [header_area, main_area, footer_area] = Layout::vertical([
+            Constraint::Length(2),
+            Constraint::Fill(1),
+            Constraint::Length(2),
+        ]).areas(area);
+        
+        let [list_area, item_area] = Layout::vertical([Constraint::Fill(1), Constraint::Fill(1),]).areas(main_area);
+
+        let render_list_title = "Settings library";
+        let text_render_footer = "Use h to back, l/→ to change library,\n Tab to back home, RR to refresh, Q/Esc to quit.";
+
+        App::render_header(header_area, buf, self.lib_name_type.clone(), &self.username, &self.server_address_pretty, VERSION);
+        App::render_footer(footer_area, buf, text_render_footer);
+        self.render_list(list_area, buf, render_list_title, &self.libraries_names.clone(), &mut &mut self.list_state_settings_library.clone());
+        //self.render_selected_item(item_area, buf, &self.titles_library.clone(), self.auth_names_library.clone());
+    }
+
+    /// AppView::SettingsLibrary rendering
+    fn render_settings_about(&mut self, area: Rect, buf: &mut Buffer) {
         let [header_area, main_area, footer_area] = Layout::vertical([
             Constraint::Length(2),
             Constraint::Fill(1),

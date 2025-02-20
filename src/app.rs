@@ -44,6 +44,7 @@ pub enum AppView {
     Settings,
     SettingsAccount,
     SettingsLibrary,
+    SettingsAbout
 }
 
 pub struct App {
@@ -59,6 +60,7 @@ pub struct App {
    pub list_state_settings: ListState,
    pub list_state_settings_account: ListState,
    pub list_state_settings_library: ListState,
+   pub list_state_settings_about: ListState,
    pub titles_cnt_list: Vec<String>,
    pub auth_names_cnt_list: Vec<String>,
    pub pub_year_cnt_list: Vec<String>,
@@ -406,7 +408,7 @@ impl App {
          }
 
          // init for `Settings`
-         let settings = vec!["Account".to_string(), "Library".to_string()];
+         let settings = vec!["Account".to_string(), "Library".to_string(), "About".to_string()];
 
          // init for `SettingsAccount`
          let mut all_usernames: Vec<String> = Vec::new();
@@ -463,6 +465,10 @@ impl App {
          // Init ListState for `SettingsLibrary` list
          let mut list_state_settings_library = ListState::default();
          list_state_settings_library.select(Some(0));
+         
+         // Init ListState for `SettingsAbout` list
+         let mut list_state_settings_about = ListState::default();
+         list_state_settings_about.select(Some(0));
 
         Ok(Self {
             database,
@@ -476,6 +482,7 @@ impl App {
             list_state_settings,
             list_state_settings_account,
             list_state_settings_library,
+            list_state_settings_about,
             titles_cnt_list,
             auth_names_cnt_list,
             pub_year_cnt_list,
@@ -572,29 +579,29 @@ impl App {
     }
 
 
-   /// handle events
-pub fn run(&mut self, terminal: &mut DefaultTerminal) -> Result<()> {
-    let bg_color = self.config.colors.background_color.clone();
-    while !self.should_exit {
-        terminal.draw(|frame| {
-            let background = Block::default()
-                .style(Style::default()
-                .bg(Color::Rgb(bg_color[0], bg_color[1], bg_color[2])));
-            frame.render_widget(background, frame.size());
-            frame.render_widget(&mut *self, frame.area());
-        })?;
+    /// handle events
+    pub fn run(&mut self, terminal: &mut DefaultTerminal) -> Result<()> {
+        let bg_color = self.config.colors.background_color.clone();
+        while !self.should_exit {
+            terminal.draw(|frame| {
+                let background = Block::default()
+                    .style(Style::default()
+                        .bg(Color::Rgb(bg_color[0], bg_color[1], bg_color[2])));
+                        frame.render_widget(background, frame.size());
+                        frame.render_widget(&mut *self, frame.area());
+            })?;
 
-        if let Event::Key(key) = event::read()? {
-            self.handle_key(key);
+            if let Event::Key(key) = event::read()? {
+                self.handle_key(key);
+            }
         }
+        Ok(())
     }
-    Ok(())
-}
-   /// handle key
-pub fn handle_key(&mut self, key: KeyEvent) {
-    if key.kind != KeyEventKind::Press {
-        return;
-    }
+    /// handle key
+    pub fn handle_key(&mut self, key: KeyEvent) {
+        if key.kind != KeyEventKind::Press {
+            return;
+        }
 
 
 
@@ -649,6 +656,7 @@ pub fn handle_key(&mut self, key: KeyEvent) {
             match self.view_state {
                AppView::SettingsAccount => {self.view_state = AppView::Settings} 
                AppView::SettingsLibrary => {self.view_state = AppView::Settings} 
+               AppView::SettingsAbout => {self.view_state = AppView::Settings} 
                AppView::Settings => {self.view_state = AppView::Home} 
                AppView::PodcastEpisode => {
                    if self.is_from_search_pod {
@@ -749,6 +757,7 @@ pub fn handle_key(&mut self, key: KeyEvent) {
                     match self.list_state_settings.selected() {
                         Some(0) => self.view_state = AppView::SettingsAccount,
                         Some(1) => self.view_state = AppView::SettingsLibrary,
+                        Some(2) => self.view_state = AppView::SettingsAbout,
                         _ => {}
                     }
                 }
@@ -763,6 +772,8 @@ pub fn handle_key(&mut self, key: KeyEvent) {
                     let new_selected_lib = &self.libraries_ids[index];
                     update_id_selected_lib(&new_selected_lib, &self.username);
                     }
+                }
+                AppView::SettingsAbout => {
                 }
                 AppView::Library => {
                     if self.is_podcast {
@@ -901,6 +912,7 @@ pub fn handle_key(&mut self, key: KeyEvent) {
             AppView::Settings => AppView::Home,
             AppView::SettingsAccount => AppView::Home,
             AppView::SettingsLibrary => AppView::Home,
+            AppView::SettingsAbout => AppView::Home,
 
         };
     }
@@ -948,6 +960,7 @@ pub fn handle_key(&mut self, key: KeyEvent) {
                 }}}
             AppView::SettingsAccount => self.list_state_settings_account.select_next(),
             AppView::SettingsLibrary => self.list_state_settings_library.select_next(),
+            AppView::SettingsAbout => self.list_state_settings_library.select_next(),
         }
     }
 
@@ -960,6 +973,7 @@ pub fn handle_key(&mut self, key: KeyEvent) {
             AppView::Settings => self.list_state_settings.select_previous(),
             AppView::SettingsAccount => self.list_state_settings_account.select_previous(),
             AppView::SettingsLibrary => self.list_state_settings_library.select_previous(),
+            AppView::SettingsAbout => self.list_state_settings_about.select_previous(),
         }
     }
 
@@ -972,6 +986,7 @@ pub fn handle_key(&mut self, key: KeyEvent) {
             AppView::Settings => self.list_state_settings.select_first(),
             AppView::SettingsAccount => self.list_state_settings_account.select_first(),
             AppView::SettingsLibrary => self.list_state_settings_library.select_first(),
+            AppView::SettingsAbout => self.list_state_settings_about.select_first(),
         }
     }
 
@@ -1003,6 +1018,7 @@ pub fn handle_key(&mut self, key: KeyEvent) {
             }            
             AppView::SettingsAccount => self.list_state_settings_account.select_last(),
             AppView::SettingsLibrary => self.list_state_settings_library.select_last(),
+            AppView::SettingsAbout => self.list_state_settings_about.select_last(),
         }
     }
 

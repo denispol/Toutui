@@ -58,3 +58,5 @@
 2025-02-20 19:52:56.244 [WARN] - [fetch_vlc_is_playing] Failed to connect to VLC at port 1234: Connection refused (os error 111)
 2025-02-20 19:52:56.270 [INFO] - [handle_l_book] Session successfully closed
 2025-02-20 19:52:56.360 [INFO] - [handle_l_book] VLC closed
+2025-02-20 20:36:47.982 [INFO] - Database ready
+2025-02-20 20:37:42.406 [INFO] - Database ready
