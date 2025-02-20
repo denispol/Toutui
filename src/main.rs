@@ -18,19 +18,18 @@ use crossterm::event::{self, Event, KeyCode};
 use std::io::{stdout, Write};
 use crossterm::{cursor, execute, terminal, ExecutableCommand};
 use crate::utils::pop_up_message::*;
-use log::{info, warn, error};
-use env_logger::Builder;
-use std::fs::File;
-
+use crate::utils::logs::*;
+use log::{info, warn, error, LevelFilter};
 
 const VERSION: &str = env!("CARGO_PKG_VERSION");
 
 #[tokio::main]
 async fn main() -> Result<()> {
-    // Create log file
-    let log_file = File::create("toutui.log").expect("Impossible to create log file.");
 
-    // Initial database creation
+    setup_logs().expect("Échec de l'initialisation du logger");
+
+    info!("g peur  !");
+    // Init database
     let mut database = Database::new().await?;
     let mut database_ready = false;
 
