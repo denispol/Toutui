@@ -1,4 +1,5 @@
 /target
 config.toml
 /src/db/db.sqlite3
+/src/toutui.log
 
