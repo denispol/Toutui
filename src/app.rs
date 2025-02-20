@@ -429,8 +429,8 @@ impl App {
          }
 
          // init start_vlc variables
-         let mut is_cvlc = "0".to_string();
-         let mut is_cvlc_term = "0".to_string();
+         let is_cvlc = config.player.cvlc.clone();
+         let is_cvlc_term = config.player.cvlc_term.clone();
          let mut start_vlc_program = "vlc".to_string();
          if is_cvlc == "1" {
              start_vlc_program = "cvlc".to_string()

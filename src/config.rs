@@ -5,6 +5,7 @@ use color_eyre::eyre::{Result, Report};
 #[derive(Debug, Deserialize)]
 pub struct ConfigFile {
     pub colors: Colors,
+    pub player: Player,
 }
 
 #[derive(Debug, Deserialize)]
@@ -21,6 +22,12 @@ pub struct Colors {
     pub login_foreground_color: Vec<u8>,
 }
 
+#[derive(Debug, Deserialize)]
+pub struct Player {
+    pub cvlc: String,
+    pub cvlc_term: String,
+}
+
 /// load config from `config.toml` file
 pub fn load_config() -> Result<ConfigFile> {
     let config = ConfigLib::builder()
@@ -30,7 +37,9 @@ pub fn load_config() -> Result<ConfigFile> {
 
     let colors: Colors = config.get("colors")
         .map_err(|e| Report::new(e))?;
+    let player: Player = config.get("player")
+        .map_err(|e| Report::new(e))?;
 
-    Ok(ConfigFile { colors })
+    Ok(ConfigFile { colors, player })
 }
 
