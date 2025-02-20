@@ -6,6 +6,8 @@ use std::process::Command;
 use std::str;
 use regex::Regex;
 use crate::api::sessions::close_open_session::*;
+use log::{info, warn, error, LevelFilter};
+use crate::utils::logs::*;
 
 
 
@@ -15,6 +17,7 @@ use crate::api::sessions::close_open_session::*;
 /// if connection is successul, fecth data thanks to remotly control
 /// this fn is in the loop and run while vlc is running (bu checking if the port is still open)
 pub async fn fetch_vlc_data(port: String, address: String) -> Result<Option<u32>, io::Error> {
+
     loop {
         // Check if VLC is running, if not, break the loop
         if !is_vlc_running(port.clone(), address.clone()).await {
@@ -26,7 +29,8 @@ pub async fn fetch_vlc_data(port: String, address: String) -> Result<Option<u32>
             Ok(player) => player,
             Err(e) => {
                 if let Err(file_error) = log_error_to_file(&e.to_string()) {
-                    eprintln!("Failed to log error: {}", file_error);
+                    eprintln!("Failed to log to vlc: {}", file_error);
+                    error!("Failed to log to vlc: {}", file_error);
                 }
                 continue;
             }
@@ -37,6 +41,7 @@ pub async fn fetch_vlc_data(port: String, address: String) -> Result<Option<u32>
             Ok(None) => None,
             Err(e) => {
                 eprintln!("Failed to fetch time from VLC: {}", e);
+                error!("Failed to fetch time from VLC: {}", e);
                 None
             }
         };
@@ -57,8 +62,10 @@ pub async fn fetch_vlc_is_playing(port: String, address: String) -> Result<bool,
     // Tentative de connexion à VLC
     let mut player = match Client::connect(format!("{}:{}", address, &port)) {
         Ok(player) => player,
-        Err(e) => return Err(format!("Failed to connect to VLC at port {}: {}", port, e)),
-    };
+        Err(e) => {
+            warn!("[fetch_vlc_is_playing] Failed to connect to VLC at port {}: {}", port, e);
+            return Err(format!("Failed to connect to VLC at port {}: {}", port, e));
+        }};
 
     // Tentative de récupération du statut "is_playing"
     let is_playing = match player.is_playing() {
@@ -78,6 +85,7 @@ pub async fn fetch_vlc_is_playing(port: String, address: String) -> Result<bool,
             // will send an error because VLC is not open anymore. Allow to differenciate from an
             // reach the end of audio just above. Here, the VLC vlc is closed be the user so we
             // want to make sur to differienciate from a normal reached of the audio playback
+            error!("Failed to check the play status of VLC: {}", e);
             return Err(format!("Failed to check the play status of VLC: {}", e))
         }
     };
@@ -95,6 +103,7 @@ pub async fn is_vlc_running(port: String, address: String) -> bool {
             true
         }
         Err(_) => {
+            info!("[is_vlc_running] VLC is not running (port {} is closed).", port);
             //println!("VLC is not running (port {} is closed).", port);
             false
         }
@@ -112,6 +121,7 @@ pub async fn get_vlc_version() -> Result<String, io::Error> {
             io::ErrorKind::Other,
             "Failed to fetch VLC version",
         ));
+        error!("Failed to fetch VLC version");
     }
 
     let version_output = str::from_utf8(&output.stdout)

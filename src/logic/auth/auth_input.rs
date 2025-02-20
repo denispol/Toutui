@@ -16,6 +16,9 @@ use std::thread;
 use std::time::Duration;
 use std::process;
 use crate::config::*;
+use crate::utils::logs::*;
+use log::{info, warn, error, LevelFilter};
+
 
 
 const VERSION: &str = env!("CARGO_PKG_VERSION");
@@ -145,9 +148,11 @@ impl AppLogin {
                     collected_data_clone[0].as_str(), // server_address
                 ).await {
                     Ok(response) => {
+                        info!("[auth_process] Login successful");
                         println!("Login successful");
                     }
                     Err(e) => {
+                        error!("[auth_process] Login failed: {}", e);
                         eprintln!("Login failed: {}", e);
                     }
                 }});

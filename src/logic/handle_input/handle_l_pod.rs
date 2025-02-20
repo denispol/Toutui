@@ -7,9 +7,8 @@ use crate::api::sessions::close_open_session::*;
 use crate::player::vlc::exec_nc::*;
 use crate::utils::pop_up_message::*;
 use std::io::{stdout, Result, Stdout};
-
-
-
+use crate::utils::logs::*;
+use log::{info, warn, error, LevelFilter};
 
 /// handle l for App::View PodcastEpisode
 
@@ -30,6 +29,7 @@ pub async fn handle_l_pod(
             // id is id of the podcast episode and id_pod is the id id of the podcast
             if let Some(token) = token {
                 if let Ok(info_item) = post_start_playback_session_pod(Some(&token),id_pod, &id, server_address.clone()).await {
+                    info!("[handle_l_pod][post_start_playback_session_book] OK");
                     // clone otherwise, these variable will  be consumed and not available anymore
                     // for use outside start_vlc spawn
                     let token_clone = token.clone();
@@ -39,6 +39,8 @@ pub async fn handle_l_pod(
                     let address_player_clone = address_player.clone() ;
                     // Start VLC is launched in a spawn to allow fetch_vlc_data to start at the same time
                     tokio::spawn(async move {
+                        // this info! is not the most reliable to know is VLC is really launched
+                        info!("[handle_l_pod][start_vlc] VLC successfully launched");
                         start_vlc(
                             &info_item_clone[0], // current_time
                             &port_clone, // player port
@@ -109,7 +111,11 @@ pub async fn handle_l_pod(
                                     Ok(false) => {
                                         let is_finised = true;
                                         let _ = close_session_without_send_prg_data(Some(&token), &info_item[3],  server_address.clone()).await;
+                                        info!("[handle_l_pod][Finished] Session successfully closed");
+
                                         let _ = update_media_progress2_pod(id_pod, Some(&token), Some(data_fetched_from_vlc), &info_item[2], is_finised, &id, server_address).await;
+                                        info!("[handle_l_pod][Finished] VLC stopped");
+
                                         break; 
                                     },
                                     // `Err` means :  VLC is close (because if VLC is not playing
@@ -120,9 +126,11 @@ pub async fn handle_l_pod(
                                         //TODO minor bug : be sure to close the session above
                                         // close session when VLC is quitted
                                         let _ = close_session_without_send_prg_data(Some(&token), &info_item[3],  server_address.clone()).await;
+                                        info!("[handle_l_pod] Session successfully closed");
                                         // send one last time media progress (bug to retrieve media
                                         // progress otherwise)
                                         let _ = update_media_progress_pod(id_pod, Some(&token), Some(data_fetched_from_vlc), &info_item[2], &id, server_address).await;
+                                        info!("[handle_l_pod] VLC closed");
                                         //eprintln!("Error fetching play status: {}", e);
                                         break; 
                                     }
@@ -130,14 +138,17 @@ pub async fn handle_l_pod(
 
                             }
                             Ok(None) => {
+                                info!("[handle_l_pod][None] VLC exited");
                                 break; // Exit if no data available
                             }
-                            Err(_e) => {
+                            Err(e) => {
+                                error!("[handle_l_pod][Err(e)]{}", e);
                                 break; // Exit on error
                             }
                         }
                     }
                 } else {
+                    error!("[handle_l_pod] Failed to start playback session");
                     eprintln!("Failed to start playback session");
                 }
             }

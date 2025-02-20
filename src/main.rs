@@ -26,9 +26,9 @@ const VERSION: &str = env!("CARGO_PKG_VERSION");
 #[tokio::main]
 async fn main() -> Result<()> {
 
-    setup_logs().expect("Échec de l'initialisation du logger");
+    // this function allow to write all the logs in a file 
+    setup_logs().expect("Failed to execute logger");
 
-    info!("g peur  !");
     // Init database
     let mut database = Database::new().await?;
     let mut database_ready = false;
@@ -54,6 +54,7 @@ async fn main() -> Result<()> {
             print!("\x1B[2J\x1B[1;1H"); // clear all stdout (avoid to sill have the previous print
                                         // when the app is launched)
             database_ready = true;
+            info!("Database ready");
             break;
         }
     }
@@ -71,6 +72,7 @@ async fn main() -> Result<()> {
 
             if let Err(e) = result {
                 eprintln!("Error running the app: {:?}", e);
+                error!("Error running the app: {:?}", e);
             }
 
             // Checking if any key is pressed (waiting for events with a 200ms delay here)
