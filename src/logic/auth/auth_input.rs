@@ -31,6 +31,7 @@ impl AppLogin {
         let backend = CrosstermBackend::new(stdout);
         let mut term = Terminal::new(backend)?;
 
+        let fg_color = self.config.colors.login_foreground_color.clone();
 
         let mut textarea1 = TextArea::default();
         textarea1.set_block(
@@ -38,8 +39,8 @@ impl AppLogin {
             .borders(Borders::ALL)
             .title("Server address")
             .title_bottom(Line::from(format!("🦜Toutui v{} - Esc to quit.", VERSION)).right_aligned())
-            .border_style(Style::default().fg(Color::LightBlue)),
-            
+            .border_style(Style::default()
+            .fg(Color::Rgb(fg_color[0], fg_color[1], fg_color[2])))
         );
 
         let mut textarea2 = TextArea::default();
@@ -48,7 +49,8 @@ impl AppLogin {
             .borders(Borders::ALL)
             .title("Username")
             .title_bottom(Line::from(format!("🦜Toutui v{} - Esc to quit.", VERSION)).right_aligned())
-            .border_style(Style::default().fg(Color::LightBlue)),
+            .border_style(Style::default()
+            .fg(Color::Rgb(fg_color[0], fg_color[1], fg_color[2])))
         );
 
         let mut textarea3 = TextArea::default();
@@ -57,7 +59,8 @@ impl AppLogin {
             .borders(Borders::ALL)
             .title("Password")
             .title_bottom(Line::from(format!("🦜Toutui v{} - Esc to quit.", VERSION)).right_aligned())
-            .border_style(Style::default().fg(Color::LightBlue)),
+            .border_style(Style::default()
+            .fg(Color::Rgb(fg_color[0], fg_color[1], fg_color[2])))
         );
         textarea3.set_mask_char('\u{2022}');
 

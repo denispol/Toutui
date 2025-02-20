@@ -20,14 +20,17 @@ impl App {
         let mut term = Terminal::new(backend)?;
 
         let bg_color = self.config.colors.background_color.clone();
+        let fg_color = self.config.colors.search_bar_foreground_color.clone();
 
         let mut textarea = TextArea::default();
         textarea.set_block(
             Block::default()
             .borders(Borders::ALL)
             .title("Search")
-            .border_style(Style::default().fg(Color::LightBlue))
-            .style(Style::default().bg(Color::Rgb(bg_color[0], bg_color[1], bg_color[2])))
+            .border_style(Style::default()
+            .fg(Color::Rgb(fg_color[0], fg_color[1], fg_color[2])))
+            .style(Style::default()
+            .bg(Color::Rgb(bg_color[0], bg_color[1], bg_color[2])))
 
         );
 

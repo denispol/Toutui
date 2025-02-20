@@ -17,6 +17,8 @@ pub struct Colors {
     pub list_background_color_alt_row: Vec<u8>,
     pub list_selected_background_color: Vec<u8>,
     pub list_selected_foreground_color: Vec<u8>,
+    pub search_bar_foreground_color: Vec<u8>,
+    pub login_foreground_color: Vec<u8>,
 }
 
 /// load config from `config.toml` file
