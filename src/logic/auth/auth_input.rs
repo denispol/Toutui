@@ -26,7 +26,7 @@ const VERSION: &str = env!("CARGO_PKG_VERSION");
 
 impl AppLogin {
     pub fn auth(&mut self) -> io::Result<()> {
-        info!("Login");
+        info!("[auth_input] Login");
 
         /// init input area
         let stdout = io::stdout();
