@@ -6,12 +6,16 @@ use crate::utils::pop_up_message::*;
 use std::io::{stdout, Write};
 use crate::utils::logs::*;
 use log::{info, warn, error, LevelFilter};
+use std::path::PathBuf;
 
 // Delete an user
 pub fn delete_user(username: &str) -> Result<()> {
+    let mut db_path = dirs::config_dir().unwrap_or_else(|| PathBuf::from("."));
+    db_path.push("toutui/db.sqlite3");
+
     let message = format!("User '{}' deleted. Please restart the app to apply the changes.", &username);
     let err_message = "Error connecting to the database.";
-    if let Ok(conn) = Connection::open("db/db.sqlite3") {
+    if let Ok(conn) = Connection::open(db_path) {
 
         let rows_deleted = conn.execute(
             "DELETE FROM users WHERE username = ?1",
@@ -37,9 +41,12 @@ pub fn delete_user(username: &str) -> Result<()> {
 // Update id_selected_lib
 pub fn update_id_selected_lib(id_selected_lib: &str, username: &str) -> Result<()> {
 
+    let mut db_path = dirs::config_dir().unwrap_or_else(|| PathBuf::from("."));
+    db_path.push("toutui/db.sqlite3");
+
     let message = "The library has been updated. Please refresh the app to apply the changes.";
     let err_message = "Error connecting to the database.";
-    if let Ok(conn) = Connection::open("db/db.sqlite3") {
+    if let Ok(conn) = Connection::open(db_path) {
 
         conn.execute(
             "UPDATE users SET id_selected_lib = ?1 WHERE username = ?2",
@@ -77,7 +84,10 @@ pub fn update_default_user(conn: &Connection, username: &str) -> Result<()> {
 
 // Insert user in database
 pub fn db_insert_usr(users : &Vec<User>)  -> Result<()> {   
-    let conn = Connection::open("db/db.sqlite3")?;
+    let mut db_path = dirs::config_dir().unwrap_or_else(|| PathBuf::from("."));
+    db_path.push("toutui/db.sqlite3");
+
+    let conn = Connection::open(db_path)?;
     for user in users {
         conn.execute(
             "INSERT OR REPLACE INTO users (username, server_address, token, is_default_usr, name_selected_lib, id_selected_lib) 
@@ -98,8 +108,10 @@ pub fn db_insert_usr(users : &Vec<User>)  -> Result<()> {
 
 // Select default user
 pub fn select_default_usr() -> Result<Vec<String>> {
-    let conn = Connection::open("db/db.sqlite3")?;
+    let mut db_path = dirs::config_dir().unwrap_or_else(|| PathBuf::from("."));
+    db_path.push("toutui/db.sqlite3");
 
+    let conn = Connection::open(db_path)?;
     
     let mut stmt = conn.prepare(
         "SELECT username, server_address, token, is_default_usr, name_selected_lib, id_selected_lib
@@ -146,8 +158,11 @@ pub fn select_default_usr() -> Result<Vec<String>> {
 
 // Init db and table if not exist
 pub fn init_db() -> Result<()> {
+    let mut db_path = dirs::config_dir().unwrap_or_else(|| PathBuf::from("."));
+    db_path.push("toutui/db.sqlite3");
+
     // Open or create db
-    let conn = Connection::open("db/db.sqlite3")?;
+    let conn = Connection::open(db_path)?;
 
     //Create a table if there is none 
     conn.execute(

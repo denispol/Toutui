@@ -239,3 +239,19 @@
 2025-02-21 16:58:14.883 [INFO] - Token successfully encrypted
 2025-02-21 16:58:14.890 [INFO] - [auth_process] Login successful
 2025-02-21 16:58:16.766 [INFO] - Database ready
+2025-02-21 17:42:05.655 [INFO] - Login
+2025-02-21 17:42:31.174 [INFO] - Login
+2025-02-21 17:42:32.819 [INFO] - Token successfully encrypted
+2025-02-21 17:42:32.820 [INFO] - [auth_process] Login successful
+2025-02-21 17:42:33.027 [ERROR] - [auth_process] Login failed: builder error: relative URL without a base
+2025-02-21 17:42:34.030 [INFO] - Login
+2025-02-21 17:42:36.410 [ERROR] - [auth_process] Login failed: builder error: relative URL without a base
+2025-02-21 17:42:37.414 [INFO] - Login
+2025-02-21 17:43:29.867 [INFO] - App successfully quited
+2025-02-21 17:50:10.920 [INFO] - Login
+2025-02-21 17:50:18.706 [INFO] - Login
+2025-02-21 17:50:20.345 [INFO] - Token successfully encrypted
+2025-02-21 17:50:20.351 [INFO] - [auth_process] Login successful
+2025-02-21 17:50:25.063 [INFO] - Token successfully encrypted
+2025-02-21 17:50:25.120 [INFO] - [auth_process] Login successful
+2025-02-21 17:50:25.941 [INFO] - Database ready

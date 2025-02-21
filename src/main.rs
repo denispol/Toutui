@@ -34,7 +34,7 @@ async fn main() -> Result<()> {
     setup_logs().expect("Failed to execute logger");
 
     // set dotenv to ~/.config.toutui/.env (dotenv will be use in `encrypt_token.rs`)
-    let home_dir = dirs::home_dir().expect("Impossible de récupérer le répertoire home");
+    let home_dir = dirs::home_dir().expect("Unable to retrieve home directory");
     let env_path = home_dir.join(".config").join("toutui").join(".env");
     dotenv::from_filename(&env_path.clone()).ok();
 
