@@ -20,6 +20,10 @@ use crossterm::{cursor, execute, terminal, ExecutableCommand};
 use crate::utils::pop_up_message::*;
 use crate::utils::logs::*;
 use log::{info, warn, error, LevelFilter};
+use dotenv::dotenv;
+use std::env;
+use std::path::Path;
+use dirs::home_dir;
 
 const VERSION: &str = env!("CARGO_PKG_VERSION");
 
@@ -28,6 +32,11 @@ async fn main() -> Result<()> {
 
     // this function allow to write all the logs in a file 
     setup_logs().expect("Failed to execute logger");
+
+    // set dotenv to ~/.config.toutui/.env (dotenv will be use in `encrypt_token.rs`)
+    let home_dir = dirs::home_dir().expect("Impossible de récupérer le répertoire home");
+    let env_path = home_dir.join(".config").join("toutui").join(".env");
+    dotenv::from_filename(&env_path.clone()).ok();
 
     // Init database
     let mut database = Database::new().await?;

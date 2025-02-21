@@ -50,3 +50,85 @@
 2025-02-21 09:44:03.807 [INFO] - Database ready
 2025-02-21 09:50:38.397 [INFO] - Database ready
 2025-02-21 09:50:47.761 [INFO] - App successfuly successfully exited
+2025-02-21 12:38:03.752 [INFO] - Database ready
+2025-02-21 12:40:13.129 [INFO] - Database ready
+2025-02-21 12:41:07.171 [INFO] - App successfully quited
+2025-02-21 12:41:18.649 [INFO] - Database ready
+2025-02-21 12:41:35.167 [INFO] - App successfully quited
+2025-02-21 12:42:20.743 [INFO] - Database ready
+2025-02-21 12:42:20.744 [INFO] - oBB7X29IdlrKy478ydZysw==
+2025-02-21 12:43:00.852 [INFO] - App successfully quited
+2025-02-21 12:43:12.839 [INFO] - Database ready
+2025-02-21 12:43:12.840 [INFO] - bTDXaIY755nbQdbJgUx/4d5QfCvOCX+se12qrCtqqa4dz+nAgMwniieEjtuPPwEeZlMmbrX0MCoFvNx6UAfR3QMcF0YejWQlHQCHvdiAqWl66W2jxnVWvsXoBpxgGEluWCkwcYE0WNTizdrEalWX+xrLutKsNIdByhrqS5aW7tHV1LAwWnTocFrhSOGFQrvgzwRuXkk68RDTuCBnqxi98LNvf3UdksNX3scOy3Jmdmo74huTvb68S3/35aFKS6/TQ9D5umWj0VLRLIE0eSaXnQ==
+2025-02-21 12:44:29.578 [INFO] - App successfully quited
+2025-02-21 12:44:30.520 [INFO] - Database ready
+2025-02-21 12:44:30.520 [INFO] - bTDXaIY755nbQdbJgUx/4d5QfCvOCX+se12qrCtqqa4dz+nAgMwniieEjtuPPwEeZlMmbrX0MCoFvNx6UAfR3QMcF0YejWQlHQCHvdiAqWl66W2jxnVWvsXoBpxgGEluWCkwcYE0WNTizdrEalWX+xrLutKsNIdByhrqS5aW7tHV1LAwWnTocFrhSOGFQrvgzwRuXkk68RDTuCBnqxi98LNvf3UdksNX3scOy3Jmdmo74huTvb68S3/35aFKS6/TQ9D5umWj0VLRLIE0eSaXnQ==
+2025-02-21 12:51:35.059 [INFO] - App successfully quited
+2025-02-21 12:51:47.794 [INFO] - Database ready
+2025-02-21 12:51:47.795 [INFO] - oBB7X29IdlrKy478ydZysw==
+2025-02-21 13:05:52.300 [INFO] - Database ready
+2025-02-21 13:05:52.301 [INFO] - oBB7X29IdlrKy478ydZysw==
+2025-02-21 13:05:52.301 [INFO] - Failed to decrypt the token.
+2025-02-21 13:06:04.679 [INFO] - App successfully quited
+2025-02-21 13:08:57.476 [INFO] - Database ready
+2025-02-21 13:08:57.476 [INFO] - oBB7X29IdlrKy478ydZysw==
+2025-02-21 13:08:57.476 [INFO] - 1234
+2025-02-21 13:09:32.312 [INFO] - App successfully quited
+2025-02-21 13:09:43.664 [INFO] - Database ready
+2025-02-21 13:09:43.664 [INFO] - oBB7X29IdlrKy478ydZysw==
+2025-02-21 13:09:43.664 [INFO] - Failed to decrypt the token.
+2025-02-21 13:10:26.251 [INFO] - App successfully quited
+2025-02-21 13:10:38.820 [INFO] - Database ready
+2025-02-21 13:10:38.821 [INFO] - oBB7X29IdlrKy478ydZysw==
+2025-02-21 13:10:38.821 [INFO] - Failed to decrypt the token.
+2025-02-21 13:11:14.037 [INFO] - App successfully quited
+2025-02-21 13:11:25.321 [INFO] - Database ready
+2025-02-21 13:11:25.321 [INFO] - oBB7X29IdlrKy478ydZysw==
+2025-02-21 13:34:54.763 [INFO] - App successfully quited
+2025-02-21 13:35:15.485 [INFO] - Database ready
+2025-02-21 13:36:02.629 [INFO] - Database ready
+2025-02-21 13:37:20.607 [INFO] - Database ready
+2025-02-21 13:46:07.246 [INFO] - Database ready
+2025-02-21 13:46:07.246 [ERROR] - No secret found in .env. Do this: echo 'TOUTUI_SECRET_KEY=secret' >> ~/.config/toutui/.env
+2025-02-21 14:17:47.259 [INFO] - App successfully quited
+2025-02-21 14:17:58.954 [INFO] - Database ready
+2025-02-21 14:17:58.954 [ERROR] - No secret found in .env. Do this: echo 'TOUTUI_SECRET_KEY=secret' >> ~/.config/toutui/.env
+2025-02-21 14:33:27.096 [INFO] - Database ready
+2025-02-21 14:33:27.097 [ERROR] - No secret found in .env. Do this: echo 'TOUTUI_SECRET_KEY=secret' >> ~/.config/toutui/.env
+2025-02-21 14:33:27.097 [ERROR] - No secret found in .env. Do this: echo 'TOUTUI_SECRET_KEY=secret' >> ~/.config/toutui/.env
+2025-02-21 14:33:41.839 [INFO] - App successfully quited
+2025-02-21 14:34:31.793 [INFO] - Database ready
+2025-02-21 14:34:31.793 [INFO] - 
+2025-02-21 14:35:45.506 [INFO] - Database ready
+2025-02-21 14:35:45.507 [INFO] - 
+2025-02-21 14:38:04.225 [INFO] - App successfully quited
+2025-02-21 14:38:18.211 [INFO] - Database ready
+2025-02-21 14:38:18.211 [INFO] - cQweTBozNVMJGwTZ2F1HEQ==
+2025-02-21 14:38:18.211 [INFO] - 
+2025-02-21 14:39:15.430 [INFO] - Database ready
+2025-02-21 14:39:15.430 [INFO] - cQweTBozNVMJGwTZ2F1HEQ==
+2025-02-21 14:39:15.430 [INFO] - 1234
+2025-02-21 14:39:49.075 [INFO] - App successfully quited
+2025-02-21 14:40:00.407 [INFO] - Database ready
+2025-02-21 14:40:00.407 [INFO] - cQweTBozNVMJGwTZ2F1HEQ==
+2025-02-21 14:40:00.407 [ERROR] - Failed to decrypt the token.
+2025-02-21 14:40:37.121 [INFO] - App successfully quited
+2025-02-21 14:40:48.993 [INFO] - Database ready
+2025-02-21 14:40:48.994 [ERROR] - No secret found in .env. Do this: echo 'TOUTUI_SECRET_KEY=secret' >> ~/.config/toutui/.env
+2025-02-21 14:40:48.994 [ERROR] - No secret found in .env. Do this: echo 'TOUTUI_SECRET_KEY=secret' >> ~/.config/toutui/.env
+2025-02-21 15:02:18.660 [INFO] - App successfully quited
+2025-02-21 15:02:30.491 [INFO] - Database ready
+2025-02-21 15:02:30.492 [ERROR] - No secret found in .env. Do this: echo 'TOUTUI_SECRET_KEY=secret' >> ~/.config/toutui/.env
+2025-02-21 15:02:30.492 [ERROR] - No secret found in .env. Do this: echo 'TOUTUI_SECRET_KEY=secret' >> ~/.config/toutui/.env
+2025-02-21 15:05:33.243 [INFO] - App successfully quited
+2025-02-21 15:05:34.636 [INFO] - Database ready
+2025-02-21 15:05:34.637 [INFO] - RLyYdFCsWUDrRWoe4Opr0A==
+2025-02-21 15:05:34.637 [INFO] - 1234
+2025-02-21 15:08:04.186 [INFO] - App successfully quited
+2025-02-21 15:08:15.600 [INFO] - Database ready
+2025-02-21 15:08:15.600 [ERROR] - No secret found in .env. Do this:
+
+                mkdir -p ~/.config/toutui
+
+                echo 'TOUTUI_SECRET_KEY=secret' >> ~/.config/toutui/.env
+2025-02-21 15:08:15.600 [ERROR] - No secret found in .env. Do this: echo 'TOUTUI_SECRET_KEY=secret' >> ~/.config/toutui/.env

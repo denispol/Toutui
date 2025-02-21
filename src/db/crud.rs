@@ -21,7 +21,7 @@ pub fn delete_user(username: &str) -> Result<()> {
         if rows_deleted > 0 {
             let mut stdout = stdout();
             pop_message(&mut stdout, 3, message.as_str());
-            info!("[delete_user] User '{}' deleted.", &username);
+            info!("[delete_user] User deleted.");
         } else {
             //println!("No user found with this username '{}'.", username);
         }
