@@ -215,3 +215,27 @@
 2025-02-21 15:54:46.208 [INFO] - [auth_process] Login successful
 2025-02-21 15:54:46.969 [INFO] - Database ready
 2025-02-21 15:55:18.159 [INFO] - App successfully quited
+2025-02-21 16:46:35.334 [INFO] - Login
+2025-02-21 16:46:48.203 [ERROR] - [auth_process] Login failed: error sending request for url (https://audiobook.nuagemagique.duckdns.org/login): error trying to connect: error:0A000086:SSL routines:tls_post_process_server_certificate:certificate verify failed:ssl/statem/statem_clnt.c:2104: (hostname mismatch)
+2025-02-21 16:46:49.033 [INFO] - Login
+2025-02-21 16:47:28.611 [INFO] - Login
+2025-02-21 16:47:30.320 [INFO] - Token successfully encrypted
+2025-02-21 16:47:30.326 [INFO] - [auth_process] Login successful
+2025-02-21 16:47:34.650 [ERROR] - [auth_process] Login failed: builder error: relative URL without a base
+2025-02-21 16:47:35.620 [INFO] - Database ready
+2025-02-21 16:49:11.365 [INFO] - [update_id_selected_lib] The library has been updated
+2025-02-21 16:55:46.925 [INFO] - Login
+2025-02-21 16:56:16.199 [ERROR] - [auth_process] Login failed: builder error: relative URL without a base
+2025-02-21 16:56:17.165 [INFO] - Login
+2025-02-21 16:56:22.248 [ERROR] - [auth_process] Login failed: builder error: relative URL without a base
+2025-02-21 16:56:23.221 [INFO] - Login
+2025-02-21 16:56:43.079 [INFO] - Login
+2025-02-21 16:56:43.926 [INFO] - Token successfully encrypted
+2025-02-21 16:56:43.984 [INFO] - [auth_process] Login successful
+2025-02-21 16:57:51.309 [INFO] - Login
+2025-02-21 16:58:01.872 [INFO] - Login
+2025-02-21 16:58:05.738 [INFO] - Token successfully encrypted
+2025-02-21 16:58:05.744 [INFO] - [auth_process] Login successful
+2025-02-21 16:58:14.883 [INFO] - Token successfully encrypted
+2025-02-21 16:58:14.890 [INFO] - [auth_process] Login successful
+2025-02-21 16:58:16.766 [INFO] - Database ready
