@@ -5,10 +5,8 @@ use crate::db::crud::*;
 use crate::db::database_struct::User;
 use crate::api::libraries::get_all_libraries::*;
 use crate::api::utils::collect_get_all_libraries::*;
-use crate::login_app::AppLogin;
-use crate::login_app::AppViewLogin;
 use crate::utils::encrypt_token::*;
-use log::{info, warn, error, LevelFilter};
+use log::info;
 
 
 #[derive(Serialize)]
@@ -59,24 +57,24 @@ pub async fn auth_process(username: &str, password: &str, server_address: &str) 
         let media_types = collect_media_types(&all_libraries).await;
         let library_ids = collect_library_ids(&all_libraries).await;
 
-    // Token encryption before insert it in the database
-    let token_to_encrypt = login_response.user.token.as_str().clone();
-    let mut token_encrypted = "".to_string();
-    match encrypt_token(token_to_encrypt) {
-        Ok(encrypted_token) => {
-            token_encrypted = encrypted_token;
-            info!("Token successfully encrypted")
+        // Token encryption before insert it in the database
+        let token_to_encrypt = login_response.user.token.as_str().clone();
+        let mut token_encrypted = "".to_string();
+        match encrypt_token(token_to_encrypt) {
+            Ok(encrypted_token) => {
+                token_encrypted = encrypted_token;
+                info!("Token successfully encrypted")
+            }
+            Err(e) => {
+                println!("Error: {}", e);
+            }
         }
-        Err(e) => {
-            println!("Error: {}", e);
-        }
-    }
 
-     
 
-    /// Writting in database : 
 
-    // init a new user
+        /// Writting in database : 
+
+        // init a new user
         let users = vec![
             User {
                 server_address: server_address.to_string(),

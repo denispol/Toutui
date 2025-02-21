@@ -1,7 +1,6 @@
 use reqwest::Client; 
-use color_eyre::eyre::{Result}; 
+use color_eyre::eyre::Result; 
 use reqwest::header::AUTHORIZATION;
-use serde_json::Value;
 use serde_json::json;
 
 /// This endpoint syncs the position of an open listening session from the client to the server and returns the session.
@@ -18,9 +17,9 @@ pub async fn sync_session(token: Option<&String>, session_id: &str, current_time
 
     let response = client
         .post(format!(
-            "{}/api/session/{}/sync", 
-            server_address,
-            session_id
+                "{}/api/session/{}/sync", 
+                server_address,
+                session_id
         ))
         .header("Content-Type", "application/json")
         .header(AUTHORIZATION, format!("Bearer {}", token.unwrap()))

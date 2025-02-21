@@ -1,5 +1,4 @@
 use crate::api::libraries::get_all_books::Root;
-use crate::utils::convert_seconds::*;
 
 /// collect titles
 pub async fn collect_titles_library(library: &Root) -> Vec<String> {
@@ -27,7 +26,7 @@ pub async fn collect_ids_library(library: &Root) -> Vec<String> {
     if let Some(results) = &library.results {
         for item in results {
             if let Some(id) = &item.id {
-                        ids_library.push(id.clone());
+                ids_library.push(id.clone());
             }
         }
     }
@@ -117,12 +116,12 @@ pub async fn collect_duration_library(library: &Root) -> Vec<f64> {
     if let Some(results) = &library.results {
         for item in results {
             if let Some(media) = &item.media {
-                    if let Some(dur) = &media.duration {
-                        duration.push(dur.clone());
+                if let Some(dur) = &media.duration {
+                    duration.push(dur.clone());
                 }
             }
         }
     }
 
-   duration 
+    duration 
 }

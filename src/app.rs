@@ -13,29 +13,23 @@ use crate::api::library_items::get_pod_ep::*;
 use crate::logic::handle_input::handle_l_book::*;
 use crate::logic::handle_input::handle_l_pod::*;
 use crate::logic::handle_input::handle_l_pod_home::*;
-use crate::main;
 use crate::config::*;
 use crate::db::crud::*;
 use crate::db::database_struct::Database;
 use color_eyre::Result;
 use ratatui::{
     crossterm::event::{self, Event, KeyCode, KeyEvent, KeyEventKind},
-    widgets::{ListState},
+    widgets::ListState,
     DefaultTerminal,
 };
-use serde::{Serialize, Deserialize};
-use rusqlite::Connection;
-use std::thread;
-use std::time::Duration;
 use std::process;
-use std::io::{stdout, Write};
-use crossterm::{cursor, execute, terminal};
 use ratatui::widgets::Block;
 use ratatui::style::{Color, Style};
 use crate::utils::pop_up_message::*;
 use crate::utils::changelog::*;
 use crate::utils::encrypt_token::*;
-use log::{info, warn, error, LevelFilter};
+use log::info;
+use std::io::stdout;
 
 pub enum AppView {
     Home,
@@ -49,111 +43,111 @@ pub enum AppView {
 }
 
 pub struct App {
-   pub view_state: AppView,
-   pub database: Database,
-   pub id_selected_lib: String,
-   pub token: Option<String>,
-   pub should_exit: bool,
-   pub list_state_cnt_list: ListState,
-   pub list_state_library: ListState,
-   pub list_state_search_results: ListState,
-   pub list_state_pod_ep: ListState,
-   pub list_state_settings: ListState,
-   pub list_state_settings_account: ListState,
-   pub list_state_settings_library: ListState,
-   pub list_state_settings_about: ListState,
-   pub titles_cnt_list: Vec<String>,
-   pub auth_names_cnt_list: Vec<String>,
-   pub pub_year_cnt_list: Vec<String>,
-   pub duration_cnt_list: Vec<f64>,
-   pub desc_cnt_list: Vec<String>,
-   pub ids_cnt_list: Vec<String>,
-   pub titles_library: Vec<String>,
-   pub ids_library: Vec<String>,
-   pub auth_names_library: Vec<String>,
-   pub ids_search_book: Vec<String>,
-   pub search_query: String,
-   pub search_mode: bool,
-   pub is_podcast: bool,
-   pub all_titles_pod_ep: Vec<Vec<String>>,
-   pub all_ids_pod_ep: Vec<Vec<String>>,
-   pub all_subtitles_pod_ep: Vec<Vec<String>>,
-   pub all_seasons_pod_ep: Vec<Vec<String>>,
-   pub all_episodes_pod_ep: Vec<Vec<String>>,
-   pub all_authors_pod_ep: Vec<Vec<String>>,
-   pub all_descs_pod_ep: Vec<Vec<String>>,
-   pub all_titles_pod: Vec<Vec<String>>,
-   pub all_durations_pod_ep: Vec<Vec<String>>,
-   pub titles_pod_ep: Vec<String>,
-   pub ids_pod_ep: Vec<String>,
-   pub ids_pod_ep_search: Vec<String>,
-   pub subtitles_pod_ep: Vec<String>,
-   pub seasons_pod_ep: Vec<String>,
-   pub episodes_pod_ep: Vec<String>,
-   pub authors_pod_ep: Vec<String>,
-   pub descs_pod_ep: Vec<String>,
-   pub titles_pod: Vec<String>,
-   pub durations_pod_ep: Vec<String>,
-   pub ids_ep_cnt_list: Vec<String>,
-   pub all_titles_pod_ep_search: Vec<Vec<String>>,
-   pub titles_pod_ep_search: Vec<String>,
-   pub is_from_search_pod: bool,
-   pub ids_library_pod_search: Vec<String>,
-   pub all_ids_pod_ep_search: Vec<Vec<String>>,
-   pub libraries_names: Vec<String>,
-   pub media_types: Vec<String>,
-   pub libraries_ids: Vec<String>,
-   pub library_name: String,
-   pub media_type: String,
-   pub lib_name_type: String,
-   pub settings: Vec<String>,
-   pub all_usernames: Vec<String>,
-   pub all_server_addresses: Vec<String>,
-   pub username: String,
-   pub server_address: String,
-   pub server_address_pretty: String,
-   pub scroll_offset: u16,
-   pub subtitles_pod_cnt_list: Vec<String>,
-   pub nums_ep_pod_cnt_list: Vec<String>,
-   pub seasons_pod_cnt_list: Vec<String>,
-   pub authors_pod_cnt_list: Vec<String>,
-   pub descs_pod_cnt_list: Vec<String>,
-   pub titles_pod_cnt_list: Vec<String>,
-   pub durations_pod_cnt_list: Vec<String>,
-   pub published_year_library: Vec<String>,
-   pub desc_library: Vec<String>,
-   pub duration_library: Vec<f64>,
-   pub auth_names_library_pod: Vec<String>,
-   pub subtitles_pod_ep_search: Vec<String>,
-   pub seasons_pod_ep_search: Vec<String>,
-   pub episodes_pod_ep_search: Vec<String>,
-   pub authors_pod_ep_search: Vec<String>,
-   pub descs_pod_ep_search: Vec<String>,
-   pub titles_pod_search: Vec<String>,
-   pub durations_pod_ep_search: Vec<String>,
-   pub all_subtitles_pod_ep_search: Vec<Vec<String>>,
-   pub all_seasons_pod_ep_search: Vec<Vec<String>>,
-   pub all_episodes_pod_ep_search: Vec<Vec<String>>,
-   pub all_authors_pod_ep_search: Vec<Vec<String>>,
-   pub all_descs_pod_ep_search: Vec<Vec<String>>,
-   pub all_titles_pod_search: Vec<Vec<String>>,
-   pub all_durations_pod_ep_search: Vec<Vec<String>>,
-   pub auth_names_pod_search_book: Vec<String>,
-   pub auth_names_search_book: Vec<String>,
-   pub published_year_library_search_book: Vec<String>,
-   pub desc_library_search_book: Vec<String>,
-   pub duration_library_search_book: Vec<f64>,
-   pub book_progress_cnt_list: Vec<Vec<String>>,
-   pub book_progress_cnt_list_cur_time: Vec<Vec<f64>>,
-   pub book_progress_library: Vec<Vec<String>>,
-   pub book_progress_library_cur_time: Vec<Vec<f64>>,
-   pub book_progress_search_book: Vec<Vec<String>>,
-   pub book_progress_search_book_cur_time: Vec<Vec<f64>>,
-   pub is_cvlc: String,
-   pub is_cvlc_term: String,
-   pub start_vlc_program: String,
-   pub config: ConfigFile,
-   pub changelog: String,
+    pub view_state: AppView,
+    pub database: Database,
+    pub id_selected_lib: String,
+    pub token: Option<String>,
+    pub should_exit: bool,
+    pub list_state_cnt_list: ListState,
+    pub list_state_library: ListState,
+    pub list_state_search_results: ListState,
+    pub list_state_pod_ep: ListState,
+    pub list_state_settings: ListState,
+    pub list_state_settings_account: ListState,
+    pub list_state_settings_library: ListState,
+    pub list_state_settings_about: ListState,
+    pub titles_cnt_list: Vec<String>,
+    pub auth_names_cnt_list: Vec<String>,
+    pub pub_year_cnt_list: Vec<String>,
+    pub duration_cnt_list: Vec<f64>,
+    pub desc_cnt_list: Vec<String>,
+    pub ids_cnt_list: Vec<String>,
+    pub titles_library: Vec<String>,
+    pub ids_library: Vec<String>,
+    pub auth_names_library: Vec<String>,
+    pub ids_search_book: Vec<String>,
+    pub search_query: String,
+    pub search_mode: bool,
+    pub is_podcast: bool,
+    pub all_titles_pod_ep: Vec<Vec<String>>,
+    pub all_ids_pod_ep: Vec<Vec<String>>,
+    pub all_subtitles_pod_ep: Vec<Vec<String>>,
+    pub all_seasons_pod_ep: Vec<Vec<String>>,
+    pub all_episodes_pod_ep: Vec<Vec<String>>,
+    pub all_authors_pod_ep: Vec<Vec<String>>,
+    pub all_descs_pod_ep: Vec<Vec<String>>,
+    pub all_titles_pod: Vec<Vec<String>>,
+    pub all_durations_pod_ep: Vec<Vec<String>>,
+    pub titles_pod_ep: Vec<String>,
+    pub ids_pod_ep: Vec<String>,
+    pub ids_pod_ep_search: Vec<String>,
+    pub subtitles_pod_ep: Vec<String>,
+    pub seasons_pod_ep: Vec<String>,
+    pub episodes_pod_ep: Vec<String>,
+    pub authors_pod_ep: Vec<String>,
+    pub descs_pod_ep: Vec<String>,
+    pub titles_pod: Vec<String>,
+    pub durations_pod_ep: Vec<String>,
+    pub ids_ep_cnt_list: Vec<String>,
+    pub all_titles_pod_ep_search: Vec<Vec<String>>,
+    pub titles_pod_ep_search: Vec<String>,
+    pub is_from_search_pod: bool,
+    pub ids_library_pod_search: Vec<String>,
+    pub all_ids_pod_ep_search: Vec<Vec<String>>,
+    pub libraries_names: Vec<String>,
+    pub media_types: Vec<String>,
+    pub libraries_ids: Vec<String>,
+    pub library_name: String,
+    pub media_type: String,
+    pub lib_name_type: String,
+    pub settings: Vec<String>,
+    pub all_usernames: Vec<String>,
+    pub all_server_addresses: Vec<String>,
+    pub username: String,
+    pub server_address: String,
+    pub server_address_pretty: String,
+    pub scroll_offset: u16,
+    pub subtitles_pod_cnt_list: Vec<String>,
+    pub nums_ep_pod_cnt_list: Vec<String>,
+    pub seasons_pod_cnt_list: Vec<String>,
+    pub authors_pod_cnt_list: Vec<String>,
+    pub descs_pod_cnt_list: Vec<String>,
+    pub titles_pod_cnt_list: Vec<String>,
+    pub durations_pod_cnt_list: Vec<String>,
+    pub published_year_library: Vec<String>,
+    pub desc_library: Vec<String>,
+    pub duration_library: Vec<f64>,
+    pub auth_names_library_pod: Vec<String>,
+    pub subtitles_pod_ep_search: Vec<String>,
+    pub seasons_pod_ep_search: Vec<String>,
+    pub episodes_pod_ep_search: Vec<String>,
+    pub authors_pod_ep_search: Vec<String>,
+    pub descs_pod_ep_search: Vec<String>,
+    pub titles_pod_search: Vec<String>,
+    pub durations_pod_ep_search: Vec<String>,
+    pub all_subtitles_pod_ep_search: Vec<Vec<String>>,
+    pub all_seasons_pod_ep_search: Vec<Vec<String>>,
+    pub all_episodes_pod_ep_search: Vec<Vec<String>>,
+    pub all_authors_pod_ep_search: Vec<Vec<String>>,
+    pub all_descs_pod_ep_search: Vec<Vec<String>>,
+    pub all_titles_pod_search: Vec<Vec<String>>,
+    pub all_durations_pod_ep_search: Vec<Vec<String>>,
+    pub auth_names_pod_search_book: Vec<String>,
+    pub auth_names_search_book: Vec<String>,
+    pub published_year_library_search_book: Vec<String>,
+    pub desc_library_search_book: Vec<String>,
+    pub duration_library_search_book: Vec<f64>,
+    pub book_progress_cnt_list: Vec<Vec<String>>,
+    pub book_progress_cnt_list_cur_time: Vec<Vec<f64>>,
+    pub book_progress_library: Vec<Vec<String>>,
+    pub book_progress_library_cur_time: Vec<Vec<f64>>,
+    pub book_progress_search_book: Vec<Vec<String>>,
+    pub book_progress_search_book_cur_time: Vec<Vec<f64>>,
+    pub is_cvlc: String,
+    pub is_cvlc_term: String,
+    pub start_vlc_program: String,
+    pub config: ConfigFile,
+    pub changelog: String,
 }
 
 /// Init app
@@ -162,14 +156,14 @@ impl App {
 
         // init config
         let config = load_config()?;
- 
+
         // init database from Database struct
-        let mut database = Database::new().await?;
+        let database = Database::new().await?;
 
         // init changelog
         let changelog = changelog();
-                                        
-    
+
+
         // retrieve crypted token from database
         let mut token: String = String::new();
         if let Some(var_token) = database.default_usr.get(2) {
@@ -218,381 +212,381 @@ impl App {
             }
         }
 
-         // init for `Libraries` (get all Libraries (shelf), can be a podcast or book type)
-         let all_libraries = get_all_libraries(&token, server_address.clone()).await?;
-         let libraries_names = collect_library_names(&all_libraries).await; // all the libraries names of the user ex : {name1, name2}
-         let media_types = collect_media_types(&all_libraries).await; // all media type of libraries ex : {book, podcast}
-         let libraries_ids = collect_library_ids(&all_libraries).await; // all all libraries ids
-         let mut library_name = String::new(); // library name of the selected library
-         let mut media_type = String::new(); // media type of the selected library
+        // init for `Libraries` (get all Libraries (shelf), can be a podcast or book type)
+        let all_libraries = get_all_libraries(&token, server_address.clone()).await?;
+        let libraries_names = collect_library_names(&all_libraries).await; // all the libraries names of the user ex : {name1, name2}
+    let media_types = collect_media_types(&all_libraries).await; // all media type of libraries ex : {book, podcast}
+    let libraries_ids = collect_library_ids(&all_libraries).await; // all all libraries ids
+    let mut library_name = String::new(); // library name of the selected library
+    let mut media_type = String::new(); // media type of the selected library
 
-         let target = id_selected_lib.clone();
+    let target = id_selected_lib.clone();
 
-         // retrieve name and mediatype of the current librarie
-         if let Some(index) = libraries_ids.iter().position(|x| x == &target) {
-             library_name = libraries_names[index].clone();
-             media_type = media_types[index].clone();
-         }         
-         let lib_name_type = format!("📖 {} ({})", library_name, media_type);
+    // retrieve name and mediatype of the current librarie
+    if let Some(index) = libraries_ids.iter().position(|x| x == &target) {
+        library_name = libraries_names[index].clone();
+        media_type = media_types[index].clone();
+    }         
+    let lib_name_type = format!("📖 {} ({})", library_name, media_type);
 
-         // init is_podcast
-         let is_podcast = if media_type == "podcast" {
-             true
-         } else {
-             false
-         };
-
-
-        // init for `Home` (continue listening)
-        let mut titles_cnt_list: Vec<String> = Vec::new();
-        let mut auth_names_cnt_list: Vec<String> = Vec::new();
-        let mut pub_year_cnt_list: Vec<String> = Vec::new();
-        let mut duration_cnt_list: Vec<f64> = Vec::new();
-        let mut desc_cnt_list: Vec<String> = Vec::new();
-        let mut ids_cnt_list: Vec<String> = Vec::new();
-        let mut ids_ep_cnt_list: Vec<String> = Vec::new();
-        let mut subtitles_pod_cnt_list: Vec<String> = Vec::new();
-        let mut nums_ep_pod_cnt_list: Vec<String> = Vec::new();
-        let mut seasons_pod_cnt_list: Vec<String> = Vec::new();
-        let mut authors_pod_cnt_list: Vec<String> = Vec::new();
-        let mut descs_pod_cnt_list: Vec<String> = Vec::new();
-        let mut titles_pod_cnt_list: Vec<String> = Vec::new();
-        let mut durations_pod_cnt_list: Vec<String> = Vec::new();
-        let mut book_progress_cnt_list: Vec<Vec<String>> = Vec::new();
-        let mut book_progress_cnt_list_cur_time: Vec<Vec<f64>> = Vec::new();
-        
-        if is_podcast {
-         // init for  `Home` (continue listening) for podcasts
-         let continue_listening_pod = get_continue_listening_pod(&token, server_address.clone(), &id_selected_lib.clone()).await?;
-         ids_cnt_list = collect_ids_pod_cnt_list(&continue_listening_pod).await; // id of a podcast
-         titles_cnt_list = collect_titles_cnt_list_pod(&continue_listening_pod).await; // title of podcast ep
-         ids_ep_cnt_list = collect_ids_ep_pod_cnt_list(&continue_listening_pod).await; // id of a podcast episode
-         subtitles_pod_cnt_list = collect_subtitles_pod_cnt_list(&continue_listening_pod).await;
-         nums_ep_pod_cnt_list = collect_nums_ep_pod_cnt_list(&continue_listening_pod).await;
-         seasons_pod_cnt_list = collect_seasons_pod_cnt_list(&continue_listening_pod).await;
-         authors_pod_cnt_list = collect_authors_pod_cnt_list(&continue_listening_pod).await;
-         descs_pod_cnt_list = collect_descs_pod_cnt_list(&continue_listening_pod).await;
-         titles_pod_cnt_list = collect_titles_pod_cnt_list(&continue_listening_pod).await; // title of a podcast
-         durations_pod_cnt_list = collect_durations_pod_cnt_list(&continue_listening_pod).await;
-         }
-         else {
-         // init for  `Home` (continue listening) for books
-         let continue_listening = get_continue_listening(&token, server_address.clone(), &id_selected_lib.clone()).await?;
-         titles_cnt_list = collect_titles_cnt_list(&continue_listening).await;
-         auth_names_cnt_list = collect_auth_names_cnt_list(&continue_listening).await;
-         pub_year_cnt_list = collect_pub_year_cnt_list(&continue_listening).await;
-         duration_cnt_list = collect_duration_cnt_list(&continue_listening).await;
-         desc_cnt_list = collect_desc_cnt_list(&continue_listening).await;
-         ids_cnt_list = collect_ids_cnt_list(&continue_listening).await;
-         for id in ids_cnt_list.clone() {
-             if let Ok(val) = get_book_progress(&token, &id, server_address.clone()).await {
-                 let mut values: Vec<String> = Vec::new();
-                 let mut values_f64: Vec<f64> = Vec::new();
-                 values.push(collect_progress_percentage_book(&val).await);
-                 values.push(collect_is_finished_book(&val).await);
-                 values_f64.push(collect_current_time_prg(&val).await);
-                 book_progress_cnt_list.push(values);
-                 book_progress_cnt_list_cur_time.push(values_f64);
-             } else {
-                     // if the book is not starded, `get book progress` is not fetched
-                     // so the empty values are handled here : 
-                     // avoid an out of bound panick
-                     let mut values: Vec<String> = Vec::new();
-                     let mut values_f64: Vec<f64> = Vec::new();
-                     values.push(format!(" N/A"));
-                     values.push(format!(" N/A"));
-                     values_f64.push(0.0);
-                     book_progress_cnt_list.push(values);
-                     book_progress_cnt_list_cur_time.push(values_f64);
-                 }}}
-
-         //init for `Library ` (all books  or podcasts of a Library (shelf))
-         let all_books = get_all_books(&token, &id_selected_lib, server_address.clone()).await?;
-         let titles_library = collect_titles_library(&all_books).await;
-         let ids_library = collect_ids_library(&all_books).await;
-         let auth_names_library = collect_auth_names_library(&all_books).await; // for a book
-         let auth_names_library_pod = collect_auth_names_library_pod(&all_books).await; // for a podcast
-         let published_year_library = collect_published_year_library(&all_books).await;
-         let desc_library = collect_desc_library(&all_books).await;
-         let duration_library = collect_duration_library(&all_books).await;
-         let mut book_progress_library: Vec<Vec<String>> = Vec::new();
-         let mut book_progress_library_cur_time: Vec<Vec<f64>> = Vec::new();
-         if !is_podcast{
-             for id in ids_library.clone() {
-                 if let Ok(val) = get_book_progress(&token, &id, server_address.clone()).await {
-                     let mut values: Vec<String> = Vec::new();
-                     let mut values_f64: Vec<f64> = Vec::new();
-                     values.push(format!(" {}%,",collect_progress_percentage_book(&val).await));
-                     values.push(format!(" {}",collect_is_finished_book(&val).await));
-                     values_f64.push(collect_current_time_prg(&val).await);
-                     book_progress_library.push(values);
-                     book_progress_library_cur_time.push(values_f64);
-                 } else {
-                     // if the book is not starded, `get book progress` is not fetched
-                     // so the empty values are handled here : 
-                     // avoid an out of bound panick
-                     let mut values: Vec<String> = Vec::new();
-                     let mut values_f64: Vec<f64> = Vec::new();
-                     values.push(format!(" Not started yet"));
-                     values.push(format!(""));
-                     values_f64.push(0.0);
-                     book_progress_library.push(values);
-                     book_progress_library_cur_time.push(values_f64);
-                 }
-             }
-         }            
+    // init is_podcast
+    let is_podcast = if media_type == "podcast" {
+        true
+    } else {
+        false
+    };
 
 
-         // init for `SearchBook`
-         let ids_search_book: Vec<String> = Vec::new();
-         let auth_names_pod_search_book: Vec<String> = Vec::new();
-         let auth_names_search_book: Vec<String> = Vec::new();
-         let published_year_library_search_book: Vec<String> = Vec::new();
-         let desc_library_search_book: Vec<String> = Vec::new();
-         let auth_names_search_book: Vec<String> = Vec::new();
-         let auth_names_pod_search_book: Vec<String> = Vec::new();
-         let published_year_library_search_book: Vec<String> = Vec::new();
-         let desc_library_search_book: Vec<String> = Vec::new();
-         let duration_library_search_book: Vec<f64> = Vec::new();
-         let book_progress_search_book: Vec<Vec<String>> = Vec::new(); 
-         let book_progress_search_book_cur_time: Vec<Vec<f64>> = Vec::new(); 
-         let search_mode = false;
-         let search_query = "  ".to_string();
-         let all_titles_pod_ep_search: Vec<Vec<String>> = Vec::new(); // init in tui.rs in render search book function
-         let all_ids_pod_ep_search: Vec<Vec<String>> = Vec::new(); 
-         let all_subtitles_pod_ep_search: Vec<Vec<String>> = Vec::new(); 
-         let all_seasons_pod_ep_search: Vec<Vec<String>> = Vec::new(); 
-         let all_episodes_pod_ep_search: Vec<Vec<String>> = Vec::new(); 
-         let all_authors_pod_ep_search: Vec<Vec<String>> = Vec::new(); 
-         let all_descs_pod_ep_search: Vec<Vec<String>> = Vec::new(); 
-         let all_titles_pod_search: Vec<Vec<String>> = Vec::new(); 
-         let all_durations_pod_ep_search: Vec<Vec<String>> = Vec::new(); 
-         let titles_pod_ep_search: Vec<String> = Vec::new();
-         let ids_library_pod_search: Vec<String> = Vec::new(); // library because we take index of library
-         let subtitles_pod_ep_search: Vec<String> = Vec::new();
-         let seasons_pod_ep_search: Vec<String> = Vec::new();
-         let episodes_pod_ep_search: Vec<String> = Vec::new();
-         let authors_pod_ep_search: Vec<String> = Vec::new();
-         let descs_pod_ep_search: Vec<String> = Vec::new();
-         let titles_pod_search: Vec<String> = Vec::new();
-         let durations_pod_ep_search: Vec<String> = Vec::new();
-         let is_from_search_pod = false;
+    // init for `Home` (continue listening)
+    let mut titles_cnt_list: Vec<String> = Vec::new();
+    let mut auth_names_cnt_list: Vec<String> = Vec::new();
+    let mut pub_year_cnt_list: Vec<String> = Vec::new();
+    let mut duration_cnt_list: Vec<f64> = Vec::new();
+    let mut desc_cnt_list: Vec<String> = Vec::new();
+    let mut ids_cnt_list: Vec<String> = Vec::new();
+    let mut ids_ep_cnt_list: Vec<String> = Vec::new();
+    let mut subtitles_pod_cnt_list: Vec<String> = Vec::new();
+    let mut nums_ep_pod_cnt_list: Vec<String> = Vec::new();
+    let mut seasons_pod_cnt_list: Vec<String> = Vec::new();
+    let mut authors_pod_cnt_list: Vec<String> = Vec::new();
+    let mut descs_pod_cnt_list: Vec<String> = Vec::new();
+    let mut titles_pod_cnt_list: Vec<String> = Vec::new();
+    let mut durations_pod_cnt_list: Vec<String> = Vec::new();
+    let mut book_progress_cnt_list: Vec<Vec<String>> = Vec::new();
+    let mut book_progress_cnt_list_cur_time: Vec<Vec<f64>> = Vec::new();
+
+    if is_podcast {
+        // init for  `Home` (continue listening) for podcasts
+        let continue_listening_pod = get_continue_listening_pod(&token, server_address.clone(), &id_selected_lib.clone()).await?;
+        ids_cnt_list = collect_ids_pod_cnt_list(&continue_listening_pod).await; // id of a podcast
+        titles_cnt_list = collect_titles_cnt_list_pod(&continue_listening_pod).await; // title of podcast ep
+        ids_ep_cnt_list = collect_ids_ep_pod_cnt_list(&continue_listening_pod).await; // id of a podcast episode
+        subtitles_pod_cnt_list = collect_subtitles_pod_cnt_list(&continue_listening_pod).await;
+        nums_ep_pod_cnt_list = collect_nums_ep_pod_cnt_list(&continue_listening_pod).await;
+        seasons_pod_cnt_list = collect_seasons_pod_cnt_list(&continue_listening_pod).await;
+        authors_pod_cnt_list = collect_authors_pod_cnt_list(&continue_listening_pod).await;
+        descs_pod_cnt_list = collect_descs_pod_cnt_list(&continue_listening_pod).await;
+        titles_pod_cnt_list = collect_titles_pod_cnt_list(&continue_listening_pod).await; // title of a podcast
+        durations_pod_cnt_list = collect_durations_pod_cnt_list(&continue_listening_pod).await;
+    }
+    else {
+        // init for  `Home` (continue listening) for books
+        let continue_listening = get_continue_listening(&token, server_address.clone(), &id_selected_lib.clone()).await?;
+        titles_cnt_list = collect_titles_cnt_list(&continue_listening).await;
+        auth_names_cnt_list = collect_auth_names_cnt_list(&continue_listening).await;
+        pub_year_cnt_list = collect_pub_year_cnt_list(&continue_listening).await;
+        duration_cnt_list = collect_duration_cnt_list(&continue_listening).await;
+        desc_cnt_list = collect_desc_cnt_list(&continue_listening).await;
+        ids_cnt_list = collect_ids_cnt_list(&continue_listening).await;
+        for id in ids_cnt_list.clone() {
+            if let Ok(val) = get_book_progress(&token, &id, server_address.clone()).await {
+                let mut values: Vec<String> = Vec::new();
+                let mut values_f64: Vec<f64> = Vec::new();
+                values.push(collect_progress_percentage_book(&val).await);
+                values.push(collect_is_finished_book(&val).await);
+                values_f64.push(collect_current_time_prg(&val).await);
+                book_progress_cnt_list.push(values);
+                book_progress_cnt_list_cur_time.push(values_f64);
+            } else {
+                // if the book is not starded, `get book progress` is not fetched
+                // so the empty values are handled here : 
+                // avoid an out of bound panick
+                let mut values: Vec<String> = Vec::new();
+                let mut values_f64: Vec<f64> = Vec::new();
+                values.push(format!(" N/A"));
+                values.push(format!(" N/A"));
+                values_f64.push(0.0);
+                book_progress_cnt_list.push(values);
+                book_progress_cnt_list_cur_time.push(values_f64);
+            }}}
+
+    //init for `Library ` (all books  or podcasts of a Library (shelf))
+    let all_books = get_all_books(&token, &id_selected_lib, server_address.clone()).await?;
+    let titles_library = collect_titles_library(&all_books).await;
+    let ids_library = collect_ids_library(&all_books).await;
+    let auth_names_library = collect_auth_names_library(&all_books).await; // for a book
+    let auth_names_library_pod = collect_auth_names_library_pod(&all_books).await; // for a podcast
+    let published_year_library = collect_published_year_library(&all_books).await;
+    let desc_library = collect_desc_library(&all_books).await;
+    let duration_library = collect_duration_library(&all_books).await;
+    let mut book_progress_library: Vec<Vec<String>> = Vec::new();
+    let mut book_progress_library_cur_time: Vec<Vec<f64>> = Vec::new();
+    if !is_podcast{
+        for id in ids_library.clone() {
+            if let Ok(val) = get_book_progress(&token, &id, server_address.clone()).await {
+                let mut values: Vec<String> = Vec::new();
+                let mut values_f64: Vec<f64> = Vec::new();
+                values.push(format!(" {}%,",collect_progress_percentage_book(&val).await));
+                values.push(format!(" {}",collect_is_finished_book(&val).await));
+                values_f64.push(collect_current_time_prg(&val).await);
+                book_progress_library.push(values);
+                book_progress_library_cur_time.push(values_f64);
+            } else {
+                // if the book is not starded, `get book progress` is not fetched
+                // so the empty values are handled here : 
+                // avoid an out of bound panick
+                let mut values: Vec<String> = Vec::new();
+                let mut values_f64: Vec<f64> = Vec::new();
+                values.push(format!(" Not started yet"));
+                values.push(format!(""));
+                values_f64.push(0.0);
+                book_progress_library.push(values);
+                book_progress_library_cur_time.push(values_f64);
+            }
+        }
+    }            
+
+
+    // init for `SearchBook`
+    let ids_search_book: Vec<String> = Vec::new();
+    let auth_names_pod_search_book: Vec<String> = Vec::new();
+    let auth_names_search_book: Vec<String> = Vec::new();
+    let published_year_library_search_book: Vec<String> = Vec::new();
+    let desc_library_search_book: Vec<String> = Vec::new();
+    let auth_names_search_book: Vec<String> = Vec::new();
+    let auth_names_pod_search_book: Vec<String> = Vec::new();
+    let published_year_library_search_book: Vec<String> = Vec::new();
+    let desc_library_search_book: Vec<String> = Vec::new();
+    let duration_library_search_book: Vec<f64> = Vec::new();
+    let book_progress_search_book: Vec<Vec<String>> = Vec::new(); 
+    let book_progress_search_book_cur_time: Vec<Vec<f64>> = Vec::new(); 
+    let search_mode = false;
+    let search_query = "  ".to_string();
+    let all_titles_pod_ep_search: Vec<Vec<String>> = Vec::new(); // init in tui.rs in render search book function
+    let all_ids_pod_ep_search: Vec<Vec<String>> = Vec::new(); 
+    let all_subtitles_pod_ep_search: Vec<Vec<String>> = Vec::new(); 
+    let all_seasons_pod_ep_search: Vec<Vec<String>> = Vec::new(); 
+    let all_episodes_pod_ep_search: Vec<Vec<String>> = Vec::new(); 
+    let all_authors_pod_ep_search: Vec<Vec<String>> = Vec::new(); 
+    let all_descs_pod_ep_search: Vec<Vec<String>> = Vec::new(); 
+    let all_titles_pod_search: Vec<Vec<String>> = Vec::new(); 
+    let all_durations_pod_ep_search: Vec<Vec<String>> = Vec::new(); 
+    let titles_pod_ep_search: Vec<String> = Vec::new();
+    let ids_library_pod_search: Vec<String> = Vec::new(); // library because we take index of library
+    let subtitles_pod_ep_search: Vec<String> = Vec::new();
+    let seasons_pod_ep_search: Vec<String> = Vec::new();
+    let episodes_pod_ep_search: Vec<String> = Vec::new();
+    let authors_pod_ep_search: Vec<String> = Vec::new();
+    let descs_pod_ep_search: Vec<String> = Vec::new();
+    let titles_pod_search: Vec<String> = Vec::new();
+    let durations_pod_ep_search: Vec<String> = Vec::new();
+    let is_from_search_pod = false;
 
 
 
-         //init for `PodcastEpisode`
-         let mut all_titles_pod_ep: Vec<Vec<String>> = Vec::new(); // fetch titles for all podcast episodes. Ex: {titles_pod1_ep1, title_pod1_ep2}, {titles_pod2_ep1, title_pod2_ep2} 
-         let mut all_ids_pod_ep: Vec<Vec<String>> = Vec::new();
-         let mut all_subtitles_pod_ep: Vec<Vec<String>> = Vec::new();
-         let mut all_seasons_pod_ep: Vec<Vec<String>> = Vec::new();
-         let mut all_episodes_pod_ep: Vec<Vec<String>> = Vec::new();
-         let mut all_authors_pod_ep: Vec<Vec<String>> = Vec::new();
-         let mut all_descs_pod_ep: Vec<Vec<String>> = Vec::new();
-         let mut all_titles_pod: Vec<Vec<String>> = Vec::new(); // fetch title of a podcast (not episode)
-         let mut all_durations_pod_ep: Vec<Vec<String>> = Vec::new();
-         let titles_pod_ep: Vec<String> = Vec::new(); // fetch episode titles for a podcast. {titles_pod1_ep1, title_pod1_ep2} 
-         let ids_pod_ep: Vec<String> = Vec::new();
-         let ids_pod_ep_search: Vec<String> = Vec::new();
-         let subtitles_pod_ep: Vec<String> = Vec::new();
-         let seasons_pod_ep: Vec<String> = Vec::new();
-         let episodes_pod_ep: Vec<String> = Vec::new();
-         let authors_pod_ep: Vec<String> = Vec::new();
-         let descs_pod_ep: Vec<String> = Vec::new();
-         let titles_pod: Vec<String> = Vec::new();
-         let durations_pod_ep: Vec<String> = Vec::new();
+    //init for `PodcastEpisode`
+    let mut all_titles_pod_ep: Vec<Vec<String>> = Vec::new(); // fetch titles for all podcast episodes. Ex: {titles_pod1_ep1, title_pod1_ep2}, {titles_pod2_ep1, title_pod2_ep2} 
+    let mut all_ids_pod_ep: Vec<Vec<String>> = Vec::new();
+    let mut all_subtitles_pod_ep: Vec<Vec<String>> = Vec::new();
+    let mut all_seasons_pod_ep: Vec<Vec<String>> = Vec::new();
+    let mut all_episodes_pod_ep: Vec<Vec<String>> = Vec::new();
+    let mut all_authors_pod_ep: Vec<Vec<String>> = Vec::new();
+    let mut all_descs_pod_ep: Vec<Vec<String>> = Vec::new();
+    let mut all_titles_pod: Vec<Vec<String>> = Vec::new(); // fetch title of a podcast (not episode)
+    let mut all_durations_pod_ep: Vec<Vec<String>> = Vec::new();
+    let titles_pod_ep: Vec<String> = Vec::new(); // fetch episode titles for a podcast. {titles_pod1_ep1, title_pod1_ep2} 
+    let ids_pod_ep: Vec<String> = Vec::new();
+    let ids_pod_ep_search: Vec<String> = Vec::new();
+    let subtitles_pod_ep: Vec<String> = Vec::new();
+    let seasons_pod_ep: Vec<String> = Vec::new();
+    let episodes_pod_ep: Vec<String> = Vec::new();
+    let authors_pod_ep: Vec<String> = Vec::new();
+    let descs_pod_ep: Vec<String> = Vec::new();
+    let titles_pod: Vec<String> = Vec::new();
+    let durations_pod_ep: Vec<String> = Vec::new();
 
-         for i in 0..ids_library.len() 
-         {let podcast_episode = get_pod_ep(&token, server_address.clone(), ids_library[i].as_str()).await?;
-         let title = collect_titles_pod_ep(&podcast_episode).await;
-         all_titles_pod_ep.push(title);
-         let id = collect_ids_pod_ep(&podcast_episode).await;
-         all_ids_pod_ep.push(id);
-         let sub = collect_subtitles_pod_ep(&podcast_episode).await;
-         all_subtitles_pod_ep.push(sub);
-         let seasons = collect_seasons_pod_ep(&podcast_episode).await;
-         all_seasons_pod_ep.push(seasons);
-         let numep = collect_episodes_pod_ep(&podcast_episode).await;
-         all_episodes_pod_ep.push(numep);
-         let authors = collect_authors_pod_ep(&podcast_episode).await;
-         all_authors_pod_ep.push(authors);
-         let desc = collect_descs_pod_ep(&podcast_episode).await;
-         all_descs_pod_ep.push(desc);
-         let title_pod = collect_titles_pod(&podcast_episode).await;
-         all_titles_pod.push(title_pod);
-         let duration = collect_durations_pod_ep(&podcast_episode).await;
-         all_durations_pod_ep.push(duration);
-         }
+    for i in 0..ids_library.len() 
+    {let podcast_episode = get_pod_ep(&token, server_address.clone(), ids_library[i].as_str()).await?;
+        let title = collect_titles_pod_ep(&podcast_episode).await;
+        all_titles_pod_ep.push(title);
+        let id = collect_ids_pod_ep(&podcast_episode).await;
+        all_ids_pod_ep.push(id);
+        let sub = collect_subtitles_pod_ep(&podcast_episode).await;
+        all_subtitles_pod_ep.push(sub);
+        let seasons = collect_seasons_pod_ep(&podcast_episode).await;
+        all_seasons_pod_ep.push(seasons);
+        let numep = collect_episodes_pod_ep(&podcast_episode).await;
+        all_episodes_pod_ep.push(numep);
+        let authors = collect_authors_pod_ep(&podcast_episode).await;
+        all_authors_pod_ep.push(authors);
+        let desc = collect_descs_pod_ep(&podcast_episode).await;
+        all_descs_pod_ep.push(desc);
+        let title_pod = collect_titles_pod(&podcast_episode).await;
+        all_titles_pod.push(title_pod);
+        let duration = collect_durations_pod_ep(&podcast_episode).await;
+        all_durations_pod_ep.push(duration);
+    }
 
-         // init for `Settings`
-         let settings = vec!["Account".to_string(), "Library".to_string(), "About".to_string()];
+    // init for `Settings`
+    let settings = vec!["Account".to_string(), "Library".to_string(), "About".to_string()];
 
-         // init for `SettingsAccount`
-         let mut all_usernames: Vec<String> = Vec::new();
-         let mut all_server_addresses: Vec<String> = Vec::new();
-         if let Some(var_username) = database.default_usr.get(0) {
-             all_usernames.push(var_username.clone());
-         }
-         if let Some(var_server_address) = database.default_usr.get(1) {
-             all_server_addresses.push(var_server_address.clone());
-         }
+    // init for `SettingsAccount`
+    let mut all_usernames: Vec<String> = Vec::new();
+    let mut all_server_addresses: Vec<String> = Vec::new();
+    if let Some(var_username) = database.default_usr.get(0) {
+        all_usernames.push(var_username.clone());
+    }
+    if let Some(var_server_address) = database.default_usr.get(1) {
+        all_server_addresses.push(var_server_address.clone());
+    }
 
-         // init variables for for scrolling into description section 
-         let scroll_offset = 0;
+    // init variables for for scrolling into description section 
+    let scroll_offset = 0;
 
-         // Default view_state at launch
-         let mut view_state = AppView::Home; // By default, Home will be the first AppView launched when the app start
-         if ids_cnt_list.is_empty() {
+    // Default view_state at launch
+    let mut view_state = AppView::Home; // By default, Home will be the first AppView launched when the app start
+    if ids_cnt_list.is_empty() {
 
-             view_state = AppView::Library; // If `Home` is empty (no book or podcast to continue)
-         }
+        view_state = AppView::Library; // If `Home` is empty (no book or podcast to continue)
+    }
 
-         // init start_vlc variables
-         let is_cvlc = config.player.cvlc.clone();
-         let is_cvlc_term = config.player.cvlc_term.clone();
-         let mut start_vlc_program = "vlc".to_string();
-         if is_cvlc == "1" {
-             start_vlc_program = "cvlc".to_string()
-         } 
+    // init start_vlc variables
+    let is_cvlc = config.player.cvlc.clone();
+    let is_cvlc_term = config.player.cvlc_term.clone();
+    let mut start_vlc_program = "vlc".to_string();
+    if is_cvlc == "1" {
+        start_vlc_program = "cvlc".to_string()
+    } 
 
-         // Init ListeState for `Home` list (continue listening)
-         let mut list_state_cnt_list = ListState::default(); // init the ListState ratatui's widget
-         list_state_cnt_list.select(Some(0)); // select the first item of the list when app is launch
+    // Init ListeState for `Home` list (continue listening)
+    let mut list_state_cnt_list = ListState::default(); // init the ListState ratatui's widget
+    list_state_cnt_list.select(Some(0)); // select the first item of the list when app is launch
 
-         // Init ListeState for `Library` list
-         let mut list_state_library = ListState::default(); 
-         list_state_library.select(Some(0)); 
-                                             
-         // Init ListeState for `SearchBook` list
-         let mut list_state_search_results = ListState::default(); 
-         list_state_search_results.select(Some(0)); 
+    // Init ListeState for `Library` list
+    let mut list_state_library = ListState::default(); 
+    list_state_library.select(Some(0)); 
 
-         // Init ListState for `PodacastEpisode` list
-         let mut list_state_pod_ep = ListState::default();
-         list_state_pod_ep.select(Some(0));
+    // Init ListeState for `SearchBook` list
+    let mut list_state_search_results = ListState::default(); 
+    list_state_search_results.select(Some(0)); 
 
-         // Init ListState for `Settings` list
-         let mut list_state_settings = ListState::default();
-         list_state_settings.select(Some(0));
+    // Init ListState for `PodacastEpisode` list
+    let mut list_state_pod_ep = ListState::default();
+    list_state_pod_ep.select(Some(0));
 
-         // Init ListState for `SettingsAccount` list
-         let mut list_state_settings_account = ListState::default();
-         list_state_settings_account.select(Some(0));
+    // Init ListState for `Settings` list
+    let mut list_state_settings = ListState::default();
+    list_state_settings.select(Some(0));
 
-         // Init ListState for `SettingsLibrary` list
-         let mut list_state_settings_library = ListState::default();
-         list_state_settings_library.select(Some(0));
-         
-         // Init ListState for `SettingsAbout` list
-         let mut list_state_settings_about = ListState::default();
-         list_state_settings_about.select(Some(0));
+    // Init ListState for `SettingsAccount` list
+    let mut list_state_settings_account = ListState::default();
+    list_state_settings_account.select(Some(0));
 
-        Ok(Self {
-            database,
-            id_selected_lib,
-            token: Some(token),
-            should_exit: false,
-            list_state_cnt_list,
-            list_state_library,
-            list_state_search_results,
-            list_state_pod_ep,
-            list_state_settings,
-            list_state_settings_account,
-            list_state_settings_library,
-            list_state_settings_about,
-            titles_cnt_list,
-            auth_names_cnt_list,
-            pub_year_cnt_list,
-            duration_cnt_list,
-            desc_cnt_list,
-            ids_cnt_list,
-            view_state,
-            titles_library,
-            ids_library,
-            auth_names_library,
-            ids_search_book,
-            search_mode,
-            search_query,
-            is_podcast,
-            all_titles_pod_ep,
-            all_ids_pod_ep,
-            titles_pod_ep,
-            ids_pod_ep,
-            ids_pod_ep_search,
-            ids_ep_cnt_list, 
-            all_titles_pod_ep_search,
-            titles_pod_ep_search,
-            is_from_search_pod,
-            ids_library_pod_search,
-            all_ids_pod_ep_search,
-            libraries_names,
-            libraries_ids,
-            media_types,
-            library_name,
-            media_type,
-            lib_name_type,
-            settings,
-            all_usernames,
-            all_server_addresses,
-            username,
-            server_address,
-            server_address_pretty,
-            scroll_offset,
-            subtitles_pod_cnt_list,
-            nums_ep_pod_cnt_list,
-            seasons_pod_cnt_list,
-            authors_pod_cnt_list,
-            descs_pod_cnt_list,
-            titles_pod_cnt_list,
-            durations_pod_cnt_list,
-            published_year_library,
-            desc_library,
-            duration_library,
-            auth_names_library_pod,
-            all_subtitles_pod_ep,
-            all_seasons_pod_ep,
-            all_episodes_pod_ep,
-            all_authors_pod_ep,
-            all_descs_pod_ep,
-            all_titles_pod,
-            all_durations_pod_ep,
-            subtitles_pod_ep,
-            seasons_pod_ep,
-            episodes_pod_ep,
-            authors_pod_ep,
-            descs_pod_ep,
-            titles_pod,
-            durations_pod_ep,
-            subtitles_pod_ep_search,
-            seasons_pod_ep_search,
-            episodes_pod_ep_search,
-            authors_pod_ep_search,
-            descs_pod_ep_search,
-            titles_pod_search,
-            durations_pod_ep_search,
-            all_subtitles_pod_ep_search,
-            all_seasons_pod_ep_search,
-            all_episodes_pod_ep_search,
-            all_authors_pod_ep_search,
-            all_descs_pod_ep_search,
-            all_titles_pod_search,
-            all_durations_pod_ep_search,
-            auth_names_pod_search_book,
-            auth_names_search_book,
-            published_year_library_search_book,
-            desc_library_search_book,
-            duration_library_search_book,
-            book_progress_cnt_list,
-            book_progress_cnt_list_cur_time,
-            book_progress_library,
-            book_progress_library_cur_time,
-            book_progress_search_book,
-            book_progress_search_book_cur_time,
-            is_cvlc,
-            is_cvlc_term,
-            start_vlc_program,
-            config,
-            changelog,
-        })
+    // Init ListState for `SettingsLibrary` list
+    let mut list_state_settings_library = ListState::default();
+    list_state_settings_library.select(Some(0));
+
+    // Init ListState for `SettingsAbout` list
+    let mut list_state_settings_about = ListState::default();
+    list_state_settings_about.select(Some(0));
+
+    Ok(Self {
+        database,
+        id_selected_lib,
+        token: Some(token),
+        should_exit: false,
+        list_state_cnt_list,
+        list_state_library,
+        list_state_search_results,
+        list_state_pod_ep,
+        list_state_settings,
+        list_state_settings_account,
+        list_state_settings_library,
+        list_state_settings_about,
+        titles_cnt_list,
+        auth_names_cnt_list,
+        pub_year_cnt_list,
+        duration_cnt_list,
+        desc_cnt_list,
+        ids_cnt_list,
+        view_state,
+        titles_library,
+        ids_library,
+        auth_names_library,
+        ids_search_book,
+        search_mode,
+        search_query,
+        is_podcast,
+        all_titles_pod_ep,
+        all_ids_pod_ep,
+        titles_pod_ep,
+        ids_pod_ep,
+        ids_pod_ep_search,
+        ids_ep_cnt_list, 
+        all_titles_pod_ep_search,
+        titles_pod_ep_search,
+        is_from_search_pod,
+        ids_library_pod_search,
+        all_ids_pod_ep_search,
+        libraries_names,
+        libraries_ids,
+        media_types,
+        library_name,
+        media_type,
+        lib_name_type,
+        settings,
+        all_usernames,
+        all_server_addresses,
+        username,
+        server_address,
+        server_address_pretty,
+        scroll_offset,
+        subtitles_pod_cnt_list,
+        nums_ep_pod_cnt_list,
+        seasons_pod_cnt_list,
+        authors_pod_cnt_list,
+        descs_pod_cnt_list,
+        titles_pod_cnt_list,
+        durations_pod_cnt_list,
+        published_year_library,
+        desc_library,
+        duration_library,
+        auth_names_library_pod,
+        all_subtitles_pod_ep,
+        all_seasons_pod_ep,
+        all_episodes_pod_ep,
+        all_authors_pod_ep,
+        all_descs_pod_ep,
+        all_titles_pod,
+        all_durations_pod_ep,
+        subtitles_pod_ep,
+        seasons_pod_ep,
+        episodes_pod_ep,
+        authors_pod_ep,
+        descs_pod_ep,
+        titles_pod,
+        durations_pod_ep,
+        subtitles_pod_ep_search,
+        seasons_pod_ep_search,
+        episodes_pod_ep_search,
+        authors_pod_ep_search,
+        descs_pod_ep_search,
+        titles_pod_search,
+        durations_pod_ep_search,
+        all_subtitles_pod_ep_search,
+        all_seasons_pod_ep_search,
+        all_episodes_pod_ep_search,
+        all_authors_pod_ep_search,
+        all_descs_pod_ep_search,
+        all_titles_pod_search,
+        all_durations_pod_ep_search,
+        auth_names_pod_search_book,
+        auth_names_search_book,
+        published_year_library_search_book,
+        desc_library_search_book,
+        duration_library_search_book,
+        book_progress_cnt_list,
+        book_progress_cnt_list_cur_time,
+        book_progress_library,
+        book_progress_library_cur_time,
+        book_progress_search_book,
+        book_progress_search_book_cur_time,
+        is_cvlc,
+        is_cvlc_term,
+        start_vlc_program,
+        config,
+        changelog,
+    })
     }
 
 
@@ -622,307 +616,307 @@ impl App {
 
 
 
-    match key.code {
-        KeyCode::Char('/') | KeyCode::Char(' ') => {
-            let _ = self.search_active();
-        }
-        KeyCode::Char('S') => {
-            self.view_state = AppView::Settings;
-        }
-        KeyCode::Tab => {
-            if self.is_from_search_pod {
-                self.is_from_search_pod = false;
-            };
-            self.toggle_view()
-        }
-        // need to exit run function once, and after
-        // should quit once again the run from loop main function :
-        // (`let result = app.run(&mut terminal);`)
-        // same as above, need to quit once before
-        // be able to execute `R` from main function 
-        KeyCode::Char('Q') | KeyCode::Esc => {
-            info!("App successfully quited");
-            process::exit(0);
-
-        }        
-        KeyCode::Char('R') => self.should_exit = true, 
-        KeyCode::Char('j') | KeyCode::Down => {
-            self.select_next();
-            self.scroll_offset = 0; 
-
-        }
-        // scroll up into description section
-        KeyCode::Char('J') => self.scroll_offset += 1,
-        // go start description section
-        KeyCode::Char('H') => self.scroll_offset = 0,
-        KeyCode::Char('k') | KeyCode::Up => {
-            self.select_previous(); 
-            self.scroll_offset = 0; 
-        }
-
-        // scroll down into description section
-        KeyCode::Char('K') => {
-            if usize::from(self.scroll_offset) > 0 {
-                self.scroll_offset -= 1;
+        match key.code {
+            KeyCode::Char('/') | KeyCode::Char(' ') => {
+                let _ = self.search_active();
             }
-        }
-        KeyCode::Char('g') | KeyCode::Home => {
-            self.select_first();
-            self.scroll_offset = 0; 
-        }        
-        KeyCode::Char('G') | KeyCode::End => {
-            self.select_last();
-            self.scroll_offset = 0; 
-        }
-        KeyCode::Char('h') => {
-            // To return to a page
-            match self.view_state {
-               AppView::SettingsAccount => {self.view_state = AppView::Settings} 
-               AppView::SettingsLibrary => {self.view_state = AppView::Settings} 
-               AppView::SettingsAbout => {self.view_state = AppView::Settings} 
-               AppView::Settings => {self.view_state = AppView::Home} 
-               AppView::PodcastEpisode => {
-                   if self.is_from_search_pod {
-                       self.view_state = AppView::SearchBook
-                   } else {
-                       self.view_state = AppView::Library
-                   }
-               }
-               _ => {}
+            KeyCode::Char('S') => {
+                self.view_state = AppView::Settings;
             }
-        }        
-        KeyCode::Char('l') | KeyCode::Right | KeyCode::Enter => {
-            // Clone needed because variables will be used in a spawn
-            let token = self.token.clone();
-            let port = self.config.player.port.clone();
-            let address_player = self.config.player.address.clone();
-            let server_address = self.server_address.clone();
+            KeyCode::Tab => {
+                if self.is_from_search_pod {
+                    self.is_from_search_pod = false;
+                };
+                self.toggle_view()
+            }
+            // need to exit run function once, and after
+            // should quit once again the run from loop main function :
+            // (`let result = app.run(&mut terminal);`)
+            // same as above, need to quit once before
+            // be able to execute `R` from main function 
+            KeyCode::Char('Q') | KeyCode::Esc => {
+                info!("App successfully quited");
+                process::exit(0);
 
-            // Init for `Continue Listening` (AppView::Home)
-            let ids_cnt_list = self.ids_cnt_list.clone();
-            let selected_cnt_list = self.list_state_cnt_list.selected();
+            }        
+            KeyCode::Char('R') => self.should_exit = true, 
+            KeyCode::Char('j') | KeyCode::Down => {
+                self.select_next();
+                self.scroll_offset = 0; 
 
-            // Init for `Library`
-            let ids_library = self.ids_library.clone();
-            let selected_library = self.list_state_library.selected();
+            }
+            // scroll up into description section
+            KeyCode::Char('J') => self.scroll_offset += 1,
+            // go start description section
+            KeyCode::Char('H') => self.scroll_offset = 0,
+            KeyCode::Char('k') | KeyCode::Up => {
+                self.select_previous(); 
+                self.scroll_offset = 0; 
+            }
 
-            // Init for `Search Book`
-            let ids_search_book = self.ids_search_book.clone();
-            let selected_search_book = self.list_state_search_results.selected();
+            // scroll down into description section
+            KeyCode::Char('K') => {
+                if usize::from(self.scroll_offset) > 0 {
+                    self.scroll_offset -= 1;
+                }
+            }
+            KeyCode::Char('g') | KeyCode::Home => {
+                self.select_first();
+                self.scroll_offset = 0; 
+            }        
+            KeyCode::Char('G') | KeyCode::End => {
+                self.select_last();
+                self.scroll_offset = 0; 
+            }
+            KeyCode::Char('h') => {
+                // To return to a page
+                match self.view_state {
+                    AppView::SettingsAccount => {self.view_state = AppView::Settings} 
+                    AppView::SettingsLibrary => {self.view_state = AppView::Settings} 
+                    AppView::SettingsAbout => {self.view_state = AppView::Settings} 
+                    AppView::Settings => {self.view_state = AppView::Home} 
+                    AppView::PodcastEpisode => {
+                        if self.is_from_search_pod {
+                            self.view_state = AppView::SearchBook
+                        } else {
+                            self.view_state = AppView::Library
+                        }
+                    }
+                    _ => {}
+                }
+            }        
+            KeyCode::Char('l') | KeyCode::Right | KeyCode::Enter => {
+                // Clone needed because variables will be used in a spawn
+                let token = self.token.clone();
+                let port = self.config.player.port.clone();
+                let address_player = self.config.player.address.clone();
+                let server_address = self.server_address.clone();
 
-            // Init for `PodcastEpisode`
-            let selected_pod_ep = self.list_state_pod_ep.selected();
-            let ids_ep_cnt_list = self.ids_ep_cnt_list.clone();
-            if let Some(index) = selected_library {
-                if let Some(id_pod) = ids_library.get(index) {
-                    let all_ids_pod_ep_clone = self.all_ids_pod_ep.clone();
-                    self.ids_pod_ep = all_ids_pod_ep_clone[index].clone();
-                }}
-            if let Some(index) = selected_search_book {
-                // ids_library_pod_search because we need the pod id and he is given by
-                // this variable
-                if let Some(id_pod) = self.ids_library_pod_search.get(index) {
-                    //    println!("{:?}", id_pod);
-                    let all_ids_pod_ep_search_clone = self.all_ids_pod_ep_search.clone();
-                    self.ids_pod_ep_search = all_ids_pod_ep_search_clone[index].clone();
-                    //   println!("{:?}", all_ids_pod_ep_search_clone[index]);
-                }}
-            // Init for `SettingsAccount`
-            let selected_account = self.list_state_settings_account.selected();
+                // Init for `Continue Listening` (AppView::Home)
+                let ids_cnt_list = self.ids_cnt_list.clone();
+                let selected_cnt_list = self.list_state_cnt_list.selected();
 
-            // Init for `SettingsLibrary`
-            let selected_settings_library = self.list_state_settings_library.selected();
+                // Init for `Library`
+                let ids_library = self.ids_library.clone();
+                let selected_library = self.list_state_library.selected();
 
-            // init for start_vlc
-            let start_vlc_program = self.start_vlc_program.clone();
-            let is_cvlc_term = self.is_cvlc_term.clone();
+                // Init for `Search Book`
+                let ids_search_book = self.ids_search_book.clone();
+                let selected_search_book = self.list_state_search_results.selected();
 
-            // Init message 
-            let message = "Loading...";
-
-            // Now, spawn the async task based on the current view state
-            match self.view_state {
-                AppView::Home => {
-                    if self.is_podcast {
-                        let mut stdout = stdout();
-                        pop_message(&mut stdout, 3, message);
-                        tokio::spawn(async move {
-                            handle_l_pod_home(
-                                token.as_ref(), 
-                                &ids_cnt_list, 
-                                selected_cnt_list, 
-                                port, 
-                                address_player,
-                                ids_ep_cnt_list, 
-                                server_address,
-                                start_vlc_program,
-                                is_cvlc_term,
-                                ).await;
-                        });
-                    } else {
-                        let mut stdout = stdout();
-                        pop_message(&mut stdout, 3, message);
-                        tokio::spawn(async move {
-                            handle_l_book(
-                            token.as_ref(), 
-                            ids_cnt_list, 
-                            selected_cnt_list, 
-                            port, 
-                            address_player,
-                            server_address, 
-                            start_vlc_program,
-                            is_cvlc_term, 
-                            ).await;
-                    });
-
+                // Init for `PodcastEpisode`
+                let selected_pod_ep = self.list_state_pod_ep.selected();
+                let ids_ep_cnt_list = self.ids_ep_cnt_list.clone();
+                if let Some(index) = selected_library {
+                    if let Some(id_pod) = ids_library.get(index) {
+                        let all_ids_pod_ep_clone = self.all_ids_pod_ep.clone();
+                        self.ids_pod_ep = all_ids_pod_ep_clone[index].clone();
                     }}
-                AppView::Settings => {
-                    match self.list_state_settings.selected() {
-                        Some(0) => self.view_state = AppView::SettingsAccount,
-                        Some(1) => self.view_state = AppView::SettingsLibrary,
-                        _ => {}
-                    }
-                }
-                AppView::SettingsAccount => {
-                    if let Some(index) = selected_account {
-                    let usr_to_delete = &self.all_usernames[index];
-                    delete_user(usr_to_delete.as_str());
-                    }
-                }
-                AppView::SettingsLibrary => {
-                  if let Some(index) = selected_settings_library {
-                    let new_selected_lib = &self.libraries_ids[index];
-                    update_id_selected_lib(&new_selected_lib, &self.username);
-                    }
-                }
-                AppView::SettingsAbout => {
-                }
-                AppView::Library => {
-                    if self.is_podcast {
-                    if let Some(index) = selected_library {
-                        self.titles_pod_ep = self.all_titles_pod_ep[index].clone();
-                        self.subtitles_pod_ep = self.all_subtitles_pod_ep[index].clone();
-                        self.seasons_pod_ep = self.all_seasons_pod_ep[index].clone();
-                        self.episodes_pod_ep = self.all_episodes_pod_ep[index].clone();
-                        self.authors_pod_ep = self.all_authors_pod_ep[index].clone();
-                        self.descs_pod_ep = self.all_descs_pod_ep[index].clone();
-                        self.titles_pod = self.all_titles_pod[index].clone();
-                        self.durations_pod_ep = self.all_durations_pod_ep[index].clone();
-                        self.list_state_pod_ep.select(Some(0));
-                        self.view_state = AppView::PodcastEpisode;
-                    }} else {
-                        let mut stdout = stdout();
-                        pop_message(&mut stdout, 3, message);
-                        tokio::spawn(async move {
-                            handle_l_book(
-                                token.as_ref(), 
-                                ids_library, 
-                                selected_library, 
-                                port, 
-                                address_player,
-                                server_address, 
-                                start_vlc_program,
-                                is_cvlc_term, 
-                                ).await;
-                        });
-                    }
-                }
-                AppView::SearchBook => {
-                    if self.is_podcast {
-                        self.is_from_search_pod = true;
-                        if let Some(index) = selected_search_book {
-                            self.titles_pod_ep_search = self.all_titles_pod_ep_search[index].clone();
-                            self.subtitles_pod_ep_search = self.all_subtitles_pod_ep_search[index].clone();
-                            self.seasons_pod_ep_search = self.all_seasons_pod_ep_search[index].clone();
-                            self.episodes_pod_ep_search = self.all_episodes_pod_ep_search[index].clone();
-                            self.authors_pod_ep_search = self.all_authors_pod_ep_search[index].clone();
-                            self.descs_pod_ep_search = self.all_descs_pod_ep_search[index].clone();
-                            self.titles_pod_search = self.all_titles_pod_search[index].clone();
-                            self.durations_pod_ep_search = self.all_durations_pod_ep_search[index].clone();
-                            self.list_state_pod_ep.select(Some(0));
-                            self.view_state = AppView::PodcastEpisode;
-                        }} else {   
+                if let Some(index) = selected_search_book {
+                    // ids_library_pod_search because we need the pod id and he is given by
+                    // this variable
+                    if let Some(id_pod) = self.ids_library_pod_search.get(index) {
+                        //    println!("{:?}", id_pod);
+                        let all_ids_pod_ep_search_clone = self.all_ids_pod_ep_search.clone();
+                        self.ids_pod_ep_search = all_ids_pod_ep_search_clone[index].clone();
+                        //   println!("{:?}", all_ids_pod_ep_search_clone[index]);
+                    }}
+                // Init for `SettingsAccount`
+                let selected_account = self.list_state_settings_account.selected();
+
+                // Init for `SettingsLibrary`
+                let selected_settings_library = self.list_state_settings_library.selected();
+
+                // init for start_vlc
+                let start_vlc_program = self.start_vlc_program.clone();
+                let is_cvlc_term = self.is_cvlc_term.clone();
+
+                // Init message 
+                let message = "Loading...";
+
+                // Now, spawn the async task based on the current view state
+                match self.view_state {
+                    AppView::Home => {
+                        if self.is_podcast {
                             let mut stdout = stdout();
-                            pop_message(&mut stdout, 3, message);
+                            let _ = pop_message(&mut stdout, 3, message);
+                            tokio::spawn(async move {
+                                handle_l_pod_home(
+                                    token.as_ref(), 
+                                    &ids_cnt_list, 
+                                    selected_cnt_list, 
+                                    port, 
+                                    address_player,
+                                    ids_ep_cnt_list, 
+                                    server_address,
+                                    start_vlc_program,
+                                    is_cvlc_term,
+                                ).await;
+                            });
+                        } else {
+                            let mut stdout = stdout();
+                            let _ = pop_message(&mut stdout, 3, message);
                             tokio::spawn(async move {
                                 handle_l_book(
                                     token.as_ref(), 
-                                    ids_search_book, 
-                                    selected_search_book, 
+                                    ids_cnt_list, 
+                                    selected_cnt_list, 
                                     port, 
                                     address_player,
                                     server_address, 
                                     start_vlc_program,
                                     is_cvlc_term, 
-                                    ).await;
+                                ).await;
                             });
 
-                        }
-                }
-                AppView::PodcastEpisode => {
-                    if self.is_from_search_pod {
-                    // we need the index of selected_search_book to feet after with
-                    // ids_library_pod_search
-                    if let Some(index) = selected_search_book {
-                        // ids_library_pod_search because we need the pod id and he is given by
-                        // this variable
-                        if let Some(id_pod) = self.ids_library_pod_search.get(index) {
-                        //    println!("{:?}", id_pod);
-                            let all_ids_pod_ep_search_clone = self.all_ids_pod_ep_search.clone();
-                         //   println!("{:?}", all_ids_pod_ep_search_clone[index]);
-                            let id_pod_clone = id_pod.clone();
-                            let mut stdout = stdout();
-                            pop_message(&mut stdout, 3, message);
-                            tokio::spawn(async move {
-                                handle_l_pod(
-                                    token.as_ref(), 
-                                    &all_ids_pod_ep_search_clone[index], 
-                                    selected_pod_ep, 
-                                    port, 
-                                    address_player,
-                                    id_pod_clone.as_str(), 
-                                    server_address, 
-                                    start_vlc_program,
-                                    is_cvlc_term, 
-                                    ).await;
-                            });
+                        }}
+                    AppView::Settings => {
+                        match self.list_state_settings.selected() {
+                            Some(0) => self.view_state = AppView::SettingsAccount,
+                            Some(1) => self.view_state = AppView::SettingsLibrary,
+                            _ => {}
                         }
                     }
-                    } else {
-                        // selected_livrary ids_library because we need the pod id and he is given by
-                        // these variables
-                        // we also need the index of selected library to feet after with
-                        // ids_library
-                    if let Some(index) = selected_library {
-                        if let Some(id_pod) = ids_library.get(index) {
-                            let all_ids_pod_ep_clone = self.all_ids_pod_ep.clone();
-                            self.ids_pod_ep = all_ids_pod_ep_clone[index].clone();
-                            let id_pod_clone = id_pod.clone();
-                            tokio::spawn(async move {
+                    AppView::SettingsAccount => {
+                        if let Some(index) = selected_account {
+                            let usr_to_delete = &self.all_usernames[index];
+                            let _ = delete_user(usr_to_delete.as_str());
+                        }
+                    }
+                    AppView::SettingsLibrary => {
+                        if let Some(index) = selected_settings_library {
+                            let new_selected_lib = &self.libraries_ids[index];
+                            let _ = update_id_selected_lib(&new_selected_lib, &self.username);
+                        }
+                    }
+                    AppView::SettingsAbout => {
+                    }
+                    AppView::Library => {
+                        if self.is_podcast {
+                            if let Some(index) = selected_library {
+                                self.titles_pod_ep = self.all_titles_pod_ep[index].clone();
+                                self.subtitles_pod_ep = self.all_subtitles_pod_ep[index].clone();
+                                self.seasons_pod_ep = self.all_seasons_pod_ep[index].clone();
+                                self.episodes_pod_ep = self.all_episodes_pod_ep[index].clone();
+                                self.authors_pod_ep = self.all_authors_pod_ep[index].clone();
+                                self.descs_pod_ep = self.all_descs_pod_ep[index].clone();
+                                self.titles_pod = self.all_titles_pod[index].clone();
+                                self.durations_pod_ep = self.all_durations_pod_ep[index].clone();
+                                self.list_state_pod_ep.select(Some(0));
+                                self.view_state = AppView::PodcastEpisode;
+                            }} else {
                                 let mut stdout = stdout();
-                                pop_message(&mut stdout, 3, message);
-                                handle_l_pod(
-                                    token.as_ref(), 
-                                    &all_ids_pod_ep_clone[index], 
-                                    selected_pod_ep, 
-                                    port, 
-                                    address_player,
-                                    id_pod_clone.as_str(), 
-                                    server_address, 
-                                    start_vlc_program,
-                                    is_cvlc_term, 
+                                let _ = pop_message(&mut stdout, 3, message);
+                                tokio::spawn(async move {
+                                    handle_l_book(
+                                        token.as_ref(), 
+                                        ids_library, 
+                                        selected_library, 
+                                        port, 
+                                        address_player,
+                                        server_address, 
+                                        start_vlc_program,
+                                        is_cvlc_term, 
                                     ).await;
-                            });
-                        }
+                                });
+                            }
                     }
+                    AppView::SearchBook => {
+                        if self.is_podcast {
+                            self.is_from_search_pod = true;
+                            if let Some(index) = selected_search_book {
+                                self.titles_pod_ep_search = self.all_titles_pod_ep_search[index].clone();
+                                self.subtitles_pod_ep_search = self.all_subtitles_pod_ep_search[index].clone();
+                                self.seasons_pod_ep_search = self.all_seasons_pod_ep_search[index].clone();
+                                self.episodes_pod_ep_search = self.all_episodes_pod_ep_search[index].clone();
+                                self.authors_pod_ep_search = self.all_authors_pod_ep_search[index].clone();
+                                self.descs_pod_ep_search = self.all_descs_pod_ep_search[index].clone();
+                                self.titles_pod_search = self.all_titles_pod_search[index].clone();
+                                self.durations_pod_ep_search = self.all_durations_pod_ep_search[index].clone();
+                                self.list_state_pod_ep.select(Some(0));
+                                self.view_state = AppView::PodcastEpisode;
+                            }} else {   
+                                let mut stdout = stdout();
+                                let _ = pop_message(&mut stdout, 3, message);
+                                tokio::spawn(async move {
+                                    handle_l_book(
+                                        token.as_ref(), 
+                                        ids_search_book, 
+                                        selected_search_book, 
+                                        port, 
+                                        address_player,
+                                        server_address, 
+                                        start_vlc_program,
+                                        is_cvlc_term, 
+                                    ).await;
+                                });
 
+                            }
+                    }
+                    AppView::PodcastEpisode => {
+                        if self.is_from_search_pod {
+                            // we need the index of selected_search_book to feet after with
+                            // ids_library_pod_search
+                            if let Some(index) = selected_search_book {
+                                // ids_library_pod_search because we need the pod id and he is given by
+                                // this variable
+                                if let Some(id_pod) = self.ids_library_pod_search.get(index) {
+                                    //    println!("{:?}", id_pod);
+                                    let all_ids_pod_ep_search_clone = self.all_ids_pod_ep_search.clone();
+                                    //   println!("{:?}", all_ids_pod_ep_search_clone[index]);
+                                    let id_pod_clone = id_pod.clone();
+                                    let mut stdout = stdout();
+                                    let _ = pop_message(&mut stdout, 3, message);
+                                    tokio::spawn(async move {
+                                        handle_l_pod(
+                                            token.as_ref(), 
+                                            &all_ids_pod_ep_search_clone[index], 
+                                            selected_pod_ep, 
+                                            port, 
+                                            address_player,
+                                            id_pod_clone.as_str(), 
+                                            server_address, 
+                                            start_vlc_program,
+                                            is_cvlc_term, 
+                                        ).await;
+                                    });
+                                }
+                            }
+                        } else {
+                            // selected_livrary ids_library because we need the pod id and he is given by
+                            // these variables
+                            // we also need the index of selected library to feet after with
+                            // ids_library
+                            if let Some(index) = selected_library {
+                                if let Some(id_pod) = ids_library.get(index) {
+                                    let all_ids_pod_ep_clone = self.all_ids_pod_ep.clone();
+                                    self.ids_pod_ep = all_ids_pod_ep_clone[index].clone();
+                                    let id_pod_clone = id_pod.clone();
+                                    tokio::spawn(async move {
+                                        let mut stdout = stdout();
+                                        let _ = pop_message(&mut stdout, 3, message);
+                                        handle_l_pod(
+                                            token.as_ref(), 
+                                            &all_ids_pod_ep_clone[index], 
+                                            selected_pod_ep, 
+                                            port, 
+                                            address_player,
+                                            id_pod_clone.as_str(), 
+                                            server_address, 
+                                            start_vlc_program,
+                                            is_cvlc_term, 
+                                        ).await;
+                                    });
+                                }
+                            }
+
+                        }
                     }
                 }
             }
+            _ => {}
         }
-        _ => {}
     }
-}
 
     /// Toggle between Home and Library views
     fn toggle_view(&mut self) {
@@ -972,8 +966,8 @@ impl App {
                     if selected + 1  < self.ids_pod_ep.len() {
                         self.list_state_pod_ep.select_next();
                     } else {
-                    self.list_state_pod_ep.select_first();
-                }}}}
+                        self.list_state_pod_ep.select_first();
+                    }}}}
             AppView::Settings => { if let Some(selected) = self.list_state_settings.selected() {
                 if selected + 1  < self.settings.len() {
                     self.list_state_settings.select_next();
@@ -1028,11 +1022,11 @@ impl App {
             }            
             AppView::PodcastEpisode => {
                 if self.is_from_search_pod {
-                let last_index = self.ids_pod_ep_search.len() - 1;
-                self.list_state_pod_ep.select(Some(last_index));
+                    let last_index = self.ids_pod_ep_search.len() - 1;
+                    self.list_state_pod_ep.select(Some(last_index));
                 } else {
-                let last_index = self.ids_pod_ep.len() - 1;
-                self.list_state_pod_ep.select(Some(last_index));
+                    let last_index = self.ids_pod_ep.len() - 1;
+                    self.list_state_pod_ep.select(Some(last_index));
                 }}            
             AppView::Settings => {
                 let last_index = self.settings.len() - 1;
@@ -1044,4 +1038,4 @@ impl App {
         }
     }
 
- }
+}

@@ -9,23 +9,15 @@ mod db;
 mod utils;
 
 use login_app::AppLogin;
-use std::process;
 use app::App;
 use crate::db::database_struct::Database;
 use color_eyre::Result;
 use std::time::Duration;
-use crossterm::event::{self, Event, KeyCode};
-use std::io::{stdout, Write};
-use crossterm::{cursor, execute, terminal, ExecutableCommand};
+use crossterm::event::{self, KeyCode};
+use std::io::stdout;
 use crate::utils::pop_up_message::*;
 use crate::utils::logs::*;
-use log::{info, warn, error, LevelFilter};
-use dotenv::dotenv;
-use std::env;
-use std::path::Path;
-use dirs::home_dir;
-
-const VERSION: &str = env!("CARGO_PKG_VERSION");
+use log::{info, error};
 
 #[tokio::main]
 async fn main() -> Result<()> {
@@ -49,19 +41,17 @@ async fn main() -> Result<()> {
             let app_login = AppLogin::new().await?;
             let terminal = ratatui::init();
             let app_result = app_login.run(terminal);
-            app_result; // Process login result here
+            app_result;
+            // Process login result here
             // Wait for 1 second before checking again
             // If database is reinit to quickly before `auth_process.rs` is finished
             // it can be buggy and mark as failed. Maybe add more time to be sure (like 6 sec).
             // But normally, even it's failed, data are written in db. It will work at the second
             // attempt...
             tokio::time::sleep(Duration::from_secs(1)).await;
-
-            // Reload or update the database
         } else {
             // If the database is ready, exit the loop
-            print!("\x1B[2J\x1B[1;1H"); // clear all stdout (avoid to sill have the previous print
-                                        // when the app is launched)
+            print!("\x1B[2J\x1B[1;1H"); // clear all stdout (avoid to sill have the previous print when the app is launched)
             database_ready = true;
             info!("Database ready");
             break;
@@ -92,8 +82,8 @@ async fn main() -> Result<()> {
                         KeyCode::Char('R') => {
                             // pop up message
                             let mut stdout = stdout();
-                            clear_message(&mut stdout, 3); // clear a message, if any, before print the message bellow
-                            pop_message(&mut stdout, 3, "Refreshing app...");
+                            let _ = clear_message(&mut stdout, 3); // clear a message, if any, before print the message bellow
+                            let _ = pop_message(&mut stdout, 3, "Refreshing app...");
                             // Reinitialize app to refresh
                             app = App::new().await?; 
                             // clear message above

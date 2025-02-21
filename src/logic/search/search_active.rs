@@ -28,9 +28,9 @@ impl App {
             .borders(Borders::ALL)
             .title("Search")
             .border_style(Style::default()
-            .fg(Color::Rgb(fg_color[0], fg_color[1], fg_color[2])))
+                .fg(Color::Rgb(fg_color[0], fg_color[1], fg_color[2])))
             .style(Style::default()
-            .bg(Color::Rgb(bg_color[0], bg_color[1], bg_color[2])))
+                .bg(Color::Rgb(bg_color[0], bg_color[1], bg_color[2])))
 
         );
 

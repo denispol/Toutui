@@ -12,7 +12,7 @@ pub async fn start_vlc(
     author: String, 
     server_address: String, 
     program: String, 
-    ) -> Output {
+) -> Output {
 
     let output: Output = Command::new(format!("{}", program))
         .arg(format!("--start-time={}", current_time))

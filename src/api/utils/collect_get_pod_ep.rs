@@ -136,17 +136,17 @@ pub async fn collect_titles_pod(item: &Root) -> Vec<String> {
 pub async fn collect_durations_pod_ep(item: &Root) -> Vec<String> {
     let mut durations = Vec::new();
 
-        if let Some(media) = &item.media {
-            if let Some(episodes) = &media.episodes {
-                for episode in episodes {
-                    if let Some(audio_file) = &episode.audio_file {
-                        if let Some(duration) = audio_file.duration {
-                            durations.push(duration);
-                        }
+    if let Some(media) = &item.media {
+        if let Some(episodes) = &media.episodes {
+            for episode in episodes {
+                if let Some(audio_file) = &episode.audio_file {
+                    if let Some(duration) = audio_file.duration {
+                        durations.push(duration);
                     }
                 }
             }
         }
+    }
 
     let durations_pod_ep = convert_seconds(durations);
     durations_pod_ep

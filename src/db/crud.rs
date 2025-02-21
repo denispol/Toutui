@@ -1,11 +1,8 @@
 use rusqlite::{params, Connection, Result};
-use serde::{Serialize, Deserialize};
 use crate::db::database_struct::User;
-use crate::login_app::AppLogin;
 use crate::utils::pop_up_message::*;
-use std::io::{stdout, Write};
-use crate::utils::logs::*;
-use log::{info, warn, error, LevelFilter};
+use std::io::stdout;
+use log::{info, error};
 use std::path::PathBuf;
 
 // Delete an user
@@ -24,14 +21,14 @@ pub fn delete_user(username: &str) -> Result<()> {
 
         if rows_deleted > 0 {
             let mut stdout = stdout();
-            pop_message(&mut stdout, 3, message.as_str());
+            let _ = pop_message(&mut stdout, 3, message.as_str());
             info!("[delete_user] User deleted.");
         } else {
             //println!("No user found with this username '{}'.", username);
         }
     } else {
         let mut stdout = stdout();
-        pop_message(&mut stdout, 3, err_message);
+        let _ = pop_message(&mut stdout, 3, err_message);
         error!("[delete user] {}", err_message);
     }
 
@@ -53,12 +50,12 @@ pub fn update_id_selected_lib(id_selected_lib: &str, username: &str) -> Result<(
             params![id_selected_lib, username],
         )?;
         let mut stdout = stdout();
-        pop_message(&mut stdout, 3, message);
+        let _ = pop_message(&mut stdout, 3, message);
         info!("[update_id_selected_lib] The library has been updated");
 
     } else {
         let mut stdout = stdout();
-        pop_message(&mut stdout, 3, err_message);
+        let _ = pop_message(&mut stdout, 3, err_message);
         error!("[update_id_selected_lib] {}", err_message);
     }
 
@@ -112,7 +109,7 @@ pub fn select_default_usr() -> Result<Vec<String>> {
     db_path.push("toutui/db.sqlite3");
 
     let conn = Connection::open(db_path)?;
-    
+
     let mut stmt = conn.prepare(
         "SELECT username, server_address, token, is_default_usr, name_selected_lib, id_selected_lib
          FROM users WHERE is_default_usr = 1 LIMIT 1"

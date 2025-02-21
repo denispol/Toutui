@@ -17,7 +17,7 @@ pub async fn collect_ids_pod_cnt_list(roots: &[Root]) -> Vec<String> {
         }
     }
 
- ids_pod_cnt_list
+    ids_pod_cnt_list
 }
 
 /// Collect subtitles from recent episodes
@@ -183,7 +183,7 @@ pub async fn collect_ids_ep_pod_cnt_list(roots: &[Root]) -> Vec<String> {
         }
     }
 
- ids_ep_pod_cnt_list
+    ids_ep_pod_cnt_list
 }
 
 /// collect titles pod for continue listening

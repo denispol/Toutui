@@ -6,11 +6,8 @@ use crate::api::me::update_media_progress::*;
 use crate::api::library_items::play_lib_item_or_pod::*;
 use crate::api::sessions::sync_open_session::*;
 use crate::api::sessions::close_open_session::*;
-use crate::utils::pop_up_message::*;
-use std::process;
-use std::io::{stdout, Result, Stdout};
-use crate::utils::logs::*;
-use log::{info, warn, error, LevelFilter};
+use std::io::stdout;
+use log::{info, error};
 
 
 
@@ -62,7 +59,7 @@ pub async fn handle_l_book(
                             exec_nc(&port_clone, address_player_clone).await;
                         });
                     }
-                    
+
                     // clear loading message (from app.rs) when vlc is launched
                     let mut stdout = stdout(); 
                     let _ = clear_message(&mut stdout, 3);
@@ -84,16 +81,16 @@ pub async fn handle_l_book(
                     loop {
                         match fetch_vlc_data(port.clone(), address_player.clone()).await {
                             Ok(Some(data_fetched_from_vlc)) => {
-//                                println!("Fetched data: {}", data_fetched_from_vlc.to_string());
+                                //                                println!("Fetched data: {}", data_fetched_from_vlc.to_string());
 
                                 // Important, sleep time to 1s minimum, otherwise connection to vlc player will not have time to connect
                                 // sleep time : every how many seconds the data will be sent to the server
                                 tokio::time::sleep(tokio::time::Duration::from_secs(5)).await;
-//                                println!("last_curr: {}", last_current_time);
+                                //                                println!("last_curr: {}", last_current_time);
                                 if data_fetched_from_vlc == last_current_time {
                                     progress_sync = 0;
                                 } else {
-                                   progress_sync = 5; // need to be equal to tokio time sleep just above
+                                    progress_sync = 5; // need to be equal to tokio time sleep just above
                                 }
                                 last_current_time = data_fetched_from_vlc;
                                 match fetch_vlc_is_playing(port.clone(), address_player.clone()).await {

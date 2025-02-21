@@ -1,23 +1,18 @@
 use crate::login_app::AppLogin;
-use crate::login_app::AppViewLogin;
 use ratatui::backend::CrosstermBackend;
 use ratatui::widgets::{Block, Borders};
-use ratatui::{text::Line };
+use ratatui::text::Line;
 use ratatui::Terminal;
 use std::io;
-use tui_textarea::{Input, Key, TextArea};
+use tui_textarea::TextArea;
 use ratatui::{
     layout::Rect,
     style::{Color, Style},
 };
 use crate::api::server::auth_process::*;
 use crossterm::event::{self, KeyEvent, KeyCode};  
-use std::thread;
-use std::time::Duration;
 use std::process;
-use crate::config::*;
-use crate::utils::logs::*;
-use log::{info, warn, error, LevelFilter};
+use log::{info, error};
 
 
 
@@ -44,7 +39,7 @@ impl AppLogin {
             .title("Server address")
             .title_bottom(Line::from(format!("🦜Toutui v{} - Esc to quit.", VERSION)).right_aligned())
             .border_style(Style::default()
-            .fg(Color::Rgb(fg_color[0], fg_color[1], fg_color[2])))
+                .fg(Color::Rgb(fg_color[0], fg_color[1], fg_color[2])))
         );
 
         let mut textarea2 = TextArea::default();
@@ -54,7 +49,7 @@ impl AppLogin {
             .title("Username")
             .title_bottom(Line::from(format!("🦜Toutui v{} - Esc to quit.", VERSION)).right_aligned())
             .border_style(Style::default()
-            .fg(Color::Rgb(fg_color[0], fg_color[1], fg_color[2])))
+                .fg(Color::Rgb(fg_color[0], fg_color[1], fg_color[2])))
         );
 
         let mut textarea3 = TextArea::default();
@@ -64,7 +59,7 @@ impl AppLogin {
             .title("Password")
             .title_bottom(Line::from(format!("🦜Toutui v{} - Esc to quit.", VERSION)).right_aligned())
             .border_style(Style::default()
-            .fg(Color::Rgb(fg_color[0], fg_color[1], fg_color[2])))
+                .fg(Color::Rgb(fg_color[0], fg_color[1], fg_color[2])))
         );
         textarea3.set_mask_char('\u{2022}');
 
@@ -90,11 +85,11 @@ impl AppLogin {
             term.draw(|f| {
                 let background = Block::default()
                     .style(Style::default()
-                    .bg(Color::Rgb(
-                            log_bg_color[0],
-                            log_bg_color[1],
-                            log_bg_color[2],
-                    )));
+                        .bg(Color::Rgb(
+                                log_bg_color[0],
+                                log_bg_color[1],
+                                log_bg_color[2],
+                        )));
                 f.render_widget(&textareas[current_index], input_area);
                 f.render_widget(background, f.size());
             })?;
@@ -110,11 +105,11 @@ impl AppLogin {
                         break; 
                     }
                 }
-                
+
                 event::Event::Key(KeyEvent { code: KeyCode::Esc, .. }) => {
-                process::exit(0);
+                    process::exit(0);
                 }
-                
+
                 event::Event::Key(input) => {
                     if let Some(active_textarea) = textareas.get_mut(current_index) {
                         active_textarea.input(input); 
@@ -136,7 +131,6 @@ impl AppLogin {
 
 
         /// Fetch data from api and insert them in database
-
 
         // send result
         if let Some(active_textarea) = textareas.get(current_index) {

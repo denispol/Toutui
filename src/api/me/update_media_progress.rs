@@ -42,8 +42,8 @@ pub async fn update_media_progress_book(id_library_item: &str, token: Option<&St
     //let status = response.status();
     //let response_text = response.text().await?;
 
-   // println!("Statut: {}", status);
-   // println!("Réponse: {}", response_text);
+    // println!("Statut: {}", status);
+    // println!("Réponse: {}", response_text);
 
     Ok(())
 }
@@ -84,8 +84,8 @@ pub async fn update_media_progress2_book(id_library_item: &str, token: Option<&S
     //let status = response.status();
     //let response_text = response.text().await?;
 
-   // println!("Statut: {}", status);
-   // println!("Réponse: {}", response_text);
+    // println!("Statut: {}", status);
+    // println!("Réponse: {}", response_text);
 
     Ok(())
 }
@@ -126,8 +126,8 @@ pub async fn update_media_progress_pod(id_library_item: &str , token: Option<&St
     //let status = response.status();
     //let response_text = response.text().await?;
 
-   // println!("Statut: {}", status);
-   // println!("Réponse: {}", response_text);
+    // println!("Statut: {}", status);
+    // println!("Réponse: {}", response_text);
 
     Ok(())
 }
@@ -169,8 +169,8 @@ pub async fn update_media_progress2_pod(id_library_item: &str, token: Option<&St
     //let status = response.status();
     //let response_text = response.text().await?;
 
-   // println!("Statut: {}", status);
-   // println!("Réponse: {}", response_text);
+    // println!("Statut: {}", status);
+    // println!("Réponse: {}", response_text);
 
     Ok(())
 }

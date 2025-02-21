@@ -1,5 +1,5 @@
 use reqwest::Client; 
-use color_eyre::eyre::{Result}; 
+use color_eyre::eyre::Result; 
 use reqwest::header::AUTHORIZATION;
 use serde_json::Value;
 use serde_json::json;
@@ -31,13 +31,13 @@ pub async fn post_start_playback_session_book(token: Option<&String>, id_library
             // to have OS displayed in user activity pannel (audiobookshelf/config/users/)
             "manufacturer": format!("{}", std::env::consts::OS),
             "model": format!("{}", std::env::consts::ARCH),
-    }});
+        }});
 
     let response = client
         .post(format!(
-            "{}/api/items/{}/play", 
-            server_address,
-            id_library_item
+                "{}/api/items/{}/play", 
+                server_address,
+                id_library_item
         ))
         .header("Content-Type", "application/json")
         .header(AUTHORIZATION, format!("Bearer {}", token.unwrap()))
@@ -73,13 +73,13 @@ pub async fn post_start_playback_session_book(token: Option<&String>, id_library
         .unwrap_or("N/A");
 
     let info_item = vec![
-    current_time.to_string(), 
-    content_url.to_string(), 
-    duration.to_string(), 
-    id_session.to_string(), 
-    title.to_string(), 
-    subtitle.to_string(), 
-    author.to_string()
+        current_time.to_string(), 
+        content_url.to_string(), 
+        duration.to_string(), 
+        id_session.to_string(), 
+        title.to_string(), 
+        subtitle.to_string(), 
+        author.to_string()
     ];
 
     Ok(info_item)
@@ -104,15 +104,15 @@ pub async fn post_start_playback_session_pod(token: Option<&String>, id_library_
             // to have OS displayed in user activity pannel (audiobookshelf/config/users/)
             "manufacturer": format!("{}", std::env::consts::OS),
             "model": format!("{}", std::env::consts::ARCH),
-    }});
+        }});
 
     let response = client
         .post(format!(
-            "{}/api/items/{}/play/{}", 
-            server_address,
-            id_library_item, 
-            pod_ep_id,
-            ))
+                "{}/api/items/{}/play/{}", 
+                server_address,
+                id_library_item, 
+                pod_ep_id,
+        ))
         .header("Content-Type", "application/json")
         .header(AUTHORIZATION, format!("Bearer {}", token.unwrap()))
         .json(&params)
@@ -147,13 +147,13 @@ pub async fn post_start_playback_session_pod(token: Option<&String>, id_library_
         .unwrap_or("N/A");
 
     let info_item = vec![
-    current_time.to_string(), 
-    content_url.to_string(), 
-    duration.to_string(), 
-    id_session.to_string(), 
-    title.to_string(), 
-    subtitle.to_string(), 
-    author.to_string()
+        current_time.to_string(), 
+        content_url.to_string(), 
+        duration.to_string(), 
+        id_session.to_string(), 
+        title.to_string(), 
+        subtitle.to_string(), 
+        author.to_string()
     ];
 
     Ok(info_item)

@@ -20,13 +20,13 @@ pub fn setup_logs() -> Result<(), fern::InitError> {
     Dispatch::new()
         .format(|out, message, record| {
             out.finish(format_args!(
-                "{} [{}] - {}",
-                Local::now().format("%Y-%m-%d %H:%M:%S%.3f"),
-                record.level(),
-                message
+                    "{} [{}] - {}",
+                    Local::now().format("%Y-%m-%d %H:%M:%S%.3f"),
+                    record.level(),
+                    message
             ))
         })
-        .level(LevelFilter::Info) 
+    .level(LevelFilter::Info) 
         .chain(log_file) // redirect logs to the file 
         .apply()?; 
 

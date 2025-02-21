@@ -4,7 +4,6 @@ use reqwest::header::AUTHORIZATION;
 use color_eyre::eyre::{Result, Report};
 use serde::Deserialize;
 use serde::Serialize;
-use serde_json::json;
 
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
@@ -46,8 +45,8 @@ pub async fn get_book_progress(token: &str, book_id: &String, server_address: St
     // Check response status
     if !response.status().is_success() {
         return Err(Report::new(std::io::Error::new(
-            std::io::ErrorKind::Other,
-            "Failed to fetch data from the API",
+                    std::io::ErrorKind::Other,
+                    "Failed to fetch data from the API",
         )));
     }
 

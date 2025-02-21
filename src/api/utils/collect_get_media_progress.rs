@@ -1,5 +1,4 @@
 use crate::api::me::get_media_progress::Root;
-use crate::utils::convert_seconds::*;
 
 pub async fn collect_progress_percentage_book(root: &Root) -> String {
     format!("{}", (root.progress * 100.0).round() as i64) 

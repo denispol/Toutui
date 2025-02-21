@@ -5,13 +5,8 @@ use tokio::net::TcpStream;
 use std::process::Command;
 use std::str;
 use regex::Regex;
-use crate::api::sessions::close_open_session::*;
-use log::{info, warn, error, LevelFilter};
-use crate::utils::logs::*;
+use log::{info, warn, error};
 
-
-
-/// TODO : PUT ALL PRINT IN LOG ///
 /// This function : 
 /// allow to connect and remotely ctrl VLC (with vlc-rc crate) on the port that was provided (Client::connect(format!("{}:{}", port))) 
 /// if connection is successul, fecth data thanks to remotly control
@@ -118,8 +113,8 @@ pub async fn get_vlc_version() -> Result<String, io::Error> {
 
     if !output.status.success() {
         return Err(io::Error::new(
-            io::ErrorKind::Other,
-            "Failed to fetch VLC version",
+                io::ErrorKind::Other,
+                "Failed to fetch VLC version",
         ));
         error!("Failed to fetch VLC version");
     }
@@ -128,7 +123,7 @@ pub async fn get_vlc_version() -> Result<String, io::Error> {
         .map_err(|e| io::Error::new(io::ErrorKind::InvalidData, e))?; 
 
     let re = Regex::new(r"VLC (?:media player |version )?([\d.]+)").unwrap();
-    
+
     if let Some(captures) = re.captures(version_output) {
         if let Some(version) = captures.get(1) {
             return Ok(version.as_str().to_string());
@@ -136,8 +131,8 @@ pub async fn get_vlc_version() -> Result<String, io::Error> {
     }
 
     Err(io::Error::new(
-        io::ErrorKind::InvalidData,
-        "Could not extract VLC version",
+            io::ErrorKind::InvalidData,
+            "Could not extract VLC version",
     ))
 }
 

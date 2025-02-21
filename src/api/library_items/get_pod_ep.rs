@@ -133,8 +133,8 @@ pub async fn get_pod_ep(token: &str, server_address: String, id: &str) -> Result
     // Check response status
     if !response.status().is_success() {
         return Err(Report::new(std::io::Error::new(
-            std::io::ErrorKind::Other,
-            "Failed to fetch data from the API",
+                    std::io::ErrorKind::Other,
+                    "Failed to fetch data from the API",
         )));
     }
 

@@ -1,6 +1,6 @@
 use magic_crypt::{new_magic_crypt, MagicCryptTrait};
 use std::env;
-use log::{info, warn, error, LevelFilter};
+use log::error;
 
 pub fn encrypt_token(token_to_encrypt: &str) -> Result<String, String> {
 

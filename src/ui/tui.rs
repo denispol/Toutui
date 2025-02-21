@@ -3,10 +3,7 @@ use crate::app::AppView;
 use ratatui::{
     buffer::Buffer,
     layout::{Constraint, Layout, Rect},
-    style::{
-        palette::tailwind::{BLUE, SLATE},
-        Color, Modifier, Style, Stylize,
-    },
+    style::{Color, Modifier, Style, Stylize},
     text::Line,
     widgets::{
         Block, Borders, HighlightSpacing, List, ListItem , ListState,  Paragraph, StatefulWidget,
@@ -14,20 +11,15 @@ use ratatui::{
     },
 };
 use crate::utils::convert_seconds::*;
-// Auth
-use tui_textarea::{Input, Key, TextArea};
-use std::io;
-use ratatui::backend::CrosstermBackend;
-use ratatui::Terminal;
 use crate::config::*;
 
- 
+
 // const version
 const VERSION: &str = env!("CARGO_PKG_VERSION");
 
 /// init widget for selected AppView 
 impl Widget for &mut App {
-  fn render(self, area: Rect, buf: &mut Buffer) {
+    fn render(self, area: Rect, buf: &mut Buffer) {
         match self.view_state {
             AppView::Home => self.render_home(area, buf),
             AppView::Library => self.render_library(area, buf),
@@ -63,8 +55,8 @@ impl App {
         App::render_footer(footer_area, buf, text_render_footer);
         self.render_list(list_area, buf, render_list_title, &self.titles_cnt_list.clone(), &mut self.list_state_cnt_list.clone());
         if !&self.titles_cnt_list.is_empty() {
-        self.render_info_home(item_area1, buf, &mut self.list_state_cnt_list.clone());
-        self.render_desc_home(item_area2, buf, &mut self.list_state_cnt_list.clone());
+            self.render_info_home(item_area1, buf, &mut self.list_state_cnt_list.clone());
+            self.render_desc_home(item_area2, buf, &mut self.list_state_cnt_list.clone());
         }
     }
 
@@ -76,24 +68,24 @@ impl App {
             Constraint::Length(1),
             Constraint::Length(2),
         ]).areas(area);
-        
+
         let [list_area, item_area1, item_area2] = Layout::vertical([Constraint::Fill(1), Constraint::Length(3), Constraint::Fill(1)]).areas(main_area);
 
         let render_list_title = "Library";
-        
+
         let mut text_render_footer = "";
         if self.is_podcast {
-        text_render_footer = "Use j/↓, k/↑ to move, l/→ to see episodes, Tab to back home, RR to refresh,\n Space bar or '/' to search, Scroll the desc: J(down) K(up) H(top), Q/Esc to quit.";
+            text_render_footer = "Use j/↓, k/↑ to move, l/→ to see episodes, Tab to back home, RR to refresh,\n Space bar or '/' to search, Scroll the desc: J(down) K(up) H(top), Q/Esc to quit.";
         } else {
-        text_render_footer = "Use j/↓, k/↑ to move, l/→ to play, Tab to back home, RR to refresh,\n Space bar or '/' to search, Scroll the desc: J(down) K(up) H(top), Q/Esc to quit.";
+            text_render_footer = "Use j/↓, k/↑ to move, l/→ to play, Tab to back home, RR to refresh,\n Space bar or '/' to search, Scroll the desc: J(down) K(up) H(top), Q/Esc to quit.";
         }
 
         App::render_header(header_area, buf, self.lib_name_type.clone(), &self.username, &self.server_address_pretty, VERSION);
         App::render_footer(footer_area, buf, text_render_footer);
         self.render_list(list_area, buf, render_list_title, &self.titles_library.clone(), &mut self.list_state_library.clone());
         if !&self.titles_library.is_empty() {
-        self.render_info_library(item_area1, buf, &mut self.list_state_library.clone());
-        self.render_desc_library(item_area2, buf, &mut self.list_state_library.clone());
+            self.render_info_library(item_area1, buf, &mut self.list_state_library.clone());
+            self.render_desc_library(item_area2, buf, &mut self.list_state_library.clone());
         }
     }
 
@@ -105,17 +97,17 @@ impl App {
             Constraint::Length(1),
             Constraint::Length(2),
         ]).areas(area);
-        
+
         let [list_area, item_area1, item_area2] = Layout::vertical([Constraint::Fill(1), Constraint::Length(3), Constraint::Fill(1)]).areas(main_area);
 
         let render_list_title = "Settings";
 
         let mut text_render_footer = "";
         if self.list_state_settings.selected() == Some(2) {
-        // for `About` section
-        text_render_footer = "Use j/↓, k/↑ to move, Scroll what's new: J(down) K(up) H(top),\n Tab to back home, RR to refresh, Q/Esc to quit.";
+            // for `About` section
+            text_render_footer = "Use j/↓, k/↑ to move, Scroll what's new: J(down) K(up) H(top),\n Tab to back home, RR to refresh, Q/Esc to quit.";
         } else {
-        text_render_footer = "Use j/↓, k/↑ to move, l/→ to see options,\n Tab to back home, RR to refresh, Q/Esc to quit.";
+            text_render_footer = "Use j/↓, k/↑ to move, l/→ to see options,\n Tab to back home, RR to refresh, Q/Esc to quit.";
         }
 
         App::render_header(header_area, buf, self.lib_name_type.clone(), &self.username, &self.server_address_pretty, VERSION);
@@ -132,7 +124,7 @@ impl App {
             Constraint::Fill(1),
             Constraint::Length(2),
         ]).areas(area);
-        
+
         let [list_area, item_area] = Layout::vertical([Constraint::Fill(1), Constraint::Fill(1),]).areas(main_area);
 
         let render_list_title = "Settings account";
@@ -151,7 +143,7 @@ impl App {
             Constraint::Fill(1),
             Constraint::Length(2),
         ]).areas(area);
-        
+
         let [list_area, item_area] = Layout::vertical([Constraint::Fill(1), Constraint::Fill(1),]).areas(main_area);
 
         let render_list_title = "Settings library";
@@ -178,11 +170,11 @@ impl App {
         let render_list_title = "Search result";
         let mut text_render_footer = "";
         if self.is_podcast {
-        text_render_footer = "Use j/↓, k/↑ to move, l/→ to see episodes, Tab to back home, RR to refresh,\n Space bar or '/' to search, Scroll the desc: J(down) K(up) H(top), Q/Esc to quit.";
+            text_render_footer = "Use j/↓, k/↑ to move, l/→ to see episodes, Tab to back home, RR to refresh,\n Space bar or '/' to search, Scroll the desc: J(down) K(up) H(top), Q/Esc to quit.";
         } else {
-        text_render_footer = "Use j/↓, k/↑ to move, l/→ to play, Tab to back home, RR to refresh,\n Space bar or '/' to search, Scroll the desc: J(down) K(up) H(top), Q/Esc to quit.";
+            text_render_footer = "Use j/↓, k/↑ to move, l/→ to play, Tab to back home, RR to refresh,\n Space bar or '/' to search, Scroll the desc: J(down) K(up) H(top), Q/Esc to quit.";
         } 
-        
+
 
         if self.search_mode {
             if let Ok(query) = self.search_active() {
@@ -330,8 +322,8 @@ impl App {
         App::render_footer(footer_area, buf, text_render_footer);
         self.render_list(list_area, buf, render_list_title, titles_search_book_or_pod, &mut self.list_state_search_results.clone());
         if !titles_search_book_or_pod.is_empty() {
-        self.render_info_search_book(item_area1, buf, &mut &self.list_state_search_results.clone());
-        self.render_desc_search_book(item_area2, buf, &mut &self.list_state_search_results.clone());
+            self.render_info_search_book(item_area1, buf, &mut &self.list_state_search_results.clone());
+            self.render_desc_search_book(item_area2, buf, &mut &self.list_state_search_results.clone());
         }
     }
 
@@ -352,13 +344,13 @@ impl App {
         App::render_header(header_area, buf, self.lib_name_type.clone(), &self.username, &self.server_address_pretty, VERSION);
         App::render_footer(footer_area, buf, text_render_footer);
         if self.is_from_search_pod {
-        self.render_list(list_area, buf, render_list_title, &self.titles_pod_ep_search.clone(), &mut self.list_state_pod_ep.clone());
-        self.render_info_pod_ep_search(item_area1, buf, &mut &self.list_state_pod_ep.clone());
-        self.render_desc_pod_ep_search(item_area2, buf, &mut &self.list_state_pod_ep.clone());
+            self.render_list(list_area, buf, render_list_title, &self.titles_pod_ep_search.clone(), &mut self.list_state_pod_ep.clone());
+            self.render_info_pod_ep_search(item_area1, buf, &mut &self.list_state_pod_ep.clone());
+            self.render_desc_pod_ep_search(item_area2, buf, &mut &self.list_state_pod_ep.clone());
         } else {
-        self.render_list(list_area, buf, render_list_title, &self.titles_pod_ep.clone(), &mut self.list_state_pod_ep.clone());
-        self.render_info_pod_ep(item_area1, buf, &mut &self.list_state_pod_ep.clone());
-        self.render_desc_pod_ep(item_area2, buf, &mut &self.list_state_pod_ep.clone());
+            self.render_list(list_area, buf, render_list_title, &self.titles_pod_ep.clone(), &mut self.list_state_pod_ep.clone());
+            self.render_info_pod_ep(item_area1, buf, &mut &self.list_state_pod_ep.clone());
+            self.render_desc_pod_ep(item_area2, buf, &mut &self.list_state_pod_ep.clone());
         }
     }
 
@@ -461,16 +453,16 @@ impl App {
         if let Some(selected) = list_state.selected() {
             let mut content: String = String::new();
             if self.is_podcast {
-            content = self.subtitles_pod_cnt_list[selected].clone();
+                content = self.subtitles_pod_cnt_list[selected].clone();
             } else {
-            content = self.desc_cnt_list[selected].clone();
+                content = self.desc_cnt_list[selected].clone();
             }
 
             Paragraph::new(content.clone())
                 .scroll((self.scroll_offset as u16, 0))
                 .wrap(Wrap { trim: true })
                 .render(area, buf);
-        }
+            }
     }
 
     // info about the book or podacst for `Library`
@@ -518,13 +510,13 @@ impl App {
         let duplicated_titles = vec![self.titles_pod[0].clone(); n];
         let duplicated_authors = vec![self.authors_pod_ep[0].clone(); n];
         if let Some(selected) = list_state.selected() {
-            
+
             Paragraph::new(format!("[{}] - Author: {} - Episode: {} - Duration: {} ", 
                     duplicated_titles[selected].trim(), 
                     duplicated_authors[selected].trim(), 
                     self.episodes_pod_ep[selected].trim(),
                     self.durations_pod_ep[selected].trim(),
-                    ))
+            ))
                 .left_aligned()
                 .render(area, buf);
         }
@@ -536,13 +528,13 @@ impl App {
         let duplicated_titles_search = vec![self.titles_pod_search[0].clone(); n];
         let duplicated_authors_search = vec![self.authors_pod_ep_search[0].clone(); n];
         if let Some(selected) = list_state.selected() {
-            
+
             Paragraph::new(format!("[{}] - Author: {} - Episode: {} - Duration: {} ", 
                     duplicated_titles_search[selected].trim(), 
                     duplicated_authors_search[selected].trim(), 
                     self.episodes_pod_ep_search[selected].trim(),
                     self.durations_pod_ep_search[selected].trim(),
-                    ))
+            ))
                 .left_aligned()
                 .render(area, buf);
         }
@@ -577,11 +569,11 @@ impl App {
 
         if let Some(selected) = list_state.selected() {
             if self.is_podcast {
-            Paragraph::new(format!("Author: {}", 
-                    self.auth_names_pod_search_book[selected], 
-                    ))
-                .left_aligned()
-                .render(area, buf);
+                Paragraph::new(format!("Author: {}", 
+                        self.auth_names_pod_search_book[selected], 
+                ))
+                    .left_aligned()
+                    .render(area, buf);
             } 
             else {
                 Paragraph::new(format!("Author: {} - Year: {} - Duration: {}\nProgress:{} {}{}", 
@@ -592,7 +584,7 @@ impl App {
                         format!("{}",convert_seconds_for_prg(self.duration_library_search_book[selected], self.book_progress_search_book_cur_time[selected][0])), // time left
                         self.book_progress_search_book[selected][1],)) // is finished
                     .left_aligned()
-                .render(area, buf);
+                    .render(area, buf);
             }
         }
     }
@@ -608,25 +600,25 @@ impl App {
                 .render(area, buf);
         }
     }
-    
+
     // info for settings
     fn render_info_settings(&self, area: Rect, buf: &mut Buffer, list_state: &ListState) {
-            
+
         match list_state.selected() {
             Some(0) => {}
             Some(1) => {}
             Some(2) => {
 
-            Paragraph::new(format!("Toutui v{} - Licence: GPL-3.0 - Contact: albdav.dev@gmail.com\nSource code: {}\nWhat's new:", 
-                    VERSION,
-                    "https://github.com/AlbanDAVID/Toutui",
-                    ))
-                .left_aligned()
-                .render(area, buf);
-            }
+                Paragraph::new(format!("Toutui v{} - Licence: GPL-3.0 - Contact: albdav.dev@gmail.com\nSource code: {}\nWhat's new:", 
+                        VERSION,
+                        "https://github.com/AlbanDAVID/Toutui",
+                ))
+                    .left_aligned()
+                    .render(area, buf);
+                }
             _ => {}
         }
-        
+
     }
 
     // desc for settings

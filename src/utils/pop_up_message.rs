@@ -1,7 +1,7 @@
-use std::io::{stdout, Result, Stdout};
+use std::io::{Result, Stdout};
 use crossterm::{
     execute,
-    style::{Color, SetBackgroundColor, SetForegroundColor, PrintStyledContent, Stylize},
+    style::{Color, SetBackgroundColor},
     terminal, cursor,
 };
 use crate::config::*;

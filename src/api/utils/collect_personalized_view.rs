@@ -1,5 +1,4 @@
 use crate::api::libraries::get_library_perso_view::Root;
-use crate::utils::convert_seconds::*;
 
 /// collect titles
 pub async fn collect_titles_cnt_list(continue_listening: &[Root]) -> Vec<String> {
@@ -81,7 +80,7 @@ pub async fn collect_duration_cnt_list(continue_listening: &[Root]) -> Vec<f64> 
         }
     }
 
-     duration_cnt_list
+    duration_cnt_list
 
 }
 
@@ -113,9 +112,9 @@ pub async fn collect_ids_cnt_list(continue_listening: &[Root]) -> Vec<String> {
     for library in continue_listening {
         if let Some(entities) = &library.entities {
             for entity in entities {
-                        if let Some(id) = &entity.id { 
-                            ids_cnt_list.push(id.clone()); 
-                        }
+                if let Some(id) = &entity.id { 
+                    ids_cnt_list.push(id.clone()); 
+                }
             }
         }
     }

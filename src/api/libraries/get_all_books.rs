@@ -116,8 +116,8 @@ pub async fn get_all_books(token: &str, id_selected_lib: &String, server_address
     // Check response status
     if !response.status().is_success() {
         return Err(Report::new(std::io::Error::new(
-            std::io::ErrorKind::Other,
-            "Failed to fetch data from the API",
+                    std::io::ErrorKind::Other,
+                    "Failed to fetch data from the API",
         )));
     }
 

@@ -4,7 +4,6 @@ use reqwest::header::AUTHORIZATION;
 use color_eyre::eyre::{Result, Report};
 use serde::Deserialize;
 use serde::Serialize;
-use serde_json::json;
 
 
 /// Get All Libraries (can be a podcast or book library (shelf))
@@ -76,8 +75,8 @@ pub async fn get_all_libraries(token: &str, server_address: String) -> Result<Ro
     // Check response status
     if !response.status().is_success() {
         return Err(Report::new(std::io::Error::new(
-            std::io::ErrorKind::Other,
-            "Failed to fetch data from the API",
+                    std::io::ErrorKind::Other,
+                    "Failed to fetch data from the API",
         )));
     }
 

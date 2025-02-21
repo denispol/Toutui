@@ -6,9 +6,8 @@ use crate::api::sessions::sync_open_session::*;
 use crate::api::sessions::close_open_session::*;
 use crate::player::vlc::exec_nc::*;
 use crate::utils::pop_up_message::*;
-use std::io::{stdout, Result, Stdout};
-use crate::utils::logs::*;
-use log::{info, warn, error, LevelFilter};
+use std::io::stdout;
+use log::{info, error};
 
 /// handle l for App::View PodcastEpisode
 
