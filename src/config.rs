@@ -1,6 +1,7 @@
 use config::{Config as ConfigLib, File};
 use serde::Deserialize;
 use color_eyre::eyre::{Result, Report};
+use std::path::PathBuf;
 
 #[derive(Debug, Deserialize)]
 pub struct ConfigFile {
@@ -32,8 +33,12 @@ pub struct Player {
 
 /// load config from `config.toml` file
 pub fn load_config() -> Result<ConfigFile> {
+    let mut config_path = dirs::config_dir().unwrap_or_else(|| PathBuf::from("."));
+    config_path.push("toutui/config.toml");
+    let config_path_str = config_path.to_str().unwrap().to_string();
+
     let config = ConfigLib::builder()
-        .add_source(File::with_name("../config.toml"))
+        .add_source(File::with_name(&config_path_str))
         .build()
         .map_err(|e| Report::new(e))?;
 
