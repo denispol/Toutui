@@ -44,3 +44,9 @@
 2025-02-21 09:27:28.874 [INFO] - Database ready
 2025-02-21 09:27:41.332 [INFO] - [update_id_selected_lib] The library has been updated
 2025-02-21 09:28:08.199 [INFO] - Database ready
+2025-02-21 09:43:16.902 [INFO] - [delete_user] User 'alban' deleted.
+2025-02-21 09:43:30.729 [INFO] - Login
+2025-02-21 09:44:02.915 [INFO] - [auth_process] Login successful
+2025-02-21 09:44:03.807 [INFO] - Database ready
+2025-02-21 09:50:38.397 [INFO] - Database ready
+2025-02-21 09:50:47.761 [INFO] - App successfuly successfully exited

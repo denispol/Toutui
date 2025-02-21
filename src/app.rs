@@ -34,8 +34,7 @@ use ratatui::widgets::Block;
 use ratatui::style::{Color, Style};
 use crate::utils::pop_up_message::*;
 use crate::utils::changelog::*;
-
-
+use log::{info, warn, error, LevelFilter};
 
 pub enum AppView {
     Home,
@@ -624,11 +623,17 @@ impl App {
             };
             self.toggle_view()
         }
-        KeyCode::Char('Q') | KeyCode::Esc => process::exit(0), // need to exit run function once, and after
-                                                       // should quit once again the run from loop main function :
-                                                       // (`let result = app.run(&mut terminal);`)
-        KeyCode::Char('R') => self.should_exit = true, // same as above, need to quit once before
-                                                       // be able to execute `R` from main function 
+        // need to exit run function once, and after
+        // should quit once again the run from loop main function :
+        // (`let result = app.run(&mut terminal);`)
+        // same as above, need to quit once before
+        // be able to execute `R` from main function 
+        KeyCode::Char('Q') | KeyCode::Esc => {
+            info!("App successfully quited");
+            process::exit(0);
+
+        }        
+        KeyCode::Char('R') => self.should_exit = true, 
         KeyCode::Char('j') | KeyCode::Down => {
             self.select_next();
             self.scroll_offset = 0; 
