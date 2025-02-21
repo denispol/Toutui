@@ -132,3 +132,86 @@
 
                 echo 'TOUTUI_SECRET_KEY=secret' >> ~/.config/toutui/.env
 2025-02-21 15:08:15.600 [ERROR] - No secret found in .env. Do this: echo 'TOUTUI_SECRET_KEY=secret' >> ~/.config/toutui/.env
+2025-02-21 15:31:07.597 [INFO] - App successfully quited
+2025-02-21 15:32:30.819 [INFO] - Database ready
+2025-02-21 15:32:30.820 [ERROR] - No secret found in .env. Do this:
+
+                mkdir -p ~/.config/toutui
+
+                echo 'TOUTUI_SECRET_KEY=secret' >> ~/.config/toutui/.env
+2025-02-21 15:33:25.406 [INFO] - Database ready
+2025-02-21 15:33:25.407 [ERROR] - Failed to decrypt the token.
+2025-02-21 15:33:42.599 [ERROR] - Failed to decrypt the token.
+2025-02-21 15:33:50.475 [ERROR] - Failed to decrypt the token.
+2025-02-21 15:33:53.903 [INFO] - [handle_l_book][post_start_playback_session_book] OK
+2025-02-21 15:33:53.903 [INFO] - [handle_l_book][start_vlc] VLC successfully launched
+2025-02-21 15:33:59.918 [WARN] - [fetch_vlc_is_playing] Failed to connect to VLC at port 1234: Connection refused (os error 111)
+2025-02-21 15:33:59.953 [INFO] - [handle_l_book] Session successfully closed
+2025-02-21 15:34:00.061 [INFO] - [handle_l_book] VLC closed
+2025-02-21 15:36:14.094 [INFO] - App successfully quited
+2025-02-21 15:37:09.607 [INFO] - Database ready
+2025-02-21 15:37:09.608 [ERROR] - Failed to decrypt the token.
+2025-02-21 15:40:55.731 [INFO] - App successfully quited
+2025-02-21 15:41:07.908 [INFO] - Login
+2025-02-21 15:41:17.793 [INFO] - Login
+2025-02-21 15:41:25.074 [INFO] - cA3PtWmC8VGlx0x52c7fi5TZuqUaPs+Jid0aOG56Pnm5zYeJHhrv+aNjI+DSeElnd4jGf8xDIc9D4uHRznB0FeQOcy3Z/0BhTKewfCsMraP6sH5C7HFSYdsEH9kh/+mEjQJQTnLDH86BkGMrTNK2/tydbbr+EyIH/STaHOXTMIB/jGnH9kTGh6OmxTWx/pHBPg0dfE+0VLnxdQmirsHZugaN5KY4vTlMnNqyiigp2685kyMSsGR71HabNIZDFVIudBhUQ5DYnozvD68knRa2cQ==
+2025-02-21 15:41:25.079 [INFO] - [auth_process] Login successful
+2025-02-21 15:41:26.688 [INFO] - cA3PtWmC8VGlx0x52c7fi5TZuqUaPs+Jid0aOG56Pnm5zYeJHhrv+aNjI+DSeElnd4jGf8xDIc9D4uHRznB0FeQOcy3Z/0BhTKewfCsMraP6sH5C7HFSYdsEH9kh/+mEjQJQTnLDH86BkGMrTNK2/tydbbr+EyIH/STaHOXTMIB/jGnH9kTGh6OmxTWx/pHBPg0dfE+0VLnxdQmirsHZugaN5KY4vTlMnNqyiigp2685kyMSsGR71HabNIZDFVIudBhUQ5DYnozvD68knRa2cQ==
+2025-02-21 15:41:26.694 [INFO] - [auth_process] Login successful
+2025-02-21 15:41:27.588 [INFO] - Database ready
+2025-02-21 15:42:49.303 [INFO] - [handle_l_book][post_start_playback_session_book] OK
+2025-02-21 15:42:49.305 [INFO] - [handle_l_book][start_vlc] VLC successfully launched
+2025-02-21 15:42:55.311 [WARN] - [fetch_vlc_is_playing] Failed to connect to VLC at port 1234: Connection refused (os error 111)
+2025-02-21 15:42:55.361 [INFO] - [handle_l_book] Session successfully closed
+2025-02-21 15:42:55.458 [INFO] - [handle_l_book] VLC closed
+2025-02-21 15:46:02.096 [INFO] - App successfully quited
+2025-02-21 15:46:13.529 [INFO] - Database ready
+2025-02-21 15:46:13.530 [INFO] - Token successfully decrypted
+2025-02-21 15:46:28.416 [INFO] - Token successfully decrypted
+2025-02-21 15:46:35.203 [INFO] - [update_id_selected_lib] The library has been updated
+2025-02-21 15:46:35.971 [INFO] - Token successfully decrypted
+2025-02-21 15:46:49.481 [INFO] - Token successfully decrypted
+2025-02-21 15:47:52.776 [INFO] - App successfully quited
+2025-02-21 15:48:05.399 [INFO] - Database ready
+2025-02-21 15:48:17.237 [INFO] - [delete_user] User deleted.
+2025-02-21 15:48:18.647 [INFO] - App successfully quited
+2025-02-21 15:48:20.614 [INFO] - Login
+2025-02-21 15:48:38.865 [INFO] - Token successfully encrypted
+2025-02-21 15:48:38.925 [INFO] - [auth_process] Login successful
+2025-02-21 15:48:39.751 [INFO] - Database ready
+2025-02-21 15:50:04.839 [INFO] - [delete_user] User deleted.
+2025-02-21 15:50:05.522 [INFO] - App successfully quited
+2025-02-21 15:50:06.678 [INFO] - Login
+2025-02-21 15:50:13.889 [INFO] - Login
+2025-02-21 15:50:20.039 [INFO] - Login
+2025-02-21 15:50:22.945 [ERROR] - [auth_process] Login failed: error sending request for url (https://audiobook.nuagemagique.duckdns.org/login): error trying to connect: dns error: failed to lookup address information: Temporary failure in name resolution
+2025-02-21 15:50:22.947 [ERROR] - [auth_process] Login failed: error sending request for url (https://audiobook.nuagemagique.duckdns.org/login): error trying to connect: dns error: failed to lookup address information: No address associated with hostname
+2025-02-21 15:50:33.244 [INFO] - Login
+2025-02-21 15:50:33.316 [INFO] - Token successfully encrypted
+2025-02-21 15:50:33.322 [INFO] - [auth_process] Login successful
+2025-02-21 15:50:39.589 [INFO] - Database ready
+2025-02-21 15:51:37.745 [INFO] - [delete_user] User deleted.
+2025-02-21 15:51:38.255 [INFO] - App successfully quited
+2025-02-21 15:51:39.839 [INFO] - Login
+2025-02-21 15:51:45.927 [INFO] - Login
+2025-02-21 15:51:45.971 [INFO] - Token successfully encrypted
+2025-02-21 15:51:45.975 [INFO] - [auth_process] Login successful
+2025-02-21 15:51:57.244 [INFO] - Token successfully encrypted
+2025-02-21 15:51:57.252 [INFO] - [auth_process] Login successful
+2025-02-21 15:51:58.104 [INFO] - Database ready
+2025-02-21 15:52:50.772 [INFO] - App successfully quited
+2025-02-21 15:52:52.177 [INFO] - Database ready
+2025-02-21 15:52:52.178 [ERROR] - No secret found in .env. Do this:
+
+                mkdir -p ~/.config/toutui
+
+                echo 'TOUTUI_SECRET_KEY=secret' >> ~/.config/toutui/.env
+2025-02-21 15:53:42.216 [INFO] - Database ready
+2025-02-21 15:53:42.217 [ERROR] - Failed to decrypt the token.
+2025-02-21 15:54:21.523 [INFO] - Login
+2025-02-21 15:54:38.584 [ERROR] - [auth_process] Login failed: builder error: relative URL without a base
+2025-02-21 15:54:39.576 [INFO] - Login
+2025-02-21 15:54:46.202 [INFO] - Token successfully encrypted
+2025-02-21 15:54:46.208 [INFO] - [auth_process] Login successful
+2025-02-21 15:54:46.969 [INFO] - Database ready
+2025-02-21 15:55:18.159 [INFO] - App successfully quited

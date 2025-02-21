@@ -169,36 +169,22 @@ impl App {
         // init changelog
         let changelog = changelog();
                                         
-        // encrypt token: 
-        let mut token_to_enc = "".to_string();
-        match encrypt_token("1234") {
-            Ok(encrypted_token) => {
-                token_to_enc = encrypted_token;
-                info!("{}", token_to_enc);
-            }
-            Err(e) => {
-                println!("Error: {}", e);
-            }
-        }
-
-        //decrypt_token
-        let mut token_decrypt = "";
-        match decrypt_token(token_to_enc.as_str().clone()) {
-            Ok(decrypted_token) => {
-                token_decrypt = decrypted_token.as_str();
-                info!("{}", token_decrypt);
-            }
-            Err(e) => {
-                println!("Error: {}", e);
-            }
-        }
-
-        //let token = decrypt_token(tokenen);
-        // init token 
+    
+        // retrieve crypted token from database
         let mut token: String = String::new();
         if let Some(var_token) = database.default_usr.get(2) {
             token = var_token.clone();
         }
+        match decrypt_token(token.as_str().clone()) {
+            Ok(decrypted_token) => {
+                token = decrypted_token;
+                //info!("Token successfully decrypted")
+            }
+            Err(e) => {
+                println!("Error: {}", e);
+            }
+        }
+
 
         // init server_address
         let mut server_address: String = String::new();
