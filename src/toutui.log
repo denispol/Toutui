@@ -21,3 +21,26 @@
 2025-02-21 09:05:53.460 [INFO] - Database ready
 2025-02-21 09:06:23.136 [INFO] - Database ready
 2025-02-21 09:10:07.358 [INFO] - Database ready
+2025-02-21 09:14:15.707 [INFO] - Database ready
+2025-02-21 09:15:05.373 [INFO] - [update_id_selected_lib] The library has been updated
+2025-02-21 09:16:26.188 [INFO] - Database ready
+2025-02-21 09:16:39.142 [INFO] - [delete_user] User 'alban' deleted.
+2025-02-21 09:16:55.643 [INFO] - [auth_process] Login successful
+2025-02-21 09:17:01.779 [INFO] - [auth_process] Login successful
+2025-02-21 09:17:02.676 [INFO] - Database ready
+2025-02-21 09:17:18.640 [INFO] - [update_id_selected_lib] The library has been updated
+2025-02-21 09:17:24.329 [INFO] - [delete_user] User 'alban' deleted.
+2025-02-21 09:17:30.212 [ERROR] - [auth_process] Login failed: error sending request for url (https://audiobook.nuagemagique.duckdns.or/login): error trying to connect: dns error: failed to lookup address information: Name or service not known
+2025-02-21 09:17:33.605 [ERROR] - [auth_process] Login failed: Login failed
+2025-02-21 09:17:40.405 [INFO] - [auth_process] Login successful
+2025-02-21 09:17:41.275 [INFO] - Database ready
+2025-02-21 09:18:47.673 [INFO] - Database ready
+2025-02-21 09:20:07.112 [INFO] - Database ready
+2025-02-21 09:20:22.864 [INFO] - [update_id_selected_lib] The library has been updated
+2025-02-21 09:21:28.338 [INFO] - Database ready
+2025-02-21 09:21:48.182 [INFO] - [update_id_selected_lib] The library has been updated
+2025-02-21 09:24:49.479 [INFO] - Database ready
+2025-02-21 09:25:03.747 [INFO] - [update_id_selected_lib] The library has been updated
+2025-02-21 09:27:28.874 [INFO] - Database ready
+2025-02-21 09:27:41.332 [INFO] - [update_id_selected_lib] The library has been updated
+2025-02-21 09:28:08.199 [INFO] - Database ready
