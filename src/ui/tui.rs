@@ -36,7 +36,7 @@ impl Widget for &mut App {
             AppView::Settings => self.render_settings(area, buf),
             AppView::SettingsAccount => self.render_settings_account(area, buf),
             AppView::SettingsLibrary => self.render_settings_library(area, buf),
-            AppView::SettingsAbout => self.render_settings_about(area, buf),
+            AppView::SettingsAbout => {},
         }
     }
 }
@@ -99,21 +99,30 @@ impl App {
 
     /// AppView::Settings rendering
     fn render_settings(&mut self, area: Rect, buf: &mut Buffer) {
-        let [header_area, main_area, footer_area] = Layout::vertical([
+        let [header_area, main_area, refresh_area, footer_area] = Layout::vertical([
             Constraint::Length(2),
             Constraint::Fill(1),
+            Constraint::Length(1),
             Constraint::Length(2),
         ]).areas(area);
         
-        let [list_area, item_area] = Layout::vertical([Constraint::Fill(1), Constraint::Fill(1),]).areas(main_area);
+        let [list_area, item_area1, item_area2] = Layout::vertical([Constraint::Fill(1), Constraint::Length(3), Constraint::Fill(1)]).areas(main_area);
 
         let render_list_title = "Settings";
-        let text_render_footer = "Use j/↓, k/↑ to move, l/→ to see options,\n Tab to back home, RR to refresh, Q/Esc to quit.";
+
+        let mut text_render_footer = "";
+        if self.list_state_settings.selected() == Some(2) {
+        // for `About` section
+        text_render_footer = "Use j/↓, k/↑ to move, Scroll what's new: J(down) K(up) H(top),\n Tab to back home, RR to refresh, Q/Esc to quit.";
+        } else {
+        text_render_footer = "Use j/↓, k/↑ to move, l/→ to see options,\n Tab to back home, RR to refresh, Q/Esc to quit.";
+        }
 
         App::render_header(header_area, buf, self.lib_name_type.clone(), &self.username, &self.server_address_pretty, VERSION);
         App::render_footer(footer_area, buf, text_render_footer);
         self.render_list(list_area, buf, render_list_title, &self.settings.clone(), &mut self.list_state_settings.clone());
-        //self.render_selected_item(item_area, buf, &self.titles_library.clone(), self.auth_names_library.clone());
+        self.render_info_settings(item_area1, buf, &mut self.list_state_settings.clone());
+        self.render_desc_settings(item_area2, buf, &mut self.list_state_settings.clone());
     }
 
     /// AppView::SettingsAccount rendering
@@ -154,24 +163,6 @@ impl App {
         //self.render_selected_item(item_area, buf, &self.titles_library.clone(), self.auth_names_library.clone());
     }
 
-    /// AppView::SettingsLibrary rendering
-    fn render_settings_about(&mut self, area: Rect, buf: &mut Buffer) {
-        let [header_area, main_area, footer_area] = Layout::vertical([
-            Constraint::Length(2),
-            Constraint::Fill(1),
-            Constraint::Length(2),
-        ]).areas(area);
-        
-        let [list_area, item_area] = Layout::vertical([Constraint::Fill(1), Constraint::Fill(1),]).areas(main_area);
-
-        let render_list_title = "Settings library";
-        let text_render_footer = "Use h to back, l/→ to change library,\n Tab to back home, RR to refresh, Q/Esc to quit.";
-
-        App::render_header(header_area, buf, self.lib_name_type.clone(), &self.username, &self.server_address_pretty, VERSION);
-        App::render_footer(footer_area, buf, text_render_footer);
-        self.render_list(list_area, buf, render_list_title, &self.libraries_names.clone(), &mut &mut self.list_state_settings_library.clone());
-        //self.render_selected_item(item_area, buf, &self.titles_library.clone(), self.auth_names_library.clone());
-    }
 
     /// AppView::SearchBook rendering
     fn render_search_book(&mut self, area: Rect, buf: &mut Buffer) {
@@ -617,6 +608,44 @@ impl App {
                 .render(area, buf);
         }
     }
+    
+    // info for settings
+    fn render_info_settings(&self, area: Rect, buf: &mut Buffer, list_state: &ListState) {
+            
+        match list_state.selected() {
+            Some(0) => {}
+            Some(1) => {}
+            Some(2) => {
+
+            Paragraph::new(format!("Toutui v{} - Licence: GPL-3.0 - Contact: albdav.dev@gmail.com\nSource code: {}\nWhat's new:", 
+                    VERSION,
+                    "https://github.com/AlbanDAVID/Toutui",
+                    ))
+                .left_aligned()
+                .render(area, buf);
+            }
+            _ => {}
+        }
+        
+    }
+
+    // desc for settings
+    fn render_desc_settings(&self, area: Rect, buf: &mut Buffer, list_state: &ListState) {
+
+        match list_state.selected() {
+
+            Some(0) => {}
+            Some(1) => {}
+            Some(2) => {
+                Paragraph::new(self.changelog.clone())
+                    .scroll((self.scroll_offset as u16, 0))
+                    .wrap(Wrap { trim: true })
+                    .render(area, buf);
+                }
+            _ =>  {}
+        }
+    }
+
     fn alternate_colors(i: usize) -> Color {
         let mut color_bg_list = Vec::new();
         let mut color_alt_bg_list = Vec::new();

@@ -33,6 +33,7 @@ use crossterm::{cursor, execute, terminal};
 use ratatui::widgets::Block;
 use ratatui::style::{Color, Style};
 use crate::utils::pop_up_message::*;
+use crate::utils::changelog::*;
 
 
 
@@ -152,6 +153,7 @@ pub struct App {
    pub is_cvlc_term: String,
    pub start_vlc_program: String,
    pub config: ConfigFile,
+   pub changelog: String,
 }
 
 /// Init app
@@ -163,6 +165,9 @@ impl App {
 
         // init database from Database struct
         let mut database = Database::new().await?;
+
+        // init changelog
+        let changelog = changelog();
                                         
         // init token 
         let mut token: String = String::new();
@@ -575,6 +580,7 @@ impl App {
             is_cvlc_term,
             start_vlc_program,
             config,
+            changelog,
         })
     }
 
@@ -757,7 +763,6 @@ impl App {
                     match self.list_state_settings.selected() {
                         Some(0) => self.view_state = AppView::SettingsAccount,
                         Some(1) => self.view_state = AppView::SettingsLibrary,
-                        Some(2) => self.view_state = AppView::SettingsAbout,
                         _ => {}
                     }
                 }
