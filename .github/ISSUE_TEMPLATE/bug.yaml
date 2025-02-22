@@ -1,0 +1,81 @@
+name: Bug Report
+description: File a bug/issue allow for improve Toutui
+title: '[Bug]: '
+labels: ['bug']
+body:
+  - type: markdown
+    attributes:
+      value: 'Thank you for filing a bug report!'
+  - type: markdown
+    attributes:
+      value: 'Please first check if the bug is listed into [known bugs](https://github.com/AlbanDAVID/Toutui/blob/main/known_bugs.md) or issues.'
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+    validations:
+      required: true
+  - type: textarea
+    id: what-was-expected
+    attributes:
+      label: What did you expect to happen?
+      placeholder: Explain what you expected to see, give screenshot if it's applicable.
+    validations:
+      required: true
+  - type: textarea
+    id: steps-to-reproduce
+    attributes:
+      label: Steps to reproduce the issue
+      value: '1. '
+    validations:
+      required: true
+  - type: markdown
+    attributes:
+      value: '## Install Environment'
+  - type: input
+    id: version
+     attributes:
+      label: Toutui version
+      description: Do not put 'Latest version', please put the actual version here
+      placeholder: 'e.g. v0.1.0-beta'
+    attributes:
+      label: Audiobookshelf version
+      description: Do not put 'Latest version', please put the actual version here
+      placeholder: 'e.g. v2.19.4'
+    validations:
+      required: true
+  - type: dropdown
+    id: install
+    attributes:
+      label: On which distro are you running Toutui?
+       validations:
+      required: true
+    attributes:
+      label: How did you install Toutui?
+       options:
+        - Yay
+        - Git
+        - Other (list in "Additional Notes" box)
+       validations:
+      required: true
+    attributes:
+      label: On which terminal emulator are you running Toutui?
+       validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs
+      description: Logs are present in ~/.config/toutui/toutui.log
+      placeholder: Paste logs here
+  - type: textarea
+    id: panicked message
+    attributes:
+      label: Panicked
+      description: If the app panicked/crashed and left a message
+      placeholder: Paste message here
+  - type: textarea
+    id: additional-notes
+    attributes:
+      label: Additional Notes
+      description: Anything else you want to add?
