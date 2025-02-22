@@ -24,7 +24,7 @@ At worst, you may experience **sync issues**, but there is **no risk** of data l
 
 ## 🚨 Installation Instructions
 
-**⚠️ If you follow all the instructions but installation fails, please open an issue.**
+**⚠️ If you follow all the instructions but installation fails, please open an installation issue.**
 
 ### For Arch Users
 Soon
@@ -40,6 +40,7 @@ Soon
 - Optional, only if you use cvlc:
 - `Netcat`
 - `Kitty terminal emulator`
+*⚠️ If you had to install a package that is not listed above, please open an installation issue.*
 
 #### **Install:**
 - `git pull https://github.com/AlbanDAVID/Toutui`
