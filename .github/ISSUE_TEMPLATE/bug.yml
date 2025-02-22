@@ -13,7 +13,7 @@ body:
     id: what-happened
     attributes:
       label: What happened?
-      placeholder: Tell us what you see!
+      placeholder: Tell us what you see and give screenshot if it's applicable.
     validations:
       required: true
   - type: textarea
