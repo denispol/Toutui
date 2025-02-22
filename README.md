@@ -1,5 +1,10 @@
-# :partyparrot: Toutui is a TUI Audiobookshelf client for Linux.
+# 📖 Toutui: A TUI Audiobookshelf Client for Linux  
+🚀 **Experience the power of audiobooks in your terminal!**  
 
-![demo](assets/demo_1.gif)
+![🎬 Demo](assets/demo_1.gif)  
 
-
+## ✨ Features  
+✅ **Lightweight & Fast** – A minimalist, terminal-based UI (TUI)  
+✅ **Supports Books & Podcasts** – Enjoy both audiobooks and podcasts  
+✅ **Sync Progress & Stats** – Keep your listening progress in sync  
+✅ **Streaming Support** – Play directly without downloading  
