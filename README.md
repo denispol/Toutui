@@ -63,7 +63,7 @@ When a new release is available, follow these steps:
 
 - `git pull https://github.com/AlbanDAVID/Toutui`
 - `cargo run --release`
-- If any, others instructions will be added here
+- If any, others update instructions will be added here
 
 
 
