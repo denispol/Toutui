@@ -29,7 +29,6 @@ At worst, you may experience **sync issues**, but there is **no risk** of data l
 TODO
 
 ### Git
-(The install and update process will soon be easier thanks to a script.)
 
 #### **Requirements:**
 - `Rust`
