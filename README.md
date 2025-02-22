@@ -1,3 +1,3 @@
 # toutui
 
-![demo](assets/demo.gif)
+![demo](assets/demo_1.gif)
