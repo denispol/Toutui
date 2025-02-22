@@ -69,7 +69,7 @@ body:
   - type: textarea
     id: error-message
     attributes:
-      label: Error message?
+      label: Error message
       description: Error message during the installation
       placeholder: Paste message here
   - type: textarea
