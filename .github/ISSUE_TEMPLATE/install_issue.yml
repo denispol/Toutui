@@ -1,0 +1,116 @@
+name: 🔧 Installation issue
+description: If you have any issue during the installation
+title: '[Installation issue]: '
+labels: ['install issue']
+body:
+  - type: markdown
+    attributes:
+      value: '🦜 Thanks for taking the time to fill out this installation issue!'
+  - type: markdown
+    attributes:
+      value: 'Please first check if the issue is listed into issues.'
+  - type: dropdown
+    id: missing-requirement
+    attributes:
+      label: Does this issue concern a missing requirement?
+      options:
+        - No
+        - Yes (fill in the missing package below)
+    validations:
+      required: true
+  - type: textarea
+    id: missing-package
+    attributes:
+      label: Missing Requirement
+      description: If the issue is due to a missing package, specify which one(s) here.
+      placeholder: e.g., libssl-dev, sqlite3, VLC
+  - type: markdown
+    attributes:
+      value: '---'
+  - type: markdown
+    attributes:
+      value: 'If your issue **does not** concern a missing requirement, continue below:'
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      placeholder: Tell us what you see and give a screenshot if it's applicable.
+    validations:
+      required: true
+  - type: textarea
+    id: steps-to-reproduce
+    attributes:
+      label: Steps to reproduce the issue
+      value: '1. '
+    validations:
+      required: true
+  - type: markdown
+    attributes:
+      value: '## Install Environment'
+  - type: input
+    id: version
+    attributes:
+      label: Toutui version
+      description: Do not put 'Latest version', please put the actual version here
+      placeholder: 'e.g. v0.1.0-beta'
+    validations:
+      required: true
+  - type: input
+    id: audiobookshelf-version
+    attributes:
+      label: Audiobookshelf version
+      description: Do not put 'Latest version', please put the actual version here
+      placeholder: 'e.g. v2.19.4'
+    validations:
+      required: true
+  - type: dropdown
+    id: install-distro
+    attributes:
+      label: On which distro are you running Toutui?
+      options:
+        - Arch Linux
+        - Ubuntu
+        - Debian
+        - Other (list in "Additional Notes" box)
+    validations:
+      required: true
+  - type: dropdown
+    id: install-method
+    attributes:
+      label: How did you install Toutui?
+      options:
+        - Yay
+        - Git
+        - Other (list in "Additional Notes" box)
+    validations:
+      required: true
+  - type: dropdown
+    id: terminal-emulator
+    attributes:
+      label: On which terminal emulator are you running Toutui?
+      options:
+        - Alacritty
+        - Kitty
+        - GNOME Terminal
+        - Konsole
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs
+      description: Logs are present in ~/.config/toutui/toutui.log
+      placeholder: Paste logs here
+  - type: textarea
+    id: panicked-message
+    attributes:
+      label: Panicked/Crash message
+      description: If the app panicked/crashed and left a message
+      placeholder: Paste message here
+  - type: textarea
+    id: additional-notes
+    attributes:
+      label: Additional Notes
+      description: Anything else you want to add?
+
