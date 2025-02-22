@@ -47,7 +47,7 @@ Soon
 - `git pull https://github.com/AlbanDAVID/Toutui`
 - `cd Toutui/`
 - `mkdir -p ~/.config/toutui`
-- Token encryption in the database (NOTE: replace `secret`):
+- Token encryption in the database (**NOTE**: replace `secret`):
 - `echo 'TOUTUI_SECRET_KEY=secret' >> ~/.config/toutui/.env`
 - `cp config.example.toml ~/.config/toutui/config.toml`
 - `cargo run --release`
