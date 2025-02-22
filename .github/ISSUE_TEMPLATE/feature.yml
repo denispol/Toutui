@@ -8,7 +8,7 @@ body:
     attributes:
       label: Type of Enhancement
       options:
-        - None
+        - Not specified
         - Feature
         - Code
         - UI
