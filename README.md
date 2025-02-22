@@ -36,7 +36,7 @@ At worst, you may experience **sync issues**, but there is **no risk** of data l
 **⚠️ If you follow all the instructions but installation fails, please open an installation issue.**
 
 ### For Arch Users
-Soon
+🚧 Soon
 
 ### Git
 
