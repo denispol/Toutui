@@ -29,21 +29,17 @@ body:
       value: '---'
   - type: markdown
     attributes:
-      value: 'If your issue **does not** concern a missing requirement, continue below:'
+      value: 'If your issue **does not** concern a missing requirement, continue below (otherwise, you can submit now).'
   - type: textarea
     id: what-happened
     attributes:
       label: What happened?
       placeholder: Tell us what you see and give a screenshot if it's applicable.
-    validations:
-      required: true
   - type: textarea
     id: steps-to-reproduce
     attributes:
       label: Steps to reproduce the issue
       value: '1. '
-    validations:
-      required: true
   - type: markdown
     attributes:
       value: '## Install Environment'
@@ -53,16 +49,12 @@ body:
       label: Toutui version
       description: Do not put 'Latest version', please put the actual version here
       placeholder: 'e.g. v0.1.0-beta'
-    validations:
-      required: true
   - type: input
     id: audiobookshelf-version
     attributes:
       label: Audiobookshelf version
       description: Do not put 'Latest version', please put the actual version here
       placeholder: 'e.g. v2.19.4'
-    validations:
-      required: true
   - type: dropdown
     id: install-distro
     attributes:
@@ -72,8 +64,6 @@ body:
         - Ubuntu
         - Debian
         - Other (list in "Additional Notes" box)
-    validations:
-      required: true
   - type: dropdown
     id: install-method
     attributes:
@@ -82,8 +72,6 @@ body:
         - Yay
         - Git
         - Other (list in "Additional Notes" box)
-    validations:
-      required: true
   - type: dropdown
     id: terminal-emulator
     attributes:
@@ -94,8 +82,6 @@ body:
         - GNOME Terminal
         - Konsole
         - Other
-    validations:
-      required: true
   - type: textarea
     id: logs
     attributes:
@@ -113,4 +99,3 @@ body:
     attributes:
       label: Additional Notes
       description: Anything else you want to add?
-
