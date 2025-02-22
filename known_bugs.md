@@ -9,3 +9,6 @@
 
 `bug_id: 4`
 **Cursor:** When you quit the app, terminal cursor disappear.
+
+`bug_id: 5`
+**cvlc error sync:** If you use other command that `shutdown` to quit `cvlc` it may result of a sync issue.
