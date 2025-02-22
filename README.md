@@ -34,11 +34,12 @@ TODO
 #### **Requirements:**
 - `Rust`
 - `VLC`
-- `Netcat`
-- `Kitty terminal emulator`
 - `SQLite3`
 - `libssl-dev`
 - `Your terminal must support emojis`
+- Optional, only if you use cvlc:
+- `Netcat`
+- `Kitty terminal emulator`
 
 #### **Install:**
 - `git pull https://github.com/AlbanDAVID/Toutui`
