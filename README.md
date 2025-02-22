@@ -26,7 +26,7 @@ At worst, you may experience **sync issues**, but there is **no risk** of data l
 **⚠️ If you follow all the instructions but installation fails, please open an issue.**
 
 ### For Arch Users
-TODO
+Soon
 
 ### Git
 
