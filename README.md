@@ -1,4 +1,4 @@
-# 📖 Toutui: A TUI Audiobookshelf Client for Linux  
+# 🦜 Toutui: A TUI Audiobookshelf Client for Linux  
 🚀 **Experience the power of audiobooks in your terminal!**  
 
 ![🎬 Demo](assets/demo_1.gif)  
