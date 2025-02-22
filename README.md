@@ -22,6 +22,15 @@ If you encounter any issues that are **not yet listed** in the Issues section or
 🔐 You can use this app with **minimal risk** to your Audiobookshelf library.  
 At worst, you may experience **sync issues**, but there is **no risk** of data loss, deletion, or irreversible changes (API is just used to retrieve books and sync them).
 
+## 📝 Notes
+## 🎨 **UI**
+- The **font** and **emojis** may vary depending on the terminal you are using.
+- To ensure the best experience, it's recommended to use terminals that support **emoji rendering** properly (e.g., Kitty, Alacritty).
+
+### 🎧 **Using `cvlc`**
+- When using **`cvlc`** (command-line VLC), make sure to use the `shutdown` command when you want to quit the listening session.
+- This helps ensure that your books are successfully synced and prevents any potential issues.
+
 ## 🚨 Installation Instructions
 
 **⚠️ If you follow all the instructions but installation fails, please open an installation issue.**
