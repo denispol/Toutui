@@ -40,6 +40,7 @@ Soon
 - Optional, only if you use cvlc:
 - `Netcat`
 - `Kitty terminal emulator`
+
 *⚠️ If you had to install a package that is not listed above, please open an installation issue.*
 
 #### **Install:**
