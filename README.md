@@ -40,7 +40,7 @@ TODO
 - libssl-dev
 - Your terminal must support emojis
 
-Install : 
+#### **Install:**
 - `git pull https://github.com/AlbanDAVID/Toutui`
 - `cd Toutui/`
 - `mkdir -p ~/.config/toutui`
@@ -56,7 +56,7 @@ Install :
 - `toutui.log` — Log file.
 - `db.sqlite3` — SQLite database file.
 
-## Update
+#### **Update:**
 
 When a new release is available, follow these steps:
 
