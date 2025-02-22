@@ -43,12 +43,12 @@ TODO
 Install : 
 - `git pull https://github.com/AlbanDAVID/Toutui`
 - `cd Toutui/`
-- mkdir -p ~/.config/toutui
+- `mkdir -p ~/.config/toutui`
 - Token encryption in the database (NOTE: replace `secret`):
-- echo 'TOUTUI_SECRET_KEY=secret' >> ~/.config/toutui/.env
-- cp config.example.toml ~/.config/toutui/config.toml
-- cargo run --release
-- To find the binary: cd /target/release (./Toutui to exec)
+- `echo 'TOUTUI_SECRET_KEY=secret' >> ~/.config/toutui/.env`
+- `cp config.example.toml ~/.config/toutui/config.toml`
+- `cargo run --release`
+- To find the binary: `cd /target/release` (`./Toutui` to exec)
 
 #### After installation, you will have the following files in `~/.config/toutui`:
 - `.env` — Contains the secret key.
@@ -60,8 +60,8 @@ Install :
 
 When a new release is available, follow these steps:
 
-- git pull https://github.com/AlbanDAVID/Toutui
-- cargo run --release
+- `git pull https://github.com/AlbanDAVID/Toutui`
+- `cargo run --release`
 - If any, others insctructiosn will be add here
 
 
