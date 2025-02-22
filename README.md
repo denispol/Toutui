@@ -35,7 +35,7 @@ TODO
 - `Rust`
 - `VLC`
 - `Netcat`
-- `Kitty`
+- `Kitty terminal emulator`
 - `SQLite3`
 - `libssl-dev`
 - `Your terminal must support emojis`
