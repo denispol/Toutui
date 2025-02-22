@@ -35,12 +35,12 @@ body:
       value: '## Install Environment'
   - type: input
     id: version
-     attributes:
+    attributes:
       label: Toutui version
       description: Do not put 'Latest version', please put the actual version here
       placeholder: 'e.g. v0.1.0-beta'
   - type: input
-    id: version
+    id: audiobookshelf-version
     attributes:
       label: Audiobookshelf version
       description: Do not put 'Latest version', please put the actual version here
@@ -48,22 +48,26 @@ body:
     validations:
       required: true
   - type: dropdown
-    id: install
+    id: install-distro
     attributes:
       label: On which distro are you running Toutui?
-       validations:
+    validations:
       required: true
+  - type: dropdown
+    id: install-method
     attributes:
       label: How did you install Toutui?
-       options:
+      options:
         - Yay
         - Git
         - Other (list in "Additional Notes" box)
-       validations:
+    validations:
       required: true
+  - type: dropdown
+    id: terminal-emulator
     attributes:
       label: On which terminal emulator are you running Toutui?
-       validations:
+    validations:
       required: true
   - type: textarea
     id: logs
@@ -72,7 +76,7 @@ body:
       description: Logs are present in ~/.config/toutui/toutui.log
       placeholder: Paste logs here
   - type: textarea
-    id: panicked message
+    id: panicked-message
     attributes:
       label: Panicked
       description: If the app panicked/crashed and left a message
