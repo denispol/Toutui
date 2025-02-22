@@ -1,6 +1,7 @@
 ---
-name: Bug report
-about: Create a report to help us improve
+name: Bug
+about: Please first check if the bug is listed [here](https://github.com/AlbanDAVID/Toutui/blob/main/known_bugs.md)
+  or in the open issues.
 title: ''
 labels: ''
 assignees: ''
