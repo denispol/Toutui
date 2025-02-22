@@ -4,7 +4,7 @@ title: '[Enhancement]: '
 labels: ['enhancement']
 body:
   - type: dropdown
-    id: enhancment-type
+    id: enhancement-type
     attributes:
       label: Type of Enhancement
       options:
