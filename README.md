@@ -32,7 +32,7 @@ TODO
 (The install and update process will soon be easier thanks to a script.)
 
 #### **Requirements:**
-- `Rust: [Install Rust](https://www.rust-lang.org/tools/install)`
+- `Rust`
 - `VLC`
 - `Netcat`
 - `Kitty`
