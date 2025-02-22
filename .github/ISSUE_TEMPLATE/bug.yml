@@ -51,6 +51,11 @@ body:
     id: install-distro
     attributes:
       label: On which distro are you running Toutui?
+      options:
+        - Arch Linux
+        - Ubuntu
+        - Fedora
+        - Other
     validations:
       required: true
   - type: dropdown
@@ -67,6 +72,12 @@ body:
     id: terminal-emulator
     attributes:
       label: On which terminal emulator are you running Toutui?
+      options:
+        - Alacritty
+        - Kitty
+        - GNOME Terminal
+        - Konsole
+        - Other
     validations:
       required: true
   - type: textarea
