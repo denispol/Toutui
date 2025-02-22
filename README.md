@@ -13,7 +13,7 @@
 
 
 ## 🔮 Future Features  
-🚧 **Check the TODO list for upcoming improvements.**  
+🚧 **Soon: Check the TODO list for upcoming improvements.**  
 
 ## ⚠️ Caution: Beta Version  
 This app is still in beta and may contain bugs.  
