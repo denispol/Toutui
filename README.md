@@ -29,7 +29,7 @@ At worst, you may experience **sync issues**, but there is **no risk** of data l
 TODO
 
 ### Git
-(The install process will soon be easier thanks to an install script.)
+(The install and update process will soon be easier thanks to a script.)
 
 #### **Requirements:**
 - Rust: [Install Rust](https://www.rust-lang.org/tools/install)
@@ -41,10 +41,10 @@ TODO
 - Your terminal must support emojis
 
 Install : 
-- git pull https://github.com/AlbanDAVID/Toutui
-- cd Toutui/
+- `git pull https://github.com/AlbanDAVID/Toutui`
+- `cd Toutui/`
 - mkdir -p ~/.config/toutui
-- Token encyption in the database (replace secret):
+- Token encryption in the database (NOTE: replace `secret`):
 - echo 'TOUTUI_SECRET_KEY=secret' >> ~/.config/toutui/.env
 - cp config.example.toml ~/.config/toutui/config.toml
 - cargo run --release
