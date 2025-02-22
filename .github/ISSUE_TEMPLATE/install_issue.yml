@@ -46,19 +46,13 @@ body:
   - type: input
     id: version
     attributes:
-      label: Toutui version
+      label: Toutui version that you try to install
       description: Do not put 'Latest version', please put the actual version here
       placeholder: 'e.g. v0.1.0-beta'
-  - type: input
-    id: audiobookshelf-version
-    attributes:
-      label: Audiobookshelf version
-      description: Do not put 'Latest version', please put the actual version here
-      placeholder: 'e.g. v2.19.4'
   - type: dropdown
     id: install-distro
     attributes:
-      label: On which distro are you running Toutui?
+      label: On which distro are you trying to install Toutui?
       options:
         - Arch Linux
         - Ubuntu
@@ -67,32 +61,16 @@ body:
   - type: dropdown
     id: install-method
     attributes:
-      label: How did you install Toutui?
+      label: Which install method?
       options:
         - Yay
         - Git
         - Other (list in "Additional Notes" box)
-  - type: dropdown
-    id: terminal-emulator
-    attributes:
-      label: On which terminal emulator are you running Toutui?
-      options:
-        - Alacritty
-        - Kitty
-        - GNOME Terminal
-        - Konsole
-        - Other
   - type: textarea
-    id: logs
+    id: error-message
     attributes:
-      label: Logs
-      description: Logs are present in ~/.config/toutui/toutui.log
-      placeholder: Paste logs here
-  - type: textarea
-    id: panicked-message
-    attributes:
-      label: Panicked/Crash message
-      description: If the app panicked/crashed and left a message
+      label: Error message?
+      description: Error message during the installation
       placeholder: Paste message here
   - type: textarea
     id: additional-notes
