@@ -32,13 +32,13 @@ TODO
 (The install and update process will soon be easier thanks to a script.)
 
 #### **Requirements:**
-- Rust: [Install Rust](https://www.rust-lang.org/tools/install)
-- VLC
-- Netcat
-- Kitty
-- SQLite3
-- libssl-dev
-- Your terminal must support emojis
+- `Rust: [Install Rust](https://www.rust-lang.org/tools/install)`
+- `VLC`
+- `Netcat`
+- `Kitty`
+- `SQLite3`
+- `libssl-dev`
+- `Your terminal must support emojis`
 
 #### **Install:**
 - `git pull https://github.com/AlbanDAVID/Toutui`
