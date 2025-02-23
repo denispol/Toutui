@@ -66,7 +66,7 @@ mkdir -p ~/.config/toutui
 ##### Token encryption in the database (**NOTE**: replace `secret`):
 
 ```bash
-`echo TOUTUI_SECRET_KEY=secret' >> ~/.config/toutui/.env
+echo TOUTUI_SECRET_KEY=secret >> ~/.config/toutui/.env
 ```
 ```bash
 cp config.example.toml ~/.config/toutui/config.toml
