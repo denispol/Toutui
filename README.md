@@ -60,19 +60,19 @@ git clone https://github.com/AlbanDAVID/Toutui
 cd Toutui/
 ```
 ```bash
-`mkdir -p ~/.config/toutui`
+mkdir -p ~/.config/toutui
 ```
 ```bash
 Token encryption in the database (**NOTE**: replace `secret`):
 ```
 ```bash
-`echo 'TOUTUI_SECRET_KEY=secret' >> ~/.config/toutui/.env`
+`echo TOUTUI_SECRET_KEY=secret' >> ~/.config/toutui/.env
 ```
 ```bash
-`cp config.example.toml ~/.config/toutui/config.toml`
+cp config.example.toml ~/.config/toutui/config.toml
 ```
 ```bash
-`cargo run --release`
+cargo run --release
 ```
 ```bash
 To find the binary: `cd target/release` (`./Toutui` to exec)
