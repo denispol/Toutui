@@ -53,14 +53,16 @@ At worst, you may experience **sync issues**, but there is **no risk** of data l
 *⚠️ If you had to install a package that is not listed above, please open an installation issue.*
 
 #### **Install:**
-- `git clone https://github.com/AlbanDAVID/Toutui`
-- `cd Toutui/`
-- `mkdir -p ~/.config/toutui`
-- Token encryption in the database (**NOTE**: replace `secret`):
-- `echo 'TOUTUI_SECRET_KEY=secret' >> ~/.config/toutui/.env`
-- `cp config.example.toml ~/.config/toutui/config.toml`
-- `cargo run --release`
-- To find the binary: `cd target/release` (`./Toutui` to exec)
+```bash
+git clone https://github.com/AlbanDAVID/Toutui
+`cd Toutui/`
+`mkdir -p ~/.config/toutui`
+Token encryption in the database (**NOTE**: replace `secret`):
+`echo 'TOUTUI_SECRET_KEY=secret' >> ~/.config/toutui/.env`
+`cp config.example.toml ~/.config/toutui/config.toml`
+`cargo run --release`
+To find the binary: `cd target/release` (`./Toutui` to exec)
+```
 
 #### After installation, you will have the following files in `~/.config/toutui`:
 - `.env` — Contains the secret key.
