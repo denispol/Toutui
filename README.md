@@ -62,9 +62,9 @@ cd Toutui/
 ```bash
 mkdir -p ~/.config/toutui
 ```
-```bash
-Token encryption in the database (**NOTE**: replace `secret`):
-```
+
+##### Token encryption in the database (**NOTE**: replace `secret`):
+
 ```bash
 `echo TOUTUI_SECRET_KEY=secret' >> ~/.config/toutui/.env
 ```
