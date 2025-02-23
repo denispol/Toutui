@@ -90,8 +90,12 @@ cd target/release
 
 When a new release is available, follow these steps:
 
-- `git pull https://github.com/AlbanDAVID/Toutui`
-- `cargo run --release`
+```bash
+git pull https://github.com/AlbanDAVID/Toutui
+```
+```bash
+cargo run --release
+```
 - If any, others update instructions will be added here
 
 
