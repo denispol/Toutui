@@ -55,12 +55,26 @@ At worst, you may experience **sync issues**, but there is **no risk** of data l
 #### **Install:**
 ```bash
 git clone https://github.com/AlbanDAVID/Toutui
-`cd Toutui/`
+```
+```bash
+cd Toutui/
+```
+```bash
 `mkdir -p ~/.config/toutui`
+```
+```bash
 Token encryption in the database (**NOTE**: replace `secret`):
+```
+```bash
 `echo 'TOUTUI_SECRET_KEY=secret' >> ~/.config/toutui/.env`
+```
+```bash
 `cp config.example.toml ~/.config/toutui/config.toml`
+```
+```bash
 `cargo run --release`
+```
+```bash
 To find the binary: `cd target/release` (`./Toutui` to exec)
 ```
 
