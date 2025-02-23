@@ -74,8 +74,10 @@ cp config.example.toml ~/.config/toutui/config.toml
 ```bash
 cargo run --release
 ```
+##### Exec the binary:
 ```bash
-To find the binary: `cd target/release` (`./Toutui` to exec)
+`cd target/release`
+`./Toutui` 
 ```
 
 #### After installation, you will have the following files in `~/.config/toutui`:
