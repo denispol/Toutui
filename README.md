@@ -53,7 +53,7 @@ At worst, you may experience **sync issues**, but there is **no risk** of data l
 *⚠️ If you had to install a package that is not listed above, please open an installation issue.*
 
 #### **Install:**
-- ```git pull https://github.com/AlbanDAVID/Toutui```
+- `git clone https://github.com/AlbanDAVID/Toutui`
 - `cd Toutui/`
 - `mkdir -p ~/.config/toutui`
 - Token encryption in the database (**NOTE**: replace `secret`):
