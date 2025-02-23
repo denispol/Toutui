@@ -76,8 +76,8 @@ cargo run --release
 ```
 ##### Exec the binary:
 ```bash
-`cd target/release`
-`./Toutui` 
+cd target/release
+./Toutui
 ```
 
 #### After installation, you will have the following files in `~/.config/toutui`:
