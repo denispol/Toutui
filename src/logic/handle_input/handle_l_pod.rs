@@ -8,6 +8,7 @@ use crate::player::vlc::exec_nc::*;
 use crate::utils::pop_up_message::*;
 use std::io::stdout;
 use log::{info, error};
+use crate::db::crud::*;
 
 /// handle l for App::View PodcastEpisode
 
@@ -21,6 +22,7 @@ pub async fn handle_l_pod(
     server_address: String,
     program: String,
     is_cvlc_term: String,
+    username: String,
 
 ) {
     if let Some(index) = selected {
@@ -28,7 +30,13 @@ pub async fn handle_l_pod(
             // id is id of the podcast episode and id_pod is the id id of the podcast
             if let Some(token) = token {
                 if let Ok(info_item) = post_start_playback_session_pod(Some(&token),id_pod, &id, server_address.clone()).await {
+                    // close previous listening session if it was not did.
+                    let id_prev_list_session = get_id_prev_list_session(username.as_str());
+                    let _ = close_session_without_send_prg_data(Some(&token), id_prev_list_session.as_str(),  server_address.clone()).await;
+                    info!("[handle_l_pod][1] Session successfully closed");
+                    let _ = update_id_prev_list_session(info_item[3].as_str(), username.as_str());
                     info!("[handle_l_pod][post_start_playback_session_book] OK");
+
                     // clone otherwise, these variable will  be consumed and not available anymore
                     // for use outside start_vlc spawn
                     let token_clone = token.clone();
@@ -125,7 +133,7 @@ pub async fn handle_l_pod(
                                         //TODO minor bug : be sure to close the session above
                                         // close session when VLC is quitted
                                         let _ = close_session_without_send_prg_data(Some(&token), &info_item[3],  server_address.clone()).await;
-                                        info!("[handle_l_pod] Session successfully closed");
+                                        info!("[handle_l_pod][2] Session successfully closed");
                                         // send one last time media progress (bug to retrieve media
                                         // progress otherwise)
                                         let _ = update_media_progress_pod(id_pod, Some(&token), Some(data_fetched_from_vlc), &info_item[2], &id, server_address).await;

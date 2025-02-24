@@ -8,6 +8,7 @@ use crate::api::sessions::close_open_session::*;
 use crate::utils::pop_up_message::*;
 use std::io::stdout;
 use log::{info, error};
+use crate::db::crud::*;
 
 // handle l when is_podact is true for continue listening `AppView::Home`
 pub async fn handle_l_pod_home(
@@ -20,6 +21,7 @@ pub async fn handle_l_pod_home(
     server_address: String,
     program: String,
     is_cvlc_term: String,
+    username: String,
 
 ) {
     if let Some(index) = selected {
@@ -28,7 +30,13 @@ pub async fn handle_l_pod_home(
             if let Some(id_pod_ep) = id_pod.get(index) {
                 if let Some(token) = token {
                     if let Ok(info_item) = post_start_playback_session_pod(Some(&token), &id, id_pod_ep, server_address.clone()).await {
+                        // close previous listening session if it was not did.
+                        let id_prev_list_session = get_id_prev_list_session(username.as_str());
+                        let _ = close_session_without_send_prg_data(Some(&token), id_prev_list_session.as_str(), server_address.clone()).await;
+                        info!("[handle_l_pod_home][1] Session successfully closed");
+                        let _ = update_id_prev_list_session(info_item[3].as_str(), username.as_str());
                         info!("[handle_l_pod_home][post_start_playback_session_book] OK");
+
                         // clone otherwise, these variable will  be consumed and not available anymore
                         // for use outside start_vlc spawn
                         let token_clone = token.clone();
@@ -123,7 +131,7 @@ pub async fn handle_l_pod_home(
                                             //TODO minor bug : be sure to close the session above
                                             // close session when VLC is quitted
                                             let _ = close_session_without_send_prg_data(Some(&token), &info_item[3],  server_address.clone()).await;
-                                            info!("[handle_l_pod_home] Session successfully closed");
+                                            info!("[handle_l_pod_home][2] Session successfully closed");
                                             // send one last time media progress (bug to retrieve media
                                             // progress otherwise)
                                             let _ = update_media_progress_pod(id, Some(&token), Some(data_fetched_from_vlc), &info_item[2], &id_pod_ep, server_address).await;
