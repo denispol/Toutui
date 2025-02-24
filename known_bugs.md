@@ -17,7 +17,7 @@
 `bug_id: a49e`
 **cvlc error sync:** If you use other command that `shutdown` to quit `cvlc` it may result of a sync issue.
 
-**Fixed**
+**FIXED**
 
 `bug_id: fixed_dd9a649`
 **Listening Session:** Sometimes, the session (that you can see in `yourserveraddress/audiobookshelf/config/sessions`) does not close correctly, especially if you open VLC, quit it quickly, and start another book.  
