@@ -80,6 +80,9 @@ pub async fn collect_episodes_pod_ep(item: &Root) -> Vec<String> {
                 if let Some(episode) = &episode.episode {
                     episodes_pod_ep.push(episode.clone());
                 }
+                else {
+                    episodes_pod_ep.push("N/A".to_string());
+                }
             }
         }
     }
