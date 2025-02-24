@@ -1,5 +1,6 @@
 # 🦜 Toutui: A TUI Audiobookshelf Client for Linux  
-🚀 **Experience the power of Audiobookshelf in your terminal!**  
+<em>In french, being "tout ouïe" (toutui) is being all ears.</em>
+🚀 **So be Toutui, and experience the power of Audiobookshelf in your terminal!**  
 
 ![🎬 Demo](assets/demo_1.gif)  
 
