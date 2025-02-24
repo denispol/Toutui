@@ -22,14 +22,20 @@ pub async fn handle_l_book(
     is_cvlc_term: String,
     username: String,
 ) {
+    // not optimal solution but avoid `bug_id: 9bacac`
+    tokio::time::sleep(tokio::time::Duration::from_secs(5)).await;
+    info!("Loading...");
+
     if let Some(index) = selected {
         if let Some(id) = ids_library_items.get(index) {
             if let Some(token) = token {
                 if let Ok(info_item) = post_start_playback_session_book(Some(&token), id, server_address.clone()).await {
-                    let id_prev_list_session = get_id_prev_list_session(username.as_str());
-                    let _ = close_session_without_send_prg_data(Some(&token), id_prev_list_session.as_str(),  server_address.clone()).await;
-                    info!("[handle_l_book][1] Session successfully closed");
-                    let _ = update_id_prev_list_session(info_item[3].as_str(), username.as_str());
+                    //  close previous listening session if it was not did. (but need to also call
+                    // `update media progress` to be effective)
+                    // let id_prev_list_session = get_id_prev_list_session(username.as_str());
+                    // let _ = close_session_without_send_prg_data(Some(&token), id_prev_list_session.as_str(),  server_address.clone()).await;
+                    // info!("[handle_l_book][1] Session successfully closed");
+                    // let _ = update_id_prev_list_session(info_item[3].as_str(), username.as_str());
                     info!("[handle_l_book][post_start_playback_session_book] OK");
 
                     // clone otherwise, these variable will  be consumed and not available anymore
@@ -71,7 +77,7 @@ pub async fn handle_l_book(
 
 
                     // Important, sleep time to 1s minimum otherwise connection to vlc player will not have time to connect
-                    //tokio::time::sleep(std::time::Duration::from_secs(30)).await;
+                    //tokio::time::sleep(std::time::Duration::from_secs(3)).await;
                     tokio::time::sleep(tokio::time::Duration::from_secs(1)).await;
 
                     // init var for decide to send 0 sec in sync session if player is in pause
@@ -82,6 +88,7 @@ pub async fn handle_l_book(
                     //   the first iteration, it will shift the progress sync to 5 secondes
                     let mut last_current_time: u32 = 3;
                     let mut progress_sync: u32 = 3;
+
 
                     loop {
                         match fetch_vlc_data(port.clone(), address_player.clone()).await {
