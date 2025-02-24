@@ -20,7 +20,8 @@ let changelog_02 = format!(
         "Changelog Toutui v{} (02/24/2025) \n\
          Fixed:\n\
          \n\
-         App crash (out of bounds) when API send empty values.
+         - App crash (out of bounds) when API send empty values.
+         - Close listening session not always working.
          \n\
          Changed:\n\
          \n\
