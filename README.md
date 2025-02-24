@@ -18,7 +18,7 @@
 🚧 **Soon: Check the TODO list for upcoming improvements.**  
 
 ## ⚠️ Caution: Beta Version  
-This beta app is still in development and may contain bugs.
+This beta app is still in development and may contain bugs. 
 ❗ Please check [here](https://github.com/AlbanDAVID/Toutui/blob/main/known_bugs.md) for any **MAJOR BUGS** before using the app, so you can proceed with full awareness of any known issues. ❗
 If you encounter any issues that are **not yet listed** in the Issues section or into [known bugs](https://github.com/AlbanDAVID/Toutui/blob/main/known_bugs.md), please **open a new issue** to report them.  
 
