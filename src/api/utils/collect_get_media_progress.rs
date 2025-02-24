@@ -1,5 +1,7 @@
 use crate::api::me::get_media_progress::Root;
 
+// no need to handle null values here (there are handeled in `app.rs`) //
+
 pub async fn collect_progress_percentage_book(root: &Root) -> String {
     format!("{}", (root.progress * 100.0).round() as i64) 
 }

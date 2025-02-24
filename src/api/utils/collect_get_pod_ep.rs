@@ -10,6 +10,8 @@ pub async fn collect_titles_pod_ep(item: &Root) -> Vec<String> {
             for episode in episodes {
                 if let Some(title) = &episode.title {
                     titles_pod_ep.push(title.clone());
+                } else {
+                    titles_pod_ep.push("N/A".to_string());
                 }
             }
         }
@@ -27,7 +29,10 @@ pub async fn collect_ids_pod_ep(item: &Root) -> Vec<String> {
             for episode in episodes {
                 if let Some(id) = &episode.id {
                     ids_pod_ep.push(id.clone());
+                } else {
+                    ids_pod_ep.push("N/A".to_string());
                 }
+
             }
         }
     }
@@ -45,7 +50,10 @@ pub async fn collect_subtitles_pod_ep(item: &Root) -> Vec<String> {
             for episode in episodes {
                 if let Some(sub) = &episode.subtitle {
                     subtitles_pod_ep.push(sub.clone());
+                } else {
+                    subtitles_pod_ep.push("N/A".to_string());
                 }
+
             }
         }
     }
@@ -62,7 +70,10 @@ pub async fn collect_seasons_pod_ep(item: &Root) -> Vec<String> {
             for episode in episodes {
                 if let Some(season) = &episode.season {
                     seasons_pod_ep.push(season.clone());
+                } else {
+                    seasons_pod_ep.push("N/A".to_string());
                 }
+
             }
         }
     }
@@ -80,6 +91,9 @@ pub async fn collect_episodes_pod_ep(item: &Root) -> Vec<String> {
                 if let Some(episode) = &episode.episode {
                     episodes_pod_ep.push(episode.clone());
                 }
+                else {
+                    episodes_pod_ep.push("N/A".to_string());
+                }
             }
         }
     }
@@ -95,7 +109,10 @@ pub async fn collect_authors_pod_ep(item: &Root) -> Vec<String> {
         if let Some(metadata) = &media.metadata {
             if let Some(author) = &metadata.author {
                 authors_pod_ep.push(author.clone());
+            } else {
+                authors_pod_ep.push("N/A".to_string());
             }
+
         }
     }
 
@@ -110,7 +127,10 @@ pub async fn collect_descs_pod_ep(item: &Root) -> Vec<String> {
         if let Some(metadata) = &media.metadata {
             if let Some(desc) = &metadata.description {
                 descs_pod_ep.push(desc.clone());
+            } else {
+                descs_pod_ep.push("N/A".to_string());
             }
+
         }
     }
 
@@ -125,7 +145,10 @@ pub async fn collect_titles_pod(item: &Root) -> Vec<String> {
         if let Some(metadata) = &media.metadata {
             if let Some(title) = &metadata.title {
                 titles_pod.push(title.clone());
+            } else {
+                titles_pod.push("N/A".to_string());
             }
+
         }
     }
 
@@ -142,7 +165,10 @@ pub async fn collect_durations_pod_ep(item: &Root) -> Vec<String> {
                 if let Some(audio_file) = &episode.audio_file {
                     if let Some(duration) = audio_file.duration {
                         durations.push(duration);
+                    } else {
+                        durations.push(0.0);
                     }
+
                 }
             }
         }

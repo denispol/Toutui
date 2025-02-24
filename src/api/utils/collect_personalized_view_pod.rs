@@ -11,6 +11,8 @@ pub async fn collect_ids_pod_cnt_list(roots: &[Root]) -> Vec<String> {
                 if let Some(recent_episode) = &entity.recent_episode {
                     if let Some(library_item_id) = recent_episode.library_item_id.clone() {
                         ids_pod_cnt_list.push(library_item_id);
+                    } else {
+                        ids_pod_cnt_list.push("N/A".to_string());
                     }
                 }
             }
@@ -30,7 +32,10 @@ pub async fn collect_subtitles_pod_cnt_list(roots: &[Root]) -> Vec<String> {
                 if let Some(recent_episode) = &entity.recent_episode {
                     if let Some(subtitle) = &recent_episode.subtitle {
                         subtitles_pod_cnt_list.push(subtitle.clone());
+                    } else {
+                        subtitles_pod_cnt_list.push("N/A".to_string());
                     }
+
                 }
             }
         }
@@ -49,6 +54,8 @@ pub async fn collect_nums_ep_pod_cnt_list(roots: &[Root]) -> Vec<String> {
                 if let Some(recent_episode) = &entity.recent_episode {
                     if let Some(episode) = &recent_episode.episode {
                         nums_ep_pod_cnt_list.push(episode.clone());
+                    } else {
+                        nums_ep_pod_cnt_list.push("N/A".to_string())
                     }
                 }
             }
@@ -68,7 +75,10 @@ pub async fn collect_seasons_pod_cnt_list(roots: &[Root]) -> Vec<String> {
                 if let Some(recent_episode) = &entity.recent_episode {
                     if let Some(season) = &recent_episode.season {
                         seasons_pod_cnt_list.push(season.clone());
+                    } else {
+                        seasons_pod_cnt_list.push("N/A".to_string());
                     }
+
                 }
             }
         }
@@ -89,7 +99,10 @@ pub async fn collect_authors_pod_cnt_list(roots: &[Root]) -> Vec<String> {
                         if let Some(metadata) = &media.metadata {
                             if let Some(author) = &metadata.author {
                                 authors_pod_cnt_list.push(author.clone());
+                            } else {
+                                authors_pod_cnt_list.push("N/A".to_string());
                             }
+
                         }
                     }
                 }
@@ -112,7 +125,10 @@ pub async fn collect_descs_pod_cnt_list(roots: &[Root]) -> Vec<String> {
                         if let Some(metadata) = &media.metadata {
                             if let Some(desc) = &metadata.description {
                                 descs_pod_cnt_list.push(desc.clone());
+                            } else {
+                                descs_pod_cnt_list.push("N/A".to_string());
                             }
+
                         }
                     }
                 }
@@ -135,7 +151,10 @@ pub async fn collect_titles_pod_cnt_list(roots: &[Root]) -> Vec<String> {
                         if let Some(metadata) = &media.metadata {
                             if let Some(title) = &metadata.title {
                                 titles_pod_cnt_list.push(title.clone());
+                            } else {
+                                titles_pod_cnt_list.push("N/A".to_string());
                             }
+
                         }
                     }
                 }
@@ -156,7 +175,10 @@ pub async fn collect_durations_pod_cnt_list(roots: &[Root]) -> Vec<String> {
                     if let Some(audio_file) = &recent_episode.audio_file {
                         if let Some(duration) = audio_file.duration {
                             durations.push(duration);
+                        } else {
+                            durations.push(0.0);
                         }
+
                     }
                 }
             }
@@ -177,7 +199,10 @@ pub async fn collect_ids_ep_pod_cnt_list(roots: &[Root]) -> Vec<String> {
                 if let Some(recent_episode) = &entity.recent_episode {
                     if let Some(id) = recent_episode.id.clone() {
                         ids_ep_pod_cnt_list.push(id);
+                    } else {
+                        ids_ep_pod_cnt_list.push("N/A".to_string());
                     }
+
                 }
             }
         }
@@ -197,7 +222,10 @@ pub async fn collect_titles_cnt_list_pod(roots: &[Root]) -> Vec<String> {
                 if let Some(recent_episode) = &entity.recent_episode {
                     if let Some(title) = recent_episode.title.clone() {
                         titles_cnt_list.push(title);
+                    } else {
+                        titles_cnt_list.push("N/A".to_string());
                     }
+
                 }
             }
         }
