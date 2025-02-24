@@ -21,7 +21,7 @@ let changelog_02 = format!(
          Fixed:\n\
          \n\
          - App crash (out of bounds) when API send empty values.
-         - Close listening session not always working.
+         - Close listening session not always working (bug_id: fixed_dd9a64)
          \n\
          Changed:\n\
          \n\
