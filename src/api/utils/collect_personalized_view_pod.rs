@@ -49,6 +49,8 @@ pub async fn collect_nums_ep_pod_cnt_list(roots: &[Root]) -> Vec<String> {
                 if let Some(recent_episode) = &entity.recent_episode {
                     if let Some(episode) = &recent_episode.episode {
                         nums_ep_pod_cnt_list.push(episode.clone());
+                    } else {
+                        nums_ep_pod_cnt_list.push("N/A".to_string())
                     }
                 }
             }

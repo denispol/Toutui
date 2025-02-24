@@ -90,7 +90,7 @@ pub async fn collect_published_year_library(library: &Root) -> Vec<String> {
     published_year_library
 }
 
-/// collect published year
+/// collect description
 pub async fn collect_desc_library(library: &Root) -> Vec<String> {
     let mut desc_library = Vec::new();
 
@@ -100,6 +100,8 @@ pub async fn collect_desc_library(library: &Root) -> Vec<String> {
                 if let Some(metadata) = &media.metadata {
                     if let Some(desc) = &metadata.description {
                         desc_library.push(desc.clone());
+                    } else {
+                        desc_library.push("No description available".to_string());
                     }
                 }
             }
@@ -109,7 +111,7 @@ pub async fn collect_desc_library(library: &Root) -> Vec<String> {
     desc_library
 }
 
-/// collect published year
+/// collect duration
 pub async fn collect_duration_library(library: &Root) -> Vec<f64> {
     let mut duration = vec![];
 
