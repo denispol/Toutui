@@ -1,7 +1,7 @@
 **MAJOR**
 
 `bug_id: 9bacac` 
-**Sync**: If you open VLC and listening X, close VLC and and quickly open VLC again to listen Y: X will still be sync according to Y (normally, only Y has to be sync in this case).
+**Sync**: If you open VLC to listen X, close VLC and and quickly open VLC again to listen Y: X will still be sync - according to Y (normally, only Y has to be sync in this case).
 
 **MINOR**
 
