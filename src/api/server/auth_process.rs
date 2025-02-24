@@ -70,6 +70,8 @@ pub async fn auth_process(username: &str, password: &str, server_address: &str) 
             }
         }
 
+        // Init listening session
+        let id_previous_listening_session = "".to_string();
 
 
         /// Writting in database : 
@@ -83,6 +85,7 @@ pub async fn auth_process(username: &str, password: &str, server_address: &str) 
                 is_default_usr: true,
                 name_selected_lib: library_names[0].clone(), // by default we take the first library
                 id_selected_lib: library_ids[0].clone(),
+                id_previous_listening_session: id_previous_listening_session,
             }
         ];
 

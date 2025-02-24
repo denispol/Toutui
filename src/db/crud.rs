@@ -35,6 +35,51 @@ pub fn delete_user(username: &str) -> Result<()> {
     Ok(())
 }
 
+// Update id_previous_listening_session
+pub fn update_id_prev_list_session(id: &str, username: &str) -> Result<()> {
+
+    let mut db_path = dirs::config_dir().unwrap_or_else(|| PathBuf::from("."));
+    db_path.push("toutui/db.sqlite3");
+
+    let err_message = "Error connecting to the database.";
+
+    if let Ok(conn) = Connection::open(db_path) {
+
+        conn.execute(
+            "UPDATE users SET id_previous_listening_session = ?1 WHERE username = ?2",
+            params![id, username],
+        )?;
+    } else {
+        let mut stdout = stdout();
+        let _ = pop_message(&mut stdout, 3, err_message);
+        error!("[update_id_prev_list_session] {}", err_message);
+    }
+
+    Ok(())
+}
+
+
+// get id_previous_listening_session
+pub fn get_id_prev_list_session(username: &str) -> String {
+    let mut db_path = dirs::config_dir().unwrap_or_else(|| PathBuf::from("."));
+    db_path.push("toutui/db.sqlite3");
+
+    let conn = match Connection::open(db_path) {
+        Ok(c) => c,
+        Err(_) => return String::from("Error: unable open database"),
+    };
+
+    let mut stmt = match conn.prepare("SELECT id_previous_listening_session FROM users WHERE username = ?1") {
+        Ok(s) => s,
+        Err(_) => return String::from("Error to prepare reqwest"),
+    };
+
+    match stmt.query_row(params![username], |row| row.get::<_, String>(0)) {
+        Ok(id) => id,
+        Err(_) => String::from("No db found"),
+    }
+}
+
 // Update id_selected_lib
 pub fn update_id_selected_lib(id_selected_lib: &str, username: &str) -> Result<()> {
 
@@ -87,8 +132,8 @@ pub fn db_insert_usr(users : &Vec<User>)  -> Result<()> {
     let conn = Connection::open(db_path)?;
     for user in users {
         conn.execute(
-            "INSERT OR REPLACE INTO users (username, server_address, token, is_default_usr, name_selected_lib, id_selected_lib) 
-            VALUES (?1, ?2, ?3, ?4, ?5, ?6)",
+            "INSERT OR REPLACE INTO users (username, server_address, token, is_default_usr, name_selected_lib, id_selected_lib, id_previous_listening_session) 
+            VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7)",
             params![
             user.username,
             user.server_address,
@@ -96,6 +141,7 @@ pub fn db_insert_usr(users : &Vec<User>)  -> Result<()> {
             if user.is_default_usr { 1 } else { 0 },
             user.name_selected_lib,
             user.id_selected_lib,
+            user.id_previous_listening_session
             ],
         )?;
     }
@@ -111,7 +157,7 @@ pub fn select_default_usr() -> Result<Vec<String>> {
     let conn = Connection::open(db_path)?;
 
     let mut stmt = conn.prepare(
-        "SELECT username, server_address, token, is_default_usr, name_selected_lib, id_selected_lib
+        "SELECT username, server_address, token, is_default_usr, name_selected_lib, id_selected_lib, id_previous_listening_session
          FROM users WHERE is_default_usr = 1 LIMIT 1"
     )?;
 
@@ -124,6 +170,7 @@ pub fn select_default_usr() -> Result<Vec<String>> {
             is_default_usr: row.get::<_, i32>(3)? != 0,  // Convertir 0/1 en bool
             name_selected_lib: row.get(4)?,
             id_selected_lib: row.get(5)?,
+            id_previous_listening_session: row.get(6)?,
         })
     })?;
 
@@ -138,6 +185,7 @@ pub fn select_default_usr() -> Result<Vec<String>> {
                 result.push(user.is_default_usr.to_string());
                 result.push(user.name_selected_lib);
                 result.push(user.id_selected_lib);
+                result.push(user.id_previous_listening_session);
             }
             Err(e) => {
                 println!("Error occurred: {}", e);
@@ -169,7 +217,8 @@ pub fn init_db() -> Result<()> {
                 token TEXT NOT NULL,
                 is_default_usr INTEGER NOT NULL DEFAULT 0,
                 name_selected_lib TEXT NOT NULL,
-                id_selected_lib TEXT NOT NULL
+                id_selected_lib TEXT NOT NULL,
+                id_previous_listening_session TEXT NOT NULL
             )",
         [],
     )?;

@@ -236,7 +236,6 @@ impl App {
         false
     };
 
-
     // init for `Home` (continue listening)
     let mut titles_cnt_list: Vec<String> = Vec::new();
     let mut auth_names_cnt_list: Vec<String> = Vec::new();
@@ -691,6 +690,7 @@ impl App {
                 let port = self.config.player.port.clone();
                 let address_player = self.config.player.address.clone();
                 let server_address = self.server_address.clone();
+                let username = self.username.clone();
 
                 // Init for `Continue Listening` (AppView::Home)
                 let ids_cnt_list = self.ids_cnt_list.clone();
@@ -751,6 +751,7 @@ impl App {
                                     server_address,
                                     start_vlc_program,
                                     is_cvlc_term,
+                                    username,
                                 ).await;
                             });
                         } else {
@@ -766,6 +767,7 @@ impl App {
                                     server_address, 
                                     start_vlc_program,
                                     is_cvlc_term, 
+                                    username,
                                 ).await;
                             });
 
@@ -817,6 +819,7 @@ impl App {
                                         server_address, 
                                         start_vlc_program,
                                         is_cvlc_term, 
+                                        username,
                                     ).await;
                                 });
                             }
@@ -848,6 +851,7 @@ impl App {
                                         server_address, 
                                         start_vlc_program,
                                         is_cvlc_term, 
+                                        username,
                                     ).await;
                                 });
 
@@ -878,6 +882,7 @@ impl App {
                                             server_address, 
                                             start_vlc_program,
                                             is_cvlc_term, 
+                                            username,
                                         ).await;
                                     });
                                 }
@@ -905,6 +910,7 @@ impl App {
                                             server_address, 
                                             start_vlc_program,
                                             is_cvlc_term, 
+                                            username,
                                         ).await;
                                     });
                                 }

@@ -10,6 +10,7 @@ pub struct User {
     pub  is_default_usr: bool,
     pub  name_selected_lib: String,
     pub  id_selected_lib: String,
+    pub  id_previous_listening_session: String,
 }
 
 pub struct Database  {
