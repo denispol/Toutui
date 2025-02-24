@@ -25,16 +25,21 @@ pub async fn handle_l_pod(
     username: String,
 
 ) {
+    // not optimal solution but avoid `bug_id: 9bacac`
+    tokio::time::sleep(tokio::time::Duration::from_secs(5)).await;
+    info!("Loading...");
+
     if let Some(index) = selected {
         if let Some(id) = ids_library_items.get(index) {
             // id is id of the podcast episode and id_pod is the id id of the podcast
             if let Some(token) = token {
                 if let Ok(info_item) = post_start_playback_session_pod(Some(&token),id_pod, &id, server_address.clone()).await {
-                    // close previous listening session if it was not did.
-                    let id_prev_list_session = get_id_prev_list_session(username.as_str());
-                    let _ = close_session_without_send_prg_data(Some(&token), id_prev_list_session.as_str(),  server_address.clone()).await;
-                    info!("[handle_l_pod][1] Session successfully closed");
-                    let _ = update_id_prev_list_session(info_item[3].as_str(), username.as_str());
+                    // close previous listening session if it was not did. (but need to also call
+                    // `update media progress` to be effective)
+                    // let id_prev_list_session = get_id_prev_list_session(username.as_str());
+                    // let _ = close_session_without_send_prg_data(Some(&token), id_prev_list_session.as_str(),  server_address.clone()).await;
+                    // info!("[handle_l_pod][1] Session successfully closed");
+                    // let _ = update_id_prev_list_session(info_item[3].as_str(), username.as_str());
                     info!("[handle_l_pod][post_start_playback_session_book] OK");
 
                     // clone otherwise, these variable will  be consumed and not available anymore
