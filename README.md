@@ -11,7 +11,7 @@
 ✅ **Sync Progress & Stats** – Keep your listening progress in sync  
 ✅ **Streaming Support** – Play directly without downloading  
 ✅ **Customizable Color Theme** – A config file will allow you to customize the color theme  
-✅ **VLC Command Line Option** – By default, the VLC GUI will be launched, but you can choose, into the config file, to use VLC in the command line (`cvlc`). 
+✅ **VLC Command Line Option** – By default, the VLC GUI will be launched, but you can choose, into the config file, to use VLC in the command line (`cvlc`)
 
 
 ## 🔮 Future Features  
