@@ -639,6 +639,9 @@ impl App {
             // same as above, need to quit once before
             // be able to execute `R` from main function 
             KeyCode::Char('Q') | KeyCode::Esc => {
+                update_is_vlc_launched_first_time("1", self.username.as_str());
+                let value = get_is_vlc_launched_first_time(self.username.as_str());
+                info!("[exit][is_vlc_launched_first_time] {}", value);
                 info!("App successfully quited");
                 process::exit(0);
 
@@ -760,8 +763,32 @@ impl App {
                                 ).await;
                             });
                         } else {
+                            // pop message
                             let mut stdout = stdout();
                             let _ = pop_message(&mut stdout, 3, message);
+                            
+                            // check if previous play is finished
+                            let is_vlc_first_launch = get_is_vlc_launched_first_time(&username);
+                            info!("[AppView::Home][is_vlc_first_launch]{}", is_vlc_first_launch);
+
+                            if is_vlc_first_launch != "1" {
+                                let mut is_loop_break = get_is_loop_break(&username);
+                                info!("[AppView::Home][is_loop_break]{}", is_loop_break);
+
+                                while is_loop_break != "1" {
+                                    std::thread::sleep(std::time::Duration::from_secs(1));
+                                    info!("[AppView::Home][loop][is_loop_break]");
+                                    is_loop_break = get_is_loop_break(&username);
+                                }
+
+                            }
+                            let _ = update_is_loop_break("0", &username);
+                            let value = get_is_loop_break(self.username.as_str());
+                            info!("[AppView::Home][update_is_loop_break]{}", value);
+                            let _ = update_is_vlc_launched_first_time("0", &username);
+                            let value = get_is_vlc_launched_first_time(self.username.as_str());
+                            info!("[AppView::Home][update_is_vlc_first_launch]{}", value);
+
                             tokio::spawn(async move {
                                 handle_l_book(
                                     token.as_ref(), 

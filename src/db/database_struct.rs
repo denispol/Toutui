@@ -10,7 +10,8 @@ pub struct User {
     pub  is_default_usr: bool,
     pub  name_selected_lib: String,
     pub  id_selected_lib: String,
-    pub  id_previous_listening_session: String,
+    pub  is_loop_break: String,
+    pub  is_vlc_launched_first_time: String,
 }
 
 pub struct Database  {
