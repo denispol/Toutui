@@ -103,3 +103,5 @@ git pull https://github.com/AlbanDAVID/Toutui
 cargo run --release
 ```
 - If any, others update instructions will be added here
+
+*Note: I built this app to learn Rust, and little by little it became a useful project, so I decided to share it with you. However, even though I try my best, the code is probably not the most optimized well-structured.*
