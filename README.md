@@ -102,4 +102,5 @@ git pull https://github.com/AlbanDAVID/Toutui
 ```bash
 cargo run --release
 ```
-- If any, others update instructions will be added here.
+
+If any, others update instructions will be added here.
