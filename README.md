@@ -103,6 +103,3 @@ git pull https://github.com/AlbanDAVID/Toutui
 cargo run --release
 ```
 - If any, others update instructions will be added here
-
-
-
