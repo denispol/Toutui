@@ -21,12 +21,14 @@
 This beta app is still in development and may contain bugs.  
 ❗Please check [here](https://github.com/AlbanDAVID/Toutui/blob/main/known_bugs.md) for any **MAJOR BUGS** before using the app, so you can use it with full awareness of any known issues.❗  
 If you encounter any issues that are **not yet listed** in the Issues section or into [known bugs](https://github.com/AlbanDAVID/Toutui/blob/main/known_bugs.md), please **open a new issue** to report them.  
-For any other general feedback/questions use [discussions](https://github.com/AlbanDAVID/Toutui/discussions).
 
 🔐 Although it's a beta version, you can use this app with **minimal risk** to your Audiobookshelf library.  
 At worst, you may experience **sync issues**, but there is **no risk** of data loss, deletion, or irreversible changes (API is just used to retrieve books and sync them).
 
 ## 📝 Notes
+### 💬 **Discussion**
+For general feedback/questions than can't be in issues, use [discussions](https://github.com/AlbanDAVID/Toutui/discussions).
+
 ### 🎨 **UI**
 - The **font** and **emojis** may vary depending on the terminal you are using.
 - To ensure the best experience, it's recommended to use terminals that support **emoji rendering** properly (e.g., Kitty, Alacritty).
