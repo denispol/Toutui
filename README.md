@@ -1,12 +1,12 @@
 # 🦜 Toutui: A TUI Audiobookshelf Client for Linux  
 <em>In French, being "tout ouïe" (toutui) means being all ears.</em>
 
-🚀 **Be toutui and enjoy the power of audiobookshelf in your terminal!**  
+🚀 **Be toutui and enjoy audiobookshelf from your terminal!**  
 
 ![🎬 Demo](assets/demo_1.gif)  
 
 ## ✨ Features  
-✅ **Lightweight & Fast** – A minimalist, terminal-based UI (TUI)  
+✅ **Lightweight & Fast** – A minimalist, terminal-based UI (TUI) written in Rust 🦀
 ✅ **Supports Books & Podcasts** – Enjoy both audiobooks and podcasts  
 ✅ **Sync Progress & Stats** – Keep your listening progress in sync  
 ✅ **Streaming Support** – Play directly without downloading  
