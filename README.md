@@ -6,7 +6,7 @@
 ![🎬 Demo](assets/demo_1.gif)  
 
 ## ✨ Features  
-✅ **Lightweight & Fast** – A minimalist, terminal-based UI (TUI) written in Rust 🦀
+✅ **Lightweight & Fast** – A minimalist, terminal-based UI (TUI) written in Rust 🦀  
 ✅ **Supports Books & Podcasts** – Enjoy both audiobooks and podcasts  
 ✅ **Sync Progress & Stats** – Keep your listening progress in sync  
 ✅ **Streaming Support** – Play directly without downloading  
