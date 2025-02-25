@@ -30,12 +30,12 @@ At worst, you may experience **sync issues**, but there is **no risk** of data l
 For general feedback/questions than can't be in issues, use [discussions](https://github.com/AlbanDAVID/Toutui/discussions).
 
 ### 🎨 **UI**
-- The **font** and **emojis** may vary depending on the terminal you are using.
-- To ensure the best experience, it's recommended to use terminals that support **emoji rendering** properly (e.g., Kitty, Alacritty).
+The **font** and **emojis** may vary depending on the terminal you are using.
+To ensure the best experience, it's recommended to use terminals that support **emoji rendering** properly (e.g., Kitty, Alacritty).
 
 ### 🎧 **Using `cvlc`**
-- When using **`cvlc`** (command-line VLC), make sure to use the `shutdown` command when you want to quit the listening session.
-- This helps ensure that your books are successfully synced and prevents any potential issues.
+When using **`cvlc`** (command-line VLC), make sure to use the `shutdown` command when you want to quit the listening session.
+This helps ensure that your books are successfully synced and prevents any potential issues.
 
 ## 🚨 Installation Instructions
 
