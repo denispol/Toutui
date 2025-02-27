@@ -9,7 +9,7 @@
 **Authentification Bug:** Even if you fill in valid credentials, the database sync can be buggy, and authentication may fail. Normally, it works on the second try.
 
 `bug_id: 2eb9e3`
-**Display:** The app is not displayed and no error message appears (especially if you change user, quit and restart the app). Solution: quit the terminal and try it again in a new one.
+**Display:** The app is not displayed and no error message appears (especially if you change user, quit and restart the app). Solution: quit the terminal and try it again.
 
 `bug_id: 2d358c53`
 **Mark as finished:** When a title reach the end, mark as finished not always work.
