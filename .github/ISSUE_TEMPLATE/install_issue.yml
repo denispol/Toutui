@@ -52,11 +52,12 @@ body:
   - type: dropdown
     id: install-distro
     attributes:
-      label: On which distro are you trying to install Toutui?
+      label: On which OS are you trying to install Toutui?
       options:
         - Arch Linux
         - Ubuntu
         - Debian
+        - macOS
         - Other (list in "Additional Notes" box)
   - type: dropdown
     id: install-method
@@ -64,7 +65,8 @@ body:
       label: Which install method?
       options:
         - Yay
-        - Git
+        - Git (with hello_toutui script)
+        - Git (manual)
         - Other (list in "Additional Notes" box)
   - type: textarea
     id: error-message
