@@ -67,7 +67,7 @@ body:
       label: How did you install Toutui?
       options:
         - Yay
-        - Git (with hello_toutui)
+        - hello_toutui
         - Git (manual)
         - Other (list in "Additional Notes" box)
     validations:
