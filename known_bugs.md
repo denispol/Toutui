@@ -15,7 +15,7 @@
 **Mark as finished:** When a title reach the end, mark as finished not always work.
 
 `bug_id: 40f48d`
-**Cursor:** When you quit the app, terminal cursor disappear.
+**Cursor:** When you quit the app, terminal cursor disappear. Solution: type `restet` in your terminal.
 
 `bug_id: a49eza`
 **cvlc error sync:** If you use other command that `shutdown` to quit `cvlc` it may result of a sync issue.
