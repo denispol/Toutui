@@ -50,7 +50,7 @@ This helps ensure that your books are successfully synced and prevents any poten
 - `Rust`
 - `VLC`
 - `SQLite3`
-- `pkg-config`
+- `libsqlite3-dev` (for some OS)
 - `libssl-dev`
 - `Your terminal must support emojis`
 - Optional, only if you use cvlc:
