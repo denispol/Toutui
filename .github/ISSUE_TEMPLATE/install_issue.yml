@@ -65,7 +65,7 @@ body:
       label: Which install method?
       options:
         - Yay
-        - Git (with hello_toutui script)
+        - hello_toutui script
         - Git (manual)
         - Other (list in "Additional Notes" box)
   - type: textarea
