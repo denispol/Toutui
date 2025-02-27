@@ -5,16 +5,19 @@
 
 **MINOR**
 
-`bug_id: 4b30`
+`bug_id: 4b3045`
 **Authentification Bug:** Even if you fill in valid credentials, the database sync can be buggy, and authentication may fail. Normally, it works on the second try.
+
+`bug_id: 2eb9e3`
+**Display:** The app is not displayed and no error message appears (especially if you change user, quit and restart the app). Solution: quit the terminal and try it again in a new one.
 
 `bug_id: 2d358c53`
 **Mark as finished:** When a title reach the end, mark as finished not always work.
 
-`bug_id: 40f48`
+`bug_id: 40f48d`
 **Cursor:** When you quit the app, terminal cursor disappear.
 
-`bug_id: a49e`
+`bug_id: a49eza`
 **cvlc error sync:** If you use other command that `shutdown` to quit `cvlc` it may result of a sync issue.
 
 **FIXED**
