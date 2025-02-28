@@ -301,7 +301,7 @@ install_toutui() {
     if [[ -f ./target/release/Toutui ]]; then
 	sudo cp ./target/release/Toutui /usr/bin/toutui # copy Toutui in /usr/bin # TODO adapt
     fi
-    echo "[DONE] Install complete."
+    echo "[DONE] Install complete. Type toutui in your terminal to run it"
     post_install_msg # only if .env not found
 }
 
