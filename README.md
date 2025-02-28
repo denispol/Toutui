@@ -61,7 +61,8 @@ The script will detect if a new release is available and install it if any.
 
 ##### Files installed:
 in `/usr/bin`
-- `toutui` — The binary file (you can execute it from anywhere).  
+- `toutui` — The binary file (you can execute it from anywhere).
+
 in `~/.config/toutui`
 - `.env` — Contains the secret key.
 - `config.toml` — Configuration file.
