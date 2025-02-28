@@ -123,7 +123,7 @@ install_from_source() {
 
 propose_optional_dependencies() {
     local optionals="$@"
-    if (( ${#optionals[@]} == 0 )); then return; fi
+    if [[ $(( ${#optionals[@]} )) == 0 || "${optionals[@]}" =~ ^\ *$ ]]; then return; fi
     echo "[INFO] Toutui's experience could be improved by these optional packages:"
     for opt in "${optionals[@]}"; do
         echo -e "\t- ${opt}"
@@ -277,7 +277,10 @@ install_toutui() {
     install_deps # install essential and/or optional deps
     install_rust # cornerstone! toutui is written by a crab
     install_config # create ~/.config/toutui/ etc.
-    cargo run --release # actually install toutui
+    cargo build --release # actually install toutui
+    if [[ -f ./target/release/Toutui ]]; then
+	sudo cp ./target/release/Toutui /usr/bin/toutui # copy Toutui in /usr/bin # TODO adapt
+    fi
     echo "[DONE] Install complete."
     post_install_msg # only if .env not found
 }
@@ -320,7 +323,10 @@ pull_latest_version() {
 	    echo "[INFO] Pulling latest version..."
 	    git fetch && git pull
 	    echo "[INFO] Installing latest version..."
-	    cargo run --release
+	    cargo build --release
+	    if [[ -f ./target/release/Toutui ]]; then
+    	        sudo cp ./target/release/Toutui /usr/bin/toutui # copy Toutui in /usr/bin # TODO adapt
+    	    fi
 	    echo "[OK] Latest version installed (v$version)."
 	    ;;
     esac
@@ -360,3 +366,8 @@ do_not_run_as_root() {
 }
 
 main "$@"
+
+# TODO:
+# - check for correct installation path (for now: /usr/bin/toutui)
+# - test automatic dependencies install on more distributions
+# - uninstall toutui
