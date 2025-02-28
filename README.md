@@ -55,7 +55,7 @@ The script will detect if a new release is available and install it if any.
 ./hello_toutui.sh update
 ```
 
-#### **Infos**  
+#### **Notes**  
 ##### Exec the binary:
 ```bash
 cd target/release
@@ -118,7 +118,7 @@ git pull https://github.com/AlbanDAVID/Toutui
 cargo run --release
 ```
 
-#### **Infos**  
+#### **Notes**  
 ##### Exec the binary:
 ```bash
 cd target/release
