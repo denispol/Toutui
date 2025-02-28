@@ -41,6 +41,12 @@ This helps ensure that your books are successfully synced and prevents any poten
 
 **⚠️ If you follow all the instructions but installation fails, please open an installation issue.**
 
+### Automatic install
+
+```console
+$ sh ./hello_toutui.sh install
+```
+
 ### For Arch Users
 🚧 Soon
 
@@ -96,6 +102,12 @@ cd target/release
 #### **Update:**
 
 When a new release is available, follow these steps:
+
+```console
+$ sh ./hello_toutui.sh update
+```
+
+or
 
 ```bash
 git pull https://github.com/AlbanDAVID/Toutui
