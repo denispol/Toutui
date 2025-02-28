@@ -39,9 +39,9 @@ load_dependencies() {
 	linux:vlc  \
 	linux:pkg-config \
 	debian:libssl-dev \
-	linux:sqlite \
+	linux:sqlite3 \
 	debian:libsqlite3-dev \
-	macOS:sqlite \
+	macOS:sqlite3 \
 	macOS:vlc \
 	macOS:curl \
 	macOS:pkg-config \
