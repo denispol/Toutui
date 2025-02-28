@@ -50,6 +50,7 @@ cd Toutui/
 chmod +x hello_toutui.sh
 ./hello_toutui.sh install
 ```
+Once the installation is complete, type `toutui` in your terminal to launch the app.
 #### **Update**
 The script will detect if a new release is available and install it if any.
 ```bash
@@ -57,14 +58,11 @@ The script will detect if a new release is available and install it if any.
 ```
 
 #### **Notes**  
-##### Exec the binary:
-```bash
-cd target/release
-./Toutui
-```
 
 ##### Files installed:
-After installation, you will have the following files in `~/.config/toutui`
+in `/usr/bin`
+- `toutui` — The binary file (you can execute it from anywhere).
+in `~/.config/toutui`
 - `.env` — Contains the secret key.
 - `config.toml` — Configuration file.
 - `toutui.log` — Log file.
