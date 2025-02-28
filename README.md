@@ -39,20 +39,42 @@ This helps ensure that your books are successfully synced and prevents any poten
 
 ## 🚨 Installation Instructions
 
-**⚠️ If you follow all the instructions but installation fails, please open an installation issue.**
+**⚠️ If you follow all the instructions but installation fails, please open an installation issue.**  
 
-### Automatic install
-
-```console
-$ sh ./hello_toutui.sh install
+### Automatic install with `hello_toutui`
+#### **Install**
+```bash
+git clone https://github.com/AlbanDAVID/Toutui
+cd Toutui/
+chmod +x hello_toutui.sh
+./hello_toutui.sh install
 ```
+#### **Update**
+The script will detect if a new release is available and install it if any.
+```bash
+./hello_toutui.sh update
+```
+
+#### **Infos**  
+##### Exec the binary
+```bash
+cd target/release
+./Toutui
+```
+
+##### Files installed  
+After installation, you will have the following files in `~/.config/toutui`
+- `.env` — Contains the secret key.
+- `config.toml` — Configuration file.
+- `toutui.log` — Log file.
+- `db.sqlite3` — SQLite database file.
 
 ### For Arch Users
 🚧 Soon
 
 ### Git
 
-#### **Requirements:**
+#### **Requirements**
 - `Rust`
 - `VLC`
 - `SQLite3`
@@ -65,55 +87,46 @@ $ sh ./hello_toutui.sh install
 
 *⚠️ If you had to install a package that is not listed above, please open an installation issue.*
 
-#### **Install:**
+#### **Install**
 ```bash
 git clone https://github.com/AlbanDAVID/Toutui
-```
-```bash
 cd Toutui/
-```
-```bash
 mkdir -p ~/.config/toutui
+cp config.example.toml ~/.config/toutui/config.toml
 ```
 
-##### Token encryption in the database (<u>**NOTE**</u>: replace `secret`):
-
+Token encryption in the database (<u>**NOTE**</u>: replace `secret`)
 ```bash
 echo TOUTUI_SECRET_KEY=secret >> ~/.config/toutui/.env
 ```
-```bash
-cp config.example.toml ~/.config/toutui/config.toml
-```
+
 ```bash
 cargo run --release
 ```
-##### Exec the binary:
+#### **Update**
+
+When a new release is available, follow these steps:
+
+The script will detect if a new release is available and install it if any.
+```bash
+./hello_toutui.sh update
+```
+OR 
+```bash
+git pull https://github.com/AlbanDAVID/Toutui
+cargo run --release
+```
+
+#### **Infos**  
+##### Exec the binary
 ```bash
 cd target/release
 ./Toutui
 ```
 
-#### After installation, you will have the following files in `~/.config/toutui`:
+##### Files installed  
+After installation, you will have the following files in `~/.config/toutui`
 - `.env` — Contains the secret key.
 - `config.toml` — Configuration file.
 - `toutui.log` — Log file.
 - `db.sqlite3` — SQLite database file.
-
-#### **Update:**
-
-When a new release is available, follow these steps:
-
-```console
-$ sh ./hello_toutui.sh update
-```
-
-or
-
-```bash
-git pull https://github.com/AlbanDAVID/Toutui
-```
-```bash
-cargo run --release
-```
-
-If any, others update instructions will be added here.
