@@ -295,8 +295,8 @@ install_deps() {
 
 install_toutui() {
     install_deps # install essential and/or optional deps
-    install_rust # cornerstone! toutui is written by a crab
     install_config # create ~/.config/toutui/ etc.
+    install_rust # cornerstone! toutui is written by a crab
     cargo build --release # actually install toutui
     if [[ -f ./target/release/Toutui ]]; then
 	sudo cp ./target/release/Toutui /usr/bin/toutui # copy Toutui in /usr/bin # TODO adapt
