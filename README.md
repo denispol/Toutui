@@ -56,13 +56,13 @@ The script will detect if a new release is available and install it if any.
 ```
 
 #### **Infos**  
-##### Exec the binary
+##### Exec the binary:
 ```bash
 cd target/release
 ./Toutui
 ```
 
-##### Files installed  
+##### Files installed:
 After installation, you will have the following files in `~/.config/toutui`
 - `.env` — Contains the secret key.
 - `config.toml` — Configuration file.
@@ -118,13 +118,13 @@ cargo run --release
 ```
 
 #### **Infos**  
-##### Exec the binary
+##### Exec the binary:
 ```bash
 cd target/release
 ./Toutui
 ```
 
-##### Files installed  
+##### Files installed:
 After installation, you will have the following files in `~/.config/toutui`
 - `.env` — Contains the secret key.
 - `config.toml` — Configuration file.
