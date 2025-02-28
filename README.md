@@ -41,7 +41,7 @@ This helps ensure that your books are successfully synced and prevents any poten
 
 **⚠️ If you follow all the instructions but installation fails, please open an installation issue.**  
 
-### Automatic install with `hello_toutui`
+### Automatic install
 #### **Install**
 ```bash
 git clone https://github.com/AlbanDAVID/Toutui
