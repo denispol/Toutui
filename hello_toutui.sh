@@ -192,7 +192,7 @@ install_config() {
 
     # .env
     local env="${CONFIG_DIR}/.env"
-    local prompt="Please provide a secret key for Toutui's credentials ($env): "
+    local prompt="Please provide a secret key to encrypt the token stored in the database ($env): "
     local key=
     until [[ -f $env && $(sed "s/TOUTUI_SECRET_KEY=//g" $env) != "" ]]; do
 	## three possibilities here:
