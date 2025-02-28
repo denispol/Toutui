@@ -29,18 +29,27 @@ main() {
 
 load_dependencies() {
     # Hard Coded dependencies here.
+    # os:package_to_install(:cmd)?
     # Dependencies starting with a '*' are optional
     # Starting with "linux:" for all linux distros
     # Starting with "macOS:" for macOS specific
     # Starting with "debian: for debian only
     # See also "arch:", "fedora:", "opensuse:", "centos:"
+    # Ending with ":cmd" is optional but servers to
+    # know how to check if the desired program is
+    # installed on the machine.
+    # For example: "linux:sqlite3:sqlite" means checking
+    # for sqlite3 installation pass by launching sqlite.
+    # ":no_check" means do not check program's existence
+    # by launching it.
     HC_DEPS=(
 	linux:curl \
 	linux:vlc  \
 	linux:pkg-config \
-	debian:libssl-dev \
+	debian:libssl-dev:no_check \
 	linux:sqlite3 \
-	debian:libsqlite3-dev \
+	debian:libsqlite3-dev:no_check \
+	centos:libsqlite3-dev:no_check \
 	macOS:sqlite3 \
 	macOS:vlc \
 	macOS:curl \
@@ -49,11 +58,11 @@ load_dependencies() {
 	*centos:epel-release \
 	*linux:kitty \
 	*macOS:kitty \
-	*macOS: netcat\
+	*macOS: netcat \
 	*debian:netcat \
 	*fedora:nc \
 	*centos:nc \
-	*arch:gnu-netcat \
+	*arch:gnu-netcat:netcat \
 	*opensuse:netcat \
 	)
 }
@@ -123,7 +132,7 @@ install_from_source() {
 
 propose_optional_dependencies() {
     local optionals="$@"
-    if (( ${#optionals[@]} == 0 )); then return; fi
+    if [[ $(( ${#optionals[@]} )) == 0 || "${optionals[@]}" =~ ^\ *$ ]]; then return; fi
     echo "[INFO] Toutui's experience could be improved by these optional packages:"
     for opt in "${optionals[@]}"; do
         echo -e "\t- ${opt}"
@@ -195,18 +204,7 @@ install_config() {
     local prompt="Please provide a secret key to encrypt the token stored in the database ($env): "
     local key=
     until [[ -f $env && $(sed "s/TOUTUI_SECRET_KEY=//g" $env) != "" ]]; do
-	## three possibilities here:
-	## 1) hide the secret with '*' (but no backspace allowed...)
-	#local char=
-	#while IFS= read -p "$prompt" -r -s -n 1 char; do
-	#    if [[ $char == $'\0' ]]; then echo; break; fi # return
-	#    prompt='*'
-	#    key+="$char"
-	#done
-	## 2) standard way: no '*' and no char displayed (backspace allowed)
-	read -sp "Please provide a secret key for toutui ($env): " key
-	## 3) clear secret displayed on screen
-	#read -p "Please provide a secret key for toutui ($env): " key
+	read -sp "$prompt: " key
         if ! [[ $key == "" ]]; then echo "TOUTUI_SECRET_KEY=$key" > $env; echo;fi
     done
 
@@ -217,6 +215,29 @@ install_config() {
     else
 	cp config.example.toml "${CONFIG_DIR}/config.toml" || (echo "[ERROR] Cannot copy \"config.toml\"."; exit $EXIT_CONFIG)
     fi
+}
+
+dep_already_installed() {
+    local pkg_name=$1
+    local cmd_check=${2:-$pkg_name}
+    local installed="false"
+    if [[ $OS == "linux" ]]; then
+	case "$DISTRO" in
+    	    arch*)     (pacman -Qq $pkg_name >/dev/null)2>/dev/null && installed="true";;
+    	    debian*)   (dpkg -l | awk '{print $2}' | grep "^${pkg_name}$" >/dev/null)2>/dev/null && installed="true";;
+	    fedora*)   (rpm -q "$pkg_name" &>/dev/null)2>/dev/null && installed="true";;
+	    centos*)   (yum list installed "$pkg_name" &>/dev/null)2>/dev/null && installed="true";;
+    	    opensuse*) (zypper se --installed-only "$pkg_name" &>/dev/null)2>/dev/null && installed="true";;
+    	esac
+    elif [[ $OS == "macOS" ]]; then
+	(brew list | grep "^${pkg_name}$") && installed="true"
+    fi
+    if [[ $installed == "false" ]]; then
+	if [[ $cmd_check != "no_check" && $(command -v $cmd_check 2>/dev/null) ]]; then
+	    installed="true"
+	fi
+    fi
+    echo $installed
 }
 
 install_deps() {
@@ -238,36 +259,35 @@ install_deps() {
     local missing=()
     for dep in "${deps[@]}"; do
 	if [[ $dep =~ ^\* ]]; then
-	# those are optional dependencies
+	    # this is an optional dependency
 	    deps=("${deps[@]/$dep}") # remove optional from deps
 	    dep="${dep:1:${#dep}}"
-	    # Check if package is for OS || distro
-	    # linux:XXX means for all distro
-	    # debian:XX means specific to debian/ubuntu
-	    if [[ "$dep" =~ ^($OS):(.*) ]]; then
-		target_sys=${BASH_REMATCH[1]}
-		dep=${BASH_REMATCH[2]}
-		# if OS or DISTRO match, add to optional deps
-		if [[ $target_sys == $OS || $target_sys == $DISTRO ]]; then
-		    # add only if not installed
-	    	    if ! [[ $(command -v $dep 2>/dev/null) ]]; then optionals+=( $dep ); fi
+	    local optional="true"
+	else
+	    local optional="false"
+	fi
+	# Check if package is for OS || distro
+	# linux:XXX means for all distro
+	# debian:XX means specific to debian/ubuntu
+	if [[ "$dep" =~ ^($OS):([^:]*)(:(.*))? || "$dep" =~ ^($DISTRO):([^:]*)(:(.*))? ]]; then
+	    target_sys=${BASH_REMATCH[1]}
+	    dep=${BASH_REMATCH[2]}
+	    cmd=${BASH_REMATCH[4]}
+	    # if OS or DISTRO match, add to optional deps
+	    if [[ $target_sys == $OS || $target_sys == $DISTRO ]]; then
+	        # add only if not installed
+		if [[ $optional == "true" ]]; then
+		    if [[ $(dep_already_installed "$dep" "$cmd") == "false" ]]; then
+			optionals+=( $dep )
+		    fi
+		else
+		    if [[ $(dep_already_installed "$dep" "$cmd") == "false" ]]; then
+			echo "[DEP] Missing dependency \"$dep\""
+			missing+=( $dep )
+		    fi
 		fi
 	    fi
-    	else
-	# those are essential dependencies
-	    if [[ "$dep" =~ ^($OS):(.*) ]]; then
-		target_sys=${BASH_REMATCH[1]}
-		dep=${BASH_REMATCH[2]}
-		# if OS or DISTRO match, add to optional deps
-		if [[ $target_sys == $OS || $target_sys == $DISTRO ]]; then
-		    # add only if not installed
-	    	    if ! [[ $(command -v $dep 2>/dev/null) ]]; then
-	    	        echo "[DEP] Missing dependency \"$dep\""
-    	    	        missing+=( $dep )
-    	    	    fi
-		fi
-	    fi
-    	fi
+	fi
     done
     install_packages "${missing[@]}" && echo "[INFO] Essential dependencies are installed."
     propose_optional_dependencies "${optionals[@]}"
@@ -275,9 +295,12 @@ install_deps() {
 
 install_toutui() {
     install_deps # install essential and/or optional deps
-    install_rust # cornerstone! toutui is written by a crab
     install_config # create ~/.config/toutui/ etc.
-    cargo run --release # actually install toutui
+    install_rust # cornerstone! toutui is written by a crab
+    cargo build --release # actually install toutui
+    if [[ -f ./target/release/Toutui ]]; then
+	sudo cp ./target/release/Toutui /usr/bin/toutui # copy Toutui in /usr/bin # TODO adapt
+    fi
     echo "[DONE] Install complete."
     post_install_msg # only if .env not found
 }
@@ -320,7 +343,10 @@ pull_latest_version() {
 	    echo "[INFO] Pulling latest version..."
 	    git fetch && git pull
 	    echo "[INFO] Installing latest version..."
-	    cargo run --release
+	    cargo build --release
+	    if [[ -f ./target/release/Toutui ]]; then
+    	        sudo cp ./target/release/Toutui /usr/bin/toutui # copy Toutui in /usr/bin # TODO adapt
+    	    fi
 	    echo "[OK] Latest version installed (v$version)."
 	    ;;
     esac
@@ -360,3 +386,8 @@ do_not_run_as_root() {
 }
 
 main "$@"
+
+# TODO:
+# - check for correct installation path (for now: /usr/bin/toutui)
+# - test automatic dependencies install on more distributions
+# - uninstall toutui
