@@ -109,6 +109,7 @@ When a new release is available, follow these steps:
 
 The script will detect if a new release is available and install it if any.
 ```bash
+chmod +x hello_toutui.sh
 ./hello_toutui.sh update
 ```
 OR 
