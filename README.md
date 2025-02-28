@@ -42,7 +42,7 @@ This helps ensure that your books are successfully synced and prevents any poten
 **⚠️ If you follow all the instructions but installation fails, please open an installation issue.**  
 
 ### Automatic install
-❗It's quite challenging to create a script that is exhaustive for all distributions and OS. It's impossible to guarantee that you won't encounter error messages related to missing dependencies.
+❗It's quite challenging to create a script that is exhaustive for all distributions and OS. If you encounter difficulties, leave an installation issue.
 #### **Install**
 ```bash
 git clone https://github.com/AlbanDAVID/Toutui
