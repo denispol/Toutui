@@ -442,10 +442,13 @@ impl App {
     // init start_vlc variables
     let is_cvlc = config.player.cvlc.clone();
     let is_cvlc_term = config.player.cvlc_term.clone();
-    let mut start_vlc_program = "vlc".to_string();
-    if is_cvlc == "1" {
-        start_vlc_program = "cvlc".to_string()
-    } 
+    let mut start_vlc_program = match is_cvlc.as_str() {
+        "1" => "cvlc".to_string(),
+        _ => "vlc".to_string(),
+    };
+    if cfg!(target_os = "macos") {
+        start_vlc_program = "/Applications/VLC.app/Contents/MacOS/VLC".to_string();
+    }
 
     // Init ListeState for `Home` list (continue listening)
     let mut list_state_cnt_list = ListState::default(); // init the ListState ratatui's widget

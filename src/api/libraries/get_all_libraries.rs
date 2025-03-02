@@ -55,7 +55,9 @@ pub struct Settings {
     pub hide_single_book_series: Option<bool>,
     pub only_show_later_books_in_continue_series: Option<bool>,
     pub metadata_precedence: Option<Vec<String>>,
+    #[serde(default)]
     pub mark_as_finished_percent_complete: Value,
+    #[serde(default)]
     pub mark_as_finished_time_remaining: i64,
     pub podcast_search_region: Option<String>,
 }

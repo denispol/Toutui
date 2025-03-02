@@ -7,8 +7,12 @@ main() {
     # Grab essential variables
     USER=${USER:-$(grab_username)}
     HOME=${HOME:-$(grab_home_dir)}
-    CONFIG_DIR="${HOME}/.config/toutui"
     OS=$(identify_os)
+    if [[ $OS == "linux" ]]; then
+    CONFIG_DIR="${HOME}/.config/toutui"
+    elif [[ $OS == "macOS" ]]; then
+    CONFIG_DIR="${XDG_CONFIG_HOME:-$HOME/Library/Application Support}/toutui"
+    fi
 
     load_dependencies
     load_exit_codes
@@ -203,9 +207,9 @@ install_config() {
     local env="${CONFIG_DIR}/.env"
     local prompt="Please provide a secret key to encrypt the token stored in the database ($env): "
     local key=
-    until [[ -f $env && $(sed "s/TOUTUI_SECRET_KEY=//g" $env) != "" ]]; do
+    until [[ -f "$env" && $(sed "s/TOUTUI_SECRET_KEY=//g" "$env") != "" ]]; do
 	read -sp "$prompt: " key
-        if ! [[ $key == "" ]]; then echo "TOUTUI_SECRET_KEY=$key" > $env; echo;fi
+        if ! [[ $key == "" ]]; then echo "TOUTUI_SECRET_KEY=$key" > "$env"; echo;fi
     done
 
     # config.
@@ -298,8 +302,19 @@ install_toutui() {
     install_config # create ~/.config/toutui/ etc.
     install_rust # cornerstone! toutui is written by a crab
     cargo build --release # actually install toutui
+    # copy Toutui binary to system path
     if [[ -f ./target/release/Toutui ]]; then
-	sudo cp ./target/release/Toutui /usr/bin/toutui # copy Toutui in /usr/bin # TODO adapt
+        OS=$(identify_os)
+        if [[ $OS == "linux" ]]; then
+            sudo cp ./target/release/Toutui /usr/bin/toutui
+            echo "Toutui installed to /usr/bin/"
+        elif [[ $OS == "macOS" ]]; then
+            sudo cp ./target/release/Toutui /usr/local/bin/toutui
+            echo "Toutui installed to /usr/local/bin/"
+        else
+            echo "Unsupported OS"
+            exit 1
+        fi
     fi
     echo "[DONE] Install complete. Type toutui in your terminal to run it"
     post_install_msg # only if .env not found
