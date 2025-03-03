@@ -30,7 +30,7 @@ At worst, you may experience **sync issues**, but there is **no risk** of data l
 For general feedback/questions than can't be in issues, use [discussions](https://github.com/AlbanDAVID/Toutui/discussions).
 
 ### 🍏 **macOS**
-The app is developed and tested on linux distributions. However, we try to make it compatible with macOS but some issues  are present for now:  
+The app is developed and tested on linux distributions so it's may be difficult to use it on macOS. However, we try to make it compatible with macOS but some issues are present for now:  
 - `cvlc` option is not available.
 
 ### 🎨 **UI**
@@ -46,8 +46,8 @@ This helps ensure that your books are successfully synced and prevents any poten
 **⚠️ If you follow all the instructions but installation fails, please open an installation issue.**  
 
 ### Automatic install
-❗It's quite challenging to create a script that is exhaustive for all distributions and OS. If you encounter difficulties, leave an installation issue and install the app [manually](https://github.com/AlbanDAVID/Toutui?tab=readme-ov-file#git).
-❗macOS user: read [this](
+❗It's quite challenging to create a script that is exhaustive for all distributions and OS. If you encounter difficulties, leave an installation issue and install the app [manually](https://github.com/AlbanDAVID/Toutui?tab=readme-ov-file#git).  
+❗macOS user: read [this](https://github.com/AlbanDAVID/Toutui/blob/main/README.md#-macos)  
 #### **Install**
 ```bash
 git clone https://github.com/AlbanDAVID/Toutui
