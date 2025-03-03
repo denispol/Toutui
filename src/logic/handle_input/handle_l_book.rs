@@ -90,7 +90,7 @@ pub async fn handle_l_book(
                     loop {
                         match fetch_vlc_data(port.clone(), address_player.clone()).await {
                             Ok(Some(data_fetched_from_vlc)) => {
-                                //                                println!("Fetched data: {}", data_fetched_from_vlc.to_string());
+                                // println!("Fetched data: {}", data_fetched_from_vlc.to_string());
 
                                 // Important, sleep time to 1s minimum, otherwise connection to vlc player will not have time to connect
                                 // sleep time : every how many seconds the data will be sent to the server
@@ -141,7 +141,7 @@ pub async fn handle_l_book(
                                         let _ = update_media_progress_book(id, Some(&token), Some(data_fetched_from_vlc), &info_item[2], server_address).await;
                                         info!("[handle_l_book][Err] VLC closed");
                                         //eprintln!("Error fetching play status: {}", e);
-                               //         info!("[1] is_loop_break {}", loop_struct.is_loop_break);
+                                        //info!("[1] is_loop_break {}", loop_struct.is_loop_break);
                                         update_is_loop_break("1", username.as_str());
                                         break; 
                                     }
