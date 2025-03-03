@@ -5,14 +5,11 @@ main() {
     do_not_run_as_root
 
     # Grab essential variables
+    OS=$(identify_os)
     USER=${USER:-$(grab_username)}
     HOME=${HOME:-$(grab_home_dir)}
-    OS=$(identify_os)
-    if [[ $OS == "linux" ]]; then
-    CONFIG_DIR="${HOME}/.config/toutui"
-    elif [[ $OS == "macOS" ]]; then
-    CONFIG_DIR="${XDG_CONFIG_HOME:-$HOME/Library/Application Support}/toutui"
-    fi
+    CONFIG_DIR="${XDG_CONFIG_HOME:-$(grab_config_dir)}"
+    INSTALL_DIR="${2:-$(grab_install_dir)}"
 
     load_dependencies
     load_exit_codes
@@ -34,18 +31,6 @@ main() {
 load_dependencies() {
     # Hard Coded dependencies here.
     # os:package_to_install(:cmd)?
-    # Dependencies starting with a '*' are optional
-    # Starting with "linux:" for all linux distros
-    # Starting with "macOS:" for macOS specific
-    # Starting with "debian: for debian only
-    # See also "arch:", "fedora:", "opensuse:", "centos:"
-    # Ending with ":cmd" is optional but servers to
-    # know how to check if the desired program is
-    # installed on the machine.
-    # For example: "linux:sqlite3:sqlite" means checking
-    # for sqlite3 installation pass by launching sqlite.
-    # ":no_check" means do not check program's existence
-    # by launching it.
     HC_DEPS=(
 	linux:curl \
 	linux:vlc  \
@@ -62,13 +47,25 @@ load_dependencies() {
 	*centos:epel-release \
 	*linux:kitty \
 	*macOS:kitty \
-	*macOS: netcat \
+	*macOS:netcat\
 	*debian:netcat \
 	*fedora:nc \
 	*centos:nc \
 	*arch:gnu-netcat:netcat \
 	*opensuse:netcat \
 	)
+    # Dependencies starting with a '*' are optional
+    # Starting with "linux:" for all linux distros
+    # Starting with "macOS:" for macOS specific
+    # Starting with "debian: for debian only
+    # See also "arch:", "fedora:", "opensuse:", "centos:"
+    # Ending with ":cmd" is optional but serves to
+    # know how to check if the desired program is
+    # installed on the machine.
+    # For example: "linux:sqlite3:sqlite" means checking
+    # for sqlite3 installation by launching sqlite.
+    # ":no_check" means do not check program's existence
+    # by launching it.
 }
 
 identify_os() {
@@ -101,12 +98,41 @@ grab_home_dir() {
     echo $home
 }
 
+grab_config_dir() {
+    local config="${XDG_CONFIG_HOME}"
+    if [[ $OS == "macOS" && ! -d "$config" ]]; then config="${config:-$HOME/Library/Preferences}"; fi
+    if [[ $OS == "macOS" && ! -d "$config" ]]; then config="${config:-$HOME/Library/Application Support}"; fi
+    if ! [[ -d "$config" ]]; then config="${config:-$HOME/.config}"; fi
+    if ! [[ -d "$config" ]]; then
+	echo "[ERROR] Cannot find \"$USER\" config directory."
+	exit $EXIT_CONFIG
+    fi
+    echo "${config}/toutui"
+}
+
+grab_install_dir() {
+    local install_dir="${INSTALL_DIR}"
+    if [[ $OS == "linux" ]]; then
+        case $DISTRO in
+	    *) install_dir="${install_dir:-/usr/bin}" ;;
+	esac
+    elif [[ $OS == "macOS" ]]; then
+        install_dir="${install_dir:-/usr/local/bin}"
+    fi
+    if ! [[ -d "$install_dir" ]]; then
+	echo "[ERROR] Cannot locate install directory \"$install_dir\"."
+	exit $EXIT_INSTALL_DIR
+    fi
+    echo "${install_dir}"
+}
+
 usage() {
     local exit_code=$1
-    echo "Usage: $ /bin/bash ./$(basename $0) <install|update>"
+    echo "Usage: $ /bin/bash ./$(basename $0) <install|update> [install_directory]"
     echo "Help:"
     echo " --install: install toutui and dependencies."
     echo " --update: update toutui and dependencies."
+    echo "Example: /bin/bash ./$(basename $0) install /usr/bin"
     eval "exit \$EXIT_${exit_code}"
 }
 
@@ -301,21 +327,9 @@ install_toutui() {
     install_deps # install essential and/or optional deps
     install_config # create ~/.config/toutui/ etc.
     install_rust # cornerstone! toutui is written by a crab
-    cargo build --release # actually install toutui
+    cargo build --release
     # copy Toutui binary to system path
-    if [[ -f ./target/release/Toutui ]]; then
-        OS=$(identify_os)
-        if [[ $OS == "linux" ]]; then
-            sudo cp ./target/release/Toutui /usr/bin/toutui
-            echo "Toutui installed to /usr/bin/"
-        elif [[ $OS == "macOS" ]]; then
-            sudo cp ./target/release/Toutui /usr/local/bin/toutui
-            echo "Toutui installed to /usr/local/bin/"
-        else
-            echo "Unsupported OS"
-            exit 1
-        fi
-    fi
+    sudo cp ./target/release/Toutui "${INSTALL_DIR}/toutui" || exit $EXIT_BUILD_FAIL
     echo "[DONE] Install complete. Type toutui in your terminal to run it"
     post_install_msg # only if .env not found
 }
@@ -360,7 +374,7 @@ pull_latest_version() {
 	    echo "[INFO] Installing latest version..."
 	    cargo build --release
 	    if [[ -f ./target/release/Toutui ]]; then
-    	        sudo cp ./target/release/Toutui /usr/bin/toutui # copy Toutui in /usr/bin # TODO adapt
+    	        sudo cp ./target/release/Toutui "${INSTALL_DIR}/toutui" || exit $EXIT_BUILD_FAIL
     	    fi
 	    echo "[OK] Latest version installed (v$version)."
 	    ;;
@@ -390,6 +404,8 @@ load_exit_codes() {
     EXIT_INCORRECT_ARG=4
     EXIT_NO_CARGO_TOML=5
     EXIT_CONFIG=6
+    EXIT_BUILD_FAIL=7
+    EXIT_INSTALL_DIR=8
 }
 
 do_not_run_as_root() {
