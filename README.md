@@ -19,7 +19,7 @@
 
 ## ⚠️ Caution: Beta Version  
 This beta app is still hardly in development and contain bugs.  
-❗Please check [here](https://github.com/AlbanDAVID/Toutui/blob/main/known_bugs.md) for known bugs especially **MAJOR BUGS** before using the app, so you can use it with full awareness of any known issues.
+❗Please check [here](https://github.com/AlbanDAVID/Toutui/blob/main/known_bugs.md) for known bugs especially **MAJOR BUGS** before using the app, so you can use it with full awareness of any known issues.  
 If you encounter any issues that are **not yet listed** in the Issues section or into [known bugs](https://github.com/AlbanDAVID/Toutui/blob/main/known_bugs.md), please **open a new issue** to report them.  
 
 🔐 Although it's a beta version, you can use this app with **minimal risk** to your Audiobookshelf library.  
