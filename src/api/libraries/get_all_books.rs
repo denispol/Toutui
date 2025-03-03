@@ -98,18 +98,13 @@ pub struct CollapsedSeries {
 // get all books or podcasts
 pub async fn get_all_books(token: &str, id_selected_lib: &String, server_address: String) -> Result<Root> {
     let client = Client::new();
-    let url = format!("{}/api/libraries/{}/items", server_address, id_selected_lib);
+    let url = format!("{}/api/libraries/{}/items?limit=0", server_address, id_selected_lib);
 
-    // json bosy
-    let body = json!({
-        "limit" : 0, // to fetch all the books or podcasts (but limit does not seems to work)
-    });
 
     // Send GET request
     let response = client
         .get(url)
         .header(AUTHORIZATION, format!("Bearer {}", token))
-        .json(&body)
         .send()
         .await?;
 

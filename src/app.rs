@@ -139,8 +139,8 @@ pub struct App {
     pub duration_library_search_book: Vec<f64>,
     pub book_progress_cnt_list: Vec<Vec<String>>,
     pub book_progress_cnt_list_cur_time: Vec<Vec<f64>>,
-    pub book_progress_library: Vec<Vec<String>>,
-    pub book_progress_library_cur_time: Vec<Vec<f64>>,
+//    pub book_progress_library: Vec<Vec<String>>,
+//    pub book_progress_library_cur_time: Vec<Vec<f64>>,
     pub book_progress_search_book: Vec<Vec<String>>,
     pub book_progress_search_book_cur_time: Vec<Vec<f64>>,
     pub is_cvlc: String,
@@ -308,35 +308,36 @@ impl App {
     let published_year_library = collect_published_year_library(&all_books).await;
     let desc_library = collect_desc_library(&all_books).await;
     let duration_library = collect_duration_library(&all_books).await;
-    let mut book_progress_library: Vec<Vec<String>> = Vec::new();
-    let mut book_progress_library_cur_time: Vec<Vec<f64>> = Vec::new();
-    if !is_podcast{
-        for id in ids_library.clone() {
-            if let Ok(val) = get_book_progress(&token, &id, server_address.clone()).await {
-                let mut values: Vec<String> = Vec::new();
-                let mut values_f64: Vec<f64> = Vec::new();
-                values.push(format!(" {}%,",collect_progress_percentage_book(&val).await));
-                values.push(format!(" {}",collect_is_finished_book(&val).await));
-                values_f64.push(collect_current_time_prg(&val).await);
-                book_progress_library.push(values);
-                book_progress_library_cur_time.push(values_f64);
-            } else {
-                // if the book is not starded, `get book progress` is not fetched
-                // so the empty values are handled here : 
-                // avoid an out of bound panick
-                let mut values: Vec<String> = Vec::new();
-                let mut values_f64: Vec<f64> = Vec::new();
-                values.push(format!(" Not started yet"));
-                values.push(format!(""));
-                values_f64.push(0.0);
-                book_progress_library.push(values);
-                book_progress_library_cur_time.push(values_f64);
-            }
-        }
-    }            
-
+//    let mut book_progress_library: Vec<Vec<String>> = Vec::new();
+//    let mut book_progress_library_cur_time: Vec<Vec<f64>> = Vec::new();
+//    if !is_podcast{
+//        for id in ids_cnt_list.clone() {
+//            if let Ok(val) = get_book_progress(&token, &id, server_address.clone()).await {
+//                let mut values: Vec<String> = Vec::new();
+//                let mut values_f64: Vec<f64> = Vec::new();
+//                values.push(format!(" {}%,",collect_progress_percentage_book(&val).await));
+//                values.push(format!(" {}",collect_is_finished_book(&val).await));
+//                values_f64.push(collect_current_time_prg(&val).await);
+//                book_progress_library.push(values);
+//                book_progress_library_cur_time.push(values_f64);
+//                
+//            } else {
+//                // if the book is not starded, `get book progress` is not fetched
+//                // so the empty values are handled here : 
+//                // avoid an out of bound panick
+//                let mut values: Vec<String> = Vec::new();
+//                let mut values_f64: Vec<f64> = Vec::new();
+//                values.push(format!(" Not started yet"));
+//                values.push(format!(""));
+//                values_f64.push(0.0);
+//                book_progress_library.push(values);
+//                book_progress_library_cur_time.push(values_f64);
+//            }
+//        }
+//    }            
 
     // init for `SearchBook`
+
     let ids_search_book: Vec<String> = Vec::new();
     let auth_names_pod_search_book: Vec<String> = Vec::new();
     let auth_names_search_book: Vec<String> = Vec::new();
@@ -394,6 +395,7 @@ impl App {
     let titles_pod: Vec<String> = Vec::new();
     let durations_pod_ep: Vec<String> = Vec::new();
 
+    if is_podcast {
     for i in 0..ids_library.len() 
     {let podcast_episode = get_pod_ep(&token, server_address.clone(), ids_library[i].as_str()).await?;
         let title = collect_titles_pod_ep(&podcast_episode).await;
@@ -415,7 +417,7 @@ impl App {
         let duration = collect_durations_pod_ep(&podcast_episode).await;
         all_durations_pod_ep.push(duration);
     }
-
+}
     // init for `Settings`
     let settings = vec!["Account".to_string(), "Library".to_string(), "About".to_string()];
 
@@ -579,8 +581,8 @@ impl App {
         duration_library_search_book,
         book_progress_cnt_list,
         book_progress_cnt_list_cur_time,
-        book_progress_library,
-        book_progress_library_cur_time,
+ //       book_progress_library,
+ //       book_progress_library_cur_time,
         book_progress_search_book,
         book_progress_search_book_cur_time,
         is_cvlc,
@@ -708,22 +710,20 @@ impl App {
                 let selected_search_book = self.list_state_search_results.selected();
 
                 // Init for `PodcastEpisode`
-                let selected_pod_ep = self.list_state_pod_ep.selected();
-                let ids_ep_cnt_list = self.ids_ep_cnt_list.clone();
+                if self.is_podcast {
                 if let Some(index) = selected_library {
                     if let Some(id_pod) = ids_library.get(index) {
-                        let all_ids_pod_ep_clone = self.all_ids_pod_ep.clone();
-                        self.ids_pod_ep = all_ids_pod_ep_clone[index].clone();
+                        self.ids_pod_ep = self.all_ids_pod_ep[index].clone();
                     }}
                 if let Some(index) = selected_search_book {
                     // ids_library_pod_search because we need the pod id and he is given by
                     // this variable
                     if let Some(id_pod) = self.ids_library_pod_search.get(index) {
                         //    println!("{:?}", id_pod);
-                        let all_ids_pod_ep_search_clone = self.all_ids_pod_ep_search.clone();
-                        self.ids_pod_ep_search = all_ids_pod_ep_search_clone[index].clone();
+                        self.ids_pod_ep_search = self.all_ids_pod_ep_search[index].clone();
                         //   println!("{:?}", all_ids_pod_ep_search_clone[index]);
                     }}
+                }
                 // Init for `SettingsAccount`
                 let selected_account = self.list_state_settings_account.selected();
 
@@ -741,6 +741,8 @@ impl App {
                 match self.view_state {
                     AppView::Home => {
                         if self.is_podcast {
+                            let selected_pod_ep = self.list_state_pod_ep.selected();
+                            let ids_ep_cnt_list = self.ids_ep_cnt_list.clone();
                             let mut stdout = stdout();
                             let _ = pop_message(&mut stdout, 3, message);
                             tokio::spawn(async move {
@@ -872,6 +874,7 @@ impl App {
                                     let all_ids_pod_ep_search_clone = self.all_ids_pod_ep_search.clone();
                                     //   println!("{:?}", all_ids_pod_ep_search_clone[index]);
                                     let id_pod_clone = id_pod.clone();
+                                    let selected_pod_ep = self.list_state_pod_ep.selected();
                                     let mut stdout = stdout();
                                     let _ = pop_message(&mut stdout, 3, message);
                                     tokio::spawn(async move {
@@ -900,6 +903,7 @@ impl App {
                                     let all_ids_pod_ep_clone = self.all_ids_pod_ep.clone();
                                     self.ids_pod_ep = all_ids_pod_ep_clone[index].clone();
                                     let id_pod_clone = id_pod.clone();
+                                    let selected_pod_ep = self.list_state_pod_ep.selected();
                                     tokio::spawn(async move {
                                         let mut stdout = stdout();
                                         let _ = pop_message(&mut stdout, 3, message);

@@ -237,24 +237,24 @@ impl App {
             .filter(|(index, _)| index_to_keep.contains(&index))
             .map(|(_, value)| value.clone())
             .collect();
-        self.book_progress_search_book = self.book_progress_library
-            .iter()
-            .enumerate()
-            .filter(|(index, _)| index_to_keep.contains(&index))
-            .map(|(_, value)| value.clone())
-            .collect();
-        self.book_progress_search_book_cur_time = self.book_progress_library_cur_time
-            .iter()
-            .enumerate()
-            .filter(|(index, _)| index_to_keep.contains(&index))
-            .map(|(_, value)| value.clone())
-            .collect();
-        self.book_progress_search_book = self.book_progress_library
-            .iter()
-            .enumerate()
-            .filter(|(index, _)| index_to_keep.contains(&index))
-            .map(|(_, value)| value.clone())
-            .collect();
+//        self.book_progress_search_book = self.book_progress_library
+//            .iter()
+//            .enumerate()
+//            .filter(|(index, _)| index_to_keep.contains(&index))
+//            .map(|(_, value)| value.clone())
+//            .collect();
+//        self.book_progress_search_book_cur_time = self.book_progress_library_cur_time
+//            .iter()
+//            .enumerate()
+//            .filter(|(index, _)| index_to_keep.contains(&index))
+//            .map(|(_, value)| value.clone())
+//            .collect();
+//        self.book_progress_search_book = self.book_progress_library
+//            .iter()
+//            .enumerate()
+//            .filter(|(index, _)| index_to_keep.contains(&index))
+//            .map(|(_, value)| value.clone())
+//            .collect();
 
         // apply search filtering for podacst
         self.all_titles_pod_ep_search = self.all_titles_pod_ep
@@ -478,13 +478,15 @@ impl App {
                     .render(area, buf);
             } 
             else {
-                Paragraph::new(format!("Author: {} - Year: {} - Duration: {}\nProgress:{} {}{}", 
+                Paragraph::new(format!("Author: {} - Year: {}", //- Duration: {}\nProgress:{} {}{}", 
                         self.auth_names_library[selected], 
                         self.published_year_library[selected], 
-                        duration_library_conv[selected],
-                        self.book_progress_library[selected][0], // percentage progression
-                        format!("{}",convert_seconds_for_prg(self.duration_library[selected], self.book_progress_library_cur_time[selected][0])), // time left
-                        self.book_progress_library[selected][1],)) // is finished
+
+                        //duration_library_conv[selected],
+                        //self.book_progress_library[selected][0], // percentage progression
+                        //format!("{}",convert_seconds_for_prg(self.duration_library[selected], self.book_progress_library_cur_time[selected][0])), // time left
+                        //self.book_progress_library[selected][1] // is_finished
+                        )) 
                     .left_aligned()
                     .render(area, buf);
             }
@@ -576,13 +578,14 @@ impl App {
                     .render(area, buf);
             } 
             else {
-                Paragraph::new(format!("Author: {} - Year: {} - Duration: {}\nProgress:{} {}{}", 
+                Paragraph::new(format!("Author: {} - Year: {}", //- Duration: {}\nProgress:{} {}{}", 
                         self.auth_names_search_book[selected], 
                         self.published_year_library_search_book[selected], 
-                        duration_library_search_book_conv[selected],
-                        self.book_progress_search_book[selected][0], // percentage progression
-                        format!("{}",convert_seconds_for_prg(self.duration_library_search_book[selected], self.book_progress_search_book_cur_time[selected][0])), // time left
-                        self.book_progress_search_book[selected][1],)) // is finished
+                      //  duration_library_search_book_conv[selected],
+                      //  self.book_progress_search_book[selected][0], // percentage progression
+                      //  format!("{}",convert_seconds_for_prg(self.duration_library_search_book[selected], self.book_progress_search_book_cur_time[selected][0])), // time left
+                      //  self.book_progress_search_book[selected][1] // is finished
+                        )) 
                     .left_aligned()
                     .render(area, buf);
             }
