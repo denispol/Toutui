@@ -48,7 +48,9 @@ This helps ensure that your books are successfully synced and prevents any poten
 
 ### Automatic install
 ❗It's quite challenging to create a script that is exhaustive for all distributions and OS. If you encounter difficulties, leave an installation issue and install the app [manually](https://github.com/AlbanDAVID/Toutui?tab=readme-ov-file#git).  
+❗This is a beta app, please read [this](https://github.com/AlbanDAVID/Toutui?tab=readme-ov-file#%EF%B8%8F-caution-beta-version).    
 ❗macOS user: read [this](https://github.com/AlbanDAVID/Toutui/blob/main/README.md#-macos).  
+
 #### **Install**
 ```bash
 git clone https://github.com/AlbanDAVID/Toutui
@@ -79,6 +81,9 @@ in `~/.config/toutui`
 🚧 Soon
 
 ### Git
+
+❗This is a beta app, please read [this](https://github.com/AlbanDAVID/Toutui?tab=readme-ov-file#%EF%B8%8F-caution-beta-version).  
+❗macOS user: read [this](https://github.com/AlbanDAVID/Toutui/blob/main/README.md#-macos).  
 
 #### **Requirements**
 - `Rust`
