@@ -1,5 +1,7 @@
 **MAJOR**
 
+`bug_id: 3f729c` 
+**Loading time**: FOR NOW, NOT OPTIMIZED FOR A LIBRARY WITH A LOT OF ITEMS (LONG LOADING AND REFRESH TIME)  
 `bug_id: 9bacac` 
 **Sync**: If you open VLC to listen X, close VLC and quickly open VLC again to listen Y: X will still be sync — according to Y (normally, only Y has to be sync in this case). **PARTIALLY FIXED** (because not optimal solution): a delay of 5 seconds had been added before open VLC, to give the time to X session to close).  
 `bug_id: 86384e` 
