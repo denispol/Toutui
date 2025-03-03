@@ -114,6 +114,12 @@ echo TOUTUI_SECRET_KEY=secret >> ~/.config/toutui/.env
 ```bash
 cargo run --release
 ```
+
+To install in a custom location, provide the path like this:
+```console
+./hello_toutui.sh install /usr/bin
+```
+
 #### **Update**
 
 When a new release is available, follow these steps:
