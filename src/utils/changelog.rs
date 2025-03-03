@@ -48,7 +48,7 @@ let changelog_04 = format!(
         "Changelog Toutui v{} (02/03/2025) \n\
          Fixed:\n\
          \n\
-         - Fix bug_id: 3f729c Loading time not optimized for library with a lot of items.
+         - Fix bug_id: 3f729c Loading time not optimized for library with a lot of items (long start loading and refresh time)
          \n\
          Changed:\n\
          \n\
