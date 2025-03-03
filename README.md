@@ -30,7 +30,7 @@ At worst, you may experience **sync issues**, but there is **no risk** of data l
 For general feedback/questions than can't be in issues, use [discussions](https://github.com/AlbanDAVID/Toutui/discussions).
 
 ### 🍏 **macOS**
-The app is developed and tested on linux distributions so it's may be difficult to use it on macOS. However, we try to make it compatible with macOS but some issues are present for now:  
+The app is developed and tested on Linux distributions, so it **may be difficult to use on macOS**. However, we are working to make it compatible with macOS, but some issues are still present for now.  
 - `cvlc` option is not available.
 
 ### 🎨 **UI**
