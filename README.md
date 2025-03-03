@@ -42,7 +42,7 @@ This helps ensure that your books are successfully synced and prevents any poten
 **⚠️ If you follow all the instructions but installation fails, please open an installation issue.**  
 
 ### Automatic install
-❗It's quite challenging to create a script that is exhaustive for all distributions and OS. If you encounter difficulties, leave an installation issue.
+❗It's quite challenging to create a script that is exhaustive for all distributions and OS. If you encounter difficulties, leave an installation issue and install the app [manually](https://github.com/AlbanDAVID/Toutui?tab=readme-ov-file#git)
 #### **Install**
 ```bash
 git clone https://github.com/AlbanDAVID/Toutui
