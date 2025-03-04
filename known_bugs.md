@@ -35,8 +35,8 @@
 
 **FIXED**
 
-`bug_id: fixed_3f729c` 
+`bug_id: 3f729c` 
 **Loading time**: for now, not optimized for a library with a lot of items (long start loading and refresh time)
 
-`bug_id: fixed_dd9a649`
+`bug_id: dd9a649`
 **Listening Session:** Sometimes, the session (that you can see in `yourserveraddress/audiobookshelf/config/sessions`) does not close correctly, especially if you open VLC, quit it quickly, and start another book.  
