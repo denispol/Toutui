@@ -1,5 +1,6 @@
 <!--
 Thx for you PR :)
+Do not forget to read the guidlines: https://github.com/AlbanDAVID/Toutui/blob/main/CONTRIBUTING.md
 -->
 
 ## Brief summary
