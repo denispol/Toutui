@@ -26,8 +26,8 @@ If you encounter any issues that are **not yet listed** in the Issues section or
 At worst, you may experience **sync issues**, but there is **no risk** of data loss, deletion, or irreversible changes (API is just used to retrieve books and sync them).
 
 ## 📝 Notes
-### 💬 **Discussion**
-For general feedback/questions than can't be in issues, use [discussions](https://github.com/AlbanDAVID/Toutui/discussions).
+### 🤝 **Contributing**  
+Do not hesitate to contribute to this project by submitting your code, ideas, or feedback. Please make sure to read the [guidelines](https://github.com/AlbanDAVID/Toutui/blob/main/CONTRIBUTING.md) first.
 
 ### 🍏 **macOS**
 The app is developed and tested on Linux distributions, so it **may be difficult to use on macOS**. However, we are working to make it compatible with macOS. Known issues:  
