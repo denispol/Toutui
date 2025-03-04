@@ -14,8 +14,8 @@
 ✅ **VLC Command Line Option** – By default, the VLC GUI will be launched, but you can choose, into the config file, to use VLC in the command line (`cvlc`)
 
 
-## 🔮 Future Features  
-🚧 **Soon: Check the TODO list for upcoming improvements.**  
+## 🛠️ Roadmap:  
+Working on the next release: [v0.1.4-beta](https://github.com/AlbanDAVID/Toutui/milestone/1)
 
 ## ⚠️ Caution: Beta Version  
 This beta app is still **hardly in development and contain bugs**.  
