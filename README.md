@@ -22,6 +22,7 @@ Currently working on the next release: [v0.1.4-beta](https://github.com/AlbanDAV
 Here are some features that could be added in future releases:
 - Integrated audio player
 - Ability to add new podcasts from the app
+- Add stats
   
 ## ⚠️ Caution: Beta Version  
 This beta app is still in **heavy development and contains bugs**.  
