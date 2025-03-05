@@ -43,7 +43,11 @@ pub async fn fetch_vlc_data(port: String, address: String) -> Result<Option<u32>
 
         // Print and return the fetched seconds
         if let Some(sec) = seconds {
-            return Ok(Some(sec)); // Return seconds once fetched
+            if sec > 0 {
+                return Ok(Some(sec)); // Return seconds once fetched
+            } else {
+                info!("[is_vlc_running][check_seconds]: {:?}", sec);
+            }
         }
 
         // Sleep to fetch data every second and avoid CPU overload

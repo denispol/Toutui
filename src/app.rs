@@ -642,7 +642,7 @@ impl App {
                 update_is_vlc_launched_first_time("1", self.username.as_str());
                 let value = get_is_vlc_launched_first_time(self.username.as_str());
                 info!("[exit][is_vlc_launched_first_time] {}", value);
-                info!("App successfully quited");
+                info!("App successfully quit");
                 process::exit(0);
 
             }        

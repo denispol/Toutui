@@ -21,19 +21,15 @@ pub async fn handle_l_book(
     is_cvlc_term: String,
     username: String,
 ) {
-    // not optimal solution but avoid `bug_id: 9bacac`
-    // tokio::time::sleep(tokio::time::Duration::from_secs(5)).await;
-    // info!("Loading...");
-   //let mut loop_struct = Loop::new().expect("Failed to initialize Loop");
-   //info!("[0] is_loop_break {}", loop_struct.is_loop_break);
    
     if let Some(index) = selected {
         if let Some(id) = ids_library_items.get(index) {
             if let Some(token) = token {
                 if let Ok(info_item) = post_start_playback_session_book(Some(&token), id, server_address.clone()).await {
-                    //  close previous listening session if it was not did. (but need to also call
-                    // `update media progress` to be effective)
                     info!("[handle_l_book][post_start_playback_session_book] OK");
+
+                    // converting current time
+                    let current_time: u32 = info_item[0].parse().unwrap();
 
                     // clone otherwise, these variable will  be consumed and not available anymore
                     // for use outside start_vlc spawn
@@ -95,9 +91,9 @@ pub async fn handle_l_book(
                                 // Important, sleep time to 1s minimum, otherwise connection to vlc player will not have time to connect
                                 // sleep time : every how many seconds the data will be sent to the server
                                 tokio::time::sleep(tokio::time::Duration::from_secs(5)).await;
-                                //                                println!("last_curr: {}", last_current_time);
+                                // println!("last_curr: {}", last_current_time);
                                 if data_fetched_from_vlc == last_current_time {
-                                    progress_sync = 0;
+                                    progress_sync = 0; // the track is in pause
                                 } else {
                                     progress_sync = 5; // need to be equal to tokio time sleep just above
                                 }
@@ -123,7 +119,7 @@ pub async fn handle_l_book(
                                         info!("[handle_l_book][Finished] Session successfully closed");
                                         let _ = update_media_progress2_book(id, Some(&token), Some(data_fetched_from_vlc), &info_item[2], is_finised, server_address).await;
                                         info!("[handle_l_book][Finished] VLC stopped");
-                                        update_is_loop_break("1", username.as_str());
+                                        let _ = update_is_loop_break("1", username.as_str());
                                         break; 
                                     },
                                     // `Err` means :  VLC is close (because if VLC is not playing
@@ -142,21 +138,23 @@ pub async fn handle_l_book(
                                         info!("[handle_l_book][Err] VLC closed");
                                         //eprintln!("Error fetching play status: {}", e);
                                         //info!("[1] is_loop_break {}", loop_struct.is_loop_break);
-                                        update_is_loop_break("1", username.as_str());
+                                        let _ = update_is_loop_break("1", username.as_str());
                                         break; 
                                     }
                                 }
 
                             }
+                            // when no data in fetched (generaly when VLC is laucnh and quit
+                            // quickly)
                             Ok(None) => {
                                 info!("[handle_l_book][None]");
                                 let _ = close_session_without_send_prg_data(Some(&token), &info_item[3],  server_address.clone()).await;
                                 info!("[handle_l_book][None] Session successfully closed");
-                                let _ = update_media_progress_book(id, Some(&token), Some(last_current_time), &info_item[2], server_address.clone()).await;
+                                let _ = update_media_progress_book(id, Some(&token), Some(current_time), &info_item[2], server_address.clone()).await;
                                 info!("[handle_l_book][None] VLC closed");
                                 //  loop_struct.is_loop_break = true;
                                 //  info!("[2] is_loop_break {}", loop_struct.is_loop_break);
-                                update_is_loop_break("1", username.as_str());
+                                let _ = update_is_loop_break("1", username.as_str());
                                 break; // Exit if no data available
                             }
                             Err(e) => {
