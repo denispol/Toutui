@@ -34,7 +34,7 @@ At worst, you may experience **sync issues**, but there is **no risk** of data l
 
 ## 📝 Notes
 ### 🤝 **Contributing**  
-Do not hesitate to contribute to this project by submitting your code, ideas, or feedback. Please make sure to read the [guidelines](https://github.com/AlbanDAVID/Toutui/blob/main/CONTRIBUTING.md) first.
+Do not hesitate to contribute to this project by submitting your code, ideas, or feedback. Please make sure to read the [contributing guidelines](https://github.com/AlbanDAVID/Toutui/blob/main/CONTRIBUTING.md) first.
 
 ### 🍏 **macOS**
 The app is developed and tested on Linux distributions, so it **may be difficult to use on macOS**. However, we are working to make it compatible with macOS. Known issues:  
