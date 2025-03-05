@@ -15,8 +15,14 @@
 
 
 ## 🛠️ Roadmap  
-Working on the next release: [v0.1.4-beta](https://github.com/AlbanDAVID/Toutui/milestone/1)
+Since this is a beta version, the main focus is on tracking and fixing bugs.  
+Currently working on the next release: [v0.1.4-beta](https://github.com/AlbanDAVID/Toutui/milestone/1)
 
+## 🔮 Futur features
+Here are some exciting features that could be added in future releases:
+- Integrated audio player
+- Be able to add new podcasts from the app
+  
 ## ⚠️ Caution: Beta Version  
 This beta app is still **hardly in development and contain bugs**.  
 ❗Please check [here](https://github.com/AlbanDAVID/Toutui/blob/main/known_bugs.md) for known bugs especially **MAJOR BUGS** before using the app, so you can use it with full awareness of any known issues.  
