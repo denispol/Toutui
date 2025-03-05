@@ -27,6 +27,7 @@ pub async fn handle_l_book(
             if let Some(token) = token {
                 if let Ok(info_item) = post_start_playback_session_book(Some(&token), id, server_address.clone()).await {
                     info!("[handle_l_book][post_start_playback_session_book] OK");
+                    info!("[handle_l_book][post_start_playback_session_book] Item {} started at {}s", id, info_item[0]);
 
                     // converting current time
                     let current_time: u32 = info_item[0].parse().unwrap();
@@ -119,6 +120,7 @@ pub async fn handle_l_book(
                                         info!("[handle_l_book][Finished] Session successfully closed");
                                         let _ = update_media_progress2_book(id, Some(&token), Some(data_fetched_from_vlc), &info_item[2], is_finised, server_address).await;
                                         info!("[handle_l_book][Finished] VLC stopped");
+                                        info!("[handle_l_book][Finished] Item {} closed at {}s", id, data_fetched_from_vlc);
                                         let _ = update_is_loop_break("1", username.as_str());
                                         break; 
                                     },
@@ -136,6 +138,7 @@ pub async fn handle_l_book(
                                         // progress otherwise)
                                         let _ = update_media_progress_book(id, Some(&token), Some(data_fetched_from_vlc), &info_item[2], server_address).await;
                                         info!("[handle_l_book][Err] VLC closed");
+                                        info!("[handle_l_book][Err] Item {} closed at {}s", id, data_fetched_from_vlc);
                                         //eprintln!("Error fetching play status: {}", e);
                                         //info!("[1] is_loop_break {}", loop_struct.is_loop_break);
                                         let _ = update_is_loop_break("1", username.as_str());
@@ -144,14 +147,16 @@ pub async fn handle_l_book(
                                 }
 
                             }
-                            // when no data in fetched (generaly when VLC is laucnh and quit
-                            // quickly)
+                            // when no data in fetched (generaly when VLC is launched and quit
+                            // quickly) Indeed, in this case, data does not have enough time to be
+                            // fetched
                             Ok(None) => {
                                 info!("[handle_l_book][None]");
                                 let _ = close_session_without_send_prg_data(Some(&token), &info_item[3],  server_address.clone()).await;
                                 info!("[handle_l_book][None] Session successfully closed");
                                 let _ = update_media_progress_book(id, Some(&token), Some(current_time), &info_item[2], server_address.clone()).await;
                                 info!("[handle_l_book][None] VLC closed");
+                                info!("[handle_l_book][None] Item {} closed at {}s", id, current_time);
                                 //  loop_struct.is_loop_break = true;
                                 //  info!("[2] is_loop_break {}", loop_struct.is_loop_break);
                                 let _ = update_is_loop_break("1", username.as_str());
