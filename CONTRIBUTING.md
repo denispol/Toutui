@@ -6,7 +6,7 @@ Thanks for your interest in **Toutui**! 🦜
 This project is still **(hardly) in development**. I built this to learn Rust. The code isn’t fully optimized or clear. However, feel free to contact me with any questions. There are known bugs (check [known_bugs](https://github.com/AlbanDAVID/Toutui/blob/main/known_bugs.md) and open issues).
 
 Check the [roadmap](https://github.com/AlbanDAVID/Toutui?tab=readme-ov-file#%EF%B8%8F-roadmap) to see what I'm currently working on.  
-If you want to contribute new features but don't have any ideas, feel free to check the [future features](https://github.com/AlbanDAVID/Toutui?tab=readme-ov-file#-futur-features) section for inspiration.   
+If you want to contribute new features but don't have any ideas, feel free to check the [future features](https://github.com/AlbanDAVID/Toutui?tab=readme-ov-file#-future-features) section for inspiration.   
 
 ## 💬 How to Contribute
 
