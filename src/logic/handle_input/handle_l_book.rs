@@ -129,16 +129,16 @@ pub async fn handle_l_book(
                                     // The track is not finished. VLC is just stopped by the user.
                                     // Differ from the case above where the track reched the end.
                                     Err(_) => {
-                                        info!("[handle_l_book][Err]");
+                                        info!("[handle_l_book][Quit]");
                                         //TODO minor bug : be sure to close the session above
                                         // close session when VLC is quitted
                                         let _ = close_session_without_send_prg_data(Some(&token), &info_item[3],  server_address.clone()).await;
-                                        info!("[handle_l_book][Err] Session successfully closed");
+                                        info!("[handle_l_book][Quit] Session successfully closed");
                                         // send one last time media progress (bug to retrieve media
                                         // progress otherwise)
                                         let _ = update_media_progress_book(id, Some(&token), Some(data_fetched_from_vlc), &info_item[2], server_address).await;
-                                        info!("[handle_l_book][Err] VLC closed");
-                                        info!("[handle_l_book][Err] Item {} closed at {}s", id, data_fetched_from_vlc);
+                                        info!("[handle_l_book][Quit] VLC closed");
+                                        info!("[handle_l_book][Quit] Item {} closed at {}s", id, data_fetched_from_vlc);
                                         //eprintln!("Error fetching play status: {}", e);
                                         //info!("[1] is_loop_break {}", loop_struct.is_loop_break);
                                         let _ = update_is_loop_break("1", username.as_str());
