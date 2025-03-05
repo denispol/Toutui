@@ -19,7 +19,7 @@ Since this is a beta version, the main focus is on tracking and fixing bugs.
 Currently working on the next release: [v0.1.4-beta](https://github.com/AlbanDAVID/Toutui/milestone/1)
 
 ## 🔮 Future features
-Here are some exciting features that could be added in future releases:
+Here are some features that could be added in future releases:
 - Integrated audio player
 - Ability to add new podcasts from the app
   
