@@ -15,8 +15,13 @@
 
 
 ## 🛠️ Roadmap  
-Since this is a beta version, the main focus is on tracking and fixing bugs.  
-Currently working on the next release: [v0.1.4-beta](https://github.com/AlbanDAVID/Toutui/milestone/1)
+**Short-term Goals**  
+- Since this is a beta version, the main focus is on tracking and fixing bugs.  
+- Currently working on the next release: [v0.1.4-beta](https://github.com/AlbanDAVID/Toutui/milestone/1)
+
+**Mid-term Goals**  
+- CI/CD Implementation  
+- Add future features described bellow.
 
 ## 🔮 Future features
 Here are some features that could be added in future releases:
