@@ -23,6 +23,7 @@ Here are some features that could be added in future releases:
 - Integrated audio player
 - Ability to add new podcasts from the app
 - Add stats
+- Offline mode
   
 ## ⚠️ Caution: Beta Version  
 This beta app is still in **heavy development and contains bugs**.  
