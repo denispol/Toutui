@@ -21,7 +21,7 @@ pub async fn handle_l_book(
     is_cvlc_term: String,
     username: String,
 ) {
-   
+  
     if let Some(index) = selected {
         if let Some(id) = ids_library_items.get(index) {
             if let Some(token) = token {
@@ -32,6 +32,13 @@ pub async fn handle_l_book(
                     // converting current time
                     let current_time: u32 = info_item[0].parse().unwrap();
 
+                    // insert variables in databse (`listening_session` table) for sync session when app is quit
+                    let _ = insert_listening_session(
+                        info_item[3].clone(), // id_session
+                        id.to_string(), // id_item
+                        current_time,  // current time
+                        info_item[2].clone()); // total duration of the item
+                        
                     // clone otherwise, these variable will  be consumed and not available anymore
                     // for use outside start_vlc spawn
                     let token_clone = token.clone();
@@ -71,7 +78,6 @@ pub async fn handle_l_book(
 
 
                     // Important, sleep time to 1s minimum otherwise connection to vlc player will not have time to connect
-                    //tokio::time::sleep(std::time::Duration::from_secs(3)).await;
                     tokio::time::sleep(tokio::time::Duration::from_secs(1)).await;
 
                     // init var for decide to send 0 sec in sync session if player is in pause
@@ -88,6 +94,9 @@ pub async fn handle_l_book(
                         match fetch_vlc_data(port.clone(), address_player.clone()).await {
                             Ok(Some(data_fetched_from_vlc)) => {
                                 // println!("Fetched data: {}", data_fetched_from_vlc.to_string());
+
+                                // update current_time in database (`listening_session` table)
+                                let _ = update_current_time(data_fetched_from_vlc, info_item[3].as_str());
 
                                 // Important, sleep time to 1s minimum, otherwise connection to vlc player will not have time to connect
                                 // sleep time : every how many seconds the data will be sent to the server
@@ -116,6 +125,10 @@ pub async fn handle_l_book(
                                     // track as finished)
                                     Ok(false) => {
                                         let is_finised = true;
+
+                                        // update is_finished in database (`listening_session` table)
+                                        update_is_finished("1", info_item[3].as_str());
+                                        
                                         let _ = close_session_without_send_prg_data(Some(&token), &info_item[3],  server_address.clone()).await;
                                         info!("[handle_l_book][Finished] Session successfully closed");
                                         let _ = update_media_progress2_book(id, Some(&token), Some(data_fetched_from_vlc), &info_item[2], is_finised, server_address).await;
@@ -178,3 +191,4 @@ pub async fn handle_l_book(
         }
     }
 }
+

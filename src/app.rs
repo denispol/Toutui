@@ -30,6 +30,9 @@ use crate::utils::changelog::*;
 use crate::utils::encrypt_token::*;
 use log::info;
 use std::io::stdout;
+use crate::api::me::update_media_progress::*;
+use crate::api::sessions::close_open_session::*;
+use crate::player::vlc::quit_vlc::*;
 
 pub enum AppView {
     Home,
@@ -619,7 +622,6 @@ impl App {
         }
 
 
-
         match key.code {
             KeyCode::Char('/') | KeyCode::Char(' ') => {
                 let _ = self.search_active();
@@ -639,14 +641,59 @@ impl App {
             // same as above, need to quit once before
             // be able to execute `R` from main function 
             KeyCode::Char('Q') | KeyCode::Esc => {
-                update_is_vlc_launched_first_time("1", self.username.as_str());
-                let value = get_is_vlc_launched_first_time(self.username.as_str());
-                info!("[exit][is_vlc_launched_first_time] {}", value);
-                info!("App successfully quit");
-                process::exit(0);
+
+                // display message 
+                let message_quit = "Exiting the application and syncing data, please hold on.";
+                let mut stdout = stdout();
+                let _ = pop_message(&mut stdout, 3, message_quit);
+
+                // quit vlc before close the app
+                let _ = quit_vlc(self.config.player.address.as_str(), self.config.player.port.as_str());
+             
+                // close and sync listening session before quit the app                
+                match get_listening_session() {
+                    Ok(Some(session)) => {
+                        tokio::spawn({
+                            let token = self.token.clone();  
+                            let server_address = self.server_address.clone();
+                            let username = self.username.clone();
+
+                            async move {
+                                let _ = close_session_without_send_prg_data(
+                                    token.as_ref(), 
+                                    session.id_session.as_str(), 
+                                    server_address.clone()).await;
+                                info!("[handle_key (Q)][Quit] Session successfully closed");
+
+                                let _ = update_media_progress_book(
+                                    session.id_item.as_str(), 
+                                    token.as_ref(), 
+                                    Some(session.current_time), 
+                                    &session.duration, 
+                                    server_address.clone()).await;
+                                info!("[handle_key (Q)][Quit] Item {} closed at {:?}s", session.id_item, session.current_time);
+
+                                // update is_vlc_launched_first_time
+                                update_is_vlc_launched_first_time("1", username.as_str());
+                                let value = get_is_vlc_launched_first_time(username.as_str());
+                                info!("[exit][is_vlc_launched_first_time] {}", value);
+
+                                // exit app
+                                info!("App successfully quit");
+                                process::exit(0);
+                            }
+                        });
+
+                    }
+                    Ok(None) => info!("[handle_key (Q)][Quit] No session"),
+                    Err(e) => info!("[handle_key (Q)][Quit] Error during fetching session: {:?}", e),
+                }
 
             }        
-            KeyCode::Char('R') => self.should_exit = true, 
+            KeyCode::Char('R') => self.should_exit = true, // allow to exit the app in `run`
+                                                           // function above (to be
+                                                           // able to to the Refresh from the
+                                                           // terminal in main.rs)
             KeyCode::Char('j') | KeyCode::Down => {
                 self.select_next();
                 self.scroll_offset = 0; 
@@ -788,7 +835,6 @@ impl App {
                             let _ = update_is_vlc_launched_first_time("0", &username);
                             let value = get_is_vlc_launched_first_time(self.username.as_str());
                             info!("[AppView::Home][update_is_vlc_first_launch]{}", value);
-
                             tokio::spawn(async move {
                                 handle_l_book(
                                     token.as_ref(), 

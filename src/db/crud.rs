@@ -1,9 +1,120 @@
 use rusqlite::{params, Connection, Result};
 use crate::db::database_struct::User;
+use crate::db::database_struct::ListeningSession;
 use crate::utils::pop_up_message::*;
 use std::io::stdout;
 use log::{info, error};
 use std::path::PathBuf;
+
+pub fn get_listening_session() -> Result<Option<ListeningSession>> {
+
+    let mut db_path = dirs::config_dir().unwrap_or_else(|| PathBuf::from("."));
+    db_path.push("toutui/db.sqlite3");
+
+    let err_message = "Error connecting to the database.";
+
+    if let Ok(conn) = Connection::open(db_path) {
+        let mut stmt = conn.prepare(
+            "SELECT id_session, id_item, current_time_playback, duration, is_finished 
+             FROM listening_session
+             LIMIT 1",
+        )?;
+
+        let mut rows = stmt.query(params![])?;
+
+        if let Some(row) = rows.next()? {
+            let session = ListeningSession {
+                id_session: row.get(0)?,
+                id_item: row.get(1)?,
+                current_time: row.get(2)?,
+                duration: row.get(3)?,
+                is_finished: row.get(4)?,
+            };
+            return Ok(Some(session));
+        }
+    } else {
+        let mut stdout = stdout();
+        let _ = pop_message(&mut stdout, 3, err_message);
+        error!("[get_listening_session] {}", err_message);
+    }
+
+    Ok(None)
+}
+
+// insert data into `listening_session` table
+pub fn insert_listening_session(
+    id_session: String,
+    id_item: String,
+    current_time: u32,
+    duration: String,
+) -> Result<()> {
+
+    let mut db_path = dirs::config_dir().unwrap_or_else(|| PathBuf::from("."));
+    db_path.push("toutui/db.sqlite3");
+
+    let err_message = "Error connecting to the database.";
+
+    if let Ok(conn) = Connection::open(db_path) {
+        conn.execute("DELETE FROM listening_session", params![])?;
+        conn.execute(
+            "INSERT INTO listening_session (id_session, id_item, current_time_playback, duration, is_finished) 
+             VALUES (?1, ?2, ?3, ?4, 0)",
+            params![id_session, id_item, current_time, duration],
+        )?;
+    } else {
+        let mut stdout = stdout();
+        let _ = pop_message(&mut stdout, 3, err_message);
+        error!("[insert_listening_session] {}", err_message);
+    }
+
+    Ok(())
+}
+
+// Update current_time (for `listening_session` table)
+pub fn update_current_time(value: u32, id_session: &str) -> Result<()> {
+
+    let mut db_path = dirs::config_dir().unwrap_or_else(|| PathBuf::from("."));
+    db_path.push("toutui/db.sqlite3");
+
+    let err_message = "Error connecting to the database.";
+
+    if let Ok(conn) = Connection::open(db_path) {
+
+        conn.execute(
+            "UPDATE listening_session SET current_time_playback = ?1 WHERE id_session = ?2",
+            params![value, id_session],
+        )?;
+    } else {
+        let mut stdout = stdout();
+        let _ = pop_message(&mut stdout, 3, err_message);
+        error!("[update_current_time] {}", err_message);
+    }
+
+    Ok(())
+}
+
+// Update is_finished (for `listening_session` table)
+pub fn update_is_finished(value: &str, id_session: &str) -> Result<()> {
+
+    let mut db_path = dirs::config_dir().unwrap_or_else(|| PathBuf::from("."));
+    db_path.push("toutui/db.sqlite3");
+
+    let err_message = "Error connecting to the database.";
+
+    if let Ok(conn) = Connection::open(db_path) {
+
+        conn.execute(
+            "UPDATE listening_session SET is_finished = ?1 WHERE id_session = ?2",
+            params![value, id_session],
+        )?;
+    } else {
+        let mut stdout = stdout();
+        let _ = pop_message(&mut stdout, 3, err_message);
+        error!("[update_is_finished] {}", err_message);
+    }
+
+    Ok(())
+}
 
 // Delete an user
 pub fn delete_user(username: &str) -> Result<()> {
@@ -210,7 +321,7 @@ pub fn select_default_usr() -> Result<Vec<String>> {
             username: row.get(0)?,
             server_address: row.get(1)?,
             token: row.get(2)?,
-            is_default_usr: row.get::<_, i32>(3)? != 0,  // Convertir 0/1 en bool
+            is_default_usr: row.get::<_, i32>(3)? != 0,  // convert 0/1 in bool
             name_selected_lib: row.get(4)?,
             id_selected_lib: row.get(5)?,
             is_loop_break: row.get(6)?,
@@ -254,7 +365,7 @@ pub fn init_db() -> Result<()> {
     // Open or create db
     let conn = Connection::open(db_path)?;
 
-    //Create a table if there is none 
+    //Create table `users` if there is none 
     conn.execute(
         "CREATE TABLE IF NOT EXISTS users (
                 username TEXT PRIMARY KEY,
@@ -265,6 +376,18 @@ pub fn init_db() -> Result<()> {
                 id_selected_lib TEXT NOT NULL,
                 is_loop_break TEXT NOT NULL,
                 is_vlc_launched_first_time TEXT NOT NULL
+            )",
+        [],
+    )?;
+
+    //Create table `listening_session` if there is none 
+    conn.execute(
+        "CREATE TABLE IF NOT EXISTS listening_session (
+            id_session TEXT PRIMARY KEY,
+            id_item TEXT NOT NULL,
+            current_time_playback INTEGER NOT NULL,
+            duration TEXT NOT NULL,
+            is_finished INTEGER NOT NULL DEFAULT 0
             )",
         [],
     )?;
