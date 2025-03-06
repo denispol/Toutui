@@ -15,7 +15,7 @@ pub fn get_listening_session() -> Result<Option<ListeningSession>> {
 
     if let Ok(conn) = Connection::open(db_path) {
         let mut stmt = conn.prepare(
-            "SELECT id_session, id_item, current_time_playback, duration, is_finished 
+            "SELECT id_session, id_item, current_time_playback, duration, is_finished, id_pod
              FROM listening_session
              LIMIT 1",
         )?;
@@ -29,6 +29,7 @@ pub fn get_listening_session() -> Result<Option<ListeningSession>> {
                 current_time: row.get(2)?,
                 duration: row.get(3)?,
                 is_finished: row.get(4)?,
+                id_pod: row.get(5)?,
             };
             return Ok(Some(session));
         }
@@ -47,6 +48,7 @@ pub fn insert_listening_session(
     id_item: String,
     current_time: u32,
     duration: String,
+    id_pod: String,
 ) -> Result<()> {
 
     let mut db_path = dirs::config_dir().unwrap_or_else(|| PathBuf::from("."));
@@ -57,9 +59,9 @@ pub fn insert_listening_session(
     if let Ok(conn) = Connection::open(db_path) {
         conn.execute("DELETE FROM listening_session", params![])?;
         conn.execute(
-            "INSERT INTO listening_session (id_session, id_item, current_time_playback, duration, is_finished) 
-             VALUES (?1, ?2, ?3, ?4, 0)",
-            params![id_session, id_item, current_time, duration],
+            "INSERT INTO listening_session (id_session, id_item, current_time_playback, duration, is_finished, id_pod) 
+             VALUES (?1, ?2, ?3, ?4, 0, ?5)",
+            params![id_session, id_item, current_time, duration, id_pod],
         )?;
     } else {
         let mut stdout = stdout();
@@ -387,7 +389,8 @@ pub fn init_db() -> Result<()> {
             id_item TEXT NOT NULL,
             current_time_playback INTEGER NOT NULL,
             duration TEXT NOT NULL,
-            is_finished INTEGER NOT NULL DEFAULT 0
+            is_finished INTEGER NOT NULL DEFAULT 0,
+            id_pod TEXT NOT NULL
             )",
         [],
     )?;

@@ -26,18 +26,21 @@ pub async fn handle_l_book(
         if let Some(id) = ids_library_items.get(index) {
             if let Some(token) = token {
                 if let Ok(info_item) = post_start_playback_session_book(Some(&token), id, server_address.clone()).await {
-                    info!("[handle_l_book][post_start_playback_session_book] OK");
-                    info!("[handle_l_book][post_start_playback_session_book] Item {} started at {}s", id, info_item[0]);
 
                     // converting current time
-                    let current_time: u32 = info_item[0].parse().unwrap();
+                    let current_time: u32 = info_item[0].parse::<f64>().unwrap().round() as u32;
+
+                    info!("[handle_l_book][post_start_playback_session_book] OK");
+                    info!("[handle_l_book][post_start_playback_session_book] Item {} started at {}s", id, current_time);
+
 
                     // insert variables in databse (`listening_session` table) for sync session when app is quit
                     let _ = insert_listening_session(
                         info_item[3].clone(), // id_session
                         id.to_string(), // id_item
                         current_time,  // current time
-                        info_item[2].clone()); // total duration of the item
+                        info_item[2].clone(),
+                        "".to_string()); // empty here, because it's for podcasts
                         
                     // clone otherwise, these variable will  be consumed and not available anymore
                     // for use outside start_vlc spawn
@@ -108,6 +111,7 @@ pub async fn handle_l_book(
                                     progress_sync = 5; // need to be equal to tokio time sleep just above
                                 }
                                 last_current_time = data_fetched_from_vlc;
+
                                 match fetch_vlc_is_playing(port.clone(), address_player.clone()).await {
                                     Ok(true) => {
                                         // the first datra fetched is sometimes 0 secondes, so we
@@ -143,7 +147,6 @@ pub async fn handle_l_book(
                                     // Differ from the case above where the track reched the end.
                                     Err(_) => {
                                         info!("[handle_l_book][Quit]");
-                                        //TODO minor bug : be sure to close the session above
                                         // close session when VLC is quitted
                                         let _ = close_session_without_send_prg_data(Some(&token), &info_item[3],  server_address.clone()).await;
                                         info!("[handle_l_book][Quit] Session successfully closed");
@@ -153,7 +156,6 @@ pub async fn handle_l_book(
                                         info!("[handle_l_book][Quit] VLC closed");
                                         info!("[handle_l_book][Quit] Item {} closed at {}s", id, data_fetched_from_vlc);
                                         //eprintln!("Error fetching play status: {}", e);
-                                        //info!("[1] is_loop_break {}", loop_struct.is_loop_break);
                                         let _ = update_is_loop_break("1", username.as_str());
                                         break; 
                                     }
@@ -170,15 +172,12 @@ pub async fn handle_l_book(
                                 let _ = update_media_progress_book(id, Some(&token), Some(current_time), &info_item[2], server_address.clone()).await;
                                 info!("[handle_l_book][None] VLC closed");
                                 info!("[handle_l_book][None] Item {} closed at {}s", id, current_time);
-                                //  loop_struct.is_loop_break = true;
-                                //  info!("[2] is_loop_break {}", loop_struct.is_loop_break);
+
                                 let _ = update_is_loop_break("1", username.as_str());
                                 break; // Exit if no data available
                             }
                             Err(e) => {
                                 error!("[handle_l_book][Err(e)]{}", e);
-                             //   loop_struct.is_loop_break = true;
-                             //   info!("[3] is_loop_break {}", loop_struct.is_loop_break);
                                 break; // Exit on error
                             }
                         }

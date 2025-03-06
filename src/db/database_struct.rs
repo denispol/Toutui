@@ -29,6 +29,7 @@ pub struct ListeningSession {
     pub current_time: u32,
     pub duration: String,
     pub is_finished: bool,
+    pub id_pod: String,
 }
 
 
@@ -57,6 +58,7 @@ impl Database {
             current_time: 0,
             duration: String::new(),
             is_finished: false,
+            id_pod: String::new(),
         };
 
         Ok(Self {

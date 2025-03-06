@@ -665,13 +665,27 @@ impl App {
                                     server_address.clone()).await;
                                 info!("[handle_key (Q)][Quit] Session successfully closed");
 
+                                if session.id_pod.is_empty() {
                                 let _ = update_media_progress_book(
                                     session.id_item.as_str(), 
                                     token.as_ref(), 
                                     Some(session.current_time), 
                                     &session.duration, 
                                     server_address.clone()).await;
+
                                 info!("[handle_key (Q)][Quit] Item {} closed at {:?}s", session.id_item, session.current_time);
+
+                                } else {
+                                    let _ = update_media_progress_pod(
+                                        session.id_item.as_str(), 
+                                        token.as_ref(), 
+                                        Some(session.current_time), 
+                                        &session.duration, 
+                                        session.id_pod.as_str(), 
+                                        server_address.clone()).await;
+
+                                info!("[handle_key (Q)][Quit] Item {} closed at {:?}s", session.id_pod, session.current_time);
+                                }
 
                                 // update is_vlc_launched_first_time
                                 update_is_vlc_launched_first_time("1", username.as_str());
