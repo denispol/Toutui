@@ -7,7 +7,7 @@ use std::io::stdout;
 pub fn wait_prev_session_finished(username: String) {
 
     // pop message
-    let message = "Sync previous session. Hold on...";
+    let message = "Syncing your last listening session. Please wait...";
     let mut stdout = stdout();
 
         // check if previous play is finished

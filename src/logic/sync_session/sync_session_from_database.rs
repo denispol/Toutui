@@ -4,6 +4,8 @@ use log::info;
 use crate::api::me::update_media_progress::*;
 use std::process;
 use crate::player::vlc::quit_vlc::*;
+use crossterm::terminal::{disable_raw_mode, LeaveAlternateScreen};
+use std::io::{self, Write};
 
 // close and sync listening session before quit the app                
 pub async fn sync_session_from_database(token: Option<String>, server_address: String, username: String, app_quit: bool, handle_key: &str, player_address: String, port: String) {
@@ -101,7 +103,7 @@ pub async fn sync_session_from_database(token: Option<String>, server_address: S
 
                 // exit app
                 info!("App successfully quit");
-                process::exit(0);
+                clean_exit();
 
             }
         }
@@ -109,4 +111,13 @@ pub async fn sync_session_from_database(token: Option<String>, server_address: S
         Ok(None) => info!("[handle_key] No session"),
         Err(e) => info!("[handle_key] Error during fetching session: {:?}", e),
     }
+}
+
+// exit the app
+fn clean_exit() {
+    let _ = disable_raw_mode(); // Désactive le mode raw
+    let mut stdout = io::stdout();
+    let _ = crossterm::execute!(stdout, LeaveAlternateScreen); // Quitte l'écran alternatif
+    let _ = stdout.flush(); // Force l'affichage des changements
+    process::exit(0);
 }
