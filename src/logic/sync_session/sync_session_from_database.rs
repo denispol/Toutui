@@ -115,9 +115,9 @@ pub async fn sync_session_from_database(token: Option<String>, server_address: S
 
 // exit the app
 fn clean_exit() {
-    let _ = disable_raw_mode(); // Désactive le mode raw
+    let _ = disable_raw_mode(); 
     let mut stdout = io::stdout();
-    let _ = crossterm::execute!(stdout, LeaveAlternateScreen); // Quitte l'écran alternatif
-    let _ = stdout.flush(); // Force l'affichage des changements
+    let _ = crossterm::execute!(stdout, LeaveAlternateScreen); 
+    let _ = stdout.flush(); 
     process::exit(0);
 }
