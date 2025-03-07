@@ -41,4 +41,4 @@ No major bug for the moment 🙏
 `bug_id: fc695f`
 **Listening session:** The session (that you can see in `yourserveraddress/audiobookshelf/config/sessions`) does not close when the app is quit.  
 `bug_id: 40f48d`
-**Cursor:** When you quit the app, terminal cursor disappear. Solution: type `restet` in your terminal.  
+**Cursor:** When you quit the app, terminal cursor disappear.  
