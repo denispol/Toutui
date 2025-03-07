@@ -51,7 +51,8 @@ The **font** and **emojis** may vary depending on the terminal you are using.
 To ensure the best experience, it's recommended to use terminals that support **emoji rendering** properly (e.g., Kitty, Alacritty).
 
 ### 🎧 **Using `cvlc`**
-When using **`cvlc`** (command-line VLC), make sure to use the `shutdown` command when you want to quit the listening session.
+- Type `help` to see commands  
+- When using **`cvlc`** (command-line VLC), make sure to use the `shutdown` command when you want to quit the listening session.
 This helps ensure that your books are successfully synced and prevents any potential issues.
 
 ## 🚨 Installation Instructions
