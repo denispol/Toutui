@@ -22,7 +22,6 @@ use ratatui::{
     widgets::ListState,
     DefaultTerminal,
 };
-use std::process;
 use ratatui::widgets::Block;
 use ratatui::style::{Color, Style};
 use crate::utils::pop_up_message::*;
@@ -30,9 +29,11 @@ use crate::utils::changelog::*;
 use crate::utils::encrypt_token::*;
 use log::info;
 use std::io::stdout;
-use crate::api::me::update_media_progress::*;
-use crate::api::sessions::close_open_session::*;
 use crate::player::vlc::quit_vlc::*;
+use crate::logic::sync_session::sync_session_from_database::*;
+use crate::logic::sync_session::wait_prev_session_finished::*;
+use crate::player::vlc::fetch_vlc_data::*;
+
 
 pub enum AppView {
     Home,
@@ -647,91 +648,16 @@ impl App {
                 let mut stdout = stdout();
                 let _ = pop_message(&mut stdout, 3, message_quit);
 
-                // quit vlc before close the app
-                let _ = quit_vlc(self.config.player.address.as_str(), self.config.player.port.as_str());
-             
-                // close and sync listening session before quit the app                
-                match get_listening_session() {
-                    Ok(Some(session)) => {
-                        tokio::spawn({
-                            let token = self.token.clone();  
-                            let server_address = self.server_address.clone();
-                            let username = self.username.clone();
+                // close and sync session before close the app
+                let token = self.token.clone();  
+                let server_address = self.server_address.clone();
+                let username = self.username.clone();
+                let player_address = self.config.player.address.clone();
+                let port = self.config.player.port.clone();
 
-                            async move {
-                                let _ = close_session_without_send_prg_data(
-                                    token.as_ref(), 
-                                    session.id_session.as_str(), 
-                                    server_address.clone()).await;
-                                info!("[handle_key (Q)][Quit] Session successfully closed");
-
-                                if session.id_pod.is_empty() {
-                                    if !session.is_finished {
-                                        let _ = update_media_progress_book(
-                                            session.id_item.as_str(), 
-                                            token.as_ref(), 
-                                            Some(session.current_time), 
-                                            &session.duration, 
-                                            server_address.clone()).await;
-
-                                        info!("[handle_key (Q)][book][Quit] Item {} closed at {:?}s (not finished)", session.id_item, session.current_time);
-                                    } 
-
-                                    else {
-                                        let is_finished = true;
-                                        let _ = update_media_progress2_book(
-                                            session.id_item.as_str(), 
-                                            token.as_ref(), 
-                                            Some(session.current_time), 
-                                            &session.duration, 
-                                            is_finished, 
-                                            server_address).await;
-
-                                        info!("[handle_key (Q)][book][Quit] Item {} closed at {:?}s (finished)", session.id_item, session.current_time);
-                                    }
-
-                                } else {
-                                    if !session.is_finished {
-                                    let _ = update_media_progress_pod(
-                                        session.id_item.as_str(), 
-                                        token.as_ref(), 
-                                        Some(session.current_time), 
-                                        &session.duration, 
-                                        session.id_pod.as_str(), 
-                                        server_address.clone()).await;
-
-                                info!("[handle_key (Q)][podcast][Quit] Item {} closed at {:?}s", session.id_pod, session.current_time);
-
-                                    } else {
-                                        let is_finished = true;
-                                        let _ = update_media_progress2_pod(
-                                        session.id_item.as_str(), 
-                                        token.as_ref(), 
-                                        Some(session.current_time), 
-                                        &session.duration, 
-                                        is_finished,
-                                        session.id_pod.as_str(), 
-                                        server_address.clone()).await;
-
-                                info!("[handle_key (Q)][podcast][Quit] Item {} closed at {:?}s (finished)", session.id_pod, session.current_time);
-                                    }
-                                }
-
-                                // update is_vlc_launched_first_time
-                                update_is_vlc_launched_first_time("1", username.as_str());
-                                let value = get_is_vlc_launched_first_time(username.as_str());
-                                info!("[exit][is_vlc_launched_first_time] {}", value);
-
-                                // exit app
-                                info!("App successfully quit");
-                                process::exit(0);
-                            }
-                        });
-
-                    }
-                    Ok(None) => info!("[handle_key (Q)][Quit] No session"),
-                    Err(e) => info!("[handle_key (Q)][Quit] Error during fetching session: {:?}", e),
-                }
+                tokio::spawn(async move {
+                    let _ = sync_session_from_database(token, server_address, username, true, "Q", player_address, port).await;
+                });
 
             }        
             KeyCode::Char('R') => self.should_exit = true, // allow to exit the app in `run`
@@ -829,17 +755,35 @@ impl App {
                 let is_cvlc_term = self.is_cvlc_term.clone();
 
                 // Init message 
-                let message = "Loading...";
+                let message = "Loading the media...";
 
                 // Now, spawn the async task based on the current view state
                 match self.view_state {
                     AppView::Home => {
                         if self.is_podcast {
+                            // init some variables
                             let selected_pod_ep = self.list_state_pod_ep.selected();
                             let ids_ep_cnt_list = self.ids_ep_cnt_list.clone();
+
+                            // pop message 
                             let mut stdout = stdout();
                             let _ = pop_message(&mut stdout, 3, message);
+
                             tokio::spawn(async move {
+                                // if vlc has been quit manually, waiting sync to finished
+                                let _ = wait_prev_session_finished(username.clone()); 
+
+                                // if user did not quit vlc manually and start and new track
+                                let _ = sync_session_from_database(
+                                    token.clone(), 
+                                    server_address.clone(), 
+                                    username.clone(), 
+                                    false, 
+                                    "l", 
+                                    address_player.clone(), 
+                                    port.clone()).await;
+                                
+                                // start the track
                                 handle_l_pod_home(
                                     token.as_ref(), 
                                     &ids_cnt_list, 
@@ -854,32 +798,31 @@ impl App {
                                 ).await;
                             });
                         } else {
-                            // pop message
-                            let mut stdout = stdout();
-                            let _ = pop_message(&mut stdout, 3, message);
                             
-                            // check if previous play is finished
-                            let is_vlc_first_launch = get_is_vlc_launched_first_time(&username);
-                            info!("[AppView::Home][is_vlc_first_launch]{}", is_vlc_first_launch);
-
-                            if is_vlc_first_launch != "1" {
-                                let mut is_loop_break = get_is_loop_break(&username);
-                                info!("[AppView::Home][is_loop_break]{}", is_loop_break);
-
-                                while is_loop_break != "1" {
-                                    std::thread::sleep(std::time::Duration::from_secs(1));
-                                    info!("[AppView::Home][loop][is_loop_break]");
-                                    is_loop_break = get_is_loop_break(&username);
-                                }
-
-                            }
-                            let _ = update_is_loop_break("0", &username);
-                            let value = get_is_loop_break(self.username.as_str());
-                            info!("[AppView::Home][update_is_loop_break]{}", value);
-                            let _ = update_is_vlc_launched_first_time("0", &username);
-                            let value = get_is_vlc_launched_first_time(self.username.as_str());
-                            info!("[AppView::Home][update_is_vlc_first_launch]{}", value);
                             tokio::spawn(async move {
+
+                                // close vlc 
+                                let _ = quit_vlc(address_player.as_str(), port.as_str());
+
+                                // before open a new session, wait to close and sync previous
+                                // session
+                                let _ = wait_prev_session_finished(username.clone()); 
+
+                                // pop message
+                                let mut stdout = stdout();
+                                let _ = pop_message(&mut stdout, 3, message);
+
+                                // if user did not quit vlc manually and start and new track
+                                let _ = sync_session_from_database(
+                                    token.clone(), 
+                                    server_address.clone(), 
+                                    username.clone(), 
+                                    false, 
+                                    "l", 
+                                    address_player.clone(), 
+                                    port.clone()).await;
+
+                                // start the track
                                 handle_l_book(
                                     token.as_ref(), 
                                     ids_cnt_list, 
@@ -931,7 +874,22 @@ impl App {
                             }} else {
                                 let mut stdout = stdout();
                                 let _ = pop_message(&mut stdout, 3, message);
+
                                 tokio::spawn(async move {
+                                // if vlc has been quit manually, waiting sync to finished
+                                let _ = wait_prev_session_finished(username.clone()); 
+
+                                // if user did not quit vlc manually and start and new track
+                                let _ = sync_session_from_database(
+                                    token.clone(), 
+                                    server_address.clone(), 
+                                    username.clone(), 
+                                    false, 
+                                    "l", 
+                                    address_player.clone(), 
+                                    port.clone()).await;
+
+                                // start the track
                                     handle_l_book(
                                         token.as_ref(), 
                                         ids_library, 
@@ -963,7 +921,22 @@ impl App {
                             }} else {   
                                 let mut stdout = stdout();
                                 let _ = pop_message(&mut stdout, 3, message);
+
                                 tokio::spawn(async move {
+                                // if vlc has been quit manually, waiting sync to finished
+                                let _ = wait_prev_session_finished(username.clone()); 
+
+                                // if user did not quit vlc manually and start and new track
+                                let _ = sync_session_from_database(
+                                    token.clone(), 
+                                    server_address.clone(), 
+                                    username.clone(), 
+                                    false, 
+                                    "l", 
+                                    address_player.clone(), 
+                                    port.clone()).await;
+
+                                // start the track
                                     handle_l_book(
                                         token.as_ref(), 
                                         ids_search_book, 
@@ -995,6 +968,20 @@ impl App {
                                     let mut stdout = stdout();
                                     let _ = pop_message(&mut stdout, 3, message);
                                     tokio::spawn(async move {
+                                        // if vlc has been quit manually, waiting sync to finished
+                                        let _ = wait_prev_session_finished(username.clone()); 
+
+                                        // if user did not quit vlc manually and start and new track
+                                        let _ = sync_session_from_database(
+                                            token.clone(), 
+                                            server_address.clone(), 
+                                            username.clone(), 
+                                            false, 
+                                            "l", 
+                                            address_player.clone(), 
+                                            port.clone()).await;
+
+                                        // start the track
                                         handle_l_pod(
                                             token.as_ref(), 
                                             &all_ids_pod_ep_search_clone[index], 
@@ -1024,6 +1011,21 @@ impl App {
                                     tokio::spawn(async move {
                                         let mut stdout = stdout();
                                         let _ = pop_message(&mut stdout, 3, message);
+
+                                        // if vlc has been quit manually, waiting sync to finished
+                                        let _ = wait_prev_session_finished(username.clone()); 
+
+                                        // if user did not quit vlc manually and start and new track
+                                        let _ = sync_session_from_database(
+                                            token.clone(), 
+                                            server_address.clone(), 
+                                            username.clone(), 
+                                            false, 
+                                            "l", 
+                                            address_player.clone(), 
+                                            port.clone()).await;
+
+                                        // start the track
                                         handle_l_pod(
                                             token.as_ref(), 
                                             &all_ids_pod_ep_clone[index], 

@@ -142,7 +142,7 @@ pub async fn handle_l_pod_home(
                                             let _ = update_media_progress2_pod(id, Some(&token), Some(data_fetched_from_vlc), &info_item[2], is_finised, &id_pod_ep, server_address).await;
                                             info!("[handle_l_pod_home][Finished] VLC stopped");
                                             info!("[handle_l_pod_home][Finished] Item {} closed at {}s", id_pod_ep, data_fetched_from_vlc);
-                                            //let _ = update_is_loop_break("1", username.as_str());
+                                            let _ = update_is_loop_break("1", username.as_str());
 
                                             break; 
                                         },
@@ -162,7 +162,7 @@ pub async fn handle_l_pod_home(
                                             info!("[handle_l_pod_home][Quit] Item {} closed at {}s", id_pod_ep, data_fetched_from_vlc);
 
                                             //eprintln!("Error fetching play status: {}", e);
-                                            //let _ = update_is_loop_break("1", username.as_str());
+                                            let _ = update_is_loop_break("1", username.as_str());
                                             break; 
                                         }
                                     }
@@ -179,7 +179,7 @@ pub async fn handle_l_pod_home(
                                     info!("[handle_l_pod_home][None] VLC closed");
                                     info!("[handle_l_pod_home][None] Item {} closed at {}s", id, current_time);
 
-                                    //let _ = update_is_loop_break("1", username.as_str());
+                                    let _ = update_is_loop_break("1", username.as_str());
                                     break; // Exit if no data available
                                 }
                                 Err(e) => {

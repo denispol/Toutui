@@ -18,6 +18,7 @@ use std::io::stdout;
 use crate::utils::pop_up_message::*;
 use crate::utils::logs::*;
 use log::{info, error};
+use crate::db::crud::*;
 
 #[tokio::main]
 async fn main() -> Result<()> {
@@ -60,6 +61,17 @@ async fn main() -> Result<()> {
 
     // Once the database is ready, initialize the app
     if database_ready {
+
+        // init current username
+        let mut username: String = String::new();
+        if let Some(var_username) = database.default_usr.get(0) {
+            username = var_username.clone();
+        }
+        // init is_vlc_launched_first_time 
+        let _ = update_is_vlc_launched_first_time("1", username.as_str());
+        let value = get_is_vlc_launched_first_time(username.as_str());
+        info!("[main][is_vlc_launched_first_time] {}", value);
+
         let mut app = App::new().await?;
         let mut terminal = ratatui::init();
 
