@@ -5,7 +5,9 @@
 `bug_id: 86384e` 
 **Sync**: Rarely and especially if you open VLC to listen X, close VLC and quickly open VLC again to listen Y: the progress of X is set to 0 seconds.  
 `bug_id: 06e548` 
-**Terminal broken**: The temrinal is broken after the app is quit.
+**Terminal broken**: The terminal is broken after the app is quit.  
+`bug_id: 6ac5d8` 
+**Data loss if app crash or disgracefully quit**: If app crash, the last session is not closed.
 
 **MINOR**
 
