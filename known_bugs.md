@@ -23,7 +23,7 @@ No major bug for the moment 🙏
 
 **FIXED**  
 `bug_id: 9bacac` 
-**Sync**: If you open VLC to listen X, close VLC and quickly open VLC again to listen Y: X will still be sync — according to Y (normally, only Y has to be sync in this case). **PARTIALLY FIXED** (because not optimal solution): a delay of 5 seconds had been added before open VLC, to give the time to X session to close).  
+**Sync**: If you open VLC to listen X, close VLC and quickly open VLC again to listen Y: X will still be sync — according to Y (normally, only Y has to be sync in this case).   
 `bug_id: 86384e` 
 **Sync**: Rarely and especially if you open VLC to listen X, close VLC and quickly open VLC again to listen Y: the progress of X is set to 0 seconds.  
 `bug_id: 06e548` 
