@@ -774,7 +774,7 @@ impl App {
                                 let _ = pop_message(&mut stdout, 3, message);
 
                                 // in case where the app has been disgrafully closed (crash, kill)
-                                // the last listening session is closed
+                                // the last listening session is closed when app is restarted
                                 let _ = sync_session_from_database(
                                     token.clone(), 
                                     server_address.clone(), 
@@ -814,7 +814,7 @@ impl App {
                                 let _ = pop_message(&mut stdout, 3, message);
 
                                 // in case where the app has been disgrafully closed (crash, kill)
-                                // the last listening session is closed
+                                // the last listening session is closed when app is restarted
                                 let _ = sync_session_from_database(
                                     token.clone(), 
                                     server_address.clone(), 
@@ -888,7 +888,7 @@ impl App {
                                 let _ = pop_message(&mut stdout, 3, message);
 
                                 // in case where the app has been disgrafully closed (crash, kill)
-                                // the last listening session is closed
+                                // the last listening session is closed when app is restarted
                                 let _ = sync_session_from_database(
                                     token.clone(), 
                                     server_address.clone(), 
@@ -942,7 +942,7 @@ impl App {
                                 let _ = pop_message(&mut stdout, 3, message);
 
                                 // in case where the app has been disgrafully closed (crash, kill)
-                                // the last listening session is closed
+                                // the last listening session is closed when app is restarted
                                 let _ = sync_session_from_database(
                                     token.clone(), 
                                     server_address.clone(), 
@@ -995,7 +995,7 @@ impl App {
                                         let _ = pop_message(&mut stdout, 3, message);
 
                                         // in case where the app has been disgrafully closed (crash, kill)
-                                        // the last listening session is closed
+                                        // the last listening session is closed when app is restarted
                                         let _ = sync_session_from_database(
                                             token.clone(), 
                                             server_address.clone(), 
@@ -1045,7 +1045,7 @@ impl App {
                                         let _ = pop_message(&mut stdout, 3, message);
 
                                         // in case where the app has been disgrafully closed (crash, kill)
-                                        // the last listening session is closed
+                                        // the last listening session is closed when app is restarted
                                         let _ = sync_session_from_database(
                                             token.clone(), 
                                             server_address.clone(), 
