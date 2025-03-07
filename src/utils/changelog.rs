@@ -45,7 +45,7 @@ let changelog_03 = format!(
          ####\n",
     );
 let changelog_04 = format!(
-        "Changelog Toutui v{} (02/03/2025) \n\
+        "Changelog Toutui v0.1.3-beta (02/03/2025) \n\
          Fixed:\n\
          \n\
          - Fix bug_id: 3f729c Loading time not optimized for library with a lot of items (long start loading and refresh time)
@@ -60,9 +60,39 @@ let changelog_04 = format!(
          \n\
          Enjoy and be toutui!\n
          ####\n",
-         VERSION
-    );
+);
+let changelog_05 = format!(
+    "Changelog Toutui v{} (07/03/2025) \n\
+CAUTION: This version is not compatible with the previous one.  
+You need to remove the database in ~/.config/toutui before proceeding. 
+         Fixed:\n\
+         \n\
+         - From known_bugs.md, fixed:
 
+    Find a robust solution for bug_id: 9bacac
+    Fix bug_id: 86384e
+    Fix bug_id: 6ac5d8
+    Fix bug_id: 06e548
+    Fix bug_id: e0b61c
+    Fix bug_id: fc695f
+    Fix bug_id: 40f48d
+    Fix bug_id: bf10cd
+
+         \n\
+         Changed:\n\
+         \n\
+         - 
+         \n\
+         Contributors:\n\
+         \n\
+         - AlbanDAVID
+         \n\
+         Enjoy and be toutui!\n
+         ####\n",
+         VERSION
+);
+
+    changelog.push_str(&changelog_05); 
     changelog.push_str(&changelog_04); 
     changelog.push_str(&changelog_03); 
     changelog.push_str(&changelog_02); 

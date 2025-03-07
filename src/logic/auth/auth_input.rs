@@ -13,7 +13,7 @@ use crate::api::server::auth_process::*;
 use crossterm::event::{self, KeyEvent, KeyCode};  
 use std::process;
 use log::{info, error};
-
+use crate::utils::exit_app::*;
 
 
 const VERSION: &str = env!("CARGO_PKG_VERSION");
@@ -107,7 +107,7 @@ impl AppLogin {
                 }
 
                 event::Event::Key(KeyEvent { code: KeyCode::Esc, .. }) => {
-                    process::exit(0);
+                    clean_exit();
                 }
 
                 event::Event::Key(input) => {

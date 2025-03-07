@@ -23,10 +23,11 @@ pub async fn fetch_vlc_data(port: String, address: String) -> Result<Option<u32>
         let mut player = match Client::connect(format!("{}:{}", address, &port)) {
             Ok(player) => player,
             Err(e) => {
-                if let Err(file_error) = log_error_to_file(&e.to_string()) {
-                    eprintln!("Failed to log to vlc: {}", file_error);
-                    error!("Failed to log to vlc: {}", file_error);
-                }
+                error!("[fetch_vlc_data] {}", e);
+           //     if let Err(file_error) = log_error_to_file(&e.to_string()) {
+           //         eprintln!("Failed to log to vlc: {}", file_error);
+           //         error!("Failed to log to vlc: {}", file_error);
+           //     }
                 continue;
             }
         }; 
@@ -43,7 +44,11 @@ pub async fn fetch_vlc_data(port: String, address: String) -> Result<Option<u32>
 
         // Print and return the fetched seconds
         if let Some(sec) = seconds {
-            return Ok(Some(sec)); // Return seconds once fetched
+            if sec > 0 {
+                return Ok(Some(sec)); // Return seconds once fetched
+            } else {
+                info!("[is_vlc_running][check_seconds]: {:?}", sec);
+            }
         }
 
         // Sleep to fetch data every second and avoid CPU overload
@@ -136,22 +141,20 @@ pub async fn get_vlc_version() -> Result<String, io::Error> {
     ))
 }
 
-fn log_error_to_file(error_message: &str) -> io::Result<()> {
-    let mut file = OpenOptions::new()
-        .create(true)
-        .append(true)
-        .open("vlc_errors.txt")?;
-    writeln!(file, "{}", error_message)?;
-    Ok(())
-}
-#[allow(dead_code)]
-fn write_to_file(file_path: &str, content: &str) -> io::Result<()> {
-    let mut file = OpenOptions::new()
-        .create(true)
-        .append(true)
-        .open(file_path)?;
-    writeln!(file, "{}", content)?;
-    Ok(())
-}
-
-
+//fn log_error_to_file(error_message: &str) -> io::Result<()> {
+//    let mut file = OpenOptions::new()
+//        .create(true)
+//        .append(true)
+//        .open("vlc_errors.txt")?;
+//    writeln!(file, "{}", error_message)?;
+//    Ok(())
+//}
+//#[allow(dead_code)]
+//fn write_to_file(file_path: &str, content: &str) -> io::Result<()> {
+//    let mut file = OpenOptions::new()
+//        .create(true)
+//        .append(true)
+//        .open(file_path)?;
+//    writeln!(file, "{}", content)?;
+//    Ok(())
+//}

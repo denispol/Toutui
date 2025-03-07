@@ -10,7 +10,6 @@ use std::io::stdout;
 use log::{info, error};
 use crate::db::crud::*;
 
-
 pub async fn handle_l_book(
     token: Option<&String>,
     ids_library_items: Vec<String>,
@@ -22,22 +21,27 @@ pub async fn handle_l_book(
     is_cvlc_term: String,
     username: String,
 ) {
-    // not optimal solution but avoid `bug_id: 9bacac`
-    tokio::time::sleep(tokio::time::Duration::from_secs(5)).await;
-    info!("Loading...");
-
+  
     if let Some(index) = selected {
         if let Some(id) = ids_library_items.get(index) {
             if let Some(token) = token {
                 if let Ok(info_item) = post_start_playback_session_book(Some(&token), id, server_address.clone()).await {
-                    //  close previous listening session if it was not did. (but need to also call
-                    // `update media progress` to be effective)
-                    // let id_prev_list_session = get_id_prev_list_session(username.as_str());
-                    // let _ = close_session_without_send_prg_data(Some(&token), id_prev_list_session.as_str(),  server_address.clone()).await;
-                    // info!("[handle_l_book][1] Session successfully closed");
-                    // let _ = update_id_prev_list_session(info_item[3].as_str(), username.as_str());
-                    info!("[handle_l_book][post_start_playback_session_book] OK");
 
+                    // converting current time
+                    let current_time: u32 = info_item[0].parse::<f64>().unwrap().round() as u32;
+
+                    info!("[handle_l_book][post_start_playback_session_book] OK");
+                    info!("[handle_l_book][post_start_playback_session_book] Item {} started at {}s", id, current_time);
+
+
+                    // insert variables in databse (`listening_session` table) for sync session when app is quit
+                    let _ = insert_listening_session(
+                        info_item[3].clone(), // id_session
+                        id.to_string(), // id_item
+                        current_time,  // current time
+                        info_item[2].clone(), // total item duration
+                        "".to_string()); // empty here, because it's for podcasts
+                        
                     // clone otherwise, these variable will  be consumed and not available anymore
                     // for use outside start_vlc spawn
                     let token_clone = token.clone();
@@ -77,7 +81,6 @@ pub async fn handle_l_book(
 
 
                     // Important, sleep time to 1s minimum otherwise connection to vlc player will not have time to connect
-                    //tokio::time::sleep(std::time::Duration::from_secs(3)).await;
                     tokio::time::sleep(tokio::time::Duration::from_secs(1)).await;
 
                     // init var for decide to send 0 sec in sync session if player is in pause
@@ -93,18 +96,22 @@ pub async fn handle_l_book(
                     loop {
                         match fetch_vlc_data(port.clone(), address_player.clone()).await {
                             Ok(Some(data_fetched_from_vlc)) => {
-                                //                                println!("Fetched data: {}", data_fetched_from_vlc.to_string());
+                                // println!("Fetched data: {}", data_fetched_from_vlc.to_string());
+
+                                // update current_time in database (`listening_session` table)
+                                let _ = update_current_time(data_fetched_from_vlc, info_item[3].as_str());
 
                                 // Important, sleep time to 1s minimum, otherwise connection to vlc player will not have time to connect
                                 // sleep time : every how many seconds the data will be sent to the server
                                 tokio::time::sleep(tokio::time::Duration::from_secs(5)).await;
-                                //                                println!("last_curr: {}", last_current_time);
+                                // println!("last_curr: {}", last_current_time);
                                 if data_fetched_from_vlc == last_current_time {
-                                    progress_sync = 0;
+                                    progress_sync = 0; // the track is in pause
                                 } else {
                                     progress_sync = 5; // need to be equal to tokio time sleep just above
                                 }
                                 last_current_time = data_fetched_from_vlc;
+
                                 match fetch_vlc_is_playing(port.clone(), address_player.clone()).await {
                                     Ok(true) => {
                                         // the first datra fetched is sometimes 0 secondes, so we
@@ -122,10 +129,17 @@ pub async fn handle_l_book(
                                     // track as finished)
                                     Ok(false) => {
                                         let is_finised = true;
+                                        info!("[handle_l_book][Finished] Track finished");
+
+                                        // update is_finished in database (`listening_session` table)
+                                        update_is_finished("1", info_item[3].as_str());
+                                        
                                         let _ = close_session_without_send_prg_data(Some(&token), &info_item[3],  server_address.clone()).await;
                                         info!("[handle_l_book][Finished] Session successfully closed");
                                         let _ = update_media_progress2_book(id, Some(&token), Some(data_fetched_from_vlc), &info_item[2], is_finised, server_address).await;
                                         info!("[handle_l_book][Finished] VLC stopped");
+                                        info!("[handle_l_book][Finished] Item {} closed at {}s", id, data_fetched_from_vlc);
+                                        let _ = update_is_loop_break("1", username.as_str());
                                         break; 
                                     },
                                     // `Err` means :  VLC is close (because if VLC is not playing
@@ -133,22 +147,34 @@ pub async fn handle_l_book(
                                     // The track is not finished. VLC is just stopped by the user.
                                     // Differ from the case above where the track reched the end.
                                     Err(_) => {
-                                        //TODO minor bug : be sure to close the session above
+                                        info!("[handle_l_book][Quit]");
                                         // close session when VLC is quitted
                                         let _ = close_session_without_send_prg_data(Some(&token), &info_item[3],  server_address.clone()).await;
-                                        info!("[handle_l_book][2] Session successfully closed");
+                                        info!("[handle_l_book][Quit] Session successfully closed");
                                         // send one last time media progress (bug to retrieve media
                                         // progress otherwise)
                                         let _ = update_media_progress_book(id, Some(&token), Some(data_fetched_from_vlc), &info_item[2], server_address).await;
-                                        info!("[handle_l_book] VLC closed");
+                                        info!("[handle_l_book][Quit] VLC closed");
+                                        info!("[handle_l_book][Quit] Item {} closed at {}s", id, data_fetched_from_vlc);
                                         //eprintln!("Error fetching play status: {}", e);
+                                        let _ = update_is_loop_break("1", username.as_str());
                                         break; 
                                     }
                                 }
 
                             }
+                            // when no data in fetched (generaly when VLC is launched and quit
+                            // quickly) Indeed, in this case, data does not have enough time to be
+                            // fetched
                             Ok(None) => {
-                                info!("[handle_l_book][None] VLC exited");
+                                info!("[handle_l_book][None]");
+                                let _ = close_session_without_send_prg_data(Some(&token), &info_item[3],  server_address.clone()).await;
+                                info!("[handle_l_book][None] Session successfully closed");
+                                let _ = update_media_progress_book(id, Some(&token), Some(current_time), &info_item[2], server_address.clone()).await;
+                                info!("[handle_l_book][None] VLC closed");
+                                info!("[handle_l_book][None] Item {} closed at {}s", id, current_time);
+
+                                let _ = update_is_loop_break("1", username.as_str());
                                 break; // Exit if no data available
                             }
                             Err(e) => {
@@ -165,3 +191,4 @@ pub async fn handle_l_book(
         }
     }
 }
+
