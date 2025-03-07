@@ -7,7 +7,9 @@
 `bug_id: 06e548` 
 **Terminal broken**: The terminal is broken after the app is quit.  
 `bug_id: 6ac5d8` 
-**Data loss if app crash or disgracefully quit**: If app crash, the last session is not closed.
+**Data loss if app crash or disgracefully quit**: If app crash, the last session is not closed.  
+`bug_id: bf10cd` 
+**Launch a new media**: Have to close manually VLC to close and sync a session.
 
 **MINOR**
 
