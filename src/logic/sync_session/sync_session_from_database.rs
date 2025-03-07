@@ -2,10 +2,8 @@ use crate::db::crud::*;
 use crate::api::sessions::close_open_session::*;
 use log::info;
 use crate::api::me::update_media_progress::*;
-use std::process;
 use crate::player::vlc::quit_vlc::*;
-use crossterm::terminal::{disable_raw_mode, LeaveAlternateScreen};
-use std::io::{self, Write};
+use crate::utils::exit_app::*;
 
 // close and sync listening session before quit the app                
 pub async fn sync_session_from_database(token: Option<String>, server_address: String, username: String, app_quit: bool, handle_key: &str, player_address: String, port: String) {
@@ -113,11 +111,3 @@ pub async fn sync_session_from_database(token: Option<String>, server_address: S
     }
 }
 
-// exit the app
-fn clean_exit() {
-    let _ = disable_raw_mode(); 
-    let mut stdout = io::stdout();
-    let _ = crossterm::execute!(stdout, LeaveAlternateScreen); 
-    let _ = stdout.flush(); 
-    process::exit(0);
-}
