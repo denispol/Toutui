@@ -39,7 +39,7 @@ pub async fn handle_l_book(
                         info_item[3].clone(), // id_session
                         id.to_string(), // id_item
                         current_time,  // current time
-                        info_item[2].clone(),
+                        info_item[2].clone(), // total item duration
                         "".to_string()); // empty here, because it's for podcasts
                         
                     // clone otherwise, these variable will  be consumed and not available anymore
@@ -129,6 +129,7 @@ pub async fn handle_l_book(
                                     // track as finished)
                                     Ok(false) => {
                                         let is_finised = true;
+                                        info!("[handle_l_book][Finished] Track finished");
 
                                         // update is_finished in database (`listening_session` table)
                                         update_is_finished("1", info_item[3].as_str());

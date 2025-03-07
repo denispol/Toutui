@@ -666,16 +666,32 @@ impl App {
                                 info!("[handle_key (Q)][Quit] Session successfully closed");
 
                                 if session.id_pod.is_empty() {
-                                let _ = update_media_progress_book(
-                                    session.id_item.as_str(), 
-                                    token.as_ref(), 
-                                    Some(session.current_time), 
-                                    &session.duration, 
-                                    server_address.clone()).await;
+                                    if !session.is_finished {
+                                        let _ = update_media_progress_book(
+                                            session.id_item.as_str(), 
+                                            token.as_ref(), 
+                                            Some(session.current_time), 
+                                            &session.duration, 
+                                            server_address.clone()).await;
 
-                                info!("[handle_key (Q)][Quit] Item {} closed at {:?}s", session.id_item, session.current_time);
+                                        info!("[handle_key (Q)][book][Quit] Item {} closed at {:?}s (not finished)", session.id_item, session.current_time);
+                                    } 
+
+                                    else {
+                                        let is_finished = true;
+                                        let _ = update_media_progress2_book(
+                                            session.id_item.as_str(), 
+                                            token.as_ref(), 
+                                            Some(session.current_time), 
+                                            &session.duration, 
+                                            is_finished, 
+                                            server_address).await;
+
+                                        info!("[handle_key (Q)][book][Quit] Item {} closed at {:?}s (finished)", session.id_item, session.current_time);
+                                    }
 
                                 } else {
+                                    if !session.is_finished {
                                     let _ = update_media_progress_pod(
                                         session.id_item.as_str(), 
                                         token.as_ref(), 
@@ -684,7 +700,21 @@ impl App {
                                         session.id_pod.as_str(), 
                                         server_address.clone()).await;
 
-                                info!("[handle_key (Q)][Quit] Item {} closed at {:?}s", session.id_pod, session.current_time);
+                                info!("[handle_key (Q)][podcast][Quit] Item {} closed at {:?}s", session.id_pod, session.current_time);
+
+                                    } else {
+                                        let is_finished = true;
+                                        let _ = update_media_progress2_pod(
+                                        session.id_item.as_str(), 
+                                        token.as_ref(), 
+                                        Some(session.current_time), 
+                                        &session.duration, 
+                                        is_finished,
+                                        session.id_pod.as_str(), 
+                                        server_address.clone()).await;
+
+                                info!("[handle_key (Q)][podcast][Quit] Item {} closed at {:?}s (finished)", session.id_pod, session.current_time);
+                                    }
                                 }
 
                                 // update is_vlc_launched_first_time

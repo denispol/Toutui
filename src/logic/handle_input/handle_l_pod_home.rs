@@ -132,6 +132,7 @@ pub async fn handle_l_pod_home(
                                             // track as finished)
                                         Ok(false) => {
                                             let is_finised = true;
+                                            info!("[handle_l_pod_home][Finished] Track finished");
 
                                             // update is_finished in database (`listening_session` table)
                                             update_is_finished("1", info_item[3].as_str());
