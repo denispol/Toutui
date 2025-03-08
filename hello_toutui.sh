@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 # Install Toutui and dependencies automagically.
 
+set -eo pipefail
+
 main() {
     do_not_run_as_root
 
