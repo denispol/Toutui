@@ -17,7 +17,7 @@
 ## 🛠️ Roadmap  
 **Short-term Goals**  
 - Since this is a beta version, the main focus is on tracking and fixing bugs.  
-- Currently working on the next release: [v0.2.1-beta]
+- Currently working on the next release: [v0.3.0-beta](https://github.com/AlbanDAVID/Toutui/milestone/2)
 
 **Mid-term Goals**  
 - CI/CD Implementation  
@@ -25,7 +25,7 @@
 
 ## 🔮 Future features
 Here are some features that could be added in future releases:
-- Integrated audio player
+- Implementation of an integrated media player  
 - Ability to add new podcasts from the app
 - Add stats
 - Offline mode
