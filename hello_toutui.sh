@@ -10,7 +10,7 @@ main() {
     OS=$(identify_os)
     USER=${USER:-$(grab_username)}
     HOME=${HOME:-$(grab_home_dir)}
-    CONFIG_DIR="${XDG_CONFIG_HOME:-$(grab_config_dir)}"
+    CONFIG_DIR="${XDG_CONFIG_HOME:-$(grab_config_dir)}/toutui"
     INSTALL_DIR="${2:-$(grab_install_dir)}"
 
     load_dependencies
@@ -109,7 +109,7 @@ grab_config_dir() {
 	echo "[ERROR] Cannot find \"$USER\" config directory."
 	exit $EXIT_CONFIG
     fi
-    echo "${config}/toutui"
+    echo "${config}"
 }
 
 grab_install_dir() {
@@ -229,7 +229,7 @@ post_install_msg() {
 }
 
 install_config() {
-    mkdir -p "$CONFIG_DIR" 2>/dev/null || ( echo "[ERROR] Cannot create config directory \"${CONFIG_DIR}\""; exit $EXIT_CONFIG )
+    mkdir -p "$CONFIG_DIR" || ( echo "[ERROR] Cannot create config directory \"${CONFIG_DIR}\""; exit $EXIT_CONFIG )
 
     # .env
     local env="${CONFIG_DIR}/.env"
