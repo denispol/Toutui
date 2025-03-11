@@ -33,6 +33,7 @@ use crate::player::vlc::quit_vlc::*;
 use crate::logic::sync_session::sync_session_from_database::*;
 use crate::logic::sync_session::wait_prev_session_finished::*;
 use crate::player::vlc::fetch_vlc_data::*;
+use crate::player::integrated::handle_key_player::*;
 
 
 pub enum AppView {
@@ -618,13 +619,24 @@ impl App {
     }
     /// handle key
     pub fn handle_key(&mut self, key: KeyEvent) {
+        let mut is_playback = true;
+
         if key.kind != KeyEventKind::Press {
             return;
         }
 
 
         match key.code {
-            KeyCode::Char('/') | KeyCode::Char(' ') => {
+            // PLAYER //
+            KeyCode::Char(' ') => {
+                if let Err(e) = handle_key_player(" ", self.config.player.address.as_str(), self.config.player.port.as_str(), &mut is_playback) {
+                    eprintln!("Error while sending command to the player: {:?}", e);
+                }
+            }
+            // END PLAYER //
+
+
+            KeyCode::Char('/') => {
                 let _ = self.search_active();
             }
             KeyCode::Char('S') => {
