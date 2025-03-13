@@ -674,8 +674,8 @@ impl App {
             }
 
             // shutdown
-            KeyCode::Char('s') => {
-                let _ = handle_key_player("s", self.config.player.address.as_str(), self.config.player.port.as_str(), &mut is_playback, self.username.as_str()); 
+            KeyCode::Char('Y') => {
+                let _ = handle_key_player("Y", self.config.player.address.as_str(), self.config.player.port.as_str(), &mut is_playback, self.username.as_str()); 
             }
 
 

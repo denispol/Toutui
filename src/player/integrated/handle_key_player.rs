@@ -54,7 +54,7 @@ pub fn handle_key_player(key: &str, address: &str, port: &str, is_playback: &mut
             writeln!(stream, "rate {}", speed_rate)?;
         }
         // shutdown
-        "s" => {
+        "Y" => {
             writeln!(stream, "shutdown")?;
         }
         _ => {}
