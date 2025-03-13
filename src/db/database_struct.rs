@@ -18,6 +18,7 @@ pub struct User {
     pub  id_selected_lib: String,
     pub  is_loop_break: String,
     pub  is_vlc_launched_first_time: String,
+    pub  speed_rate: f32,
 }
 
 #[derive(Serialize, Deserialize, Debug)]

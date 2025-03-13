@@ -6,6 +6,59 @@ use std::io::stdout;
 use log::{info, error};
 use std::path::PathBuf;
 
+// Update speed_rate
+pub fn update_speed_rate(username: &str, is_speed_rate_up: bool) -> Result<()> {
+
+    let mut db_path = dirs::config_dir().unwrap_or_else(|| PathBuf::from("."));
+    db_path.push("toutui/db.sqlite3");
+
+    let err_message = "Error connecting to the database.";
+
+    if let Ok(conn) = Connection::open(db_path) {
+
+        if is_speed_rate_up {
+        conn.execute(
+            "UPDATE users SET speed_rate = speed_rate + 0.10 WHERE username = ?1",
+            params![username],
+        )?;
+        } else {
+        conn.execute(
+            "UPDATE users SET speed_rate = speed_rate - 0.10 WHERE username = ?1",
+            params![username],
+        )?;
+        }
+    } else {
+        let mut stdout = stdout();
+        let _ = pop_message(&mut stdout, 3, err_message);
+        error!("[update_speed_rate] {}", err_message);
+    }
+
+    Ok(())
+}
+
+
+// get speed_rate
+pub fn get_speed_rate(username: &str) -> String {
+    let mut db_path = dirs::config_dir().unwrap_or_else(|| PathBuf::from("."));
+    db_path.push("toutui/db.sqlite3");
+
+    let conn = match Connection::open(db_path) {
+        Ok(c) => c,
+        Err(_) => return String::from("Error: unable open database"),
+    };
+
+    let mut stmt = match conn.prepare("SELECT speed_rate FROM users WHERE username = ?1") {
+        Ok(s) => s,
+        Err(_) => return String::from("Error to prepare reqwest"),
+    };
+
+    match stmt.query_row(params![username], |row| row.get::<_, f32>(0)) {
+        Ok(id) => id.to_string(),
+        Err(_) => String::from("No db found"),
+    }
+}
+
+// get listening_session
 pub fn get_listening_session() -> Result<Option<ListeningSession>> {
 
     let mut db_path = dirs::config_dir().unwrap_or_else(|| PathBuf::from("."));
@@ -287,8 +340,8 @@ pub fn db_insert_usr(users : &Vec<User>)  -> Result<()> {
     let conn = Connection::open(db_path)?;
     for user in users {
         conn.execute(
-            "INSERT OR REPLACE INTO users (username, server_address, token, is_default_usr, name_selected_lib, id_selected_lib, is_loop_break, is_vlc_launched_first_time) 
-            VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8)",
+            "INSERT OR REPLACE INTO users (username, server_address, token, is_default_usr, name_selected_lib, id_selected_lib, is_loop_break, is_vlc_launched_first_time, speed_rate) 
+            VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9)",
             params![
             user.username,
             user.server_address,
@@ -297,7 +350,8 @@ pub fn db_insert_usr(users : &Vec<User>)  -> Result<()> {
             user.name_selected_lib,
             user.id_selected_lib,
             user.is_loop_break,
-            user.is_vlc_launched_first_time
+            user.is_vlc_launched_first_time,
+            user.speed_rate,
             ],
         )?;
     }
@@ -313,7 +367,7 @@ pub fn select_default_usr() -> Result<Vec<String>> {
     let conn = Connection::open(db_path)?;
 
     let mut stmt = conn.prepare(
-        "SELECT username, server_address, token, is_default_usr, name_selected_lib, id_selected_lib, is_loop_break, is_vlc_launched_first_time
+        "SELECT username, server_address, token, is_default_usr, name_selected_lib, id_selected_lib, is_loop_break, is_vlc_launched_first_time, speed_rate
          FROM users WHERE is_default_usr = 1 LIMIT 1"
     )?;
 
@@ -328,6 +382,7 @@ pub fn select_default_usr() -> Result<Vec<String>> {
             id_selected_lib: row.get(5)?,
             is_loop_break: row.get(6)?,
             is_vlc_launched_first_time: row.get(7)?,
+            speed_rate: row.get(8)?,
         })
     })?;
 
@@ -344,6 +399,7 @@ pub fn select_default_usr() -> Result<Vec<String>> {
                 result.push(user.id_selected_lib);
                 result.push(user.is_loop_break);
                 result.push(user.is_vlc_launched_first_time);
+                result.push(user.speed_rate.to_string());
             }
             Err(e) => {
                 println!("Error occurred: {}", e);
@@ -377,7 +433,8 @@ pub fn init_db() -> Result<()> {
                 name_selected_lib TEXT NOT NULL,
                 id_selected_lib TEXT NOT NULL,
                 is_loop_break TEXT NOT NULL,
-                is_vlc_launched_first_time TEXT NOT NULL
+                is_vlc_launched_first_time TEXT NOT NULL,
+                speed_rate FLOAT NOT NULL
             )",
         [],
     )?;

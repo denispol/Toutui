@@ -619,6 +619,7 @@ impl App {
     }
     /// handle key
     pub fn handle_key(&mut self, key: KeyEvent) {
+        // init variables for player
         let mut is_playback = true;
 
         if key.kind != KeyEventKind::Press {
@@ -628,8 +629,71 @@ impl App {
 
         match key.code {
             // PLAYER //
+            // toggle playback/pause
             KeyCode::Char(' ') => {
-                if let Err(e) = handle_key_player(" ", self.config.player.address.as_str(), self.config.player.port.as_str(), &mut is_playback) {
+                if let Err(e) = handle_key_player(" ", self.config.player.address.as_str(), self.config.player.port.as_str(), &mut is_playback, self.username.as_str()) {
+                    eprintln!("Error while sending command to the player: {:?}", e);
+                }
+            }
+            // jump forward
+            KeyCode::Char('p') => {
+                if let Err(e) = handle_key_player("p", self.config.player.address.as_str(), self.config.player.port.as_str(), &mut is_playback, self.username.as_str()) {
+                    eprintln!("Error while sending command to the player: {:?}", e);
+                }
+            }
+
+            // jump backward
+            KeyCode::Char('u') => {
+                if let Err(e) = handle_key_player("u", self.config.player.address.as_str(), self.config.player.port.as_str(), &mut is_playback, self.username.as_str()) {
+                    eprintln!("Error while sending command to the player: {:?}", e);
+                }
+            }
+
+            // next chapter
+            KeyCode::Char('P') => {
+                if let Err(e) = handle_key_player("P", self.config.player.address.as_str(), self.config.player.port.as_str(), &mut is_playback, self.username.as_str()) {
+                    eprintln!("Error while sending command to the player: {:?}", e);
+                }
+            }
+
+            // previous chapter
+            KeyCode::Char('U') => {
+                if let Err(e) = handle_key_player("P", self.config.player.address.as_str(), self.config.player.port.as_str(), &mut is_playback, self.username.as_str()) {
+                    eprintln!("Error while sending command to the player: {:?}", e);
+                }
+            }
+
+            // speed rate up
+            KeyCode::Char('O') => {
+                if let Err(e) = handle_key_player("O", self.config.player.address.as_str(), self.config.player.port.as_str(), &mut is_playback, self.username.as_str()) {
+                    eprintln!("Error while sending command to the player: {:?}", e);
+                }
+            }
+
+            // speed rate down
+            KeyCode::Char('I') => {
+                if let Err(e) = handle_key_player("I", self.config.player.address.as_str(), self.config.player.port.as_str(), &mut is_playback, self.username.as_str()) {
+                    eprintln!("Error while sending command to the player: {:?}", e);
+                }
+            }
+
+            // volume up
+            KeyCode::Char('o') => {
+                if let Err(e) = handle_key_player("o", self.config.player.address.as_str(), self.config.player.port.as_str(), &mut is_playback, self.username.as_str()) {
+                    eprintln!("Error while sending command to the player: {:?}", e);
+                }
+            }
+
+            // speed rate down
+            KeyCode::Char('i') => {
+                if let Err(e) = handle_key_player("i", self.config.player.address.as_str(), self.config.player.port.as_str(), &mut is_playback, self.username.as_str()) {
+                    eprintln!("Error while sending command to the player: {:?}", e);
+                }
+            }
+
+            // shutdown
+            KeyCode::Char('s') => {
+                if let Err(e) = handle_key_player("s", self.config.player.address.as_str(), self.config.player.port.as_str(), &mut is_playback, self.username.as_str()) {
                     eprintln!("Error while sending command to the player: {:?}", e);
                 }
             }
