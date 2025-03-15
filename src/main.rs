@@ -19,6 +19,50 @@ use crate::utils::pop_up_message::*;
 use crate::utils::logs::*;
 use log::{info, error};
 use crate::db::crud::*;
+use ratatui::{
+    buffer::Buffer,
+    layout::{Constraint, Layout, Rect},
+    style::{Color, Modifier, Style, Stylize},
+    text::Line,
+    widgets::{
+        Block, Borders, HighlightSpacing, List, ListItem , ListState,  Paragraph, StatefulWidget,
+        Widget, Wrap
+    },
+};
+use ratatui::Terminal;
+use crossterm::terminal::{self, size};
+use crate::player::integrated::progression_stats::*;
+
+
+// test for automatic refresh
+pub fn render_player(area: Rect, buf: &mut ratatui::buffer::Buffer, message: &str) {
+    let block_width = area.width / 3;
+    let block_x = (area.width - block_width) / 2;
+    let block_area = Rect::new(block_x, area.y, block_width, area.height);
+    let block = Block::default();
+
+    // 1/3 block
+    let left_block_width = block_width - (block_width * 2) / 3;
+    let left_block_area = Rect::new(block_x, area.y, left_block_width, area.height);
+
+    // 2/3 block
+    let text_area_width = (block_width * 2) / 3;
+    let text_area = Rect::new(block_x + left_block_width, area.y, text_area_width, area.height);
+
+    // Text area for 2/3 block
+    let paragraph = Paragraph::new(message)
+        .centered()
+        .block(Block::default());
+
+    // Image 1/3 block
+    let left_block = Block::default()
+        .style(Style::default().bg(Color::Gray));
+
+    // Render
+    paragraph.render(text_area, buf); // Right text area (2/3 block)
+    left_block.render(left_block_area, buf); // Image area (1/3 block)
+    block.render(block_area, buf); // General block
+}
 
 #[tokio::main]
 async fn main() -> Result<()> {
@@ -74,6 +118,7 @@ async fn main() -> Result<()> {
 
         let mut app = App::new().await?;
         let mut terminal = ratatui::init();
+        //let mut terminal2 = ratatui::init();
 
         // Running the app in a loop
         loop {
@@ -85,6 +130,22 @@ async fn main() -> Result<()> {
                 eprintln!("Error running the app: {:?}", e);
                 error!("Error running the app: {:?}", e);
             }
+
+            //  
+            terminal.draw(|frame| {
+            //terminal2.draw(|frame| {
+                let (term_width, term_height) = terminal::size().unwrap();
+                let width = 200;
+                let height = 2;
+                let x = (term_width.saturating_sub(width)) / 2;
+                let y = (term_height.saturating_sub(height)) / 2;
+                let area = Rect::new(x, y, width, height);
+                let message = get_dynamic_text();
+
+                let mut buf = frame.buffer_mut();
+                render_player(area, &mut buf, message.as_str()); 
+            })?;
+
 
             // Checking if any key is pressed (waiting for events with a 200ms delay here)
             if crossterm::event::poll(Duration::from_millis(200))? {

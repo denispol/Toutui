@@ -599,7 +599,7 @@ impl App {
     }
 
 
-    /// handle events
+    // handle events
     pub fn run(&mut self, terminal: &mut DefaultTerminal) -> Result<()> {
         let bg_color = self.config.colors.background_color.clone();
         while !self.should_exit {
@@ -607,7 +607,7 @@ impl App {
                 let background = Block::default()
                     .style(Style::default()
                         .bg(Color::Rgb(bg_color[0], bg_color[1], bg_color[2])));
-                        frame.render_widget(background, frame.size());
+                        frame.render_widget(background, frame.area());
                         frame.render_widget(&mut *self, frame.area());
             })?;
 
@@ -617,7 +617,7 @@ impl App {
         }
         Ok(())
     }
-    /// handle key
+    // handle key
     pub fn handle_key(&mut self, key: KeyEvent) {
         // init variables for player
         let mut is_playback = true;
