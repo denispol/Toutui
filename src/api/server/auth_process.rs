@@ -72,6 +72,7 @@ pub async fn auth_process(username: &str, password: &str, server_address: &str) 
 
         // Init for handle_l
         let is_loop_break = "0".to_string();
+        let is_vlc_running = "0".to_string();
         let is_vlc_launched_first_time = "1".to_string();
 
 
@@ -88,7 +89,8 @@ pub async fn auth_process(username: &str, password: &str, server_address: &str) 
                 id_selected_lib: library_ids[0].clone(),
                 is_loop_break: is_loop_break,
                 is_vlc_launched_first_time: is_vlc_launched_first_time,
-                speed_rate: 1.0
+                speed_rate: 1.0,
+                is_vlc_running: is_vlc_running,
             }
         ];
 

@@ -601,7 +601,7 @@ impl App {
 
 // handle key
 pub fn handle_key(&mut self, key: KeyEvent) {
-    // init variables for player
+    // init variable for player
     let mut is_playback = true;
 
     if key.kind != KeyEventKind::Press {
@@ -689,6 +689,8 @@ pub fn handle_key(&mut self, key: KeyEvent) {
             let username = self.username.clone();
             let player_address = self.config.player.address.clone();
             let port = self.config.player.port.clone();
+            let _ = update_is_vlc_running("0", username.as_str());
+
 
             tokio::spawn(async move {
                 let _ = sync_session_from_database(token, server_address, username, true, "Q", player_address, port).await;

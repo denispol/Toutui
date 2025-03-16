@@ -25,8 +25,9 @@ use ratatui::{
     widgets::Block
 };
 use crossterm::terminal::{self};
-use crate::player::integrated::progression_stats::*;
+use crate::player::integrated::player_info::*;
 use crate::ui::player_tui::*;
+use crate::player::vlc::fetch_vlc_data::is_vlc_running;
 
 #[tokio::main]
 async fn main() -> Result<()> {
@@ -86,6 +87,9 @@ async fn main() -> Result<()> {
         // Running the app in a loop
         loop {
 
+            let is_playing = get_is_vlc_running(app.username.as_str());
+            let player_info = player_info(app.config.player.address.as_str(), app.config.player.port.as_str());
+
             terminal.draw(|frame| {
                 let bg_color = app.config.colors.background_color.clone();
                 let bg_color_player = app.config.colors.list_selected_background_color.clone();
@@ -96,10 +100,12 @@ async fn main() -> Result<()> {
 
                 frame.render_widget(background, frame.area());
 
-                let message = get_dynamic_text();
-                let area = frame.area();
-                // render for the player (automatically refreshed) 
-                render_player(area, frame.buffer_mut(), message.as_str(), bg_color_player); 
+
+                if is_playing == "1" {
+                    let area = frame.area();
+                    // render for the player (automatically refreshed) 
+                    render_player(area, frame.buffer_mut(), player_info, bg_color_player); 
+                }
 
                 // render widget for general app : 
                 // Will be manually refresh by pressing `R`

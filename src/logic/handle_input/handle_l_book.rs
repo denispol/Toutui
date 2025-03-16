@@ -67,6 +67,7 @@ pub async fn handle_l_book(
                         ).await;
                     });
 
+
                     if is_cvlc_term == "1" {
                         let port_clone = port.clone();
                         let address_player_clone = address_player.clone();
@@ -92,6 +93,7 @@ pub async fn handle_l_book(
                     let mut last_current_time: u32 = 3;
                     let mut progress_sync: u32 = 3;
 
+                    let _ = update_is_vlc_running("1", username.as_str());
 
                     loop {
                         match fetch_vlc_data(port.clone(), address_player.clone()).await {
@@ -140,6 +142,8 @@ pub async fn handle_l_book(
                                         info!("[handle_l_book][Finished] VLC stopped");
                                         info!("[handle_l_book][Finished] Item {} closed at {}s", id, data_fetched_from_vlc);
                                         let _ = update_is_loop_break("1", username.as_str());
+
+                                        let _ = update_is_vlc_running("0", username.as_str());
                                         break; 
                                     },
                                     // `Err` means :  VLC is close (because if VLC is not playing
@@ -147,6 +151,7 @@ pub async fn handle_l_book(
                                     // The track is not finished. VLC is just stopped by the user.
                                     // Differ from the case above where the track reched the end.
                                     Err(_) => {
+                                        let _ = update_is_vlc_running("0", username.as_str());
                                         info!("[handle_l_book][Quit]");
                                         // close session when VLC is quitted
                                         let _ = close_session_without_send_prg_data(Some(&token), &info_item[3],  server_address.clone()).await;
@@ -167,6 +172,7 @@ pub async fn handle_l_book(
                             // quickly) Indeed, in this case, data does not have enough time to be
                             // fetched
                             Ok(None) => {
+                                let _ = update_is_vlc_running("0", username.as_str());
                                 info!("[handle_l_book][None]");
                                 let _ = close_session_without_send_prg_data(Some(&token), &info_item[3],  server_address.clone()).await;
                                 info!("[handle_l_book][None] Session successfully closed");

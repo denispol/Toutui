@@ -6,6 +6,51 @@ use std::io::stdout;
 use log::{info, error};
 use std::path::PathBuf;
 
+// Update is_vlc_running
+pub fn update_is_vlc_running(value: &str, username: &str) -> Result<()> {
+
+    let mut db_path = dirs::config_dir().unwrap_or_else(|| PathBuf::from("."));
+    db_path.push("toutui/db.sqlite3");
+
+    let err_message = "Error connecting to the database.";
+
+    if let Ok(conn) = Connection::open(db_path) {
+
+        conn.execute(
+            "UPDATE users SET is_vlc_running = ?1 WHERE username = ?2",
+            params![value, username],
+        )?;
+    } else {
+        let mut stdout = stdout();
+        let _ = pop_message(&mut stdout, 3, err_message);
+        error!("[update_is_vlc_running] {}", err_message);
+    }
+
+    Ok(())
+}
+
+
+// get is_vlc_running
+pub fn get_is_vlc_running(username: &str) -> String {
+    let mut db_path = dirs::config_dir().unwrap_or_else(|| PathBuf::from("."));
+    db_path.push("toutui/db.sqlite3");
+
+    let conn = match Connection::open(db_path) {
+        Ok(c) => c,
+        Err(_) => return String::from("Error: unable open database"),
+    };
+
+    let mut stmt = match conn.prepare("SELECT is_vlc_running FROM users WHERE username = ?1") {
+        Ok(s) => s,
+        Err(_) => return String::from("Error to prepare reqwest"),
+    };
+
+    match stmt.query_row(params![username], |row| row.get::<_, String>(0)) {
+        Ok(id) => id.to_string(),
+        Err(_) => String::from("No db found"),
+    }
+}
+
 // Update speed_rate
 pub fn update_speed_rate(username: &str, is_speed_rate_up: bool) -> Result<()> {
 
@@ -340,8 +385,8 @@ pub fn db_insert_usr(users : &Vec<User>)  -> Result<()> {
     let conn = Connection::open(db_path)?;
     for user in users {
         conn.execute(
-            "INSERT OR REPLACE INTO users (username, server_address, token, is_default_usr, name_selected_lib, id_selected_lib, is_loop_break, is_vlc_launched_first_time, speed_rate) 
-            VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9)",
+            "INSERT OR REPLACE INTO users (username, server_address, token, is_default_usr, name_selected_lib, id_selected_lib, is_loop_break, is_vlc_launched_first_time, speed_rate, is_vlc_running) 
+            VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10)",
             params![
             user.username,
             user.server_address,
@@ -352,6 +397,7 @@ pub fn db_insert_usr(users : &Vec<User>)  -> Result<()> {
             user.is_loop_break,
             user.is_vlc_launched_first_time,
             user.speed_rate,
+            user.is_vlc_running,
             ],
         )?;
     }
@@ -367,7 +413,7 @@ pub fn select_default_usr() -> Result<Vec<String>> {
     let conn = Connection::open(db_path)?;
 
     let mut stmt = conn.prepare(
-        "SELECT username, server_address, token, is_default_usr, name_selected_lib, id_selected_lib, is_loop_break, is_vlc_launched_first_time, speed_rate
+        "SELECT username, server_address, token, is_default_usr, name_selected_lib, id_selected_lib, is_loop_break, is_vlc_launched_first_time, speed_rate, is_vlc_running
          FROM users WHERE is_default_usr = 1 LIMIT 1"
     )?;
 
@@ -383,6 +429,7 @@ pub fn select_default_usr() -> Result<Vec<String>> {
             is_loop_break: row.get(6)?,
             is_vlc_launched_first_time: row.get(7)?,
             speed_rate: row.get(8)?,
+            is_vlc_running: row.get(9)?,
         })
     })?;
 
@@ -400,6 +447,7 @@ pub fn select_default_usr() -> Result<Vec<String>> {
                 result.push(user.is_loop_break);
                 result.push(user.is_vlc_launched_first_time);
                 result.push(user.speed_rate.to_string());
+                result.push(user.is_vlc_running);
             }
             Err(e) => {
                 println!("Error occurred: {}", e);
@@ -434,7 +482,8 @@ pub fn init_db() -> Result<()> {
                 id_selected_lib TEXT NOT NULL,
                 is_loop_break TEXT NOT NULL,
                 is_vlc_launched_first_time TEXT NOT NULL,
-                speed_rate FLOAT NOT NULL
+                speed_rate FLOAT NOT NULL,
+                is_vlc_running TEXT NOT NULL
             )",
         [],
     )?;
