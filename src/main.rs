@@ -118,38 +118,42 @@ async fn main() -> Result<()> {
 
         let mut app = App::new().await?;
         let mut terminal = ratatui::init();
-        //let mut terminal2 = ratatui::init();
 
         // Running the app in a loop
         loop {
-            // If `app` variable is reinitialized below (`app = App::new().await?`), it will be taken into account and data will be refreshed
-            // Otherwise, the current `app` variable will still be used.
-            let result = app.run(&mut terminal);
 
-            if let Err(e) = result {
-                eprintln!("Error running the app: {:?}", e);
-                error!("Error running the app: {:?}", e);
-            }
-
-            //  
             terminal.draw(|frame| {
-            //terminal2.draw(|frame| {
+                let bg_color = app.config.colors.background_color.clone();
+                let background = Block::default()
+                    .style(Style::default()
+                        .bg(Color::Rgb(bg_color[0], bg_color[1], bg_color[2])));
+
+
                 let (term_width, term_height) = terminal::size().unwrap();
-                let width = 200;
+                let width = 100;
                 let height = 2;
                 let x = (term_width.saturating_sub(width)) / 2;
                 let y = (term_height.saturating_sub(height)) / 2;
                 let area = Rect::new(x, y, width, height);
                 let message = get_dynamic_text();
-
                 let mut buf = frame.buffer_mut();
+                // render for the player (automatically refreshed) 
                 render_player(area, &mut buf, message.as_str()); 
+
+                // render widget for general app : 
+                // Will be manually refresh by pressing `R`
+                // If `app` variable is reinitialized below (`app = App::new().await?`), it will be taken into account and data will be refreshed
+                // Otherwise, the current `app` variable will still be used.
+                frame.render_widget(background, frame.area());
+                frame.render_widget(&mut app, frame.area());
+
             })?;
 
 
             // Checking if any key is pressed (waiting for events with a 200ms delay here)
             if crossterm::event::poll(Duration::from_millis(200))? {
                 if let event::Event::Key(key) = crossterm::event::read()? {
+                    app.handle_key(key);
                     match key.code {
                         // If the 'R' key is pressed, refresh the app
                         KeyCode::Char('R') => {
@@ -161,11 +165,6 @@ async fn main() -> Result<()> {
                             app = App::new().await?; 
                             // clear message above
                             let _ = clear_message(&mut stdout, 3);
-                        }
-                        // If 'Q' or 'Esc' is pressed, exit the app
-                        KeyCode::Char('Q') | KeyCode::Esc => {
-                            println!("Exiting app...");
-                            break;
                         }
                         _ => {}
                     }
