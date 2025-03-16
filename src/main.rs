@@ -17,52 +17,16 @@ use crossterm::event::{self, KeyCode};
 use std::io::stdout;
 use crate::utils::pop_up_message::*;
 use crate::utils::logs::*;
-use log::{info, error};
+use log::info;
 use crate::db::crud::*;
 use ratatui::{
-    buffer::Buffer,
-    layout::{Constraint, Layout, Rect},
-    style::{Color, Modifier, Style, Stylize},
-    text::Line,
-    widgets::{
-        Block, Borders, HighlightSpacing, List, ListItem , ListState,  Paragraph, StatefulWidget,
-        Widget, Wrap
-    },
+    layout::Rect,
+    style::{Color, Style},
+    widgets::Block
 };
-use ratatui::Terminal;
-use crossterm::terminal::{self, size};
+use crossterm::terminal::{self};
 use crate::player::integrated::progression_stats::*;
-
-
-// test for automatic refresh
-pub fn render_player(area: Rect, buf: &mut ratatui::buffer::Buffer, message: &str) {
-    let block_width = area.width / 3;
-    let block_x = (area.width - block_width) / 2;
-    let block_area = Rect::new(block_x, area.y, block_width, area.height);
-    let block = Block::default();
-
-    // 1/3 block
-    let left_block_width = block_width - (block_width * 2) / 3;
-    let left_block_area = Rect::new(block_x, area.y, left_block_width, area.height);
-
-    // 2/3 block
-    let text_area_width = (block_width * 2) / 3;
-    let text_area = Rect::new(block_x + left_block_width, area.y, text_area_width, area.height);
-
-    // Text area for 2/3 block
-    let paragraph = Paragraph::new(message)
-        .centered()
-        .block(Block::default());
-
-    // Image 1/3 block
-    let left_block = Block::default()
-        .style(Style::default().bg(Color::Gray));
-
-    // Render
-    paragraph.render(text_area, buf); // Right text area (2/3 block)
-    left_block.render(left_block_area, buf); // Image area (1/3 block)
-    block.render(block_area, buf); // General block
-}
+use crate::ui::player_tui::*;
 
 #[tokio::main]
 async fn main() -> Result<()> {
@@ -124,27 +88,23 @@ async fn main() -> Result<()> {
 
             terminal.draw(|frame| {
                 let bg_color = app.config.colors.background_color.clone();
+                let bg_color_player = app.config.colors.list_selected_background_color.clone();
+                // global background
                 let background = Block::default()
                     .style(Style::default()
                         .bg(Color::Rgb(bg_color[0], bg_color[1], bg_color[2])));
 
+                frame.render_widget(background, frame.area());
 
-                let (term_width, term_height) = terminal::size().unwrap();
-                let width = 100;
-                let height = 2;
-                let x = (term_width.saturating_sub(width)) / 2;
-                let y = (term_height.saturating_sub(height)) / 2;
-                let area = Rect::new(x, y, width, height);
                 let message = get_dynamic_text();
-                let mut buf = frame.buffer_mut();
+                let area = frame.area();
                 // render for the player (automatically refreshed) 
-                render_player(area, &mut buf, message.as_str()); 
+                render_player(area, frame.buffer_mut(), message.as_str(), bg_color_player); 
 
                 // render widget for general app : 
                 // Will be manually refresh by pressing `R`
                 // If `app` variable is reinitialized below (`app = App::new().await?`), it will be taken into account and data will be refreshed
                 // Otherwise, the current `app` variable will still be used.
-                frame.render_widget(background, frame.area());
                 frame.render_widget(&mut app, frame.area());
 
             })?;
