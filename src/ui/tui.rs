@@ -39,9 +39,10 @@ impl Widget for &mut App {
 impl App {
     /// AppView::Home rendering
     fn render_home(&mut self, area: Rect, buf: &mut Buffer) {
-        let [header_area, main_area, refresh_area, footer_area] = Layout::vertical([
+        let [header_area, main_area, player_area, refresh_area, footer_area] = Layout::vertical([
             Constraint::Length(2),
             Constraint::Fill(1),
+            Constraint::Length(5),
             Constraint::Length(1),
             Constraint::Length(2),
         ]).areas(area);
@@ -62,9 +63,10 @@ impl App {
 
     /// AppView::Library rendering
     fn render_library(&mut self, area: Rect, buf: &mut Buffer) {
-        let [header_area, main_area, refresh_area, footer_area] = Layout::vertical([
+        let [header_area, main_area, player_area, refresh_area, footer_area] = Layout::vertical([
             Constraint::Length(2),
             Constraint::Fill(1),
+            Constraint::Length(5),
             Constraint::Length(1),
             Constraint::Length(2),
         ]).areas(area);
@@ -91,9 +93,10 @@ impl App {
 
     /// AppView::Settings rendering
     fn render_settings(&mut self, area: Rect, buf: &mut Buffer) {
-        let [header_area, main_area, refresh_area, footer_area] = Layout::vertical([
+        let [header_area, main_area, player_area, refresh_area, footer_area] = Layout::vertical([
             Constraint::Length(2),
             Constraint::Fill(1),
+            Constraint::Length(5),
             Constraint::Length(1),
             Constraint::Length(2),
         ]).areas(area);
@@ -119,9 +122,11 @@ impl App {
 
     /// AppView::SettingsAccount rendering
     fn render_settings_account(&mut self, area: Rect, buf: &mut Buffer) {
-        let [header_area, main_area, footer_area] = Layout::vertical([
+        let [header_area, main_area, player_area, refresh_area, footer_area] = Layout::vertical([
             Constraint::Length(2),
             Constraint::Fill(1),
+            Constraint::Length(5),
+            Constraint::Length(1),
             Constraint::Length(2),
         ]).areas(area);
 
@@ -138,9 +143,11 @@ impl App {
 
     /// AppView::SettingsLibrary rendering
     fn render_settings_library(&mut self, area: Rect, buf: &mut Buffer) {
-        let [header_area, main_area, footer_area] = Layout::vertical([
+        let [header_area, main_area, player_area, refresh_area, footer_area] = Layout::vertical([
             Constraint::Length(2),
             Constraint::Fill(1),
+            Constraint::Length(5),
+            Constraint::Length(1),
             Constraint::Length(2),
         ]).areas(area);
 
@@ -158,9 +165,10 @@ impl App {
 
     /// AppView::SearchBook rendering
     fn render_search_book(&mut self, area: Rect, buf: &mut Buffer) {
-        let [header_area, main_area, refresh_area, footer_area] = Layout::vertical([
+        let [header_area, main_area, player_area, refresh_area, footer_area] = Layout::vertical([
             Constraint::Length(2),
             Constraint::Fill(1),
+            Constraint::Length(5),
             Constraint::Length(1),
             Constraint::Length(2),
         ]).areas(area);
@@ -329,9 +337,10 @@ impl App {
 
     /// AppView::PodcastEpisode
     fn render_pod_ep(&mut self, area: Rect, buf: &mut Buffer) {
-        let [header_area, main_area, refresh_area, footer_area] = Layout::vertical([
+        let [header_area, main_area, player_area, refresh_area, footer_area] = Layout::vertical([
             Constraint::Length(2),
             Constraint::Fill(1),
+            Constraint::Length(5),
             Constraint::Length(1),
             Constraint::Length(2),
         ]).areas(area);
