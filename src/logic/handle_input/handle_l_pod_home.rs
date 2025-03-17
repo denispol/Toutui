@@ -46,7 +46,13 @@ pub async fn handle_l_pod_home(
                             id.to_string(), // (id of the podcast, not the episode)
                             current_time,  // current time
                             info_item[2].clone(),
-                            id_pod_ep.to_string()); // id of the podcast episode
+                            id_pod_ep.to_string(), // id of the podcast episode
+                            0, // elapsed time start at 0 seconds
+                            info_item[4].clone(), // title
+                            info_item[6].clone(), // author
+                            false, // is_paused
+                            "".to_string(), // chapter
+                        ); 
 
 
                         // clone otherwise, these variable will  be consumed and not available anymore

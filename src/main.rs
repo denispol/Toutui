@@ -28,6 +28,8 @@ use crossterm::terminal::{self};
 use crate::player::integrated::player_info::*;
 use crate::ui::player_tui::*;
 use crate::player::vlc::fetch_vlc_data::is_vlc_running;
+use std::time::Instant;
+
 
 #[tokio::main]
 async fn main() -> Result<()> {
@@ -83,12 +85,13 @@ async fn main() -> Result<()> {
 
         let mut app = App::new().await?;
         let mut terminal = ratatui::init();
+        let start_time = Instant::now();
 
         // Running the app in a loop
         loop {
 
             let is_playing = get_is_vlc_running(app.username.as_str());
-            let player_info = player_info(app.config.player.address.as_str(), app.config.player.port.as_str());
+            let player_info = player_info(app.username.as_str());
 
             terminal.draw(|frame| {
                 let bg_color = app.config.colors.background_color.clone();
@@ -99,7 +102,6 @@ async fn main() -> Result<()> {
                         .bg(Color::Rgb(bg_color[0], bg_color[1], bg_color[2])));
 
                 frame.render_widget(background, frame.area());
-
 
                 if is_playing == "1" {
                     let area = frame.area();
@@ -112,7 +114,6 @@ async fn main() -> Result<()> {
                 // If `app` variable is reinitialized below (`app = App::new().await?`), it will be taken into account and data will be refreshed
                 // Otherwise, the current `app` variable will still be used.
                 frame.render_widget(&mut app, frame.area());
-
             })?;
 
 

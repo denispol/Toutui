@@ -113,7 +113,7 @@ pub fn get_listening_session() -> Result<Option<ListeningSession>> {
 
     if let Ok(conn) = Connection::open(db_path) {
         let mut stmt = conn.prepare(
-            "SELECT id_session, id_item, current_time_playback, duration, is_finished, id_pod
+            "SELECT id_session, id_item, current_time_playback, duration, is_finished, id_pod, elapsed_time, title, author, is_paused, chapter
              FROM listening_session
              LIMIT 1",
         )?;
@@ -128,6 +128,11 @@ pub fn get_listening_session() -> Result<Option<ListeningSession>> {
                 duration: row.get(3)?,
                 is_finished: row.get(4)?,
                 id_pod: row.get(5)?,
+                elapsed_time: row.get(6)?,
+                title: row.get(7)?,
+                author: row.get(8)?,
+                is_paused: row.get(9)?,
+                chapter: row.get(10)?,
             };
             return Ok(Some(session));
         }
@@ -147,6 +152,12 @@ pub fn insert_listening_session(
     current_time: u32,
     duration: String,
     id_pod: String,
+    elapsed_time: u32,
+    title: String,
+    author: String,
+    is_paused: bool,
+    chapter: String,
+
 ) -> Result<()> {
 
     let mut db_path = dirs::config_dir().unwrap_or_else(|| PathBuf::from("."));
@@ -157,9 +168,9 @@ pub fn insert_listening_session(
     if let Ok(conn) = Connection::open(db_path) {
         conn.execute("DELETE FROM listening_session", params![])?;
         conn.execute(
-            "INSERT INTO listening_session (id_session, id_item, current_time_playback, duration, is_finished, id_pod) 
-             VALUES (?1, ?2, ?3, ?4, 0, ?5)",
-            params![id_session, id_item, current_time, duration, id_pod],
+            "INSERT INTO listening_session (id_session, id_item, current_time_playback, duration, is_finished, id_pod, elapsed_time, title, author, is_paused, chapter) 
+             VALUES (?1, ?2, ?3, ?4, 0, ?5, ?6, ?7, ?8, ?9, ?10)",
+            params![id_session, id_item, current_time, duration, id_pod, elapsed_time, title, author, is_paused, chapter],
         )?;
     } else {
         let mut stdout = stdout();
@@ -188,6 +199,29 @@ pub fn update_current_time(value: u32, id_session: &str) -> Result<()> {
         let mut stdout = stdout();
         let _ = pop_message(&mut stdout, 3, err_message);
         error!("[update_current_time] {}", err_message);
+    }
+
+    Ok(())
+}
+
+// Update elapsed_time (for `listening_session` table)
+pub fn update_elapsed_time(id_session: &str) -> Result<()> {
+
+    let mut db_path = dirs::config_dir().unwrap_or_else(|| PathBuf::from("."));
+    db_path.push("toutui/db.sqlite3");
+
+    let err_message = "Error connecting to the database.";
+
+    if let Ok(conn) = Connection::open(db_path) {
+
+        conn.execute(
+            "UPDATE listening_session SET elapsed_time = elapsed_time + 5 WHERE id_session = ?1",
+            params![id_session],
+        )?;
+    } else {
+        let mut stdout = stdout();
+        let _ = pop_message(&mut stdout, 3, err_message);
+        error!("[update_elapsed_time] {}", err_message);
     }
 
     Ok(())
@@ -496,7 +530,12 @@ pub fn init_db() -> Result<()> {
             current_time_playback INTEGER NOT NULL,
             duration TEXT NOT NULL,
             is_finished INTEGER NOT NULL DEFAULT 0,
-            id_pod TEXT NOT NULL
+            id_pod TEXT NOT NULL,
+            elapsed_time INTEGER NOT NULL,
+            title TEXT NOT NULL,
+            author TEXT NOT NULL,
+            is_paused INTEGER NOT NULL DEFAULT 0,
+            chapter TEXT NOT NULL
             )",
         [],
     )?;

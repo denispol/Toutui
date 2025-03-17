@@ -40,7 +40,13 @@ pub async fn handle_l_book(
                         id.to_string(), // id_item
                         current_time,  // current time
                         info_item[2].clone(), // total item duration
-                        "".to_string()); // empty here, because it's for podcasts
+                        "".to_string(), // empty here, because it's for podcasts
+                        0, // elapsed time start at 0 seconds
+                        info_item[4].clone(), // title
+                        info_item[6].clone(), // author
+                        false, // is_paused
+                        "".to_string(), // chapter
+                        ); 
                         
                     // clone otherwise, these variable will  be consumed and not available anymore
                     // for use outside start_vlc spawn
@@ -75,6 +81,8 @@ pub async fn handle_l_book(
                             exec_nc(&port_clone, address_player_clone).await;
                         });
                     }
+
+                    
 
                     // clear loading message (from app.rs) when vlc is launched
                     let mut stdout = stdout(); 
@@ -111,8 +119,11 @@ pub async fn handle_l_book(
                                     progress_sync = 0; // the track is in pause
                                 } else {
                                     progress_sync = 5; // need to be equal to tokio time sleep just above
+                                    // update elapsed_time in database (`listening_session` table)
+                                    let _ = update_elapsed_time(info_item[3].as_str());
                                 }
                                 last_current_time = data_fetched_from_vlc;
+
 
                                 match fetch_vlc_is_playing(port.clone(), address_player.clone()).await {
                                     Ok(true) => {
