@@ -1,20 +1,6 @@
 use log::info;
 use crate::db::crud::*;
 
-fn format_time(seconds: u32) -> String {
-    let hours = seconds / 3600;
-    let minutes = (seconds % 3600) / 60;
-    let secs = seconds % 60;
-
-    if hours > 0 {
-        format!("{}:{:02}:{:02}", hours, minutes, secs)
-    } else if minutes > 0 {
-        format!("{}:{:02}", minutes, secs)
-    } else {
-        format!("0:{}", secs)
-    }
-}
-
 pub fn player_info(username: &str) -> Vec<String> {
     let mut player_info = Vec::new();
 
@@ -36,6 +22,9 @@ pub fn player_info(username: &str) -> Vec<String> {
             let remaining_time = adjusted_duration.saturating_sub(session.current_time);
             player_info.push(format_time(session.elapsed_time));
             player_info.push(format_time(remaining_time)); 
+
+            let percent_progress = (session.current_time as f32 / adjusted_duration as f32) * 100.0;
+            player_info.push(format!("{}", percent_progress.round() as u32));
         }
         Ok(None) => {
             player_info.push(format!("N/A"));
@@ -51,3 +40,16 @@ pub fn player_info(username: &str) -> Vec<String> {
     player_info
 }
 
+fn format_time(seconds: u32) -> String {
+    let hours = seconds / 3600;
+    let minutes = (seconds % 3600) / 60;
+    let secs = seconds % 60;
+
+    if hours > 0 {
+        format!("{}:{:02}:{:02}", hours, minutes, secs)
+    } else if minutes > 0 {
+        format!("{}:{:02}", minutes, secs)
+    } else {
+        format!("0:{}", secs)
+    }
+}
