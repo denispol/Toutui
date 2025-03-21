@@ -215,7 +215,7 @@ pub fn update_elapsed_time(id_session: &str) -> Result<()> {
     if let Ok(conn) = Connection::open(db_path) {
 
         conn.execute(
-            "UPDATE listening_session SET elapsed_time = elapsed_time + 5 WHERE id_session = ?1",
+            "UPDATE listening_session SET elapsed_time = elapsed_time + 1 WHERE id_session = ?1",
             params![id_session],
         )?;
     } else {
