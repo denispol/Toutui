@@ -103,6 +103,8 @@ pub async fn handle_l_book(
 
                     let _ = update_is_vlc_running("1", username.as_str());
 
+                    let mut trigger = 1; 
+
                     loop {
                         match fetch_vlc_data(port.clone(), address_player.clone()).await {
                             Ok(Some(data_fetched_from_vlc)) => {
@@ -112,13 +114,13 @@ pub async fn handle_l_book(
                                 let _ = update_current_time(data_fetched_from_vlc, info_item[3].as_str());
 
                                 // Important, sleep time to 1s minimum, otherwise connection to vlc player will not have time to connect
-                                // sleep time : every how many seconds the data will be sent to the server
-                                tokio::time::sleep(tokio::time::Duration::from_secs(5)).await;
+                                tokio::time::sleep(tokio::time::Duration::from_secs(1)).await;
                                 // println!("last_curr: {}", last_current_time);
                                 if data_fetched_from_vlc == last_current_time {
                                     progress_sync = 0; // the track is in pause
                                 } else {
-                                    progress_sync = 5; // need to be equal to tokio time sleep just above
+                                    // need to be equal to `if trigger ==` bellow
+                                    progress_sync = 10; 
                                     // update elapsed_time in database (`listening_session` table)
                                     let _ = update_elapsed_time(info_item[3].as_str());
                                 }
@@ -127,12 +129,14 @@ pub async fn handle_l_book(
 
                                 match fetch_vlc_is_playing(port.clone(), address_player.clone()).await {
                                     Ok(true) => {
-                                        // the first datra fetched is sometimes 0 secondes, so we
-                                        // want to be sure no send 0 secondes
-                                        if Some(data_fetched_from_vlc) != Some(0) {
+                                        // to sync progress in the server each 10 seconds
+                                        if trigger == 10 {
                                             let _ = sync_session(Some(&token), &info_item[3],Some(data_fetched_from_vlc), progress_sync, server_address.clone()).await;
                                             let _ = update_media_progress_book(id, Some(&token), Some(data_fetched_from_vlc), &info_item[2], server_address.clone()).await;
 
+                                            trigger = 0;
+                                        } else {
+                                            trigger += 1;
                                         }
                                     },
                                     // `Ok(false)` means that the track is stopped but VLC still
@@ -145,7 +149,7 @@ pub async fn handle_l_book(
                                         info!("[handle_l_book][Finished] Track finished");
 
                                         // update is_finished in database (`listening_session` table)
-                                        update_is_finished("1", info_item[3].as_str());
+                                        let _ = update_is_finished("1", info_item[3].as_str());
                                         
                                         let _ = close_session_without_send_prg_data(Some(&token), &info_item[3],  server_address.clone()).await;
                                         info!("[handle_l_book][Finished] Session successfully closed");
