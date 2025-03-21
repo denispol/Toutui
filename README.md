@@ -3,7 +3,10 @@
 
 🚀 **Be toutui and enjoy audiobookshelf from your terminal!**  
 
-![🎬 Demo](assets/demo_1.gif)  
+<p align="center">
+  <img src="assets/demo_1.gif" alt="🎬 Demo">
+</p>
+
 
 ## ✨ Features  
 ✅ **Lightweight & Fast** – A minimalist, terminal-based UI (TUI) written in Rust 🦀  
