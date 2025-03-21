@@ -8,6 +8,15 @@ pub fn player_info(username: &str) -> Vec<String> {
         Ok(Some(session)) => {
             player_info.push(session.title);
             player_info.push(session.author);
+
+            if let Ok(num) = session.chapter.trim().parse::<u32>() {
+                let new_chapter = format!("Chapter {}", num + 1);
+                info!("{}", new_chapter);
+                player_info.push(new_chapter);
+            } else {
+                player_info.push(session.chapter.clone()); 
+            }
+
             player_info.push(format_time(session.current_time));
 
             let speed_rate_str = get_speed_rate(username);

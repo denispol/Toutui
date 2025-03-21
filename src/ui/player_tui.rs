@@ -22,15 +22,16 @@ pub fn render_player(area: Rect, buf: &mut ratatui::buffer::Buffer, player_info:
 
     // Create the paragraph
     let paragraph = Paragraph::new(format!(
-            "\n{} by {} | Chapter 1 \n{} / {} | Elapsed: {} | Left: {} ({}%) | Speed: {}x", 
+            "\n{} by {} | {} \n{} / {} | Elapsed: {} | Left: {} ({}%) | Speed: {}x", 
             player_info[0], // Title
             player_info[1], // Author
-            player_info[2], // Current time
-            player_info[3], // Total duration
-            player_info[4], // Elapsed time
-            player_info[5], // Remaining time
-            player_info[6], // Percent progress
-            player_info[7], // Speed rate
+            player_info[2], // Chapter
+            player_info[3], // Current time
+            player_info[4], // Total duration
+            player_info[5], // Elapsed time
+            player_info[6], // Remaining time
+            player_info[7], // Percent progress
+            player_info[8], // Speed rate
     ))
         .centered()
         .block(Block::default());

@@ -9,6 +9,7 @@ use crate::api::sessions::close_open_session::*;
 use std::io::stdout;
 use log::{info, error};
 use crate::db::crud::*;
+use crate::utils::vlc_tcp_stream::*;
 
 pub async fn handle_l_book(
     token: Option<&String>,
@@ -125,6 +126,14 @@ pub async fn handle_l_book(
                                     let _ = update_elapsed_time(info_item[3].as_str());
                                 }
                                 last_current_time = data_fetched_from_vlc;
+
+                                // get current chapter
+                                match vlc_tcp_stream(address_player.as_str(), port.as_str(), "chapter") {
+                                    Ok(response) => {
+                                       let _ = update_chapter(response.as_str(), info_item[3].as_str());
+                                    }
+                                    Err(e) => info!("Error: {}", e),
+                                }
 
 
                                 match fetch_vlc_is_playing(port.clone(), address_player.clone()).await {
