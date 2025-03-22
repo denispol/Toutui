@@ -660,6 +660,17 @@ pub fn handle_key(&mut self, key: KeyEvent) {
             let _ = handle_key_player("Y", self.config.player.address.as_str(), self.config.player.port.as_str(), &mut is_playback, self.username.as_str()); 
         }
 
+        // show key bindings
+        KeyCode::Char('B') => {
+            let value = get_is_show_key_bindings(self.username.as_str());
+            if value == "0" {
+            let _ = update_is_show_key_bindings("1", self.username.as_str());
+            } else if value == "1" {
+            let _ = update_is_show_key_bindings("0", self.username.as_str());
+            }
+        }
+
+
 
         // END PLAYER //
 

@@ -20,6 +20,7 @@ pub struct User {
     pub  is_vlc_launched_first_time: String,
     pub  speed_rate: f32,
     pub  is_vlc_running: String,
+    pub  is_show_key_bindings: String,
 }
 
 #[derive(Serialize, Deserialize, Debug)]

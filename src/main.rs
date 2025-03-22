@@ -105,7 +105,7 @@ async fn main() -> Result<()> {
                 if is_playing == "1" {
                     let area = frame.area();
                     // render for the player (automatically refreshed) 
-                    render_player(area, frame.buffer_mut(), player_info, bg_color_player); 
+                    render_player(area, frame.buffer_mut(), player_info, bg_color_player, app.username.as_str()); 
                 }
 
                 // render widget for general app : 

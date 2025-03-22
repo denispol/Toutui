@@ -3,9 +3,10 @@ use ratatui::{
     style::{Color, Style},  
     widgets::{Block, Paragraph, Widget},
 };
+use crate::db::crud::*;
 
 
-pub fn render_player(area: Rect, buf: &mut ratatui::buffer::Buffer, player_info: Vec<String>, bg_color: Vec<u8>) {
+pub fn render_player(area: Rect, buf: &mut ratatui::buffer::Buffer, player_info: Vec<String>, bg_color: Vec<u8>, username: &str) {
     let block_width = area.width;
     let new_y = area.y + area.height.saturating_sub(9); // the line number where player start
     let block_height = 4; // number of line of the player (in lines)
@@ -21,9 +22,16 @@ pub fn render_player(area: Rect, buf: &mut ratatui::buffer::Buffer, player_info:
     let text_area_x = (area.width.saturating_sub(text_area_width)) / 2; // Center the text
     let text_area = Rect::new(text_area_x, new_y, text_area_width, block_height);
 
+
+    let mut key_bindings = "".to_string();
+    let is_show_key_bindings = get_is_show_key_bindings(username);
+    if is_show_key_bindings == "1" {
+        key_bindings = format!("Spacebar: pause/play | p/u: jump forward/backward | P/U: next/prev. chapter | O/I: speedrate up/down | o/i: vol. up/down | Y: quit player");
+    }  
+
     // Create the paragraph
     let paragraph = Paragraph::new(format!(
-            "\n{} by {} | {} \n {} {} / {} | Elapsed: {} | Left: {} ({}%) | Speed: {}x\n Spacebar: pause/play | p/u: jump forward/backward | P/U: next/prev. chapter | O/I: speedrate up/down | o/i: vol. up/down | Y: quit player", 
+            "\n{} by {} | {} \n {} {} / {} | Elapsed: {} | Left: {} ({}%) | Speed: {}x\n{}", 
             player_info[0], // Title
             player_info[1], // Author
             player_info[2], // Chapter
@@ -39,6 +47,7 @@ pub fn render_player(area: Rect, buf: &mut ratatui::buffer::Buffer, player_info:
             player_info[7], // Remaining time
             player_info[8], // Percent progress
             player_info[9], // Speed rate
+            key_bindings
     ))
         .centered()
         .block(Block::default());
