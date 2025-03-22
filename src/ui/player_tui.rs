@@ -17,7 +17,7 @@ pub fn render_player(area: Rect, buf: &mut ratatui::buffer::Buffer, player_info:
         .style(Style::default().bg(bg_color_player));
 
     // Text area
-    let text_area_width = block_width - 4; 
+    let text_area_width = block_width - 6; 
     let text_area_x = (area.width.saturating_sub(text_area_width)) / 2; // Center the text
     let text_area = Rect::new(text_area_x, new_y, text_area_width, block_height);
 
