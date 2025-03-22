@@ -23,7 +23,7 @@ pub fn render_player(area: Rect, buf: &mut ratatui::buffer::Buffer, player_info:
 
     // Create the paragraph
     let paragraph = Paragraph::new(format!(
-            "\n{} by {} | {} \n {} {} / {} | Elapsed: {} | Left: {} ({}%) | Speed: {}x", 
+            "\n{} by {} | {} \n {} {} / {} | Elapsed: {} | Left: {} ({}%) | Speed: {}x\n Spacebar: pause/play | p/u: jump forward/backward | P/U: next/prev. chapter | O/I: speedrate up/down | o/i: vol. up/down | Y: quit player", 
             player_info[0], // Title
             player_info[1], // Author
             player_info[2], // Chapter
