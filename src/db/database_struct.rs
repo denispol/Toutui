@@ -35,7 +35,7 @@ pub struct ListeningSession {
     pub elapsed_time: u32,
     pub title: String,
     pub author: String,
-    pub is_paused: bool,
+    pub is_playback: bool,
     pub chapter: String,
 }
 
@@ -69,7 +69,7 @@ impl Database {
             elapsed_time: 0,
             title: String::new(),
             author: String::new(),
-            is_paused: false,
+            is_playback: false,
             chapter: String::new(),
         };
 

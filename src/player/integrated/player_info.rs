@@ -11,7 +11,6 @@ pub fn player_info(username: &str) -> Vec<String> {
 
             if let Ok(num) = session.chapter.trim().parse::<u32>() {
                 let new_chapter = format!("Chapter {}", num + 1);
-                info!("{}", new_chapter);
                 player_info.push(new_chapter);
             } else {
                 player_info.push(session.chapter.clone()); 
@@ -20,11 +19,8 @@ pub fn player_info(username: &str) -> Vec<String> {
             player_info.push(format_time(session.current_time));
 
             let speed_rate_str = get_speed_rate(username);
-            
             let speed_rate: f32 = speed_rate_str.parse().unwrap_or(1.0);
-
             let original_duration = session.duration.parse::<u32>().unwrap_or(0);
-            
             let adjusted_duration = (original_duration as f32 / speed_rate) as u32;
             player_info.push(format_time(adjusted_duration)); 
 

@@ -106,8 +106,18 @@ pub async fn sync_session_from_database(token: Option<String>, server_address: S
             }
         }
 
-        Ok(None) => info!("[handle_key] No session"),
-        Err(e) => info!("[handle_key] Error during fetching session: {:?}", e),
+        Ok(None) => {
+            let value = get_is_vlc_launched_first_time(username.as_str());
+            if value == "1" {
+            info!("[handle_key] Quit with no listening session");
+            clean_exit();
+            } else {
+                info!("[handle_key] First session launched");
+            }
+        }        
+        Err(e) => {
+            info!("[handle_key] Error during fetching session: {:?}", e);
+        }    
     }
 }
 

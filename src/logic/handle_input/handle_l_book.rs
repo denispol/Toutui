@@ -45,7 +45,7 @@ pub async fn handle_l_book(
                         0, // elapsed time start at 0 seconds
                         info_item[4].clone(), // title
                         info_item[6].clone(), // author
-                        false, // is_paused
+                        true, // is_playback
                         "".to_string(), // chapter
                         ); 
                         

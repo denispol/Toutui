@@ -614,6 +614,7 @@ pub fn handle_key(&mut self, key: KeyEvent) {
         // toggle playback/pause
         KeyCode::Char(' ') => {
             let _ = handle_key_player(" ", self.config.player.address.as_str(), self.config.player.port.as_str(), &mut is_playback, self.username.as_str());
+
         }
         // jump forward
         KeyCode::Char('p') => {

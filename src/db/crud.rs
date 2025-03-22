@@ -113,7 +113,7 @@ pub fn get_listening_session() -> Result<Option<ListeningSession>> {
 
     if let Ok(conn) = Connection::open(db_path) {
         let mut stmt = conn.prepare(
-            "SELECT id_session, id_item, current_time_playback, duration, is_finished, id_pod, elapsed_time, title, author, is_paused, chapter
+            "SELECT id_session, id_item, current_time_playback, duration, is_finished, id_pod, elapsed_time, title, author, is_playback, chapter
              FROM listening_session
              LIMIT 1",
         )?;
@@ -131,7 +131,7 @@ pub fn get_listening_session() -> Result<Option<ListeningSession>> {
                 elapsed_time: row.get(6)?,
                 title: row.get(7)?,
                 author: row.get(8)?,
-                is_paused: row.get(9)?,
+                is_playback: row.get(9)?,
                 chapter: row.get(10)?,
             };
             return Ok(Some(session));
@@ -155,7 +155,7 @@ pub fn insert_listening_session(
     elapsed_time: u32,
     title: String,
     author: String,
-    is_paused: bool,
+    is_playback: bool,
     chapter: String,
 
 ) -> Result<()> {
@@ -168,9 +168,9 @@ pub fn insert_listening_session(
     if let Ok(conn) = Connection::open(db_path) {
         conn.execute("DELETE FROM listening_session", params![])?;
         conn.execute(
-            "INSERT INTO listening_session (id_session, id_item, current_time_playback, duration, is_finished, id_pod, elapsed_time, title, author, is_paused, chapter) 
+            "INSERT INTO listening_session (id_session, id_item, current_time_playback, duration, is_finished, id_pod, elapsed_time, title, author, is_playback, chapter) 
              VALUES (?1, ?2, ?3, ?4, 0, ?5, ?6, ?7, ?8, ?9, ?10)",
-            params![id_session, id_item, current_time, duration, id_pod, elapsed_time, title, author, is_paused, chapter],
+            params![id_session, id_item, current_time, duration, id_pod, elapsed_time, title, author, is_playback, chapter],
         )?;
     } else {
         let mut stdout = stdout();
@@ -556,7 +556,7 @@ pub fn init_db() -> Result<()> {
             elapsed_time INTEGER NOT NULL,
             title TEXT NOT NULL,
             author TEXT NOT NULL,
-            is_paused INTEGER NOT NULL DEFAULT 0,
+            is_playback INTEGER NOT NULL DEFAULT 1,
             chapter TEXT NOT NULL
             )",
         [],
