@@ -62,6 +62,8 @@ pub async fn handle_l_pod_home(
                         let info_item_clone = info_item.clone() ;
                         let server_address_clone = server_address.clone() ;
                         let address_player_clone = address_player.clone() ;
+                        let username_clone = username.clone();
+
                         // Start VLC is launched in a spawn to allow fetch_vlc_data to start at the same time
                         tokio::spawn(async move {
                             // this info! is not the most reliable to know is VLC is really launched
@@ -77,8 +79,9 @@ pub async fn handle_l_pod_home(
                                 info_item_clone[6].clone(), //title
                                 server_address_clone.clone(), // server address
                                 program.clone(),
+                                username_clone
                             ).await;
-                        });
+});
 
                         if is_cvlc_term == "1" {
                             let port_clone = port.clone();
