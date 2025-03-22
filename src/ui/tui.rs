@@ -42,7 +42,7 @@ impl App {
         let [header_area, main_area, player_area, refresh_area, footer_area] = Layout::vertical([
             Constraint::Length(2),
             Constraint::Fill(1),
-            Constraint::Length(5),
+            Constraint::Length(6),
             Constraint::Length(1),
             Constraint::Length(2),
         ]).areas(area);
@@ -66,7 +66,7 @@ impl App {
         let [header_area, main_area, player_area, refresh_area, footer_area] = Layout::vertical([
             Constraint::Length(2),
             Constraint::Fill(1),
-            Constraint::Length(5),
+            Constraint::Length(6),
             Constraint::Length(1),
             Constraint::Length(2),
         ]).areas(area);
@@ -96,7 +96,7 @@ impl App {
         let [header_area, main_area, player_area, refresh_area, footer_area] = Layout::vertical([
             Constraint::Length(2),
             Constraint::Fill(1),
-            Constraint::Length(5),
+            Constraint::Length(6),
             Constraint::Length(1),
             Constraint::Length(2),
         ]).areas(area);
@@ -125,7 +125,7 @@ impl App {
         let [header_area, main_area, player_area, refresh_area, footer_area] = Layout::vertical([
             Constraint::Length(2),
             Constraint::Fill(1),
-            Constraint::Length(5),
+            Constraint::Length(6),
             Constraint::Length(1),
             Constraint::Length(2),
         ]).areas(area);
@@ -146,7 +146,7 @@ impl App {
         let [header_area, main_area, player_area, refresh_area, footer_area] = Layout::vertical([
             Constraint::Length(2),
             Constraint::Fill(1),
-            Constraint::Length(5),
+            Constraint::Length(6),
             Constraint::Length(1),
             Constraint::Length(2),
         ]).areas(area);
@@ -168,7 +168,7 @@ impl App {
         let [header_area, main_area, player_area, refresh_area, footer_area] = Layout::vertical([
             Constraint::Length(2),
             Constraint::Fill(1),
-            Constraint::Length(5),
+            Constraint::Length(6),
             Constraint::Length(1),
             Constraint::Length(2),
         ]).areas(area);
@@ -340,7 +340,7 @@ impl App {
         let [header_area, main_area, player_area, refresh_area, footer_area] = Layout::vertical([
             Constraint::Length(2),
             Constraint::Fill(1),
-            Constraint::Length(5),
+            Constraint::Length(6),
             Constraint::Length(1),
             Constraint::Length(2),
         ]).areas(area);

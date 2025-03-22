@@ -7,8 +7,8 @@ use ratatui::{
 
 pub fn render_player(area: Rect, buf: &mut ratatui::buffer::Buffer, player_info: Vec<String>, bg_color: Vec<u8>) {
     let block_width = area.width;
-    let new_y = area.y + area.height.saturating_sub(8);
-    let block_height = 4; 
+    let new_y = area.y + area.height.saturating_sub(9); // the line number where player start
+    let block_height = 4; // number of line of the player (in lines)
 
     // Create the background block with background color
     let bg_color_player = Color::Rgb(bg_color[0], bg_color[1], bg_color[2]);
