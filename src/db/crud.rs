@@ -203,6 +203,28 @@ pub fn update_chapter(value: &str, id_session: &str) -> Result<()> {
 
     Ok(())
 }
+// Update is_playback (for `listening_session` table)
+pub fn update_is_playback(value: &str, id_session: &str) -> Result<()> {
+
+    let mut db_path = dirs::config_dir().unwrap_or_else(|| PathBuf::from("."));
+    db_path.push("toutui/db.sqlite3");
+
+    let err_message = "Error connecting to the database.";
+
+    if let Ok(conn) = Connection::open(db_path) {
+
+        conn.execute(
+            "UPDATE listening_session SET is_playback = ?1 WHERE id_session = ?2",
+            params![value, id_session],
+        )?;
+    } else {
+        let mut stdout = stdout();
+        let _ = pop_message(&mut stdout, 3, err_message);
+        error!("[update_is_playback] {}", err_message);
+    }
+
+    Ok(())
+}
 // Update current_time (for `listening_session` table)
 pub fn update_current_time(value: u32, id_session: &str) -> Result<()> {
 

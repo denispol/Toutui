@@ -16,6 +16,7 @@ pub fn player_info(username: &str) -> Vec<String> {
                 player_info.push(session.chapter.clone()); 
             }
 
+            player_info.push(session.is_playback.to_string());
             player_info.push(format_time(session.current_time));
 
             let speed_rate_str = get_speed_rate(username);

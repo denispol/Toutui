@@ -1,6 +1,8 @@
 use std::io::{self, Write};
 use std::net::TcpStream;
 use crate::db::crud::*;
+use log::info;
+
 
 pub fn handle_key_player(key: &str, address: &str, port: &str, is_playback: &mut bool, username: &str) -> io::Result<()> {
     let mut stream = TcpStream::connect(format!("{}:{}", address, port))?;
@@ -10,6 +12,21 @@ pub fn handle_key_player(key: &str, address: &str, port: &str, is_playback: &mut
     match key {
         // toggle playback/pause
         " " => {
+            match get_listening_session() {
+                Ok(Some(session)) => {
+                    if session.is_playback {
+                    let _ = update_is_playback("0", session.id_session.as_str());
+                    } else {
+                    let _ = update_is_playback("1", session.id_session.as_str());
+                    }
+                }
+                Ok(None) => {
+
+                }
+                Err(e) => {
+
+                }
+            }
             if *is_playback {
                 writeln!(stream, "pause")?;
             } else {
