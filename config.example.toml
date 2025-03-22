@@ -38,3 +38,5 @@ list_selected_foreground_color = [180, 180, 180]
 search_bar_foreground_color = [180, 180, 180]
 # Text and border color of the login section:
 login_foreground_color = [180, 180, 180]
+# Background color of the player:
+player_background_color = [20, 20, 20]

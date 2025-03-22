@@ -21,6 +21,7 @@ pub struct Colors {
     pub list_selected_foreground_color: Vec<u8>,
     pub search_bar_foreground_color: Vec<u8>,
     pub login_foreground_color: Vec<u8>,
+    pub player_background_color: Vec<u8>,
 }
 
 #[derive(Debug, Deserialize)]

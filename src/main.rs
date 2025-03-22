@@ -85,7 +85,6 @@ async fn main() -> Result<()> {
 
         let mut app = App::new().await?;
         let mut terminal = ratatui::init();
-        let start_time = Instant::now();
 
         // Running the app in a loop
         loop {
@@ -95,7 +94,7 @@ async fn main() -> Result<()> {
 
             terminal.draw(|frame| {
                 let bg_color = app.config.colors.background_color.clone();
-                let bg_color_player = app.config.colors.list_selected_background_color.clone();
+                let bg_color_player = app.config.colors.player_background_color.clone();
                 // global background
                 let background = Block::default()
                     .style(Style::default()
