@@ -128,13 +128,19 @@ pub async fn handle_l_book(
                                     let current_time_adjusted = current_time as f64 / speed_rate as f64; 
                                     let data_fetched_from_vlc_adjusted = data_fetched_from_vlc as f64 / speed_rate as f64; 
                                     let diff = data_fetched_from_vlc_adjusted as u32 - current_time_adjusted as u32;
+                                    // if > 20 means that new current_time is not take into account
+                                    // so we need to temporarly, put 1 sec if it happens (not the
+                                    // most accurate...)
+                                    // happen when a new jump/back of a chapter, or jump/back 10s
+                                    // the difference is between data_fetched_from_vlc_adjusted,
+                                    // and old currentitime_adjusted. This last one don't have time
+                                    // to be the accurate version, because trigger is not equal to
+                                    // 10 (so, it can't reach current_time = data_fetched_from_vlc in fetch_vlc_is_playing function bellow))
                                     if diff > 20 {
                                         progress_sync += 1;
                                     } else {
                                     progress_sync = diff;
                                     }
-                                    info!("{} {} {}", data_fetched_from_vlc_adjusted, current_time, progress_sync);
-
                                 }
                                 last_current_time = data_fetched_from_vlc;
 
