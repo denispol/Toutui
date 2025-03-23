@@ -34,9 +34,15 @@ pub struct Player {
 
 /// load config from `config.toml` file
 pub fn load_config() -> Result<ConfigFile> {
-    let mut config_path = dirs::config_dir().unwrap_or_else(|| PathBuf::from("."));
-    config_path.push("toutui/config.toml");
-    let config_path_str = config_path.to_str().unwrap().to_string();
+    let mut config_path = if cfg!(target_os = "macos") {
+    let mut config_path = dirs::home_dir().unwrap_or_else(|| PathBuf::from("."));
+    config_path.push(".config");
+    config_path
+} else {
+    dirs::config_dir().unwrap_or_else(|| PathBuf::from("."))
+};
+config_path.push("toutui/config.toml");
+let config_path_str = config_path.to_str().unwrap().to_string();
 
     let config = ConfigLib::builder()
         .add_source(File::with_name(&config_path_str))
