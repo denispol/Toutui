@@ -1,13 +1,12 @@
 use std::io::{self, Write};
 use std::net::TcpStream;
 use crate::db::crud::*;
-use log::info;
 
 
 pub fn handle_key_player(key: &str, address: &str, port: &str, is_playback: &mut bool, username: &str) -> io::Result<()> {
     let mut stream = TcpStream::connect(format!("{}:{}", address, port))?;
 
-    let jump_forward = "10";
+    let jump = "10";
 
     match key {
         // toggle playback/pause
@@ -23,7 +22,7 @@ pub fn handle_key_player(key: &str, address: &str, port: &str, is_playback: &mut
                 Ok(None) => {
 
                 }
-                Err(e) => {
+                Err(_e) => {
 
                 }
             }
@@ -36,11 +35,11 @@ pub fn handle_key_player(key: &str, address: &str, port: &str, is_playback: &mut
         }
         // jump forward
         "p" => {
-            writeln!(stream, "seek +{}", jump_forward)?;
+            writeln!(stream, "seek +{}", jump)?;
         }
         // jump backward
         "u" => {
-            writeln!(stream, "seek -{}", jump_forward)?;
+            writeln!(stream, "seek -{}", jump)?;
         }
         // next chapter
         "P" => {

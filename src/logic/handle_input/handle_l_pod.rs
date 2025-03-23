@@ -196,6 +196,8 @@ pub async fn handle_l_pod(
                                         info!("[handle_l_pod][Finished] VLC stopped");
                                         info!("[handle_l_pod][Finished] Item {} closed at {}s", id_pod, data_fetched_from_vlc);
                                         let _ = update_is_loop_break("1", username.as_str());
+
+                                        let _ = update_is_vlc_running("0", username.as_str());
                                         break; 
                                     },
                                     // `Err` means :  VLC is close (because if VLC is not playing
@@ -203,6 +205,7 @@ pub async fn handle_l_pod(
                                     // The track is not finished. VLC is just stopped by the user.
                                     // Differ from the case above where the track reched the end.
                                     Err(_e) => {
+                                        let _ = update_is_vlc_running("0", username.as_str());
                                         info!("[handle_l_pod][Quit]");
                                         // close session when VLC is quitted
                                         let _ = close_session_without_send_prg_data(Some(&token), &info_item[3],  server_address.clone()).await;
@@ -223,6 +226,7 @@ pub async fn handle_l_pod(
                             // quickly) Indeed, in this case, data does not have enough time to be
                             // fetched
                             Ok(None) => {
+                                let _ = update_is_vlc_running("0", username.as_str());
                                 info!("[handle_l_pod][None]");
                                 let _ = close_session_without_send_prg_data(Some(&token), &info_item[3],  server_address.clone()).await;
                                 info!("[handle_l_pod][None] Session successfully closed");
