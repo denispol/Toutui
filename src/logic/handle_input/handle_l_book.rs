@@ -124,12 +124,16 @@ pub async fn handle_l_book(
                                 } else {
                                     // need to be equal to `if trigger ==` bellow
                                     let speed_rate_str = get_speed_rate(username.as_str());
-                                    info!("{}", speed_rate_str);
                                     let speed_rate = speed_rate_str.parse::<f64>().unwrap_or(1.0);
-                                    info!("speed_rate {}", speed_rate);
                                     let current_time_adjusted = current_time as f64 / speed_rate as f64; 
                                     let data_fetched_from_vlc_adjusted = data_fetched_from_vlc as f64 / speed_rate as f64; 
-                                    progress_sync = data_fetched_from_vlc_adjusted as u32 - current_time_adjusted as u32;
+                                    let diff = data_fetched_from_vlc_adjusted as u32 - current_time_adjusted as u32;
+                                    if diff > 20 {
+                                        progress_sync += 1;
+                                    } else {
+                                    progress_sync = diff;
+                                    }
+                                    info!("{} {} {}", data_fetched_from_vlc_adjusted, current_time, progress_sync);
 
                                     // update elapsed_time in database (`listening_session` table)
                                     let _ = update_elapsed_time(info_item[3].as_str());
@@ -149,14 +153,13 @@ pub async fn handle_l_book(
                                     Ok(true) => {
                                         // to sync progress in the server each 10 seconds
                                         if trigger == 10 {
-                                            let _ = sync_session(Some(&token), &info_item[3],Some(data_fetched_from_vlc), progress_sync, server_address.clone()).await;
-                                            let _ = update_media_progress_book(id, Some(&token), Some(data_fetched_from_vlc), &info_item[2], server_address.clone()).await;
-
+                                                let _ = sync_session(Some(&token), &info_item[3],Some(data_fetched_from_vlc), progress_sync, server_address.clone()).await;
+                                                let _ = update_media_progress_book(id, Some(&token), Some(data_fetched_from_vlc), &info_item[2], server_address.clone()).await;
+                                             
                                             current_time = data_fetched_from_vlc;
-
                                             progress_sync = 0;
-
                                             trigger = 0;
+
                                         } else if progress_sync != 0 {
                                             trigger += 1;
                                         } else if progress_sync == 0 {
