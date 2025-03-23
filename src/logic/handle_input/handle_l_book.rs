@@ -157,8 +157,10 @@ pub async fn handle_l_book(
                                             progress_sync = 0;
 
                                             trigger = 0;
-                                        } else {
+                                        } else if progress_sync != 0 {
                                             trigger += 1;
+                                        } else if progress_sync == 0 {
+                                            trigger += 0;
                                         }
                                     },
                                     // `Ok(false)` means that the track is stopped but VLC still
