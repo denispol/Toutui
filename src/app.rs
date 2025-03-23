@@ -56,12 +56,12 @@ pub struct App {
     pub list_state_settings_account: ListState,
     pub list_state_settings_library: ListState,
     pub list_state_settings_about: ListState,
-    pub titles_cnt_list: Vec<String>,
+    pub _titles_cnt_list: Vec<String>,
     pub auth_names_cnt_list: Vec<String>,
     pub pub_year_cnt_list: Vec<String>,
     pub duration_cnt_list: Vec<f64>,
     pub desc_cnt_list: Vec<String>,
-    pub ids_cnt_list: Vec<String>,
+    pub _ids_cnt_list: Vec<String>,
     pub titles_library: Vec<String>,
     pub ids_library: Vec<String>,
     pub auth_names_library: Vec<String>,
@@ -169,7 +169,7 @@ impl App {
         if let Some(var_token) = database.default_usr.get(2) {
             token = var_token.clone();
         }
-        match decrypt_token(token.as_str().clone()) {
+        match decrypt_token(token.as_str()) {
             Ok(decrypted_token) => {
                 token = decrypted_token;
                 //info!("Token successfully decrypted")
@@ -181,9 +181,9 @@ impl App {
 
 
         // init server_address
-        let mut server_address: String = String::new();
+        let mut _server_address: String = String::new();
         if let Some(var_server_address) = database.default_usr.get(1) {
-            server_address = var_server_address.clone();
+            _server_address = var_server_address.clone();
         }
 
         // init id_selected_lib
@@ -237,12 +237,12 @@ impl App {
     };
 
     // init for `Home` (continue listening)
-    let mut titles_cnt_list: Vec<String> = Vec::new();
+    let mut _titles_cnt_list: Vec<String> = Vec::new();
     let mut auth_names_cnt_list: Vec<String> = Vec::new();
     let mut pub_year_cnt_list: Vec<String> = Vec::new();
     let mut duration_cnt_list: Vec<f64> = Vec::new();
     let mut desc_cnt_list: Vec<String> = Vec::new();
-    let mut ids_cnt_list: Vec<String> = Vec::new();
+    let mut _ids_cnt_list: Vec<String> = Vec::new();
     let mut ids_ep_cnt_list: Vec<String> = Vec::new();
     let mut subtitles_pod_cnt_list: Vec<String> = Vec::new();
     let mut nums_ep_pod_cnt_list: Vec<String> = Vec::new();
@@ -257,8 +257,8 @@ impl App {
     if is_podcast {
         // init for  `Home` (continue listening) for podcasts
         let continue_listening_pod = get_continue_listening_pod(&token, server_address.clone(), &id_selected_lib.clone()).await?;
-        ids_cnt_list = collect_ids_pod_cnt_list(&continue_listening_pod).await; // id of a podcast
-        titles_cnt_list = collect_titles_cnt_list_pod(&continue_listening_pod).await; // title of podcast ep
+        _ids_cnt_list = collect_ids_pod_cnt_list(&continue_listening_pod).await; // id of a podcast
+        _titles_cnt_list = collect_titles_cnt_list_pod(&continue_listening_pod).await; // title of podcast ep
         ids_ep_cnt_list = collect_ids_ep_pod_cnt_list(&continue_listening_pod).await; // id of a podcast episode
         subtitles_pod_cnt_list = collect_subtitles_pod_cnt_list(&continue_listening_pod).await;
         nums_ep_pod_cnt_list = collect_nums_ep_pod_cnt_list(&continue_listening_pod).await;
@@ -271,13 +271,13 @@ impl App {
     else {
         // init for  `Home` (continue listening) for books
         let continue_listening = get_continue_listening(&token, server_address.clone(), &id_selected_lib.clone()).await?;
-        titles_cnt_list = collect_titles_cnt_list(&continue_listening).await;
+        _titles_cnt_list = collect_titles_cnt_list(&continue_listening).await;
         auth_names_cnt_list = collect_auth_names_cnt_list(&continue_listening).await;
         pub_year_cnt_list = collect_pub_year_cnt_list(&continue_listening).await;
         duration_cnt_list = collect_duration_cnt_list(&continue_listening).await;
         desc_cnt_list = collect_desc_cnt_list(&continue_listening).await;
-        ids_cnt_list = collect_ids_cnt_list(&continue_listening).await;
-        for id in ids_cnt_list.clone() {
+        _ids_cnt_list = collect_ids_cnt_list(&continue_listening).await;
+        for id in _ids_cnt_list.clone() {
             if let Ok(val) = get_book_progress(&token, &id, server_address.clone()).await {
                 let mut values: Vec<String> = Vec::new();
                 let mut values_f64: Vec<f64> = Vec::new();
@@ -311,7 +311,7 @@ impl App {
 //    let mut book_progress_library: Vec<Vec<String>> = Vec::new();
 //    let mut book_progress_library_cur_time: Vec<Vec<f64>> = Vec::new();
 //    if !is_podcast{
-//        for id in ids_cnt_list.clone() {
+//        for id in _ids_cnt_list.clone() {
 //            if let Ok(val) = get_book_progress(&token, &id, server_address.clone()).await {
 //                let mut values: Vec<String> = Vec::new();
 //                let mut values_f64: Vec<f64> = Vec::new();
@@ -339,10 +339,10 @@ impl App {
     // init for `SearchBook`
 
     let ids_search_book: Vec<String> = Vec::new();
-    let auth_names_pod_search_book: Vec<String> = Vec::new();
-    let auth_names_search_book: Vec<String> = Vec::new();
-    let published_year_library_search_book: Vec<String> = Vec::new();
-    let desc_library_search_book: Vec<String> = Vec::new();
+    let _auth_names_pod_search_book: Vec<String> = Vec::new();
+    let _auth_names_search_book: Vec<String> = Vec::new();
+    let _published_year_library_search_book: Vec<String> = Vec::new();
+    let _desc_library_search_book: Vec<String> = Vec::new();
     let auth_names_search_book: Vec<String> = Vec::new();
     let auth_names_pod_search_book: Vec<String> = Vec::new();
     let published_year_library_search_book: Vec<String> = Vec::new();
@@ -436,7 +436,7 @@ impl App {
 
     // Default view_state at launch
     let mut view_state = AppView::Home; // By default, Home will be the first AppView launched when the app start
-    if ids_cnt_list.is_empty() {
+    if _ids_cnt_list.is_empty() {
 
         view_state = AppView::Library; // If `Home` is empty (no book or podcast to continue)
     }
@@ -497,12 +497,12 @@ impl App {
         list_state_settings_account,
         list_state_settings_library,
         list_state_settings_about,
-        titles_cnt_list,
+        _titles_cnt_list,
         auth_names_cnt_list,
         pub_year_cnt_list,
         duration_cnt_list,
         desc_cnt_list,
-        ids_cnt_list,
+        _ids_cnt_list,
         view_state,
         titles_library,
         ids_library,
@@ -758,7 +758,7 @@ pub fn handle_key(&mut self, key: KeyEvent) {
             let username = self.username.clone();
 
             // Init for `Continue Listening` (AppView::Home)
-            let ids_cnt_list = self.ids_cnt_list.clone();
+            let ids_cnt_list = self._ids_cnt_list.clone();
             let selected_cnt_list = self.list_state_cnt_list.selected();
 
             // Init for `Library`
@@ -772,13 +772,13 @@ pub fn handle_key(&mut self, key: KeyEvent) {
             // Init for `PodcastEpisode`
             if self.is_podcast {
                 if let Some(index) = selected_library {
-                    if let Some(id_pod) = ids_library.get(index) {
+                    if let Some(_id_pod) = ids_library.get(index) {
                         self.ids_pod_ep = self.all_ids_pod_ep[index].clone();
                     }}
                 if let Some(index) = selected_search_book {
                     // ids_library_pod_search because we need the pod id and he is given by
                     // this variable
-                    if let Some(id_pod) = self.ids_library_pod_search.get(index) {
+                    if let Some(_id_pod) = self.ids_library_pod_search.get(index) {
                         //    println!("{:?}", id_pod);
                         self.ids_pod_ep_search = self.all_ids_pod_ep_search[index].clone();
                         //   println!("{:?}", all_ids_pod_ep_search_clone[index]);
@@ -802,7 +802,7 @@ pub fn handle_key(&mut self, key: KeyEvent) {
                 AppView::Home => {
                     if self.is_podcast {
                         // init some variables
-                        let selected_pod_ep = self.list_state_pod_ep.selected();
+                        let _selected_pod_ep = self.list_state_pod_ep.selected();
                         let ids_ep_cnt_list = self.ids_ep_cnt_list.clone();
 
                         tokio::spawn(async move {
@@ -1145,7 +1145,7 @@ fn toggle_view(&mut self) {
 pub fn select_next(&mut self) {
     match self.view_state {
         AppView::Home => { if let Some(selected) = self.list_state_cnt_list.selected() {
-            if selected + 1  < self.ids_cnt_list.len() {
+            if selected + 1  < self._ids_cnt_list.len() {
                 self.list_state_cnt_list.select_next();
             } else {
                 self.list_state_cnt_list.select_first();
@@ -1216,7 +1216,7 @@ pub fn select_first(&mut self) {
 pub fn select_last(&mut self) {
     match self.view_state {
         AppView::Home => {
-            let last_index = self.ids_cnt_list.len() - 1;
+            let last_index = self._ids_cnt_list.len() - 1;
             self.list_state_cnt_list.select(Some(last_index));
         }            
         AppView::Library => {
