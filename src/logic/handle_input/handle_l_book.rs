@@ -135,8 +135,6 @@ pub async fn handle_l_book(
                                     }
                                     info!("{} {} {}", data_fetched_from_vlc_adjusted, current_time, progress_sync);
 
-                                    // update elapsed_time in database (`listening_session` table)
-                                    let _ = update_elapsed_time(info_item[3].as_str());
                                 }
                                 last_current_time = data_fetched_from_vlc;
 
@@ -156,9 +154,12 @@ pub async fn handle_l_book(
                                                 let _ = sync_session(Some(&token), &info_item[3],Some(data_fetched_from_vlc), progress_sync, server_address.clone()).await;
                                                 let _ = update_media_progress_book(id, Some(&token), Some(data_fetched_from_vlc), &info_item[2], server_address.clone()).await;
                                              
-                                            current_time = data_fetched_from_vlc;
-                                            progress_sync = 0;
-                                            trigger = 0;
+                                                // update elapsed_time in database (`listening_session` table)
+                                                let _ = update_elapsed_time(progress_sync, info_item[3].as_str());
+
+                                                current_time = data_fetched_from_vlc;
+                                                progress_sync = 0;
+                                                trigger = 0;
 
                                         } else if progress_sync != 0 {
                                             trigger += 1;

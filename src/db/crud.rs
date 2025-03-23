@@ -294,7 +294,7 @@ pub fn update_current_time(value: u32, id_session: &str) -> Result<()> {
 }
 
 // Update elapsed_time (for `listening_session` table)
-pub fn update_elapsed_time(id_session: &str) -> Result<()> {
+pub fn update_elapsed_time(value: u32, id_session: &str) -> Result<()> {
 
     let mut db_path = dirs::config_dir().unwrap_or_else(|| PathBuf::from("."));
     db_path.push("toutui/db.sqlite3");
@@ -304,8 +304,8 @@ pub fn update_elapsed_time(id_session: &str) -> Result<()> {
     if let Ok(conn) = Connection::open(db_path) {
 
         conn.execute(
-            "UPDATE listening_session SET elapsed_time = elapsed_time + 1 WHERE id_session = ?1",
-            params![id_session],
+            "UPDATE listening_session SET elapsed_time = elapsed_time + ?1 WHERE id_session = ?2",
+            params![value, id_session],
         )?;
     } else {
         let mut stdout = stdout();
