@@ -18,21 +18,16 @@ use crate::db::crud::*;
 use crate::db::database_struct::Database;
 use color_eyre::Result;
 use ratatui::{
-    crossterm::event::{self, Event, KeyCode, KeyEvent, KeyEventKind},
+    crossterm::event::{KeyCode, KeyEvent, KeyEventKind},
     widgets::ListState,
-    DefaultTerminal,
 };
-use ratatui::widgets::Block;
-use ratatui::style::{Color, Style};
 use crate::utils::pop_up_message::*;
 use crate::utils::changelog::*;
 use crate::utils::encrypt_token::*;
-use log::info;
 use std::io::stdout;
 use crate::player::vlc::quit_vlc::*;
 use crate::logic::sync_session::sync_session_from_database::*;
 use crate::logic::sync_session::wait_prev_session_finished::*;
-use crate::player::vlc::fetch_vlc_data::*;
 use crate::player::integrated::handle_key_player::*;
 
 

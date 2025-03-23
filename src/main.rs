@@ -20,16 +20,11 @@ use crate::utils::logs::*;
 use log::info;
 use crate::db::crud::*;
 use ratatui::{
-    layout::Rect,
     style::{Color, Style},
     widgets::Block
 };
-use crossterm::terminal::{self};
 use crate::player::integrated::player_info::*;
 use crate::ui::player_tui::*;
-use crate::player::vlc::fetch_vlc_data::is_vlc_running;
-use std::time::Instant;
-
 
 #[tokio::main]
 async fn main() -> Result<()> {
@@ -43,17 +38,16 @@ async fn main() -> Result<()> {
     dotenv::from_filename(&env_path.clone()).ok();
 
     // Init database
-    let mut database = Database::new().await?;
-    let mut database_ready = false;
+    let mut _database = Database::new().await?;
+    let mut _database_ready = false;
 
     // Wait for the database to be ready, waiting for the user to enter their credentials
     loop {
-        database = Database::new().await?;
-        if database.default_usr.is_empty() {
+        _database = Database::new().await?;
+        if _database.default_usr.is_empty() {
             let app_login = AppLogin::new().await?;
             let terminal = ratatui::init();
-            let app_result = app_login.run(terminal);
-            app_result;
+            let _app_result = app_login.run(terminal);
             // Process login result here
             // Wait for 1 second before checking again
             // If database is reinit to quickly before `auth_process.rs` is finished
@@ -64,18 +58,18 @@ async fn main() -> Result<()> {
         } else {
             // If the database is ready, exit the loop
             print!("\x1B[2J\x1B[1;1H"); // clear all stdout (avoid to sill have the previous print when the app is launched)
-            database_ready = true;
+            _database_ready = true;
             info!("Database ready");
             break;
         }
     }
 
     // Once the database is ready, initialize the app
-    if database_ready {
+    if _database_ready {
 
         // init current username
         let mut username: String = String::new();
-        if let Some(var_username) = database.default_usr.get(0) {
+        if let Some(var_username) = _database.default_usr.get(0) {
             username = var_username.clone();
         }
         // init is_vlc_launched_first_time 

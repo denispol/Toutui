@@ -1,5 +1,4 @@
-use std::fs::OpenOptions;
-use std::io::{self, Write};
+use std::io::{self};
 use vlc_rc::Client;
 use tokio::net::TcpStream;
 use std::process::Command;
@@ -115,14 +114,6 @@ pub async fn get_vlc_version() -> Result<String, io::Error> {
     let output = Command::new("vlc")
         .arg("--version")
         .output()?;
-
-    if !output.status.success() {
-        return Err(io::Error::new(
-                io::ErrorKind::Other,
-                "Failed to fetch VLC version",
-        ));
-        error!("Failed to fetch VLC version");
-    }
 
     let version_output = str::from_utf8(&output.stdout)
         .map_err(|e| io::Error::new(io::ErrorKind::InvalidData, e))?; 

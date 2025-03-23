@@ -1,4 +1,4 @@
-use log::{info, warn, error, LevelFilter};
+use log::LevelFilter;
 use fern::Dispatch;
 use chrono::Local;
 use std::fs::OpenOptions;
