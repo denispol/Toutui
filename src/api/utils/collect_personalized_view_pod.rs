@@ -94,7 +94,7 @@ pub async fn collect_authors_pod_cnt_list(roots: &[Root]) -> Vec<String> {
     for root in roots {
         if let Some(entities) = &root.entities {
             for entity in entities {
-                if let Some(recent_episode) = &entity.recent_episode {
+                if let Some(_recent_episode) = &entity.recent_episode {
                     if let Some(media) = &entity.media {
                         if let Some(metadata) = &media.metadata {
                             if let Some(author) = &metadata.author {
@@ -120,7 +120,7 @@ pub async fn collect_descs_pod_cnt_list(roots: &[Root]) -> Vec<String> {
     for root in roots {
         if let Some(entities) = &root.entities {
             for entity in entities {
-                if let Some(recent_episode) = &entity.recent_episode {
+                if let Some(_recent_episode) = &entity.recent_episode {
                     if let Some(media) = &entity.media {
                         if let Some(metadata) = &media.metadata {
                             if let Some(desc) = &metadata.description {
@@ -146,7 +146,7 @@ pub async fn collect_titles_pod_cnt_list(roots: &[Root]) -> Vec<String> {
     for root in roots {
         if let Some(entities) = &root.entities {
             for entity in entities {
-                if let Some(recent_episode) = &entity.recent_episode {
+                if let Some(_recent_episode) = &entity.recent_episode {
                     if let Some(media) = &entity.media {
                         if let Some(metadata) = &media.metadata {
                             if let Some(title) = &metadata.title {

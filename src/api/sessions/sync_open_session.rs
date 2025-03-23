@@ -15,7 +15,7 @@ pub async fn sync_session(token: Option<&String>, session_id: &str, current_time
         "timeListened": format!("{}", time_listened),
     });
 
-    let response = client
+    let _response = client
         .post(format!(
                 "{}/api/session/{}/sync", 
                 server_address,

@@ -8,7 +8,7 @@ pub fn encrypt_token(token_to_encrypt: &str) -> Result<String, String> {
     // Load .env variables (`env::var` will read ~.config/toutui/.env)
     // check `main.rs` to see the init process for dotenv
     // Retrieve secret key from .env
-    let secret_key = match env::var("TOUTUI_SECRET_KEY") {
+    let _secret_key = match env::var("TOUTUI_SECRET_KEY") {
         Ok(key) => {
 
             // Create magic crypt object

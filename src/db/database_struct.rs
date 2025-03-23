@@ -52,12 +52,10 @@ impl Database {
         // retrieve default user
         let mut default_usr: Vec<String> = Vec::new();
 
-        if let Ok(mut result) = select_default_usr() {
+        if let Ok(result) = select_default_usr() {
             default_usr = result;
         }
 
-        // init should_exit
-        let should_exit = false;
 
         // init listening_session
         let listening_session = ListeningSession {

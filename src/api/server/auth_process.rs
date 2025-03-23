@@ -54,13 +54,13 @@ pub async fn auth_process(username: &str, password: &str, server_address: &str) 
 
         let all_libraries = get_all_libraries(login_response.user.token.as_str(), server_address.to_string()).await?;
         let library_names = collect_library_names(&all_libraries).await;
-        let media_types = collect_media_types(&all_libraries).await;
+        let _media_types = collect_media_types(&all_libraries).await;
         let library_ids = collect_library_ids(&all_libraries).await;
 
         // Token encryption before insert it in the database
-        let token_to_encrypt = login_response.user.token.as_str().clone();
+        let _token_to_encrypt = login_response.user.token.as_str();
         let mut token_encrypted = "".to_string();
-        match encrypt_token(token_to_encrypt) {
+        match encrypt_token(_token_to_encrypt) {
             Ok(encrypted_token) => {
                 token_encrypted = encrypted_token;
                 info!("Token successfully encrypted")

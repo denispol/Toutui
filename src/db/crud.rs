@@ -484,21 +484,21 @@ pub fn update_id_selected_lib(id_selected_lib: &str, username: &str) -> Result<(
 }
 
 // update default user 
-pub fn update_default_user(conn: &Connection, username: &str) -> Result<()> {
-    // Mark all user as 0 by default
-    conn.execute(
-        "UPDATE users SET is_default_usr = 0",
-        [],
-    )?;
-
-    // Put the desired user as default
-    conn.execute(
-        "UPDATE users SET is_default_usr = 1 WHERE username = ?1",
-        params![username],
-    )?;
-
-    Ok(())
-}
+//pub fn update_default_user(conn: &Connection, username: &str) -> Result<()> {
+//    // Mark all user as 0 by default
+//    conn.execute(
+//        "UPDATE users SET is_default_usr = 0",
+//        [],
+//    )?;
+//
+//    // Put the desired user as default
+//    conn.execute(
+//        "UPDATE users SET is_default_usr = 1 WHERE username = ?1",
+//        params![username],
+//    )?;
+//
+//    Ok(())
+//}
 
 // Insert user in database
 pub fn db_insert_usr(users : &Vec<User>)  -> Result<()> {   

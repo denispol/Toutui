@@ -17,7 +17,7 @@ pub async fn post_start_playback_session_book(token: Option<&String>, id_library
     let mut vlc_version = String::new();
     match get_vlc_version().await {
         Ok(version) => {vlc_version = version;}
-        Err(e) => {
+        Err(_e) => {
             //eprintln!("{}", e),
         }
     }
@@ -90,7 +90,7 @@ pub async fn post_start_playback_session_pod(token: Option<&String>, id_library_
     let mut vlc_version = String::new();
     match get_vlc_version().await {
         Ok(version) => {vlc_version = version;}
-        Err(e) => {
+        Err(_e) => {
             //eprintln!("{}", e),
         }
     }
