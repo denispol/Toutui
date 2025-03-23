@@ -57,6 +57,7 @@ pub async fn handle_l_book(
                     let server_address_clone = server_address.clone() ;
                     let address_player_clone = address_player.clone() ;
                     let username_clone = username.clone();
+                    
                     // start_vlc is launched in a spawn to allow fetch_vlc_data to start at the same time
                     tokio::spawn(async move {
                         // this info! is not the most reliable to know is VLC is really launched
@@ -122,7 +123,6 @@ pub async fn handle_l_book(
                                 if data_fetched_from_vlc == last_current_time {
                                     progress_sync = 0; // the track is in pause
                                 } else {
-                                    // need to be equal to `if trigger ==` bellow
                                     let speed_rate_str = get_speed_rate(username.as_str());
                                     let speed_rate = speed_rate_str.parse::<f64>().unwrap_or(1.0);
                                     let current_time_adjusted = current_time as f64 / speed_rate as f64; 
