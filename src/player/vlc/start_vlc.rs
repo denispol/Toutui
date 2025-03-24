@@ -19,7 +19,7 @@ pub async fn start_vlc(
     let speed_rate = get_speed_rate(username.as_str());
 
     let output: Output = Command::new(format!("{}", program))
-        //.arg("--no-video") for macOS?
+        .arg("--no-video") // to avoid GUI interface on macos
         .arg(format!("--start-time={}", current_time))
         .arg("--extraintf")
         .arg("rc")
