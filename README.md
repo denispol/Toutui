@@ -8,7 +8,7 @@
 </p>
 
 <p align="center">
-    <img src="assets/demo_1.gif" alt="🎬 Demo">
+    <img src="assets/demo_2.gif" alt="🎬 Demo">
 </p>
 
 
