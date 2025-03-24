@@ -5,6 +5,7 @@ use serde_json::Value;
 use serde_json::json;
 use crate::player::vlc::fetch_vlc_data::get_vlc_version;
 
+
 const VERSION: &str = env!("CARGO_PKG_VERSION");
 
 /// Play a Library Item or Podcast Episode
@@ -16,7 +17,7 @@ pub async fn post_start_playback_session_book(token: Option<&String>, id_library
     let mut vlc_version = String::new();
     match get_vlc_version().await {
         Ok(version) => {vlc_version = version;}
-        Err(e) => {
+        Err(_e) => {
             //eprintln!("{}", e),
         }
     }
@@ -62,13 +63,13 @@ pub async fn post_start_playback_session_book(token: Option<&String>, id_library
     let id_session = v["id"]
         .as_str()
         .unwrap_or("");
-    let title = v["title"]
+    let title = v["mediaMetadata"]["title"]
         .as_str()
         .unwrap_or("N/A");
-    let subtitle = v["title"]
+    let subtitle = v["mediaMetadata"]["title"]
         .as_str()
         .unwrap_or("N/A");
-    let author = v["authors"]["name"]
+    let author = v["displayAuthor"]
         .as_str()
         .unwrap_or("N/A");
 
@@ -89,7 +90,7 @@ pub async fn post_start_playback_session_pod(token: Option<&String>, id_library_
     let mut vlc_version = String::new();
     match get_vlc_version().await {
         Ok(version) => {vlc_version = version;}
-        Err(e) => {
+        Err(_e) => {
             //eprintln!("{}", e),
         }
     }

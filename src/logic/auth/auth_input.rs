@@ -11,7 +11,6 @@ use ratatui::{
 };
 use crate::api::server::auth_process::*;
 use crossterm::event::{self, KeyEvent, KeyCode};  
-use std::process;
 use log::{info, error};
 use crate::utils::exit_app::*;
 
@@ -23,7 +22,7 @@ impl AppLogin {
     pub fn auth(&mut self) -> io::Result<()> {
         info!("[auth_input] Login");
 
-        /// init input area
+        // init input area
         let stdout = io::stdout();
         let stdout = stdout.lock();
 
@@ -72,7 +71,7 @@ impl AppLogin {
             height: 3,
         };
 
-        /// init variables
+        // init variables
         let mut textareas = vec![textarea1, textarea2, textarea3];
         let mut current_index = 0;
         let mut collected_data : Vec<String> = Vec::new();
@@ -91,7 +90,7 @@ impl AppLogin {
                                 log_bg_color[2],
                         )));
                 f.render_widget(&textareas[current_index], input_area);
-                f.render_widget(background, f.size());
+                f.render_widget(background, f.area());
             })?;
 
             match crossterm::event::read()? {
@@ -130,10 +129,10 @@ impl AppLogin {
         })?;
 
 
-        /// Fetch data from api and insert them in database
+        // Fetch data from api and insert them in database
 
         // send result
-        if let Some(active_textarea) = textareas.get(current_index) {
+        if let Some(_active_textarea) = textareas.get(current_index) {
             let collected_data_clone = collected_data.clone();
             tokio::spawn(async move {
                 //              println!("Wait...");
@@ -142,7 +141,7 @@ impl AppLogin {
                     collected_data_clone[2].as_str(), // password
                     collected_data_clone[0].as_str(), // server_address
                 ).await {
-                    Ok(response) => {
+                    Ok(_response) => {
                         info!("[auth_process] Login successful");
                         println!("Login successful");
                     }

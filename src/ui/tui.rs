@@ -39,9 +39,10 @@ impl Widget for &mut App {
 impl App {
     /// AppView::Home rendering
     fn render_home(&mut self, area: Rect, buf: &mut Buffer) {
-        let [header_area, main_area, refresh_area, footer_area] = Layout::vertical([
+        let [header_area, main_area, _player_area, _refresh_area, footer_area] = Layout::vertical([
             Constraint::Length(2),
             Constraint::Fill(1),
+            Constraint::Length(6),
             Constraint::Length(1),
             Constraint::Length(2),
         ]).areas(area);
@@ -49,12 +50,12 @@ impl App {
         let [list_area, item_area1, item_area2] = Layout::vertical([Constraint::Fill(1), Constraint::Length(3), Constraint::Fill(1)]).areas(main_area);
 
         let render_list_title = "Continue Listening";
-        let text_render_footer = "j/↓, k/↑: move, l/→: play, Tab: library, RR: refresh, S: Settings, Q/Esc: quit\n Space bar or '/': search, Scroll desc: J(down) K(up) H(top), g/G: top/bottom";
+        let text_render_footer = "j/↓, k/↑: move, l/→: play, Tab: library, R: refresh, S: Settings, Q/Esc: quit\n B: show/hide controls, '/': search, Scroll desc: J(down) K(up) H(top), g/G: top/bottom";
 
         App::render_header(header_area, buf, self.lib_name_type.clone(), &self.username, &self.server_address_pretty, VERSION);
         App::render_footer(footer_area, buf, text_render_footer);
-        self.render_list(list_area, buf, render_list_title, &self.titles_cnt_list.clone(), &mut self.list_state_cnt_list.clone());
-        if !&self.titles_cnt_list.is_empty() {
+        self.render_list(list_area, buf, render_list_title, &self._titles_cnt_list.clone(), &mut self.list_state_cnt_list.clone());
+        if !&self._titles_cnt_list.is_empty() {
             self.render_info_home(item_area1, buf, &mut self.list_state_cnt_list.clone());
             self.render_desc_home(item_area2, buf, &mut self.list_state_cnt_list.clone());
         }
@@ -62,9 +63,10 @@ impl App {
 
     /// AppView::Library rendering
     fn render_library(&mut self, area: Rect, buf: &mut Buffer) {
-        let [header_area, main_area, refresh_area, footer_area] = Layout::vertical([
+        let [header_area, main_area, _player_area, _refresh_area, footer_area] = Layout::vertical([
             Constraint::Length(2),
             Constraint::Fill(1),
+            Constraint::Length(6),
             Constraint::Length(1),
             Constraint::Length(2),
         ]).areas(area);
@@ -73,15 +75,15 @@ impl App {
 
         let render_list_title = "Library";
 
-        let mut text_render_footer = "";
+        let mut _text_render_footer = "";
         if self.is_podcast {
-        text_render_footer = "j/↓, k/↑: move, l/→: episodes, Tab: home, RR: refresh, S: Settings, Q/Esc: quit\n Space bar or '/': search, Scroll desc: J(down) K(up) H(top), g/G: top/bottom";
+        _text_render_footer = "j/↓, k/↑: move, l/→: episodes, Tab: home, R: refresh, S: Settings, Q/Esc: quit\n B: show/hide controls, '/': search, Scroll desc: J(down) K(up) H(top), g/G: top/bottom";
         } else {
-        text_render_footer = "j/↓, k/↑: move, l/→: play, Tab: home, RR: refresh, S: Settings, Q/Esc: quit\n Space bar or '/': search, Scroll desc: J(down) K(up) H(top), g/G: top/bottom";
+        _text_render_footer = "j/↓, k/↑: move, l/→: play, Tab: home, R: refresh, S: Settings, Q/Esc: quit\n B: show/hide controls, '/': search, Scroll desc: J(down) K(up) H(top), g/G: top/bottom";
         }
 
         App::render_header(header_area, buf, self.lib_name_type.clone(), &self.username, &self.server_address_pretty, VERSION);
-        App::render_footer(footer_area, buf, text_render_footer);
+        App::render_footer(footer_area, buf, _text_render_footer);
         self.render_list(list_area, buf, render_list_title, &self.titles_library.clone(), &mut self.list_state_library.clone());
         if !&self.titles_library.is_empty() {
             self.render_info_library(item_area1, buf, &mut self.list_state_library.clone());
@@ -91,9 +93,10 @@ impl App {
 
     /// AppView::Settings rendering
     fn render_settings(&mut self, area: Rect, buf: &mut Buffer) {
-        let [header_area, main_area, refresh_area, footer_area] = Layout::vertical([
+        let [header_area, main_area, _player_area, _refresh_area, footer_area] = Layout::vertical([
             Constraint::Length(2),
             Constraint::Fill(1),
+            Constraint::Length(6),
             Constraint::Length(1),
             Constraint::Length(2),
         ]).areas(area);
@@ -102,16 +105,16 @@ impl App {
 
         let render_list_title = "Settings";
 
-        let mut text_render_footer = "";
+        let mut _text_render_footer = "";
         if self.list_state_settings.selected() == Some(2) {
             // for `About` section
-            text_render_footer = "j/↓, k/↑: move, Scroll what's new: J(down) K(up) H(top),\n Tab: home, RR: refresh, Q/Esc: quit.";
+            _text_render_footer = "j/↓, k/↑: move, Scroll what's new: J(down) K(up) H(top),\n Tab: home, R: refresh, Q/Esc: quit.";
         } else {
-            text_render_footer = "j/↓, k/↑: move, l/→: see options,\n Tab: home, RR: refresh, Q/Esc: quit.";
+            _text_render_footer = "j/↓, k/↑: move, l/→: see options,\n Tab: home, R: refresh, Q/Esc: quit.";
         }
 
         App::render_header(header_area, buf, self.lib_name_type.clone(), &self.username, &self.server_address_pretty, VERSION);
-        App::render_footer(footer_area, buf, text_render_footer);
+        App::render_footer(footer_area, buf, _text_render_footer);
         self.render_list(list_area, buf, render_list_title, &self.settings.clone(), &mut self.list_state_settings.clone());
         self.render_info_settings(item_area1, buf, &mut self.list_state_settings.clone());
         self.render_desc_settings(item_area2, buf, &mut self.list_state_settings.clone());
@@ -119,16 +122,18 @@ impl App {
 
     /// AppView::SettingsAccount rendering
     fn render_settings_account(&mut self, area: Rect, buf: &mut Buffer) {
-        let [header_area, main_area, footer_area] = Layout::vertical([
+        let [header_area, main_area, _player_area, _refresh_area, footer_area] = Layout::vertical([
             Constraint::Length(2),
             Constraint::Fill(1),
+            Constraint::Length(6),
+            Constraint::Length(1),
             Constraint::Length(2),
         ]).areas(area);
 
-        let [list_area, item_area] = Layout::vertical([Constraint::Fill(1), Constraint::Fill(1),]).areas(main_area);
+        let [list_area, _item_area] = Layout::vertical([Constraint::Fill(1), Constraint::Fill(1),]).areas(main_area);
 
         let render_list_title = "Settings account";
-        let text_render_footer = "h: back, l/→: remove saved user,\n Tab: home, RR: refresh, Q/Esc: quit.";
+        let text_render_footer = "h: back, l/→: remove saved user,\n Tab: home, R: refresh, Q/Esc: quit.";
 
         App::render_header(header_area, buf, self.lib_name_type.clone(), &self.username, &self.server_address_pretty, VERSION);
         App::render_footer(footer_area, buf, text_render_footer);
@@ -138,16 +143,18 @@ impl App {
 
     /// AppView::SettingsLibrary rendering
     fn render_settings_library(&mut self, area: Rect, buf: &mut Buffer) {
-        let [header_area, main_area, footer_area] = Layout::vertical([
+        let [header_area, main_area, _player_area, _refresh_area, footer_area] = Layout::vertical([
             Constraint::Length(2),
             Constraint::Fill(1),
+            Constraint::Length(6),
+            Constraint::Length(1),
             Constraint::Length(2),
         ]).areas(area);
 
-        let [list_area, item_area] = Layout::vertical([Constraint::Fill(1), Constraint::Fill(1),]).areas(main_area);
+        let [list_area, _item_area] = Layout::vertical([Constraint::Fill(1), Constraint::Fill(1),]).areas(main_area);
 
         let render_list_title = "Settings library";
-        let text_render_footer = "h: back, l/→: change library,\n Tab: home, RR: refresh, Q/Esc: quit.";
+        let text_render_footer = "h: back, l/→: change library,\n Tab: home, R: refresh, Q/Esc: quit.";
 
         App::render_header(header_area, buf, self.lib_name_type.clone(), &self.username, &self.server_address_pretty, VERSION);
         App::render_footer(footer_area, buf, text_render_footer);
@@ -158,9 +165,10 @@ impl App {
 
     /// AppView::SearchBook rendering
     fn render_search_book(&mut self, area: Rect, buf: &mut Buffer) {
-        let [header_area, main_area, refresh_area, footer_area] = Layout::vertical([
+        let [header_area, main_area, _player_area, _refresh_area, footer_area] = Layout::vertical([
             Constraint::Length(2),
             Constraint::Fill(1),
+            Constraint::Length(6),
             Constraint::Length(1),
             Constraint::Length(2),
         ]).areas(area);
@@ -168,11 +176,11 @@ impl App {
         let [list_area, item_area1, item_area2] = Layout::vertical([Constraint::Fill(1), Constraint::Length(3), Constraint::Fill(1)]).areas(main_area);
 
         let render_list_title = "Search result";
-        let mut text_render_footer = "";
+        let mut _text_render_footer = "";
         if self.is_podcast {
-        text_render_footer = "j/↓, k/↑: move, l/→: episodes, Tab: home, RR: refresh, S: Settings, Q/Esc: quit\n Space bar or '/': search, Scroll desc: J(down) K(up) H(top), g/G: top/bottom";
+        _text_render_footer = "j/↓, k/↑: move, l/→: episodes, Tab: home, R: refresh, S: Settings, Q/Esc: quit\n '/': search, Scroll desc: J(down) K(up) H(top), g/G: top/bottom";
         } else {
-        text_render_footer = "j/↓, k/↑: move, l/→: play, Tab: home, RR: refresh, S: Settings, Q/Esc: quit\n Space bar or '/': search, Scroll desc: J(down) K(up) H(top), g/G: top/bottom";
+        _text_render_footer = "j/↓, k/↑: move, l/→: play, Tab: home, R: refresh, S: Settings, Q/Esc: quit\n '/': search, Scroll desc: J(down) K(up) H(top), g/G: top/bottom";
         } 
 
 
@@ -319,7 +327,7 @@ impl App {
             .collect();
 
         App::render_header(header_area, buf, self.lib_name_type.clone(), &self.username, &self.server_address_pretty, VERSION);
-        App::render_footer(footer_area, buf, text_render_footer);
+        App::render_footer(footer_area, buf, _text_render_footer);
         self.render_list(list_area, buf, render_list_title, titles_search_book_or_pod, &mut self.list_state_search_results.clone());
         if !titles_search_book_or_pod.is_empty() {
             self.render_info_search_book(item_area1, buf, &mut &self.list_state_search_results.clone());
@@ -329,9 +337,10 @@ impl App {
 
     /// AppView::PodcastEpisode
     fn render_pod_ep(&mut self, area: Rect, buf: &mut Buffer) {
-        let [header_area, main_area, refresh_area, footer_area] = Layout::vertical([
+        let [header_area, main_area, _player_area, _refresh_area, footer_area] = Layout::vertical([
             Constraint::Length(2),
             Constraint::Fill(1),
+            Constraint::Length(6),
             Constraint::Length(1),
             Constraint::Length(2),
         ]).areas(area);
@@ -339,7 +348,7 @@ impl App {
         let [list_area, item_area1, item_area2] = Layout::vertical([Constraint::Fill(1), Constraint::Length(3), Constraint::Fill(1)]).areas(main_area);
 
         let render_list_title = "Episodes";
-        let text_render_footer = "j/↓, k/↑: move, l/→: play, h: back, Tab: home, RR: refresh, S: Settings, Q/Esc: quit\n Space bar or '/': search, Scroll desc: J(down) K(up) H(top), g/G: top/bottom";
+        let text_render_footer = "j/↓, k/↑: move, l/→: play, h: back, Tab: home, R: refresh, S: Settings, Q/Esc: quit\n '/': search, Scroll desc: J(down) K(up) H(top), g/G: top/bottom";
 
         App::render_header(header_area, buf, self.lib_name_type.clone(), &self.username, &self.server_address_pretty, VERSION);
         App::render_footer(footer_area, buf, text_render_footer);
@@ -451,14 +460,14 @@ impl App {
     fn render_desc_home(&self, area: Rect, buf: &mut Buffer, list_state: &ListState) {
 
         if let Some(selected) = list_state.selected() {
-            let mut content: String = String::new();
+            let mut _content: String = String::new();
             if self.is_podcast {
-                content = self.subtitles_pod_cnt_list[selected].clone();
+                _content = self.subtitles_pod_cnt_list[selected].clone();
             } else {
-                content = self.desc_cnt_list[selected].clone();
+                _content = self.desc_cnt_list[selected].clone();
             }
 
-            Paragraph::new(content.clone())
+            Paragraph::new(_content.clone())
                 .scroll((self.scroll_offset as u16, 0))
                 .wrap(Wrap { trim: true })
                 .render(area, buf);
@@ -467,7 +476,7 @@ impl App {
 
     // info about the book or podacst for `Library`
     fn render_info_library(&self, area: Rect, buf: &mut Buffer, list_state: &ListState) {
-        let duration_library_conv = convert_seconds(self.duration_library.clone());
+        let _duration_library_conv = convert_seconds(self.duration_library.clone());
 
         if let Some(selected) = list_state.selected() {
             if self.is_podcast {
@@ -567,7 +576,7 @@ impl App {
 
     // info about the book or podacst for `SearchBook`
     fn render_info_search_book(&self, area: Rect, buf: &mut Buffer, list_state: &ListState) {
-        let duration_library_search_book_conv = convert_seconds(self.duration_library_search_book.clone());
+        let _duration_library_search_book_conv = convert_seconds(self.duration_library_search_book.clone());
 
         if let Some(selected) = list_state.selected() {
             if self.is_podcast {

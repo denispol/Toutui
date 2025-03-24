@@ -1,6 +1,5 @@
 use crate::db::crud::*;
 use log::info;
-use crate::player::vlc::fetch_vlc_data::*;
 use crate::utils::pop_up_message::*;
 use std::io::stdout;
 

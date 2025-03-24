@@ -4,7 +4,6 @@ use reqwest::header::AUTHORIZATION;
 use color_eyre::eyre::{Result, Report};
 use serde::Deserialize;
 use serde::Serialize;
-use serde_json::json;
 
 
 /// Get a Library Item, used for collect podact info (allow in particular to retrieve all podcast episode id)

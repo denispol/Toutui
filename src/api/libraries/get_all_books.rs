@@ -4,9 +4,6 @@ use reqwest::header::AUTHORIZATION;
 use color_eyre::eyre::{Result, Report};
 use serde::Deserialize;
 use serde::Serialize;
-use serde_json::json;
-
-
 
 /// Get all books or podcasts from a library
 /// https://api.audiobookshelf.org/#get-a-library-39-s-items

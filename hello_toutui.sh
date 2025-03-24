@@ -46,15 +46,15 @@ load_dependencies() {
 	macOS:curl \
 	macOS:pkg-config \
 	macOS:openssl \
+	macOS:netcat\
+	debian:netcat \
+	fedora:nc \
+	centos:nc \
+	arch:gnu-netcat:netcat \
+	opensuse:netcat \
 	*centos:epel-release \
 	*linux:kitty \
 	*macOS:kitty \
-	*macOS:netcat\
-	*debian:netcat \
-	*fedora:nc \
-	*centos:nc \
-	*arch:gnu-netcat:netcat \
-	*opensuse:netcat \
 	)
     # Dependencies starting with a '*' are optional
     # Starting with "linux:" for all linux distros

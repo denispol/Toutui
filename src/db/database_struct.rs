@@ -18,6 +18,9 @@ pub struct User {
     pub  id_selected_lib: String,
     pub  is_loop_break: String,
     pub  is_vlc_launched_first_time: String,
+    pub  speed_rate: f32,
+    pub  is_vlc_running: String,
+    pub  is_show_key_bindings: String,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -30,6 +33,11 @@ pub struct ListeningSession {
     pub duration: String,
     pub is_finished: bool,
     pub id_pod: String,
+    pub elapsed_time: u32,
+    pub title: String,
+    pub author: String,
+    pub is_playback: bool,
+    pub chapter: String,
 }
 
 
@@ -44,12 +52,10 @@ impl Database {
         // retrieve default user
         let mut default_usr: Vec<String> = Vec::new();
 
-        if let Ok(mut result) = select_default_usr() {
+        if let Ok(result) = select_default_usr() {
             default_usr = result;
         }
 
-        // init should_exit
-        let should_exit = false;
 
         // init listening_session
         let listening_session = ListeningSession {
@@ -59,6 +65,11 @@ impl Database {
             duration: String::new(),
             is_finished: false,
             id_pod: String::new(),
+            elapsed_time: 0,
+            title: String::new(),
+            author: String::new(),
+            is_playback: false,
+            chapter: String::new(),
         };
 
         Ok(Self {

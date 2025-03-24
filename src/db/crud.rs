@@ -6,16 +6,208 @@ use std::io::stdout;
 use log::{info, error};
 use std::path::PathBuf;
 
+// Update is_show_key_bindings
+pub fn update_is_show_key_bindings(value: &str, username: &str) -> Result<()> {
+
+    let mut db_path = if cfg!(target_os = "macos") {
+    let mut path = dirs::home_dir().unwrap_or_else(|| PathBuf::from("."));
+    path.push(".config");
+    path
+} else {
+    dirs::config_dir().unwrap_or_else(|| PathBuf::from("."))
+};
+
+db_path.push("toutui/db.sqlite3");
+
+    let err_message = "Error connecting to the database.";
+
+    if let Ok(conn) = Connection::open(db_path) {
+
+        conn.execute(
+            "UPDATE users SET is_show_key_bindings = ?1 WHERE username = ?2",
+            params![value, username],
+        )?;
+    } else {
+        let mut stdout = stdout();
+        let _ = pop_message(&mut stdout, 3, err_message);
+        error!("[update_is_show_key_bindings] {}", err_message);
+    }
+
+    Ok(())
+}
+
+
+// get is_show_key_bindings
+pub fn get_is_show_key_bindings(username: &str) -> String {
+    let mut db_path = if cfg!(target_os = "macos") {
+    let mut path = dirs::home_dir().unwrap_or_else(|| PathBuf::from("."));
+    path.push(".config");
+    path
+} else {
+    dirs::config_dir().unwrap_or_else(|| PathBuf::from("."))
+};
+
+db_path.push("toutui/db.sqlite3");
+
+    let conn = match Connection::open(db_path) {
+        Ok(c) => c,
+        Err(_) => return String::from("Error: unable open database"),
+    };
+
+    let mut stmt = match conn.prepare("SELECT is_show_key_bindings FROM users WHERE username = ?1") {
+        Ok(s) => s,
+        Err(_) => return String::from("Error to prepare reqwest"),
+    };
+
+    match stmt.query_row(params![username], |row| row.get::<_, String>(0)) {
+        Ok(id) => id.to_string(),
+        Err(_) => String::from("No db found"),
+    }
+}
+
+// Update is_vlc_running
+pub fn update_is_vlc_running(value: &str, username: &str) -> Result<()> {
+
+   let mut db_path = if cfg!(target_os = "macos") {
+    let mut path = dirs::home_dir().unwrap_or_else(|| PathBuf::from("."));
+    path.push(".config");
+    path
+} else {
+    dirs::config_dir().unwrap_or_else(|| PathBuf::from("."))
+};
+
+db_path.push("toutui/db.sqlite3");
+
+    let err_message = "Error connecting to the database.";
+
+    if let Ok(conn) = Connection::open(db_path) {
+
+        conn.execute(
+            "UPDATE users SET is_vlc_running = ?1 WHERE username = ?2",
+            params![value, username],
+        )?;
+    } else {
+        let mut stdout = stdout();
+        let _ = pop_message(&mut stdout, 3, err_message);
+        error!("[update_is_vlc_running] {}", err_message);
+    }
+
+    Ok(())
+}
+
+
+// get is_vlc_running
+pub fn get_is_vlc_running(username: &str) -> String {
+    let mut db_path = if cfg!(target_os = "macos") {
+    let mut path = dirs::home_dir().unwrap_or_else(|| PathBuf::from("."));
+    path.push(".config");
+    path
+} else {
+    dirs::config_dir().unwrap_or_else(|| PathBuf::from("."))
+};
+
+db_path.push("toutui/db.sqlite3");
+
+    let conn = match Connection::open(db_path) {
+        Ok(c) => c,
+        Err(_) => return String::from("Error: unable open database"),
+    };
+
+    let mut stmt = match conn.prepare("SELECT is_vlc_running FROM users WHERE username = ?1") {
+        Ok(s) => s,
+        Err(_) => return String::from("Error to prepare reqwest"),
+    };
+
+    match stmt.query_row(params![username], |row| row.get::<_, String>(0)) {
+        Ok(id) => id.to_string(),
+        Err(_) => String::from("No db found"),
+    }
+}
+
+// Update speed_rate
+pub fn update_speed_rate(username: &str, is_speed_rate_up: bool) -> Result<()> {
+
+    let mut db_path = if cfg!(target_os = "macos") {
+    let mut path = dirs::home_dir().unwrap_or_else(|| PathBuf::from("."));
+    path.push(".config");
+    path
+} else {
+    dirs::config_dir().unwrap_or_else(|| PathBuf::from("."))
+};
+
+db_path.push("toutui/db.sqlite3");
+
+    let err_message = "Error connecting to the database.";
+
+    if let Ok(conn) = Connection::open(db_path) {
+
+        if is_speed_rate_up {
+        conn.execute(
+            "UPDATE users SET speed_rate = speed_rate + 0.10 WHERE username = ?1",
+            params![username],
+        )?;
+        } else {
+        conn.execute(
+            "UPDATE users SET speed_rate = speed_rate - 0.10 WHERE username = ?1",
+            params![username],
+        )?;
+        }
+    } else {
+        let mut stdout = stdout();
+        let _ = pop_message(&mut stdout, 3, err_message);
+        error!("[update_speed_rate] {}", err_message);
+    }
+
+    Ok(())
+}
+
+
+// get speed_rate
+pub fn get_speed_rate(username: &str) -> String {
+   let mut db_path = if cfg!(target_os = "macos") {
+    let mut path = dirs::home_dir().unwrap_or_else(|| PathBuf::from("."));
+    path.push(".config");
+    path
+} else {
+    dirs::config_dir().unwrap_or_else(|| PathBuf::from("."))
+};
+
+db_path.push("toutui/db.sqlite3");
+
+    let conn = match Connection::open(db_path) {
+        Ok(c) => c,
+        Err(_) => return String::from("Error: unable open database"),
+    };
+
+    let mut stmt = match conn.prepare("SELECT speed_rate FROM users WHERE username = ?1") {
+        Ok(s) => s,
+        Err(_) => return String::from("Error to prepare reqwest"),
+    };
+
+    match stmt.query_row(params![username], |row| row.get::<_, f32>(0)) {
+        Ok(id) => id.to_string(),
+        Err(_) => String::from("No db found"),
+    }
+}
+
+// get listening_session
 pub fn get_listening_session() -> Result<Option<ListeningSession>> {
 
-    let mut db_path = dirs::config_dir().unwrap_or_else(|| PathBuf::from("."));
-    db_path.push("toutui/db.sqlite3");
+   let mut db_path = if cfg!(target_os = "macos") {
+    let mut path = dirs::home_dir().unwrap_or_else(|| PathBuf::from("."));
+    path.push(".config");
+    path
+} else {
+    dirs::config_dir().unwrap_or_else(|| PathBuf::from("."))
+};
+
+db_path.push("toutui/db.sqlite3");
 
     let err_message = "Error connecting to the database.";
 
     if let Ok(conn) = Connection::open(db_path) {
         let mut stmt = conn.prepare(
-            "SELECT id_session, id_item, current_time_playback, duration, is_finished, id_pod
+            "SELECT id_session, id_item, current_time_playback, duration, is_finished, id_pod, elapsed_time, title, author, is_playback, chapter
              FROM listening_session
              LIMIT 1",
         )?;
@@ -30,6 +222,11 @@ pub fn get_listening_session() -> Result<Option<ListeningSession>> {
                 duration: row.get(3)?,
                 is_finished: row.get(4)?,
                 id_pod: row.get(5)?,
+                elapsed_time: row.get(6)?,
+                title: row.get(7)?,
+                author: row.get(8)?,
+                is_playback: row.get(9)?,
+                chapter: row.get(10)?,
             };
             return Ok(Some(session));
         }
@@ -49,19 +246,32 @@ pub fn insert_listening_session(
     current_time: u32,
     duration: String,
     id_pod: String,
+    elapsed_time: u32,
+    title: String,
+    author: String,
+    is_playback: bool,
+    chapter: String,
+
 ) -> Result<()> {
 
-    let mut db_path = dirs::config_dir().unwrap_or_else(|| PathBuf::from("."));
-    db_path.push("toutui/db.sqlite3");
+    let mut db_path = if cfg!(target_os = "macos") {
+    let mut path = dirs::home_dir().unwrap_or_else(|| PathBuf::from("."));
+    path.push(".config");
+    path
+} else {
+    dirs::config_dir().unwrap_or_else(|| PathBuf::from("."))
+};
+
+db_path.push("toutui/db.sqlite3");
 
     let err_message = "Error connecting to the database.";
 
     if let Ok(conn) = Connection::open(db_path) {
         conn.execute("DELETE FROM listening_session", params![])?;
         conn.execute(
-            "INSERT INTO listening_session (id_session, id_item, current_time_playback, duration, is_finished, id_pod) 
-             VALUES (?1, ?2, ?3, ?4, 0, ?5)",
-            params![id_session, id_item, current_time, duration, id_pod],
+            "INSERT INTO listening_session (id_session, id_item, current_time_playback, duration, is_finished, id_pod, elapsed_time, title, author, is_playback, chapter) 
+             VALUES (?1, ?2, ?3, ?4, 0, ?5, ?6, ?7, ?8, ?9, ?10)",
+            params![id_session, id_item, current_time, duration, id_pod, elapsed_time, title, author, is_playback, chapter],
         )?;
     } else {
         let mut stdout = stdout();
@@ -72,12 +282,76 @@ pub fn insert_listening_session(
     Ok(())
 }
 
+// Update chapter (for `listening_session` table)
+pub fn update_chapter(value: &str, id_session: &str) -> Result<()> {
+
+   let mut db_path = if cfg!(target_os = "macos") {
+    let mut path = dirs::home_dir().unwrap_or_else(|| PathBuf::from("."));
+    path.push(".config");
+    path
+} else {
+    dirs::config_dir().unwrap_or_else(|| PathBuf::from("."))
+};
+
+db_path.push("toutui/db.sqlite3");
+
+    let err_message = "Error connecting to the database.";
+
+    if let Ok(conn) = Connection::open(db_path) {
+
+        conn.execute(
+            "UPDATE listening_session SET chapter = ?1 WHERE id_session = ?2",
+            params![value, id_session],
+        )?;
+    } else {
+        let mut stdout = stdout();
+        let _ = pop_message(&mut stdout, 3, err_message);
+        error!("[update_chapter] {}", err_message);
+    }
+
+    Ok(())
+}
+// Update is_playback (for `listening_session` table)
+pub fn update_is_playback(value: &str, id_session: &str) -> Result<()> {
+
+   let mut db_path = if cfg!(target_os = "macos") {
+    let mut path = dirs::home_dir().unwrap_or_else(|| PathBuf::from("."));
+    path.push(".config");
+    path
+} else {
+    dirs::config_dir().unwrap_or_else(|| PathBuf::from("."))
+};
+
+db_path.push("toutui/db.sqlite3");
+
+    let err_message = "Error connecting to the database.";
+
+    if let Ok(conn) = Connection::open(db_path) {
+
+        conn.execute(
+            "UPDATE listening_session SET is_playback = ?1 WHERE id_session = ?2",
+            params![value, id_session],
+        )?;
+    } else {
+        let mut stdout = stdout();
+        let _ = pop_message(&mut stdout, 3, err_message);
+        error!("[update_is_playback] {}", err_message);
+    }
+
+    Ok(())
+}
 // Update current_time (for `listening_session` table)
 pub fn update_current_time(value: u32, id_session: &str) -> Result<()> {
 
-    let mut db_path = dirs::config_dir().unwrap_or_else(|| PathBuf::from("."));
-    db_path.push("toutui/db.sqlite3");
+   let mut db_path = if cfg!(target_os = "macos") {
+    let mut path = dirs::home_dir().unwrap_or_else(|| PathBuf::from("."));
+    path.push(".config");
+    path
+} else {
+    dirs::config_dir().unwrap_or_else(|| PathBuf::from("."))
+};
 
+db_path.push("toutui/db.sqlite3");
     let err_message = "Error connecting to the database.";
 
     if let Ok(conn) = Connection::open(db_path) {
@@ -95,11 +369,48 @@ pub fn update_current_time(value: u32, id_session: &str) -> Result<()> {
     Ok(())
 }
 
+// Update elapsed_time (for `listening_session` table)
+pub fn update_elapsed_time(value: u32, id_session: &str) -> Result<()> {
+
+    let mut db_path = if cfg!(target_os = "macos") {
+    let mut path = dirs::home_dir().unwrap_or_else(|| PathBuf::from("."));
+    path.push(".config");
+    path
+} else {
+    dirs::config_dir().unwrap_or_else(|| PathBuf::from("."))
+};
+
+db_path.push("toutui/db.sqlite3");
+
+    let err_message = "Error connecting to the database.";
+
+    if let Ok(conn) = Connection::open(db_path) {
+
+        conn.execute(
+            "UPDATE listening_session SET elapsed_time = elapsed_time + ?1 WHERE id_session = ?2",
+            params![value, id_session],
+        )?;
+    } else {
+        let mut stdout = stdout();
+        let _ = pop_message(&mut stdout, 3, err_message);
+        error!("[update_elapsed_time] {}", err_message);
+    }
+
+    Ok(())
+}
+
 // Update is_finished (for `listening_session` table)
 pub fn update_is_finished(value: &str, id_session: &str) -> Result<()> {
+    
+let mut db_path = if cfg!(target_os = "macos") {
+    let mut path = dirs::home_dir().unwrap_or_else(|| PathBuf::from("."));
+    path.push(".config");
+    path
+} else {
+    dirs::config_dir().unwrap_or_else(|| PathBuf::from("."))
+};
 
-    let mut db_path = dirs::config_dir().unwrap_or_else(|| PathBuf::from("."));
-    db_path.push("toutui/db.sqlite3");
+db_path.push("toutui/db.sqlite3");
 
     let err_message = "Error connecting to the database.";
 
@@ -120,9 +431,16 @@ pub fn update_is_finished(value: &str, id_session: &str) -> Result<()> {
 
 // Delete an user
 pub fn delete_user(username: &str) -> Result<()> {
-    let mut db_path = dirs::config_dir().unwrap_or_else(|| PathBuf::from("."));
-    db_path.push("toutui/db.sqlite3");
+    
+   let mut db_path = if cfg!(target_os = "macos") {
+    let mut path = dirs::home_dir().unwrap_or_else(|| PathBuf::from("."));
+    path.push(".config");
+    path
+} else {
+    dirs::config_dir().unwrap_or_else(|| PathBuf::from("."))
+};
 
+db_path.push("toutui/db.sqlite3");
     let message = format!("User '{}' deleted. Please restart the app to apply the changes.", &username);
     let err_message = "Error connecting to the database.";
     if let Ok(conn) = Connection::open(db_path) {
@@ -151,8 +469,15 @@ pub fn delete_user(username: &str) -> Result<()> {
 // Update is_loop_break
 pub fn update_is_loop_break(value: &str, username: &str) -> Result<()> {
 
-    let mut db_path = dirs::config_dir().unwrap_or_else(|| PathBuf::from("."));
-    db_path.push("toutui/db.sqlite3");
+    let mut db_path = if cfg!(target_os = "macos") {
+    let mut path = dirs::home_dir().unwrap_or_else(|| PathBuf::from("."));
+    path.push(".config");
+    path
+} else {
+    dirs::config_dir().unwrap_or_else(|| PathBuf::from("."))
+};
+
+db_path.push("toutui/db.sqlite3");
 
     let err_message = "Error connecting to the database.";
 
@@ -174,8 +499,15 @@ pub fn update_is_loop_break(value: &str, username: &str) -> Result<()> {
 
 // get is_loop_break
 pub fn get_is_loop_break(username: &str) -> String {
-    let mut db_path = dirs::config_dir().unwrap_or_else(|| PathBuf::from("."));
-    db_path.push("toutui/db.sqlite3");
+    let mut db_path = if cfg!(target_os = "macos") {
+    let mut path = dirs::home_dir().unwrap_or_else(|| PathBuf::from("."));
+    path.push(".config");
+    path
+} else {
+    dirs::config_dir().unwrap_or_else(|| PathBuf::from("."))
+};
+
+db_path.push("toutui/db.sqlite3");
 
     let conn = match Connection::open(db_path) {
         Ok(c) => c,
@@ -196,8 +528,15 @@ pub fn get_is_loop_break(username: &str) -> String {
 // Update is_vlv_launched_first_time
 pub fn update_is_vlc_launched_first_time(value: &str, username: &str) -> Result<()> {
 
-    let mut db_path = dirs::config_dir().unwrap_or_else(|| PathBuf::from("."));
-    db_path.push("toutui/db.sqlite3");
+   let mut db_path = if cfg!(target_os = "macos") {
+    let mut path = dirs::home_dir().unwrap_or_else(|| PathBuf::from("."));
+    path.push(".config");
+    path
+} else {
+    dirs::config_dir().unwrap_or_else(|| PathBuf::from("."))
+};
+
+db_path.push("toutui/db.sqlite3");
 
     let err_message = "Error connecting to the database.";
 
@@ -217,8 +556,15 @@ pub fn update_is_vlc_launched_first_time(value: &str, username: &str) -> Result<
 }
 // get is_vlc_launched_first_time
 pub fn get_is_vlc_launched_first_time(username: &str) -> String {
-    let mut db_path = dirs::config_dir().unwrap_or_else(|| PathBuf::from("."));
-    db_path.push("toutui/db.sqlite3");
+    let mut db_path = if cfg!(target_os = "macos") {
+    let mut path = dirs::home_dir().unwrap_or_else(|| PathBuf::from("."));
+    path.push(".config");
+    path
+} else {
+    dirs::config_dir().unwrap_or_else(|| PathBuf::from("."))
+};
+
+db_path.push("toutui/db.sqlite3");
 
     let conn = match Connection::open(db_path) {
         Ok(c) => c,
@@ -238,8 +584,15 @@ pub fn get_is_vlc_launched_first_time(username: &str) -> String {
 // Update id_selected_lib
 pub fn update_id_selected_lib(id_selected_lib: &str, username: &str) -> Result<()> {
 
-    let mut db_path = dirs::config_dir().unwrap_or_else(|| PathBuf::from("."));
-    db_path.push("toutui/db.sqlite3");
+    let mut db_path = if cfg!(target_os = "macos") {
+    let mut path = dirs::home_dir().unwrap_or_else(|| PathBuf::from("."));
+    path.push(".config");
+    path
+} else {
+    dirs::config_dir().unwrap_or_else(|| PathBuf::from("."))
+};
+
+db_path.push("toutui/db.sqlite3");
 
     let message = "The library has been updated. Please refresh the app to apply the changes.";
     let err_message = "Error connecting to the database.";
@@ -263,32 +616,39 @@ pub fn update_id_selected_lib(id_selected_lib: &str, username: &str) -> Result<(
 }
 
 // update default user 
-pub fn update_default_user(conn: &Connection, username: &str) -> Result<()> {
-    // Mark all user as 0 by default
-    conn.execute(
-        "UPDATE users SET is_default_usr = 0",
-        [],
-    )?;
-
-    // Put the desired user as default
-    conn.execute(
-        "UPDATE users SET is_default_usr = 1 WHERE username = ?1",
-        params![username],
-    )?;
-
-    Ok(())
-}
+//pub fn update_default_user(conn: &Connection, username: &str) -> Result<()> {
+//    // Mark all user as 0 by default
+//    conn.execute(
+//        "UPDATE users SET is_default_usr = 0",
+//        [],
+//    )?;
+//
+//    // Put the desired user as default
+//    conn.execute(
+//        "UPDATE users SET is_default_usr = 1 WHERE username = ?1",
+//        params![username],
+//    )?;
+//
+//    Ok(())
+//}
 
 // Insert user in database
 pub fn db_insert_usr(users : &Vec<User>)  -> Result<()> {   
-    let mut db_path = dirs::config_dir().unwrap_or_else(|| PathBuf::from("."));
-    db_path.push("toutui/db.sqlite3");
+    let mut db_path = if cfg!(target_os = "macos") {
+    let mut path = dirs::home_dir().unwrap_or_else(|| PathBuf::from("."));
+    path.push(".config");
+    path
+} else {
+    dirs::config_dir().unwrap_or_else(|| PathBuf::from("."))
+};
+
+db_path.push("toutui/db.sqlite3");
 
     let conn = Connection::open(db_path)?;
     for user in users {
         conn.execute(
-            "INSERT OR REPLACE INTO users (username, server_address, token, is_default_usr, name_selected_lib, id_selected_lib, is_loop_break, is_vlc_launched_first_time) 
-            VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8)",
+            "INSERT OR REPLACE INTO users (username, server_address, token, is_default_usr, name_selected_lib, id_selected_lib, is_loop_break, is_vlc_launched_first_time, speed_rate, is_vlc_running, is_show_key_bindings) 
+            VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11)",
             params![
             user.username,
             user.server_address,
@@ -297,7 +657,10 @@ pub fn db_insert_usr(users : &Vec<User>)  -> Result<()> {
             user.name_selected_lib,
             user.id_selected_lib,
             user.is_loop_break,
-            user.is_vlc_launched_first_time
+            user.is_vlc_launched_first_time,
+            user.speed_rate,
+            user.is_vlc_running,
+            user.is_show_key_bindings,
             ],
         )?;
     }
@@ -307,13 +670,20 @@ pub fn db_insert_usr(users : &Vec<User>)  -> Result<()> {
 
 // Select default user
 pub fn select_default_usr() -> Result<Vec<String>> {
-    let mut db_path = dirs::config_dir().unwrap_or_else(|| PathBuf::from("."));
-    db_path.push("toutui/db.sqlite3");
+    let mut db_path = if cfg!(target_os = "macos") {
+    let mut path = dirs::home_dir().unwrap_or_else(|| PathBuf::from("."));
+    path.push(".config");
+    path
+} else {
+    dirs::config_dir().unwrap_or_else(|| PathBuf::from("."))
+};
+
+db_path.push("toutui/db.sqlite3");
 
     let conn = Connection::open(db_path)?;
 
     let mut stmt = conn.prepare(
-        "SELECT username, server_address, token, is_default_usr, name_selected_lib, id_selected_lib, is_loop_break, is_vlc_launched_first_time
+        "SELECT username, server_address, token, is_default_usr, name_selected_lib, id_selected_lib, is_loop_break, is_vlc_launched_first_time, speed_rate, is_vlc_running, is_show_key_bindings
          FROM users WHERE is_default_usr = 1 LIMIT 1"
     )?;
 
@@ -328,6 +698,9 @@ pub fn select_default_usr() -> Result<Vec<String>> {
             id_selected_lib: row.get(5)?,
             is_loop_break: row.get(6)?,
             is_vlc_launched_first_time: row.get(7)?,
+            speed_rate: row.get(8)?,
+            is_vlc_running: row.get(9)?,
+            is_show_key_bindings: row.get(10)?,
         })
     })?;
 
@@ -344,6 +717,9 @@ pub fn select_default_usr() -> Result<Vec<String>> {
                 result.push(user.id_selected_lib);
                 result.push(user.is_loop_break);
                 result.push(user.is_vlc_launched_first_time);
+                result.push(user.speed_rate.to_string());
+                result.push(user.is_vlc_running);
+                result.push(user.is_show_key_bindings);
             }
             Err(e) => {
                 println!("Error occurred: {}", e);
@@ -361,8 +737,15 @@ pub fn select_default_usr() -> Result<Vec<String>> {
 
 // Init db and table if not exist
 pub fn init_db() -> Result<()> {
-    let mut db_path = dirs::config_dir().unwrap_or_else(|| PathBuf::from("."));
-    db_path.push("toutui/db.sqlite3");
+    let mut db_path = if cfg!(target_os = "macos") {
+    let mut path = dirs::home_dir().unwrap_or_else(|| PathBuf::from("."));
+    path.push(".config");
+    path
+} else {
+    dirs::config_dir().unwrap_or_else(|| PathBuf::from("."))
+};
+
+db_path.push("toutui/db.sqlite3");
 
     // Open or create db
     let conn = Connection::open(db_path)?;
@@ -377,7 +760,10 @@ pub fn init_db() -> Result<()> {
                 name_selected_lib TEXT NOT NULL,
                 id_selected_lib TEXT NOT NULL,
                 is_loop_break TEXT NOT NULL,
-                is_vlc_launched_first_time TEXT NOT NULL
+                is_vlc_launched_first_time TEXT NOT NULL,
+                speed_rate FLOAT NOT NULL,
+                is_vlc_running TEXT NOT NULL,
+                is_show_key_bindings TEXT NOT NULL
             )",
         [],
     )?;
@@ -390,7 +776,12 @@ pub fn init_db() -> Result<()> {
             current_time_playback INTEGER NOT NULL,
             duration TEXT NOT NULL,
             is_finished INTEGER NOT NULL DEFAULT 0,
-            id_pod TEXT NOT NULL
+            id_pod TEXT NOT NULL,
+            elapsed_time INTEGER NOT NULL,
+            title TEXT NOT NULL,
+            author TEXT NOT NULL,
+            is_playback INTEGER NOT NULL DEFAULT 1,
+            chapter TEXT NOT NULL
             )",
         [],
     )?;

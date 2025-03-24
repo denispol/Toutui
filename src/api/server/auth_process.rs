@@ -54,13 +54,13 @@ pub async fn auth_process(username: &str, password: &str, server_address: &str) 
 
         let all_libraries = get_all_libraries(login_response.user.token.as_str(), server_address.to_string()).await?;
         let library_names = collect_library_names(&all_libraries).await;
-        let media_types = collect_media_types(&all_libraries).await;
+        let _media_types = collect_media_types(&all_libraries).await;
         let library_ids = collect_library_ids(&all_libraries).await;
 
         // Token encryption before insert it in the database
-        let token_to_encrypt = login_response.user.token.as_str().clone();
+        let _token_to_encrypt = login_response.user.token.as_str();
         let mut token_encrypted = "".to_string();
-        match encrypt_token(token_to_encrypt) {
+        match encrypt_token(_token_to_encrypt) {
             Ok(encrypted_token) => {
                 token_encrypted = encrypted_token;
                 info!("Token successfully encrypted")
@@ -70,12 +70,13 @@ pub async fn auth_process(username: &str, password: &str, server_address: &str) 
             }
         }
 
-        // Init fir handle_l
+        // Init for handle_l
         let is_loop_break = "0".to_string();
+        let is_vlc_running = "0".to_string();
         let is_vlc_launched_first_time = "1".to_string();
 
 
-        /// Writting in database : 
+        // Writting in database : 
 
         // init a new user
         let users = vec![
@@ -88,11 +89,14 @@ pub async fn auth_process(username: &str, password: &str, server_address: &str) 
                 id_selected_lib: library_ids[0].clone(),
                 is_loop_break: is_loop_break,
                 is_vlc_launched_first_time: is_vlc_launched_first_time,
+                speed_rate: 1.0,
+                is_vlc_running: is_vlc_running,
+                is_show_key_bindings: "1".to_string()
             }
         ];
 
         // insert the new user in database
-        db_insert_usr(&users);
+        let _ = db_insert_usr(&users);
 
         Ok(()) 
     } else {

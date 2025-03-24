@@ -9,6 +9,7 @@ use crate::utils::pop_up_message::*;
 use std::io::stdout;
 use log::{info, error};
 use crate::db::crud::*;
+use crate::utils::vlc_tcp_stream::*;
 
 // handle l for App::View PodcastEpisode //
 
@@ -33,7 +34,7 @@ pub async fn handle_l_pod(
                 if let Ok(info_item) = post_start_playback_session_pod(Some(&token),id_pod, &id, server_address.clone()).await {
 
                     // converting current time
-                    let current_time: u32 = info_item[0].parse::<f64>().unwrap().round() as u32;
+                    let mut current_time: u32 = info_item[0].parse::<f64>().unwrap().round() as u32;
 
                     info!("[handle_l_pod][post_start_playback_session_pod] OK");
                     info!("[handle_l_pod][post_start_playback_session_pod] Item {} started at {}s", id_pod, current_time);
@@ -45,7 +46,13 @@ pub async fn handle_l_pod(
                         id_pod.to_string(), // id of the podcast (not the episode)
                         current_time,  // current time
                         info_item[2].clone(),
-                        id.to_string()); // id (the episode of the podcast) 
+                        id.to_string(), // id (the episode of the podcast) 
+                        0, // elapsed time start at 0 seconds
+                        info_item[4].clone(), // title
+                        info_item[6].clone(), // author
+                        true, // is_playback
+                        "".to_string(), // chapter
+                        ); 
 
 
                     // clone otherwise, these variable will  be consumed and not available anymore
@@ -55,7 +62,9 @@ pub async fn handle_l_pod(
                     let info_item_clone = info_item.clone() ;
                     let server_address_clone = server_address.clone() ;
                     let address_player_clone = address_player.clone() ;
-                    // Start VLC is launched in a spawn to allow fetch_vlc_data to start at the same time
+                    let username_clone = username.clone();
+
+                    // start_vlc is launched in a spawn to allow fetch_vlc_data to start at the same time
                     tokio::spawn(async move {
                         // this info! is not the most reliable to know is VLC is really launched
                         info!("[handle_l_pod][start_vlc] VLC successfully launched");
@@ -70,8 +79,9 @@ pub async fn handle_l_pod(
                             info_item_clone[6].clone(), //title
                             server_address_clone.clone(), // server address
                             program.clone(),
-                        ).await;
-                    });
+                            username_clone
+                            ).await;
+});
 
                     if is_cvlc_term == "1" {
                         let port_clone = port.clone();
@@ -98,6 +108,11 @@ pub async fn handle_l_pod(
                     let mut last_current_time: u32 = 3;
                     let mut progress_sync: u32 = 3;
 
+                    let _ = update_is_vlc_running("1", username.as_str());
+
+                    let mut trigger = 1; 
+
+
                     loop {
                         match fetch_vlc_data(port.clone(), address_player.clone()).await {
                             Ok(Some(data_fetched_from_vlc)) => {
@@ -107,36 +122,72 @@ pub async fn handle_l_pod(
                                 let _ = update_current_time(data_fetched_from_vlc, info_item[3].as_str());
 
                                 // Important, sleep time to 1s minimum, otherwise connection to vlc player will not have time to connect
-                                // sleep time : every how many seconds the data will be sent to the server
-                                tokio::time::sleep(tokio::time::Duration::from_secs(5)).await;
+                                tokio::time::sleep(tokio::time::Duration::from_secs(1)).await;
                                 //  println!("last_curr: {}", last_current_time);
                                 if data_fetched_from_vlc == last_current_time {
                                     progress_sync = 0; // the track is in pause
                                 } else {
-                                    progress_sync = 5; // need to be equal to tokio time sleep just above
+                                    let speed_rate_str = get_speed_rate(username.as_str());
+                                    let speed_rate = speed_rate_str.parse::<f64>().unwrap_or(1.0);
+                                    let current_time_adjusted = current_time as f64 / speed_rate as f64; 
+                                    let data_fetched_from_vlc_adjusted = data_fetched_from_vlc as f64 / speed_rate as f64; 
+                                    let diff = data_fetched_from_vlc_adjusted as u32 - current_time_adjusted as u32;
+                                    // if > 20 means that new current_time is not take into account
+                                    // so we need to temporarly, put 1 sec if it happens (not the
+                                    // most accurate...)
+                                    // happen when a new jump/back of a chapter, or jump/back 10s
+                                    // the difference is between data_fetched_from_vlc_adjusted,
+                                    // and old currentitime_adjusted. This last one don't have time
+                                    // to be the accurate version, because trigger is not equal to
+                                    // 10 (so, it can't reach current_time = data_fetched_from_vlc in fetch_vlc_is_playing function bellow))
+                                    if diff > 20 {
+                                        progress_sync += 1;
+                                    } else {
+                                        progress_sync = diff;
+                                    }
                                 }
                                 last_current_time = data_fetched_from_vlc;
-                                
+
+                                // get current chapter
+                                match vlc_tcp_stream(address_player.as_str(), port.as_str(), "chapter") {
+                                    Ok(response) => {
+                                        let _ = update_chapter(response.as_str(), info_item[3].as_str());
+                                    }
+                                    Err(e) => info!("Error: {}", e),
+                                }
+
+ 
                                 match fetch_vlc_is_playing(port.clone(), address_player.clone()).await {
                                     Ok(true) => {
-                                        // the first datra fetched is sometimes 0 secondes, so we
-                                        // want to be sure no send 0 secondes
-                                        if Some(data_fetched_from_vlc) != Some(0) {
+                                        // to sync progress in the server each 10 seconds
+                                        if trigger == 10 {
                                             let _ = update_media_progress_pod(id_pod, Some(&token), Some(data_fetched_from_vlc), &info_item[2], &id, server_address.clone()).await;
                                             let _ = sync_session(Some(&token), &info_item[3],Some(data_fetched_from_vlc), progress_sync, server_address.clone()).await;
-                                            //println!("{:?}", data_fetched_from_vlc);
-                                        }},
-                                        // `Ok(false)` means that the track is stopped but VLC still
-                                        // open. Allow to track when the audio reached the end. And
-                                        // differ from the case where the user just close VLC
-                                        // during a playing (in this case we don't want to mark the
-                                        // track as finished)
+
+                                            // update elapsed_time in database (`listening_session` table)
+                                            let _ = update_elapsed_time(progress_sync, info_item[3].as_str());
+
+                                            current_time = data_fetched_from_vlc;
+                                            progress_sync = 0;
+                                            trigger = 0;
+
+                                        } else if progress_sync != 0 {
+                                            trigger += 1;
+                                        } else if progress_sync == 0 {
+                                            trigger += 0;
+                                        }
+                                    },
+                                    // `Ok(false)` means that the track is stopped but VLC still
+                                    // open. Allow to track when the audio reached the end. And
+                                    // differ from the case where the user just close VLC
+                                    // during a playing (in this case we don't want to mark the
+                                    // track as finished)
                                     Ok(false) => {
                                         let is_finised = true;
                                         info!("[handle_l_pod][Finished] Track finished");
 
                                         // update is_finished in database (`listening_session` table)
-                                        update_is_finished("1", info_item[3].as_str());
+                                        let _ = update_is_finished("1", info_item[3].as_str());
 
                                         let _ = close_session_without_send_prg_data(Some(&token), &info_item[3],  server_address.clone()).await;
                                         info!("[handle_l_pod][Finished] Session successfully closed");
@@ -145,6 +196,8 @@ pub async fn handle_l_pod(
                                         info!("[handle_l_pod][Finished] VLC stopped");
                                         info!("[handle_l_pod][Finished] Item {} closed at {}s", id_pod, data_fetched_from_vlc);
                                         let _ = update_is_loop_break("1", username.as_str());
+
+                                        let _ = update_is_vlc_running("0", username.as_str());
                                         break; 
                                     },
                                     // `Err` means :  VLC is close (because if VLC is not playing
@@ -152,6 +205,7 @@ pub async fn handle_l_pod(
                                     // The track is not finished. VLC is just stopped by the user.
                                     // Differ from the case above where the track reched the end.
                                     Err(_e) => {
+                                        let _ = update_is_vlc_running("0", username.as_str());
                                         info!("[handle_l_pod][Quit]");
                                         // close session when VLC is quitted
                                         let _ = close_session_without_send_prg_data(Some(&token), &info_item[3],  server_address.clone()).await;
@@ -172,6 +226,7 @@ pub async fn handle_l_pod(
                             // quickly) Indeed, in this case, data does not have enough time to be
                             // fetched
                             Ok(None) => {
+                                let _ = update_is_vlc_running("0", username.as_str());
                                 info!("[handle_l_pod][None]");
                                 let _ = close_session_without_send_prg_data(Some(&token), &info_item[3],  server_address.clone()).await;
                                 info!("[handle_l_pod][None] Session successfully closed");
