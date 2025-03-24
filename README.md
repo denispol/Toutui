@@ -50,8 +50,8 @@ At worst, you may experience **sync issues**, but there is **no risk** of data l
 Do not hesitate to contribute to this project by submitting your code, ideas, or feedback. Please make sure to read the [contributing guidelines](https://github.com/AlbanDAVID/Toutui/blob/main/CONTRIBUTING.md) first.
 
 ### 🍏 **macOS**
-The app is developed and tested on Linux distributions, so it **may be difficult to use on macOS**. However, we are working to make it compatible with macOS. Known issues:  
-- `cvlc` option is not available.
+>[!WARNING]
+>**Not yet supported on macOS (but we are working on it).**
 
 ### 🎨 **UI**
 The **font** and **emojis** may vary depending on the terminal you are using.
@@ -67,11 +67,17 @@ This helps ensure that your books are successfully synced and prevents any poten
 **⚠️ If you follow all the instructions but installation fails, please open an installation issue.**  
 
 ### Automatic install
-❗It's quite challenging to create a script that is exhaustive for all distributions and OS. If you encounter difficulties, leave an installation issue and install the app [manually](https://github.com/AlbanDAVID/Toutui?tab=readme-ov-file#git).  
-❗This is a beta app, please read [this](https://github.com/AlbanDAVID/Toutui?tab=readme-ov-file#%EF%B8%8F-caution-beta-version).    
-❗macOS user: read [this](https://github.com/AlbanDAVID/Toutui/blob/main/README.md#-macos).  
+
+>[!WARNING]
+>This is a beta app, please read [this](https://github.com/AlbanDAVID/Toutui?tab=readme-ov-file#%EF%B8%8F-caution-beta-version).    
+>It's quite challenging to create a script that is exhaustive for all distributions and OS. If you encounter difficulties, leave an installation issue and install the app [manually](https://github.com/AlbanDAVID/Toutui?tab=readme-ov-file#git).
+
+
+
 
 #### **Install**
+>[!WARNING]
+>**Not yet supported on macOS (but we are working on it).**
 ```bash
 git clone https://github.com/AlbanDAVID/Toutui
 cd Toutui/
