@@ -69,15 +69,13 @@ This helps ensure that your books are successfully synced and prevents any poten
 ### Automatic install
 
 >[!WARNING]
->This is a beta app, please read [this](https://github.com/AlbanDAVID/Toutui?tab=readme-ov-file#%EF%B8%8F-caution-beta-version).    
 >It's quite challenging to create a script that is exhaustive for all distributions and OS. If you encounter difficulties, leave an installation issue and install the app [manually](https://github.com/AlbanDAVID/Toutui?tab=readme-ov-file#git).
-
-
-
 
 #### **Install**
 >[!WARNING]
 >**Not yet supported on macOS (but we are working on it).**
+>
+>This is a beta app, please read [this](https://github.com/AlbanDAVID/Toutui?tab=readme-ov-file#%EF%B8%8F-caution-beta-version). 
 ```bash
 git clone https://github.com/AlbanDAVID/Toutui
 cd Toutui/
