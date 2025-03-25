@@ -155,6 +155,11 @@ get_distro() {
     echo "$distro"
 }
 
+install_brew() {
+    # from https://brew.sh/
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+}
+
 install_from_source() {
     echo "[ERROR] Could not identify OS/Distro."
     echo "Please follow the instructions here:"
@@ -213,8 +218,7 @@ install_packages() {
 	    if [[ $(command -v brew 2>/dev/null) ]]; then
 		brew install ${dep[@]}
 	    else
-		echo "[ERROR] Please install \"brew\"."
-		exit $EXIT_FAIL
+		install_brew
 	    fi;;
     esac
     echo "[INFO] Packages installed successfully."
@@ -262,7 +266,10 @@ dep_already_installed() {
     	    opensuse*) (zypper se --installed-only "$pkg_name" &>/dev/null)2>/dev/null && installed="true";;
     	esac
     elif [[ $OS == "macOS" ]]; then
-	(brew list | grep "^${pkg_name}$") && installed="true"
+	if [[ ! $(command -v brew 2>/dev/null) ]]; then
+	    install_brew
+	fi
+	(brew list | grep "^${pkg_name}") && installed="true"
     fi
     if [[ $installed == "false" ]]; then
 	if [[ $cmd_check != "no_check" && $(command -v $cmd_check 2>/dev/null) ]]; then
@@ -329,6 +336,7 @@ install_toutui() {
     install_deps # install essential and/or optional deps
     install_config # create ~/.config/toutui/ etc.
     install_rust # cornerstone! toutui is written by a crab
+    . "$HOME/.cargo/env" # ensure cargo is in PATH
     cargo build --release
     # copy Toutui binary to system path
     sudo cp ./target/release/Toutui "${INSTALL_DIR}/toutui" || exit $EXIT_BUILD_FAIL
