@@ -60,8 +60,6 @@ pub async fn handle_l_book(
                     
                     // start_vlc is launched in a spawn to allow fetch_vlc_data to start at the same time
                     tokio::spawn(async move {
-                        // this info! is not the most reliable to know is VLC is really launched
-                        info!("[handle_l_book][start_vlc] VLC successfully launched");
                         start_vlc(
                             &info_item_clone[0], // current_time
                             &port_clone, // player port
@@ -76,6 +74,8 @@ pub async fn handle_l_book(
                             username_clone
                             ).await;
                     });
+                    // this info! is not the most reliable to know is VLC is really launched
+                    info!("[handle_l_book][start_vlc] VLC successfully launched");
 
 
                     if is_cvlc_term == "1" {
