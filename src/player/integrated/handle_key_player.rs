@@ -35,19 +35,27 @@ pub fn handle_key_player(key: &str, address: &str, port: &str, is_playback: &mut
         }
         // jump forward
         "p" => {
+            writeln!(stream, "pause")?; // need this to avoid VLC buffer issue before cmd
             writeln!(stream, "seek +{}", jump)?;
+            writeln!(stream, "play")?;
         }
         // jump backward
         "u" => {
+            writeln!(stream, "pause")?;
             writeln!(stream, "seek -{}", jump)?;
+            writeln!(stream, "play")?;
         }
         // next chapter
         "P" => {
+            writeln!(stream, "pause")?;
             writeln!(stream, "chapter_n")?;
+            writeln!(stream, "play")?;
         }
         // previous chapter
         "U" => {
+            writeln!(stream, "pause")?;
             writeln!(stream, "chapter_p")?;
+            writeln!(stream, "pause")?;
         }
         // volume up
         "o" => {
@@ -63,7 +71,7 @@ pub fn handle_key_player(key: &str, address: &str, port: &str, is_playback: &mut
             let speed_rate = get_speed_rate(username);
             writeln!(stream, "rate {}", speed_rate)?;
         }
-        // speed rate up
+        // speed rate down
         "I" => {
             let _ = update_speed_rate(username, false);
             let speed_rate = get_speed_rate(username);
