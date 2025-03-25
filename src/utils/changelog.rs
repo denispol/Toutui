@@ -62,7 +62,7 @@ let changelog_04 = format!(
          ####\n",
 );
 let changelog_05 = format!(
-    "Changelog Toutui v{} (07/03/2025) \n\
+    "Changelog Toutui v0.2.0-beta (07/03/2025) \n\
 CAUTION: This version is not compatible with the previous one.  
 You need to remove the database in ~/.config/toutui before proceeding. 
          Fixed:\n\
@@ -89,9 +89,37 @@ You need to remove the database in ~/.config/toutui before proceeding.
          \n\
          Enjoy and be toutui!\n
          ####\n",
+);
+let changelog_06 = format!(
+    "Changelog Toutui v{} (24/03/2025) \n\
+CAUTION: This version is not compatible with the previous one.  
+To make it work properly, perform a fresh reinstall.
+\n\
+         Added:\n\
+         - Integrated player. Keep calm and stay in your terminal! :)
+         \n\
+         Fixed:\n\
+         \n\
+         - Fixed: issue where pressing R twice was required to refresh the app.
+         - Fixed: issue causing the cursor to disappear when the application is closed.
+         - Fixed: issue if app is quitted for the first time and that listening session is empty.
+         \n\
+         Changed:\n\
+         \n\
+         - Faster loading time to play an item.
+         - Improved synchronization accurary.
+         - Removed warning during compilation time.
+         \n\
+         Contributors:\n\
+         \n\
+         - AlbanDAVID, dougy147
+         \n\
+         Enjoy and be toutui!\n
+         ####\n",
          VERSION
 );
 
+    changelog.push_str(&changelog_06); 
     changelog.push_str(&changelog_05); 
     changelog.push_str(&changelog_04); 
     changelog.push_str(&changelog_03); 
