@@ -10,7 +10,7 @@ main() {
     OS=$(identify_os)
     USER=${USER:-$(grab_username)}
     HOME=${HOME:-$(grab_home_dir)}
-    CONFIG_DIR="${XDG_CONFIG_HOME:-$(grab_config_dir)}"
+    CONFIG_DIR="${XDG_CONFIG_HOME:-$(grab_config_dir)}/toutui"
     INSTALL_DIR="${2:-$(grab_install_dir)}"
 
     load_dependencies
@@ -46,15 +46,15 @@ load_dependencies() {
 	macOS:curl \
 	macOS:pkg-config \
 	macOS:openssl \
+	macOS:netcat\
+	debian:netcat \
+	fedora:nc \
+	centos:nc \
+	arch:gnu-netcat:netcat \
+	opensuse:netcat \
 	*centos:epel-release \
 	*linux:kitty \
 	*macOS:kitty \
-	*macOS:netcat\
-	*debian:netcat \
-	*fedora:nc \
-	*centos:nc \
-	*arch:gnu-netcat:netcat \
-	*opensuse:netcat \
 	)
     # Dependencies starting with a '*' are optional
     # Starting with "linux:" for all linux distros
@@ -109,7 +109,7 @@ grab_config_dir() {
 	echo "[ERROR] Cannot find \"$USER\" config directory."
 	exit $EXIT_CONFIG
     fi
-    echo "${config}/toutui"
+    echo "${config}"
 }
 
 grab_install_dir() {
@@ -153,11 +153,6 @@ get_distro() {
 	unknown|*) distro="unknown";;
     esac
     echo "$distro"
-}
-
-install_brew() {
-    # from https://brew.sh/
-    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 }
 
 install_from_source() {
@@ -218,7 +213,8 @@ install_packages() {
 	    if [[ $(command -v brew 2>/dev/null) ]]; then
 		brew install ${dep[@]}
 	    else
-		install_brew
+		echo "[ERROR] Please install \"brew\"."
+		exit $EXIT_FAIL
 	    fi;;
     esac
     echo "[INFO] Packages installed successfully."
@@ -233,7 +229,7 @@ post_install_msg() {
 }
 
 install_config() {
-    mkdir -p "$CONFIG_DIR" 2>/dev/null || ( echo "[ERROR] Cannot create config directory \"${CONFIG_DIR}\""; exit $EXIT_CONFIG )
+    mkdir -p "$CONFIG_DIR" || ( echo "[ERROR] Cannot create config directory \"${CONFIG_DIR}\""; exit $EXIT_CONFIG )
 
     # .env
     local env="${CONFIG_DIR}/.env"
@@ -266,10 +262,7 @@ dep_already_installed() {
     	    opensuse*) (zypper se --installed-only "$pkg_name" &>/dev/null)2>/dev/null && installed="true";;
     	esac
     elif [[ $OS == "macOS" ]]; then
-	if [[ ! $(command -v brew 2>/dev/null) ]]; then
-	    install_brew
-	fi
-	(brew list | grep "^${pkg_name}") && installed="true"
+	(brew list | grep "^${pkg_name}$") && installed="true"
     fi
     if [[ $installed == "false" ]]; then
 	if [[ $cmd_check != "no_check" && $(command -v $cmd_check 2>/dev/null) ]]; then
@@ -336,7 +329,6 @@ install_toutui() {
     install_deps # install essential and/or optional deps
     install_config # create ~/.config/toutui/ etc.
     install_rust # cornerstone! toutui is written by a crab
-    . "$HOME/.cargo/env" # ensure cargo is in PATH
     cargo build --release
     # copy Toutui binary to system path
     sudo cp ./target/release/Toutui "${INSTALL_DIR}/toutui" || exit $EXIT_BUILD_FAIL
