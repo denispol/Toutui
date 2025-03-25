@@ -10,6 +10,8 @@ use std::io::stdout;
 use log::{info, error};
 use crate::db::crud::*;
 use crate::utils::vlc_tcp_stream::*;
+use crate::player::vlc::quit_vlc::*;
+
 
 // handle l for App::View PodcastEpisode //
 
@@ -26,6 +28,9 @@ pub async fn handle_l_pod(
     username: String,
 
 ) {
+
+    // need to pkill VLC for macos users
+    pkill_vlc();
 
     if let Some(index) = selected {
         if let Some(id) = ids_library_items.get(index) {
