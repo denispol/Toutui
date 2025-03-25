@@ -34,32 +34,48 @@ pub fn handle_key_player(key: &str, address: &str, port: &str, is_playback: &mut
             }
             *is_playback = !*is_playback;
         }
+
+        // For some cmd, below, need pause => cmd => play
+        // Allow vlc buffer issue. 
+        // Futhermore, need a thread for macos otherwise vlc buffer issue
+        // Otherwise buffer issue and the player freeze
+        // But maybe it's not necessary because I test toutui on macos with a VM
+        // and maybe the VM add a little delay.. but for now I try like this
+
         // jump forward
         "p" => {
-            writeln!(stream, "pause")?; // need this to avoid VLC buffer issue when sending cmd
+            writeln!(stream, "pause")?; 
             writeln!(stream, "seek +{}", jump)?;
-            thread::sleep(Duration::from_millis(10));
+            if cfg!(target_os = "macos") {
+            thread::sleep(Duration::from_millis(500));
+            }
             writeln!(stream, "play")?;
         }
         // jump backward
         "u" => {
             writeln!(stream, "pause")?;
             writeln!(stream, "seek -{}", jump)?;
-            thread::sleep(Duration::from_millis(10));
+            if cfg!(target_os = "macos") {
+            thread::sleep(Duration::from_millis(500));
+            }
             writeln!(stream, "play")?;
         }
         // next chapter
         "P" => {
             writeln!(stream, "pause")?;
             writeln!(stream, "chapter_n")?;
-            thread::sleep(Duration::from_millis(10));
+            if cfg!(target_os = "macos") {
+            thread::sleep(Duration::from_millis(500));
+            }
             writeln!(stream, "play")?;
         }
         // previous chapter
         "U" => {
             writeln!(stream, "pause")?;
             writeln!(stream, "chapter_p")?;
-            thread::sleep(Duration::from_millis(10));
+            if cfg!(target_os = "macos") {
+            thread::sleep(Duration::from_millis(500));
+            }
             writeln!(stream, "play")?;
         }
         // volume up
