@@ -1,7 +1,8 @@
 use std::io::{self, Write};
 use std::net::TcpStream;
 use crate::db::crud::*;
-
+use std::thread;
+use std::time::Duration;
 
 pub fn handle_key_player(key: &str, address: &str, port: &str, is_playback: &mut bool, username: &str) -> io::Result<()> {
     let mut stream = TcpStream::connect(format!("{}:{}", address, port))?;
@@ -37,24 +38,28 @@ pub fn handle_key_player(key: &str, address: &str, port: &str, is_playback: &mut
         "p" => {
             writeln!(stream, "pause")?; // need this to avoid VLC buffer issue before cmd
             writeln!(stream, "seek +{}", jump)?;
+            thread::sleep(Duration::from_secs(1));
             writeln!(stream, "play")?;
         }
         // jump backward
         "u" => {
             writeln!(stream, "pause")?;
             writeln!(stream, "seek -{}", jump)?;
+            thread::sleep(Duration::from_secs(1));
             writeln!(stream, "play")?;
         }
         // next chapter
         "P" => {
             writeln!(stream, "pause")?;
             writeln!(stream, "chapter_n")?;
+            thread::sleep(Duration::from_secs(1));
             writeln!(stream, "play")?;
         }
         // previous chapter
         "U" => {
             writeln!(stream, "pause")?;
             writeln!(stream, "chapter_p")?;
+            thread::sleep(Duration::from_secs(1));
             writeln!(stream, "pause")?;
         }
         // volume up
