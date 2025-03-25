@@ -24,7 +24,7 @@ pub async fn handle_l_book(
     username: String,
 ) {
 
-    // first of all need to pkill VLC for macos users
+    // need to pkill VLC for macos users
     pkill_vlc();
   
     if let Some(index) = selected {
@@ -194,8 +194,6 @@ pub async fn handle_l_book(
                                         let _ = update_media_progress2_book(id, Some(&token), Some(data_fetched_from_vlc), &info_item[2], is_finised, server_address).await;
                                         info!("[handle_l_book][Finished] VLC stopped");
                                         info!("[handle_l_book][Finished] Item {} closed at {}s", id, data_fetched_from_vlc);
-                                        
-                                        pkill_vlc();
                                         let _ = update_is_loop_break("1", username.as_str());
 
                                         let _ = update_is_vlc_running("0", username.as_str());
@@ -217,8 +215,6 @@ pub async fn handle_l_book(
                                         info!("[handle_l_book][Quit] VLC closed");
                                         info!("[handle_l_book][Quit] Item {} closed at {}s", id, data_fetched_from_vlc);
                                         //eprintln!("Error fetching play status: {}", e);
-
-                                        pkill_vlc();
                                         let _ = update_is_loop_break("1", username.as_str());
                                         break; 
                                     }
@@ -237,7 +233,6 @@ pub async fn handle_l_book(
                                 info!("[handle_l_book][None] VLC closed");
                                 info!("[handle_l_book][None] Item {} closed at {}s", id, current_time);
 
-                                pkill_vlc();
                                 let _ = update_is_loop_break("1", username.as_str());
                                 break; // Exit if no data available
                             }
