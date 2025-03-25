@@ -1,6 +1,8 @@
 use std::process::Command;
 use std::process::Output;
 use crate::db::crud::*;
+use std::error::Error;
+
 
 pub async fn start_vlc(
     current_time: &String, 
@@ -14,7 +16,7 @@ pub async fn start_vlc(
     server_address: String, 
     program: String, 
     username: String,
-) -> Output {
+) -> Result<Output, Box<dyn Error + Send + Sync>> {
 
     let speed_rate = get_speed_rate(username.as_str());
 
@@ -38,6 +40,7 @@ pub async fn start_vlc(
         .output()
         .expect("Failed to execute program");
 
-    output
+    Ok(output)
+        
 }
 
