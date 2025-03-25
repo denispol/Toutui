@@ -36,31 +36,31 @@ pub fn handle_key_player(key: &str, address: &str, port: &str, is_playback: &mut
         }
         // jump forward
         "p" => {
-            writeln!(stream, "pause")?; // need this to avoid VLC buffer issue before cmd
+            writeln!(stream, "pause")?; // need this to avoid VLC buffer issue when sending cmd
             writeln!(stream, "seek +{}", jump)?;
-            thread::sleep(Duration::from_secs(1));
+            thread::sleep(Duration::from_millis(10));
             writeln!(stream, "play")?;
         }
         // jump backward
         "u" => {
             writeln!(stream, "pause")?;
             writeln!(stream, "seek -{}", jump)?;
-            thread::sleep(Duration::from_secs(1));
+            thread::sleep(Duration::from_millis(10));
             writeln!(stream, "play")?;
         }
         // next chapter
         "P" => {
             writeln!(stream, "pause")?;
             writeln!(stream, "chapter_n")?;
-            thread::sleep(Duration::from_secs(1));
+            thread::sleep(Duration::from_millis(10));
             writeln!(stream, "play")?;
         }
         // previous chapter
         "U" => {
             writeln!(stream, "pause")?;
             writeln!(stream, "chapter_p")?;
-            thread::sleep(Duration::from_secs(1));
-            writeln!(stream, "pause")?;
+            thread::sleep(Duration::from_millis(10));
+            writeln!(stream, "play")?;
         }
         // volume up
         "o" => {
