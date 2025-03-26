@@ -41,7 +41,7 @@ async fn main() -> Result<()> {
     // if env::var("XDG_CONFIG_HOME") is not empty env_path will take designed path
     // else, env_path will be set to default path
     let config_path = env::var("XDG_CONFIG_HOME")
-        .map(PathBuf::from)  // Converts the String to PathBuf
+        .map(PathBuf::from) 
         .unwrap_or_else(|_| { 
             if cfg!(target_os = "macos") {
             // If XDG_CONFIG_HOME is not defined on macOS, use the default directory
@@ -52,7 +52,9 @@ async fn main() -> Result<()> {
         }
         });
     // Construct the dotenv 
-    dotenv::from_filename(&config_path.clone()).ok();
+    let env_path = config_path.join("toutui").join(".env");
+    info!("{}", env_path.to_str().expect("toto"));
+    dotenv::from_filename(&env_path.clone()).ok();
 
     // Init database
     let mut _database = Database::new().await?;
