@@ -102,7 +102,7 @@ grab_home_dir() {
 
 grab_config_dir() {
     local config="${XDG_CONFIG_HOME}"
-    if [[ $OS == "macOS" && ! -d "$config" ]]; then config="${config:-$HOME/Library/Preferences}"; fi
+    #if [[ $OS == "macOS" && ! -d "$config" ]]; then config="${config:-$HOME/Library/Preferences}"; fi
     if [[ $OS == "macOS" && ! -d "$config" ]]; then config="${config:-$HOME/Library/Application Support}"; fi
     if ! [[ -d "$config" ]]; then config="${config:-$HOME/.config}"; fi
     if ! [[ -d "$config" ]]; then
