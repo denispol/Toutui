@@ -25,6 +25,8 @@ use ratatui::{
 };
 use crate::player::integrated::player_info::*;
 use crate::ui::player_tui::*;
+use std::env;
+use std::path::PathBuf;
 
 #[tokio::main]
 async fn main() -> Result<()> {
@@ -36,18 +38,21 @@ async fn main() -> Result<()> {
     // Library/Application Support/toutui/.env for macos
     // (dotenv will be use in `encrypt_token.rs`)
     let home_dir = dirs::home_dir().expect("Unable to find the user's home directory");
-    let config_dir = env::var("XDG_CONFIG_HOME").unwrap_or_else(|_| {
-        if cfg!(target_os = "macos") {
+    // if env::var("XDG_CONFIG_HOME") is not empty env_path will take designed path
+    // else, env_path will be set to default path
+    let env_path = env::var("XDG_CONFIG_HOME")
+        .map(PathBuf::from)  // Converts the String to PathBuf
+        .unwrap_or_else(|_| { 
+            if cfg!(target_os = "macos") {
             // If XDG_CONFIG_HOME is not defined on macOS, use the default directory
             home_dir.join("Library").join("Preferences")
         } else {
             // Otherwise, use ~/.config for other systems (like Linux)
             home_dir.join(".config")
         }
-    });
-
-    // Construct the full path to .env
-    let env_path = config_dir.join("toutui").join(".env");
+        });
+    // Construct the dotenv 
+    dotenv::from_filename(&env_path.clone()).ok();
 
     // Init database
     let mut _database = Database::new().await?;
