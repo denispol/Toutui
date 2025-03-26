@@ -370,11 +370,11 @@ impl App {
             .bold()
             .centered()
             .render(area, buf);
-        Paragraph::new(format!("👋Connected as {}\n🔗{}", &username, &server_address_pretty))
+        Paragraph::new(format!("👋 Connected as {}\n🔗 {}", &username, &server_address_pretty))
             .not_bold()
             .left_aligned()
             .render(area, buf);
-        Paragraph::new(format!("🦜Toutui v{}", version))
+        Paragraph::new(format!("🦜 Toutui v{}", version))
             .right_aligned()
             .render(area, buf);
     }
@@ -419,7 +419,7 @@ impl App {
         let list = List::new(items)
             .block(block)
             .highlight_style(selected_style)
-            .highlight_symbol("➤")
+            .highlight_symbol("➤ ")
             .highlight_spacing(HighlightSpacing::Always);
 
         StatefulWidget::render(list, area, buf, list_state);
