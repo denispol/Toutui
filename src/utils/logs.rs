@@ -7,7 +7,7 @@ use std::path::PathBuf;
 
 pub fn setup_logs() -> Result<(), fern::InitError> {
 
-    let config_path = env::var("XDG_CONFIG_HOME")
+    let config_home_path = env::var("XDG_CONFIG_HOME")
         .map(PathBuf::from) 
         .unwrap_or_else(|_| { 
             let mut path = dirs::home_dir().expect("Unable to find the user's home directory");
@@ -21,7 +21,7 @@ pub fn setup_logs() -> Result<(), fern::InitError> {
             path
         });
 
-    let log_path = config_path.join("toutui/toutui.log");
+    let log_path = config_home_path.join("toutui/toutui.log");
 
     // Create or append into the file
     let log_file = OpenOptions::new()
