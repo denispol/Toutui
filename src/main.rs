@@ -53,7 +53,6 @@ async fn main() -> Result<()> {
         });
     // Construct the dotenv 
     let env_path = config_path.join("toutui").join(".env");
-    info!("{}", env_path.to_str().expect("toto"));
     dotenv::from_filename(&env_path.clone()).ok();
 
     // Init database
