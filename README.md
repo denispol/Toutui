@@ -66,7 +66,7 @@ To ensure the best experience, it's recommended to use **Kitty** or **Alacritty*
 >     - Otherwise, open an installation issue.
 >     - You can also install the app [manually](https://github.com/AlbanDAVID/Toutui?tab=readme-ov-file#git).
 >       
-> - This is a beta app, please read [this](https://github.com/AlbanDAVID/Toutui?tab=readme-ov-file#%EF%B8%8F-caution-beta-version).
+> - **This is a beta app, please read [this](https://github.com/AlbanDAVID/Toutui?tab=readme-ov-file#%EF%B8%8F-caution-beta-version).**
 ```bash
 git clone https://github.com/AlbanDAVID/Toutui
 cd Toutui/
