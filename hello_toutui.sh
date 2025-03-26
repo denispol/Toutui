@@ -10,7 +10,7 @@ main() {
     OS=$(identify_os)
     USER=${USER:-$(grab_username)}
     HOME=${HOME:-$(grab_home_dir)}
-    CONFIG_DIR="${XDG_CONFIG_HOME:-$(grab_config_dir)}/toutui"
+    CONFIG_DIR="${XDG_CONFIG_HOME:-$(grab_config_dir)}"
     INSTALL_DIR="${2:-$(grab_install_dir)}"
 
     load_dependencies
@@ -45,16 +45,16 @@ load_dependencies() {
 	macOS:vlc \
 	macOS:curl \
 	macOS:pkg-config \
-	macOS:openssl \
-	macOS:netcat\
-	debian:netcat \
-	fedora:nc \
-	centos:nc \
-	arch:gnu-netcat:netcat \
-	opensuse:netcat \
+	%macOS:openssl \
 	*centos:epel-release \
 	*linux:kitty \
 	*macOS:kitty \
+	*macOS:netcat\
+	*debian:netcat \
+	*fedora:nc \
+	*centos:nc \
+	*arch:gnu-netcat:netcat \
+	*opensuse:netcat \
 	)
     # Dependencies starting with a '*' are optional
     # Starting with "linux:" for all linux distros
@@ -109,7 +109,7 @@ grab_config_dir() {
 	echo "[ERROR] Cannot find \"$USER\" config directory."
 	exit $EXIT_CONFIG
     fi
-    echo "${config}"
+    echo "${config}/toutui"
 }
 
 grab_install_dir() {
@@ -155,6 +155,11 @@ get_distro() {
     echo "$distro"
 }
 
+install_brew() {
+    # adapted from https://brew.sh/
+    curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh | /usr/bin/env bash
+}
+
 install_from_source() {
     echo "[ERROR] Could not identify OS/Distro."
     echo "Please follow the instructions here:"
@@ -187,7 +192,7 @@ propose_optional_dependencies() {
 }
 
 install_rust() {
-    if ! [[ $(command -v rustc 2>/dev/null) ]]; then
+    if ! command -v rustc >/dev/null 2>&1; then
 	echo "[INFO] Cannot find \"rustc\" in your \$PATH. Installing rust..."
     	curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
     else
@@ -210,11 +215,10 @@ install_packages() {
     	        *) install_from_source;;
     	    esac ;;
 	macOS)
-	    if [[ $(command -v brew 2>/dev/null) ]]; then
+	    if command -v brew >/dev/null 2>&1; then
 		brew install ${dep[@]}
 	    else
-		echo "[ERROR] Please install \"brew\"."
-		exit $EXIT_FAIL
+		install_brew
 	    fi;;
     esac
     echo "[INFO] Packages installed successfully."
@@ -229,7 +233,7 @@ post_install_msg() {
 }
 
 install_config() {
-    mkdir -p "$CONFIG_DIR" || ( echo "[ERROR] Cannot create config directory \"${CONFIG_DIR}\""; exit $EXIT_CONFIG )
+    mkdir -p "$CONFIG_DIR" 2>/dev/null || ( echo "[ERROR] Cannot create config directory \"${CONFIG_DIR}\""; exit $EXIT_CONFIG )
 
     # .env
     local env="${CONFIG_DIR}/.env"
@@ -262,10 +266,16 @@ dep_already_installed() {
     	    opensuse*) (zypper se --installed-only "$pkg_name" &>/dev/null)2>/dev/null && installed="true";;
     	esac
     elif [[ $OS == "macOS" ]]; then
-	(brew list | grep "^${pkg_name}$") && installed="true"
+	if command -v brew >/dev/null 2>&1; then
+	    if brew list "${pkg_name}" >/dev/null 2>&1; then
+		installed="true"
+	    fi
+	else
+	    install_brew
+	fi
     fi
     if [[ $installed == "false" ]]; then
-	if [[ $cmd_check != "no_check" && $(command -v $cmd_check 2>/dev/null) ]]; then
+	if [[ $cmd_check != "no_check" && $(command -v $cmd_check >/dev/null 2>&1) ]]; then
 	    installed="true"
 	fi
     fi
@@ -293,8 +303,14 @@ install_deps() {
 	if [[ $dep =~ ^\* ]]; then
 	    # this is an optional dependency
 	    deps=("${deps[@]/$dep}") # remove optional from deps
-	    dep="${dep:1:${#dep}}"
+	    dep="${dep:1:${#dep}}" # trim
 	    local optional="true"
+	elif [[ $dep =~ ^% ]];then
+	    # this is a forced dependency
+	    deps=("${deps[@]/$dep}") # remove from deps
+	    dep="${dep:1:${#dep}}" # trim
+	    deps+=( "$dep" ) # add it back
+	    local optional="false"
 	else
 	    local optional="false"
 	fi
@@ -329,6 +345,7 @@ install_toutui() {
     install_deps # install essential and/or optional deps
     install_config # create ~/.config/toutui/ etc.
     install_rust # cornerstone! toutui is written by a crab
+    . "$HOME/.cargo/env" # ensure cargo is in PATH
     cargo build --release
     # copy Toutui binary to system path
     sudo cp ./target/release/Toutui "${INSTALL_DIR}/toutui" || exit $EXIT_BUILD_FAIL
@@ -425,3 +442,4 @@ main "$@"
 # - check for correct installation path (for now: /usr/bin/toutui)
 # - test automatic dependencies install on more distributions
 # - uninstall toutui
+
