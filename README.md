@@ -1,4 +1,4 @@
-# 🦜 Toutui: A TUI Audiobookshelf client for Linux  
+# 🦜 Toutui: A TUI Audiobookshelf client for Linux and macOS
 <p align="center">
     <em>In French, being "tout ouïe" (toutui) means being all ears.</em>
 </p>
