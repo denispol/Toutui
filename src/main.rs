@@ -40,7 +40,7 @@ async fn main() -> Result<()> {
     let home_dir = dirs::home_dir().expect("Unable to find the user's home directory");
     // if env::var("XDG_CONFIG_HOME") is not empty env_path will take designed path
     // else, env_path will be set to default path
-    let env_path = env::var("XDG_CONFIG_HOME")
+    let config_path = env::var("XDG_CONFIG_HOME")
         .map(PathBuf::from)  // Converts the String to PathBuf
         .unwrap_or_else(|_| { 
             if cfg!(target_os = "macos") {
@@ -52,7 +52,7 @@ async fn main() -> Result<()> {
         }
         });
     // Construct the dotenv 
-    dotenv::from_filename(&env_path.clone()).ok();
+    dotenv::from_filename(&config_path.clone()).ok();
 
     // Init database
     let mut _database = Database::new().await?;

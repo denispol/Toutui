@@ -3,24 +3,25 @@ use fern::Dispatch;
 use chrono::Local;
 use std::fs::OpenOptions;
 use std::env;
+use std::path::PathBuf;
 
 pub fn setup_logs() -> Result<(), fern::InitError> {
 
-let config_dir = env::var("XDG_CONFIG_HOME").unwrap_or_else(|_| {
-    let mut path = dirs::home_dir().expect("Unable to find the user's home directory");
-    
-    // Check for macOS, then use the appropriate directory
-    if cfg!(target_os = "macos") {
-        path.push("Library/Preferences");
-    } else {
-        path.push(".config"); // For other OS like Linux, use ~/.config
-    }
+    let config_path = env::var("XDG_CONFIG_HOME")
+        .map(PathBuf::from) 
+        .unwrap_or_else(|_| { 
+            let mut path = dirs::home_dir().expect("Unable to find the user's home directory");
 
-    path // Return the constructed path as a PathBuf
-});
+            if cfg!(target_os = "macos") {
+                path.push("Library/Preferences");
+            } else {
+                path.push(".config");
+            }
 
-// Construct the log file path by appending the "toutui/toutui.log" file
-let log_path = config_dir.join("toutui/toutui.log");
+            path
+        });
+
+    let log_path = config_path.join("toutui/toutui.log");
 
     // Create or append into the file
     let log_file = OpenOptions::new()
