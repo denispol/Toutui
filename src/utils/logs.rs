@@ -6,7 +6,7 @@ use std::fs::OpenOptions;
 pub fn setup_logs() -> Result<(), fern::InitError> {
     let mut log_path = if cfg!(target_os = "macos") {
     let mut path = dirs::home_dir().expect("Unable to find the user's home directory");
-    path.push("Library/Application Support");
+    path.push("Library/Preferences");
     path
 } else {
     dirs::config_dir().expect("Unable to find the .config directory")

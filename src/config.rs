@@ -35,7 +35,7 @@ pub struct Player {
 pub fn load_config() -> Result<ConfigFile> {
     let mut config_path = if cfg!(target_os = "macos") {
         let mut config_path = dirs::home_dir().expect("Unable to find the user's home directory");
-        config_path.push("Library/Application Support");
+        config_path.push("Library/Preferences");
         config_path
 } else {
     dirs::config_dir().expect("Unable to find the .config directory")

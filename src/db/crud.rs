@@ -10,7 +10,7 @@ pub fn update_is_show_key_bindings(value: &str, username: &str) -> Result<()> {
 
     let mut db_path = if cfg!(target_os = "macos") {
     let mut path = dirs::home_dir().expect("Unable to find the user's home directory");
-    path.push("Library/Application Support");
+    path.push("Library/Preferences");
     path
 } else {
     dirs::config_dir().expect("Unable to find the .config directory")
@@ -40,7 +40,7 @@ db_path.push("toutui/db.sqlite3");
 pub fn get_is_show_key_bindings(username: &str) -> String {
     let mut db_path = if cfg!(target_os = "macos") {
     let mut path = dirs::home_dir().expect("Unable to find the user's home directory");
-    path.push("Library/Application Support");
+    path.push("Library/Preferences");
     path
 } else {
     dirs::config_dir().expect("Unable to find the .config directory")
@@ -69,7 +69,7 @@ pub fn update_is_vlc_running(value: &str, username: &str) -> Result<()> {
 
     let mut db_path = if cfg!(target_os = "macos") {
     let mut path = dirs::home_dir().expect("Unable to find the user's home directory");
-    path.push("Library/Application Support");
+    path.push("Library/Preferences");
     path
 } else {
     dirs::config_dir().expect("Unable to find the .config directory")
@@ -99,7 +99,7 @@ db_path.push("toutui/db.sqlite3");
 pub fn get_is_vlc_running(username: &str) -> String {
     let mut db_path = if cfg!(target_os = "macos") {
     let mut path = dirs::home_dir().expect("Unable to find the user's home directory");
-    path.push("Library/Application Support");
+    path.push("Library/Preferences");
     path
 } else {
     dirs::config_dir().expect("Unable to find the .config directory")
@@ -128,7 +128,7 @@ pub fn update_speed_rate(username: &str, is_speed_rate_up: bool) -> Result<()> {
 
     let mut db_path = if cfg!(target_os = "macos") {
     let mut path = dirs::home_dir().expect("Unable to find the user's home directory");
-    path.push("Library/Application Support");
+    path.push("Library/Preferences");
     path
 } else {
     dirs::config_dir().expect("Unable to find the .config directory")
@@ -165,7 +165,7 @@ db_path.push("toutui/db.sqlite3");
 pub fn get_speed_rate(username: &str) -> String {
     let mut db_path = if cfg!(target_os = "macos") {
     let mut path = dirs::home_dir().expect("Unable to find the user's home directory");
-    path.push("Library/Application Support");
+    path.push("Library/Preferences");
     path
 } else {
     dirs::config_dir().expect("Unable to find the .config directory")
@@ -194,7 +194,7 @@ pub fn get_listening_session() -> Result<Option<ListeningSession>> {
 
     let mut db_path = if cfg!(target_os = "macos") {
     let mut path = dirs::home_dir().expect("Unable to find the user's home directory");
-    path.push("Library/Application Support");
+    path.push("Library/Preferences");
     path
 } else {
     dirs::config_dir().expect("Unable to find the .config directory")
@@ -255,7 +255,7 @@ pub fn insert_listening_session(
 
     let mut db_path = if cfg!(target_os = "macos") {
     let mut path = dirs::home_dir().expect("Unable to find the user's home directory");
-    path.push("Library/Application Support");
+    path.push("Library/Preferences");
     path
 } else {
     dirs::config_dir().expect("Unable to find the .config directory")
@@ -286,7 +286,7 @@ pub fn update_chapter(value: &str, id_session: &str) -> Result<()> {
 
     let mut db_path = if cfg!(target_os = "macos") {
     let mut path = dirs::home_dir().expect("Unable to find the user's home directory");
-    path.push("Library/Application Support");
+    path.push("Library/Preferences");
     path
 } else {
     dirs::config_dir().expect("Unable to find the .config directory")
@@ -315,7 +315,7 @@ pub fn update_is_playback(value: &str, id_session: &str) -> Result<()> {
 
     let mut db_path = if cfg!(target_os = "macos") {
     let mut path = dirs::home_dir().expect("Unable to find the user's home directory");
-    path.push("Library/Application Support");
+    path.push("Library/Preferences");
     path
 } else {
     dirs::config_dir().expect("Unable to find the .config directory")
@@ -344,7 +344,7 @@ pub fn update_current_time(value: u32, id_session: &str) -> Result<()> {
 
     let mut db_path = if cfg!(target_os = "macos") {
     let mut path = dirs::home_dir().expect("Unable to find the user's home directory");
-    path.push("Library/Application Support");
+    path.push("Library/Preferences");
     path
 } else {
     dirs::config_dir().expect("Unable to find the .config directory")
@@ -374,7 +374,7 @@ pub fn update_elapsed_time(value: u32, id_session: &str) -> Result<()> {
 
     let mut db_path = if cfg!(target_os = "macos") {
     let mut path = dirs::home_dir().expect("Unable to find the user's home directory");
-    path.push("Library/Application Support");
+    path.push("Library/Preferences");
     path
 } else {
     dirs::config_dir().expect("Unable to find the .config directory")
@@ -404,7 +404,7 @@ pub fn update_is_finished(value: &str, id_session: &str) -> Result<()> {
     
     let mut db_path = if cfg!(target_os = "macos") {
     let mut path = dirs::home_dir().expect("Unable to find the user's home directory");
-    path.push("Library/Application Support");
+    path.push("Library/Preferences");
     path
 } else {
     dirs::config_dir().expect("Unable to find the .config directory")
@@ -434,7 +434,7 @@ pub fn delete_user(username: &str) -> Result<()> {
     
     let mut db_path = if cfg!(target_os = "macos") {
     let mut path = dirs::home_dir().expect("Unable to find the user's home directory");
-    path.push("Library/Application Support");
+    path.push("Library/Preferences");
     path
 } else {
     dirs::config_dir().expect("Unable to find the .config directory")
@@ -472,7 +472,7 @@ pub fn update_is_loop_break(value: &str, username: &str) -> Result<()> {
 
     let mut db_path = if cfg!(target_os = "macos") {
     let mut path = dirs::home_dir().expect("Unable to find the user's home directory");
-    path.push("Library/Application Support");
+    path.push("Library/Preferences");
     path
 } else {
     dirs::config_dir().expect("Unable to find the .config directory")
@@ -502,7 +502,7 @@ db_path.push("toutui/db.sqlite3");
 pub fn get_is_loop_break(username: &str) -> String {
     let mut db_path = if cfg!(target_os = "macos") {
     let mut path = dirs::home_dir().expect("Unable to find the user's home directory");
-    path.push("Library/Application Support");
+    path.push("Library/Preferences");
     path
 } else {
     dirs::config_dir().expect("Unable to find the .config directory")
@@ -531,7 +531,7 @@ pub fn update_is_vlc_launched_first_time(value: &str, username: &str) -> Result<
 
     let mut db_path = if cfg!(target_os = "macos") {
     let mut path = dirs::home_dir().expect("Unable to find the user's home directory");
-    path.push("Library/Application Support");
+    path.push("Library/Preferences");
     path
 } else {
     dirs::config_dir().expect("Unable to find the .config directory")
@@ -559,7 +559,7 @@ db_path.push("toutui/db.sqlite3");
 pub fn get_is_vlc_launched_first_time(username: &str) -> String {
     let mut db_path = if cfg!(target_os = "macos") {
     let mut path = dirs::home_dir().expect("Unable to find the user's home directory");
-    path.push("Library/Application Support");
+    path.push("Library/Preferences");
     path
 } else {
     dirs::config_dir().expect("Unable to find the .config directory")
@@ -587,7 +587,7 @@ pub fn update_id_selected_lib(id_selected_lib: &str, username: &str) -> Result<(
 
     let mut db_path = if cfg!(target_os = "macos") {
     let mut path = dirs::home_dir().expect("Unable to find the user's home directory");
-    path.push("Library/Application Support");
+    path.push("Library/Preferences");
     path
 } else {
     dirs::config_dir().expect("Unable to find the .config directory")
@@ -637,7 +637,7 @@ db_path.push("toutui/db.sqlite3");
 pub fn db_insert_usr(users : &Vec<User>)  -> Result<()> {   
     let mut db_path = if cfg!(target_os = "macos") {
     let mut path = dirs::home_dir().expect("Unable to find the user's home directory");
-    path.push("Library/Application Support");
+    path.push("Library/Preferences");
     path
 } else {
     dirs::config_dir().expect("Unable to find the .config directory")
@@ -673,7 +673,7 @@ db_path.push("toutui/db.sqlite3");
 pub fn select_default_usr() -> Result<Vec<String>> {
     let mut db_path = if cfg!(target_os = "macos") {
     let mut path = dirs::home_dir().expect("Unable to find the user's home directory");
-    path.push("Library/Application Support");
+    path.push("Library/Preferences");
     path
 } else {
     dirs::config_dir().expect("Unable to find the .config directory")
@@ -740,7 +740,7 @@ db_path.push("toutui/db.sqlite3");
 pub fn init_db() -> Result<()> {
     let mut db_path = if cfg!(target_os = "macos") {
     let mut path = dirs::home_dir().expect("Unable to find the user's home directory");
-    path.push("Library/Application Support");
+    path.push("Library/Preferences");
     path
 } else {
     dirs::config_dir().expect("Unable to find the .config directory")

@@ -37,7 +37,7 @@ async fn main() -> Result<()> {
     // (dotenv will be use in `encrypt_token.rs`)
     if cfg!(target_os = "macos") {
         let home_dir = dirs::home_dir().expect("Unable to find the user's home directory");
-        let env_path = home_dir.join("Library").join("Application Support").join("toutui").join(".env");
+        let env_path = home_dir.join("Library").join("Preferences").join("toutui").join(".env");
         dotenv::from_filename(&env_path.clone()).ok();
     } else {
         let home_dir = dirs::home_dir().expect("Unable to retrieve home directory");
