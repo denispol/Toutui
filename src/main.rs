@@ -35,15 +35,19 @@ async fn main() -> Result<()> {
     // set dotenv to ~/.config.toutui/.env for linux
     // Library/Application Support/toutui/.env for macos
     // (dotenv will be use in `encrypt_token.rs`)
-    if cfg!(target_os = "macos") {
-        let home_dir = dirs::home_dir().expect("Unable to find the user's home directory");
-        let env_path = home_dir.join("Library").join("Preferences").join("toutui").join(".env");
-        dotenv::from_filename(&env_path.clone()).ok();
-    } else {
-        let home_dir = dirs::home_dir().expect("Unable to retrieve home directory");
-        let env_path = home_dir.join(".config").join("toutui").join(".env");
-        dotenv::from_filename(&env_path.clone()).ok();
-    };
+    let home_dir = dirs::home_dir().expect("Unable to find the user's home directory");
+    let config_dir = env::var("XDG_CONFIG_HOME").unwrap_or_else(|_| {
+        if cfg!(target_os = "macos") {
+            // If XDG_CONFIG_HOME is not defined on macOS, use the default directory
+            home_dir.join("Library").join("Preferences")
+        } else {
+            // Otherwise, use ~/.config for other systems (like Linux)
+            home_dir.join(".config")
+        }
+    });
+
+    // Construct the full path to .env
+    let env_path = config_dir.join("toutui").join(".env");
 
     // Init database
     let mut _database = Database::new().await?;
