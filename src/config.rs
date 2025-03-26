@@ -1,7 +1,6 @@
 use config::{Config as ConfigLib, File};
 use serde::Deserialize;
 use color_eyre::eyre::{Result, Report};
-use std::path::PathBuf;
 
 #[derive(Debug, Deserialize)]
 pub struct ConfigFile {
@@ -35,13 +34,14 @@ pub struct Player {
 /// load config from `config.toml` file
 pub fn load_config() -> Result<ConfigFile> {
     let mut config_path = if cfg!(target_os = "macos") {
-    let mut config_path = dirs::home_dir().unwrap_or_else(|| PathBuf::from("."));
-    config_path.push(".config");
-    config_path
+        let mut config_path = dirs::home_dir().expect("Unable to find the user's home directory");
+        config_path.push("Library/Application Support");
+        config_path
 } else {
-    dirs::config_dir().unwrap_or_else(|| PathBuf::from("."))
+    dirs::config_dir().expect("Unable to find the .config directory")
 };
 config_path.push("toutui/config.toml");
+
 let config_path_str = config_path.to_str().unwrap().to_string();
 
     let config = ConfigLib::builder()

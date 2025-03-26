@@ -32,10 +32,18 @@ async fn main() -> Result<()> {
     // this function allow to write all the logs in a file 
     setup_logs().expect("Failed to execute logger");
 
-    // set dotenv to ~/.config.toutui/.env (dotenv will be use in `encrypt_token.rs`)
-    let home_dir = dirs::home_dir().expect("Unable to retrieve home directory");
-    let env_path = home_dir.join(".config").join("toutui").join(".env");
-    dotenv::from_filename(&env_path.clone()).ok();
+    // set dotenv to ~/.config.toutui/.env for linux
+    // Library/Application Support/toutui/.env for macos
+    // (dotenv will be use in `encrypt_token.rs`)
+    if cfg!(target_os = "macos") {
+        let home_dir = dirs::home_dir().expect("Unable to find the user's home directory");
+        let env_path = home_dir.join("Library").join("Application Support").join("toutui").join(".env");
+        dotenv::from_filename(&env_path.clone()).ok();
+    } else {
+        let home_dir = dirs::home_dir().expect("Unable to retrieve home directory");
+        let env_path = home_dir.join(".config").join("toutui").join(".env");
+        dotenv::from_filename(&env_path.clone()).ok();
+    };
 
     // Init database
     let mut _database = Database::new().await?;
