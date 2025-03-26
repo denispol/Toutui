@@ -1,7 +1,8 @@
 use std::io::{self, Write};
 use std::net::TcpStream;
 use crate::db::crud::*;
-
+use std::thread;
+use std::time::Duration;
 
 pub fn handle_key_player(key: &str, address: &str, port: &str, is_playback: &mut bool, username: &str) -> io::Result<()> {
     let mut stream = TcpStream::connect(format!("{}:{}", address, port))?;
@@ -33,21 +34,49 @@ pub fn handle_key_player(key: &str, address: &str, port: &str, is_playback: &mut
             }
             *is_playback = !*is_playback;
         }
+
+        // For some cmd, below, need pause => cmd => play
+        // Allow vlc buffer issue. 
+        // Futhermore, need a thread for macos otherwise vlc buffer issue
+        // Otherwise buffer issue and the player freeze
+        // But maybe it's not necessary because I test toutui on macos with a VM
+        // and maybe the VM add a little delay.. but for now I try like this
+
         // jump forward
         "p" => {
+            writeln!(stream, "pause")?; 
             writeln!(stream, "seek +{}", jump)?;
+            if cfg!(target_os = "macos") {
+            thread::sleep(Duration::from_millis(500));
+            }
+            writeln!(stream, "play")?;
         }
         // jump backward
         "u" => {
+            writeln!(stream, "pause")?;
             writeln!(stream, "seek -{}", jump)?;
+            if cfg!(target_os = "macos") {
+            thread::sleep(Duration::from_millis(500));
+            }
+            writeln!(stream, "play")?;
         }
         // next chapter
         "P" => {
+            writeln!(stream, "pause")?;
             writeln!(stream, "chapter_n")?;
+            if cfg!(target_os = "macos") {
+            thread::sleep(Duration::from_millis(500));
+            }
+            writeln!(stream, "play")?;
         }
         // previous chapter
         "U" => {
+            writeln!(stream, "pause")?;
             writeln!(stream, "chapter_p")?;
+            if cfg!(target_os = "macos") {
+            thread::sleep(Duration::from_millis(500));
+            }
+            writeln!(stream, "play")?;
         }
         // volume up
         "o" => {
@@ -63,7 +92,7 @@ pub fn handle_key_player(key: &str, address: &str, port: &str, is_playback: &mut
             let speed_rate = get_speed_rate(username);
             writeln!(stream, "rate {}", speed_rate)?;
         }
-        // speed rate up
+        // speed rate down
         "I" => {
             let _ = update_speed_rate(username, false);
             let speed_rate = get_speed_rate(username);

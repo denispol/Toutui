@@ -4,20 +4,29 @@ use crate::db::database_struct::ListeningSession;
 use crate::utils::pop_up_message::*;
 use std::io::stdout;
 use log::{info, error};
+use std::env;
 use std::path::PathBuf;
+
 
 // Update is_show_key_bindings
 pub fn update_is_show_key_bindings(value: &str, username: &str) -> Result<()> {
 
-    let mut db_path = if cfg!(target_os = "macos") {
-    let mut path = dirs::home_dir().unwrap_or_else(|| PathBuf::from("."));
-    path.push(".config");
-    path
-} else {
-    dirs::config_dir().unwrap_or_else(|| PathBuf::from("."))
-};
+    let config_home_path = env::var("XDG_CONFIG_HOME")
+        .map(PathBuf::from)
+        .unwrap_or_else(|_| {
+            let mut path = dirs::home_dir().expect("Unable to find the user's home directory");
 
-db_path.push("toutui/db.sqlite3");
+            if cfg!(target_os = "macos") {
+                path.push("Library/Preferences");
+            } else {
+                path.push(".config");
+            }
+
+            path
+        });
+
+    let db_path = config_home_path.join("toutui/db.sqlite3");
+
 
     let err_message = "Error connecting to the database.";
 
@@ -39,15 +48,21 @@ db_path.push("toutui/db.sqlite3");
 
 // get is_show_key_bindings
 pub fn get_is_show_key_bindings(username: &str) -> String {
-    let mut db_path = if cfg!(target_os = "macos") {
-    let mut path = dirs::home_dir().unwrap_or_else(|| PathBuf::from("."));
-    path.push(".config");
-    path
-} else {
-    dirs::config_dir().unwrap_or_else(|| PathBuf::from("."))
-};
+    let config_home_path = env::var("XDG_CONFIG_HOME")
+        .map(PathBuf::from)
+        .unwrap_or_else(|_| {
+            let mut path = dirs::home_dir().expect("Unable to find the user's home directory");
 
-db_path.push("toutui/db.sqlite3");
+            if cfg!(target_os = "macos") {
+                path.push("Library/Preferences");
+            } else {
+                path.push(".config");
+            }
+
+            path
+        });
+
+    let db_path = config_home_path.join("toutui/db.sqlite3");
 
     let conn = match Connection::open(db_path) {
         Ok(c) => c,
@@ -68,15 +83,21 @@ db_path.push("toutui/db.sqlite3");
 // Update is_vlc_running
 pub fn update_is_vlc_running(value: &str, username: &str) -> Result<()> {
 
-   let mut db_path = if cfg!(target_os = "macos") {
-    let mut path = dirs::home_dir().unwrap_or_else(|| PathBuf::from("."));
-    path.push(".config");
-    path
-} else {
-    dirs::config_dir().unwrap_or_else(|| PathBuf::from("."))
-};
+    let config_home_path = env::var("XDG_CONFIG_HOME")
+        .map(PathBuf::from)
+        .unwrap_or_else(|_| {
+            let mut path = dirs::home_dir().expect("Unable to find the user's home directory");
 
-db_path.push("toutui/db.sqlite3");
+            if cfg!(target_os = "macos") {
+                path.push("Library/Preferences");
+            } else {
+                path.push(".config");
+            }
+
+            path
+        });
+
+    let db_path = config_home_path.join("toutui/db.sqlite3");
 
     let err_message = "Error connecting to the database.";
 
@@ -98,15 +119,21 @@ db_path.push("toutui/db.sqlite3");
 
 // get is_vlc_running
 pub fn get_is_vlc_running(username: &str) -> String {
-    let mut db_path = if cfg!(target_os = "macos") {
-    let mut path = dirs::home_dir().unwrap_or_else(|| PathBuf::from("."));
-    path.push(".config");
-    path
-} else {
-    dirs::config_dir().unwrap_or_else(|| PathBuf::from("."))
-};
+    let config_home_path = env::var("XDG_CONFIG_HOME")
+        .map(PathBuf::from)
+        .unwrap_or_else(|_| {
+            let mut path = dirs::home_dir().expect("Unable to find the user's home directory");
 
-db_path.push("toutui/db.sqlite3");
+            if cfg!(target_os = "macos") {
+                path.push("Library/Preferences");
+            } else {
+                path.push(".config");
+            }
+
+            path
+        });
+
+    let db_path = config_home_path.join("toutui/db.sqlite3");
 
     let conn = match Connection::open(db_path) {
         Ok(c) => c,
@@ -127,15 +154,21 @@ db_path.push("toutui/db.sqlite3");
 // Update speed_rate
 pub fn update_speed_rate(username: &str, is_speed_rate_up: bool) -> Result<()> {
 
-    let mut db_path = if cfg!(target_os = "macos") {
-    let mut path = dirs::home_dir().unwrap_or_else(|| PathBuf::from("."));
-    path.push(".config");
-    path
-} else {
-    dirs::config_dir().unwrap_or_else(|| PathBuf::from("."))
-};
+    let config_home_path = env::var("XDG_CONFIG_HOME")
+        .map(PathBuf::from)
+        .unwrap_or_else(|_| {
+            let mut path = dirs::home_dir().expect("Unable to find the user's home directory");
 
-db_path.push("toutui/db.sqlite3");
+            if cfg!(target_os = "macos") {
+                path.push("Library/Preferences");
+            } else {
+                path.push(".config");
+            }
+
+            path
+        });
+
+    let db_path = config_home_path.join("toutui/db.sqlite3");
 
     let err_message = "Error connecting to the database.";
 
@@ -164,15 +197,21 @@ db_path.push("toutui/db.sqlite3");
 
 // get speed_rate
 pub fn get_speed_rate(username: &str) -> String {
-   let mut db_path = if cfg!(target_os = "macos") {
-    let mut path = dirs::home_dir().unwrap_or_else(|| PathBuf::from("."));
-    path.push(".config");
-    path
-} else {
-    dirs::config_dir().unwrap_or_else(|| PathBuf::from("."))
-};
+    let config_home_path = env::var("XDG_CONFIG_HOME")
+        .map(PathBuf::from)
+        .unwrap_or_else(|_| {
+            let mut path = dirs::home_dir().expect("Unable to find the user's home directory");
 
-db_path.push("toutui/db.sqlite3");
+            if cfg!(target_os = "macos") {
+                path.push("Library/Preferences");
+            } else {
+                path.push(".config");
+            }
+
+            path
+        });
+
+    let db_path = config_home_path.join("toutui/db.sqlite3");
 
     let conn = match Connection::open(db_path) {
         Ok(c) => c,
@@ -193,15 +232,21 @@ db_path.push("toutui/db.sqlite3");
 // get listening_session
 pub fn get_listening_session() -> Result<Option<ListeningSession>> {
 
-   let mut db_path = if cfg!(target_os = "macos") {
-    let mut path = dirs::home_dir().unwrap_or_else(|| PathBuf::from("."));
-    path.push(".config");
-    path
-} else {
-    dirs::config_dir().unwrap_or_else(|| PathBuf::from("."))
-};
+    let config_home_path = env::var("XDG_CONFIG_HOME")
+        .map(PathBuf::from)
+        .unwrap_or_else(|_| {
+            let mut path = dirs::home_dir().expect("Unable to find the user's home directory");
 
-db_path.push("toutui/db.sqlite3");
+            if cfg!(target_os = "macos") {
+                path.push("Library/Preferences");
+            } else {
+                path.push(".config");
+            }
+
+            path
+        });
+
+    let db_path = config_home_path.join("toutui/db.sqlite3");
 
     let err_message = "Error connecting to the database.";
 
@@ -254,15 +299,21 @@ pub fn insert_listening_session(
 
 ) -> Result<()> {
 
-    let mut db_path = if cfg!(target_os = "macos") {
-    let mut path = dirs::home_dir().unwrap_or_else(|| PathBuf::from("."));
-    path.push(".config");
-    path
-} else {
-    dirs::config_dir().unwrap_or_else(|| PathBuf::from("."))
-};
+    let config_home_path = env::var("XDG_CONFIG_HOME")
+        .map(PathBuf::from)
+        .unwrap_or_else(|_| {
+            let mut path = dirs::home_dir().expect("Unable to find the user's home directory");
 
-db_path.push("toutui/db.sqlite3");
+            if cfg!(target_os = "macos") {
+                path.push("Library/Preferences");
+            } else {
+                path.push(".config");
+            }
+
+            path
+        });
+
+    let db_path = config_home_path.join("toutui/db.sqlite3");
 
     let err_message = "Error connecting to the database.";
 
@@ -285,15 +336,21 @@ db_path.push("toutui/db.sqlite3");
 // Update chapter (for `listening_session` table)
 pub fn update_chapter(value: &str, id_session: &str) -> Result<()> {
 
-   let mut db_path = if cfg!(target_os = "macos") {
-    let mut path = dirs::home_dir().unwrap_or_else(|| PathBuf::from("."));
-    path.push(".config");
-    path
-} else {
-    dirs::config_dir().unwrap_or_else(|| PathBuf::from("."))
-};
+    let config_home_path = env::var("XDG_CONFIG_HOME")
+        .map(PathBuf::from)
+        .unwrap_or_else(|_| {
+            let mut path = dirs::home_dir().expect("Unable to find the user's home directory");
 
-db_path.push("toutui/db.sqlite3");
+            if cfg!(target_os = "macos") {
+                path.push("Library/Preferences");
+            } else {
+                path.push(".config");
+            }
+
+            path
+        });
+
+    let db_path = config_home_path.join("toutui/db.sqlite3");
 
     let err_message = "Error connecting to the database.";
 
@@ -314,15 +371,21 @@ db_path.push("toutui/db.sqlite3");
 // Update is_playback (for `listening_session` table)
 pub fn update_is_playback(value: &str, id_session: &str) -> Result<()> {
 
-   let mut db_path = if cfg!(target_os = "macos") {
-    let mut path = dirs::home_dir().unwrap_or_else(|| PathBuf::from("."));
-    path.push(".config");
-    path
-} else {
-    dirs::config_dir().unwrap_or_else(|| PathBuf::from("."))
-};
+    let config_home_path = env::var("XDG_CONFIG_HOME")
+        .map(PathBuf::from)
+        .unwrap_or_else(|_| {
+            let mut path = dirs::home_dir().expect("Unable to find the user's home directory");
 
-db_path.push("toutui/db.sqlite3");
+            if cfg!(target_os = "macos") {
+                path.push("Library/Preferences");
+            } else {
+                path.push(".config");
+            }
+
+            path
+        });
+
+    let db_path = config_home_path.join("toutui/db.sqlite3");
 
     let err_message = "Error connecting to the database.";
 
@@ -343,15 +406,22 @@ db_path.push("toutui/db.sqlite3");
 // Update current_time (for `listening_session` table)
 pub fn update_current_time(value: u32, id_session: &str) -> Result<()> {
 
-   let mut db_path = if cfg!(target_os = "macos") {
-    let mut path = dirs::home_dir().unwrap_or_else(|| PathBuf::from("."));
-    path.push(".config");
-    path
-} else {
-    dirs::config_dir().unwrap_or_else(|| PathBuf::from("."))
-};
+    let config_home_path = env::var("XDG_CONFIG_HOME")
+        .map(PathBuf::from)
+        .unwrap_or_else(|_| {
+            let mut path = dirs::home_dir().expect("Unable to find the user's home directory");
 
-db_path.push("toutui/db.sqlite3");
+            if cfg!(target_os = "macos") {
+                path.push("Library/Preferences");
+            } else {
+                path.push(".config");
+            }
+
+            path
+        });
+
+    let db_path = config_home_path.join("toutui/db.sqlite3");
+
     let err_message = "Error connecting to the database.";
 
     if let Ok(conn) = Connection::open(db_path) {
@@ -372,15 +442,21 @@ db_path.push("toutui/db.sqlite3");
 // Update elapsed_time (for `listening_session` table)
 pub fn update_elapsed_time(value: u32, id_session: &str) -> Result<()> {
 
-    let mut db_path = if cfg!(target_os = "macos") {
-    let mut path = dirs::home_dir().unwrap_or_else(|| PathBuf::from("."));
-    path.push(".config");
-    path
-} else {
-    dirs::config_dir().unwrap_or_else(|| PathBuf::from("."))
-};
+    let config_home_path = env::var("XDG_CONFIG_HOME")
+        .map(PathBuf::from)
+        .unwrap_or_else(|_| {
+            let mut path = dirs::home_dir().expect("Unable to find the user's home directory");
 
-db_path.push("toutui/db.sqlite3");
+            if cfg!(target_os = "macos") {
+                path.push("Library/Preferences");
+            } else {
+                path.push(".config");
+            }
+
+            path
+        });
+
+    let db_path = config_home_path.join("toutui/db.sqlite3");
 
     let err_message = "Error connecting to the database.";
 
@@ -402,15 +478,21 @@ db_path.push("toutui/db.sqlite3");
 // Update is_finished (for `listening_session` table)
 pub fn update_is_finished(value: &str, id_session: &str) -> Result<()> {
     
-let mut db_path = if cfg!(target_os = "macos") {
-    let mut path = dirs::home_dir().unwrap_or_else(|| PathBuf::from("."));
-    path.push(".config");
-    path
-} else {
-    dirs::config_dir().unwrap_or_else(|| PathBuf::from("."))
-};
+    let config_home_path = env::var("XDG_CONFIG_HOME")
+        .map(PathBuf::from)
+        .unwrap_or_else(|_| {
+            let mut path = dirs::home_dir().expect("Unable to find the user's home directory");
 
-db_path.push("toutui/db.sqlite3");
+            if cfg!(target_os = "macos") {
+                path.push("Library/Preferences");
+            } else {
+                path.push(".config");
+            }
+
+            path
+        });
+
+    let db_path = config_home_path.join("toutui/db.sqlite3");
 
     let err_message = "Error connecting to the database.";
 
@@ -432,15 +514,22 @@ db_path.push("toutui/db.sqlite3");
 // Delete an user
 pub fn delete_user(username: &str) -> Result<()> {
     
-   let mut db_path = if cfg!(target_os = "macos") {
-    let mut path = dirs::home_dir().unwrap_or_else(|| PathBuf::from("."));
-    path.push(".config");
-    path
-} else {
-    dirs::config_dir().unwrap_or_else(|| PathBuf::from("."))
-};
+    let config_home_path = env::var("XDG_CONFIG_HOME")
+        .map(PathBuf::from)
+        .unwrap_or_else(|_| {
+            let mut path = dirs::home_dir().expect("Unable to find the user's home directory");
 
-db_path.push("toutui/db.sqlite3");
+            if cfg!(target_os = "macos") {
+                path.push("Library/Preferences");
+            } else {
+                path.push(".config");
+            }
+
+            path
+        });
+
+    let db_path = config_home_path.join("toutui/db.sqlite3");
+
     let message = format!("User '{}' deleted. Please restart the app to apply the changes.", &username);
     let err_message = "Error connecting to the database.";
     if let Ok(conn) = Connection::open(db_path) {
@@ -469,15 +558,21 @@ db_path.push("toutui/db.sqlite3");
 // Update is_loop_break
 pub fn update_is_loop_break(value: &str, username: &str) -> Result<()> {
 
-    let mut db_path = if cfg!(target_os = "macos") {
-    let mut path = dirs::home_dir().unwrap_or_else(|| PathBuf::from("."));
-    path.push(".config");
-    path
-} else {
-    dirs::config_dir().unwrap_or_else(|| PathBuf::from("."))
-};
+    let config_home_path = env::var("XDG_CONFIG_HOME")
+        .map(PathBuf::from)
+        .unwrap_or_else(|_| {
+            let mut path = dirs::home_dir().expect("Unable to find the user's home directory");
 
-db_path.push("toutui/db.sqlite3");
+            if cfg!(target_os = "macos") {
+                path.push("Library/Preferences");
+            } else {
+                path.push(".config");
+            }
+
+            path
+        });
+
+    let db_path = config_home_path.join("toutui/db.sqlite3");
 
     let err_message = "Error connecting to the database.";
 
@@ -499,15 +594,21 @@ db_path.push("toutui/db.sqlite3");
 
 // get is_loop_break
 pub fn get_is_loop_break(username: &str) -> String {
-    let mut db_path = if cfg!(target_os = "macos") {
-    let mut path = dirs::home_dir().unwrap_or_else(|| PathBuf::from("."));
-    path.push(".config");
-    path
-} else {
-    dirs::config_dir().unwrap_or_else(|| PathBuf::from("."))
-};
+    let config_home_path = env::var("XDG_CONFIG_HOME")
+        .map(PathBuf::from)
+        .unwrap_or_else(|_| {
+            let mut path = dirs::home_dir().expect("Unable to find the user's home directory");
 
-db_path.push("toutui/db.sqlite3");
+            if cfg!(target_os = "macos") {
+                path.push("Library/Preferences");
+            } else {
+                path.push(".config");
+            }
+
+            path
+        });
+
+    let db_path = config_home_path.join("toutui/db.sqlite3");
 
     let conn = match Connection::open(db_path) {
         Ok(c) => c,
@@ -528,15 +629,21 @@ db_path.push("toutui/db.sqlite3");
 // Update is_vlv_launched_first_time
 pub fn update_is_vlc_launched_first_time(value: &str, username: &str) -> Result<()> {
 
-   let mut db_path = if cfg!(target_os = "macos") {
-    let mut path = dirs::home_dir().unwrap_or_else(|| PathBuf::from("."));
-    path.push(".config");
-    path
-} else {
-    dirs::config_dir().unwrap_or_else(|| PathBuf::from("."))
-};
+    let config_home_path = env::var("XDG_CONFIG_HOME")
+        .map(PathBuf::from)
+        .unwrap_or_else(|_| {
+            let mut path = dirs::home_dir().expect("Unable to find the user's home directory");
 
-db_path.push("toutui/db.sqlite3");
+            if cfg!(target_os = "macos") {
+                path.push("Library/Preferences");
+            } else {
+                path.push(".config");
+            }
+
+            path
+        });
+
+    let db_path = config_home_path.join("toutui/db.sqlite3");
 
     let err_message = "Error connecting to the database.";
 
@@ -556,15 +663,21 @@ db_path.push("toutui/db.sqlite3");
 }
 // get is_vlc_launched_first_time
 pub fn get_is_vlc_launched_first_time(username: &str) -> String {
-    let mut db_path = if cfg!(target_os = "macos") {
-    let mut path = dirs::home_dir().unwrap_or_else(|| PathBuf::from("."));
-    path.push(".config");
-    path
-} else {
-    dirs::config_dir().unwrap_or_else(|| PathBuf::from("."))
-};
+    let config_home_path = env::var("XDG_CONFIG_HOME")
+        .map(PathBuf::from)
+        .unwrap_or_else(|_| {
+            let mut path = dirs::home_dir().expect("Unable to find the user's home directory");
 
-db_path.push("toutui/db.sqlite3");
+            if cfg!(target_os = "macos") {
+                path.push("Library/Preferences");
+            } else {
+                path.push(".config");
+            }
+
+            path
+        });
+
+    let db_path = config_home_path.join("toutui/db.sqlite3");
 
     let conn = match Connection::open(db_path) {
         Ok(c) => c,
@@ -584,15 +697,21 @@ db_path.push("toutui/db.sqlite3");
 // Update id_selected_lib
 pub fn update_id_selected_lib(id_selected_lib: &str, username: &str) -> Result<()> {
 
-    let mut db_path = if cfg!(target_os = "macos") {
-    let mut path = dirs::home_dir().unwrap_or_else(|| PathBuf::from("."));
-    path.push(".config");
-    path
-} else {
-    dirs::config_dir().unwrap_or_else(|| PathBuf::from("."))
-};
+    let config_home_path = env::var("XDG_CONFIG_HOME")
+        .map(PathBuf::from)
+        .unwrap_or_else(|_| {
+            let mut path = dirs::home_dir().expect("Unable to find the user's home directory");
 
-db_path.push("toutui/db.sqlite3");
+            if cfg!(target_os = "macos") {
+                path.push("Library/Preferences");
+            } else {
+                path.push(".config");
+            }
+
+            path
+        });
+
+    let db_path = config_home_path.join("toutui/db.sqlite3");
 
     let message = "The library has been updated. Please refresh the app to apply the changes.";
     let err_message = "Error connecting to the database.";
@@ -634,15 +753,21 @@ db_path.push("toutui/db.sqlite3");
 
 // Insert user in database
 pub fn db_insert_usr(users : &Vec<User>)  -> Result<()> {   
-    let mut db_path = if cfg!(target_os = "macos") {
-    let mut path = dirs::home_dir().unwrap_or_else(|| PathBuf::from("."));
-    path.push(".config");
-    path
-} else {
-    dirs::config_dir().unwrap_or_else(|| PathBuf::from("."))
-};
+    let config_home_path = env::var("XDG_CONFIG_HOME")
+        .map(PathBuf::from)
+        .unwrap_or_else(|_| {
+            let mut path = dirs::home_dir().expect("Unable to find the user's home directory");
 
-db_path.push("toutui/db.sqlite3");
+            if cfg!(target_os = "macos") {
+                path.push("Library/Preferences");
+            } else {
+                path.push(".config");
+            }
+
+            path
+        });
+
+    let db_path = config_home_path.join("toutui/db.sqlite3");
 
     let conn = Connection::open(db_path)?;
     for user in users {
@@ -670,15 +795,21 @@ db_path.push("toutui/db.sqlite3");
 
 // Select default user
 pub fn select_default_usr() -> Result<Vec<String>> {
-    let mut db_path = if cfg!(target_os = "macos") {
-    let mut path = dirs::home_dir().unwrap_or_else(|| PathBuf::from("."));
-    path.push(".config");
-    path
-} else {
-    dirs::config_dir().unwrap_or_else(|| PathBuf::from("."))
-};
+    let config_home_path = env::var("XDG_CONFIG_HOME")
+        .map(PathBuf::from)
+        .unwrap_or_else(|_| {
+            let mut path = dirs::home_dir().expect("Unable to find the user's home directory");
 
-db_path.push("toutui/db.sqlite3");
+            if cfg!(target_os = "macos") {
+                path.push("Library/Preferences");
+            } else {
+                path.push(".config");
+            }
+
+            path
+        });
+
+    let db_path = config_home_path.join("toutui/db.sqlite3");
 
     let conn = Connection::open(db_path)?;
 
@@ -737,15 +868,21 @@ db_path.push("toutui/db.sqlite3");
 
 // Init db and table if not exist
 pub fn init_db() -> Result<()> {
-    let mut db_path = if cfg!(target_os = "macos") {
-    let mut path = dirs::home_dir().unwrap_or_else(|| PathBuf::from("."));
-    path.push(".config");
-    path
-} else {
-    dirs::config_dir().unwrap_or_else(|| PathBuf::from("."))
-};
+    let config_home_path = env::var("XDG_CONFIG_HOME")
+        .map(PathBuf::from)
+        .unwrap_or_else(|_| {
+            let mut path = dirs::home_dir().expect("Unable to find the user's home directory");
 
-db_path.push("toutui/db.sqlite3");
+            if cfg!(target_os = "macos") {
+                path.push("Library/Preferences");
+            } else {
+                path.push(".config");
+            }
+
+            path
+        });
+
+    let db_path = config_home_path.join("toutui/db.sqlite3");
 
     // Open or create db
     let conn = Connection::open(db_path)?;

@@ -118,7 +118,7 @@ To make it work properly, perform a fresh reinstall.
          ####\n",
 );
 let changelog_07 = format!(
-    "Changelog Toutui v{} (25/03/2025) \n\
+    "Changelog Toutui v0.3.1-beta (25/03/2025) \n\
 CAUTION: This version is not compatible with v0.2.0-beta and bellow.  
 To make it work properly, perform a fresh reinstall.
 \n\
@@ -132,9 +132,32 @@ To make it work properly, perform a fresh reinstall.
          \n\
          Enjoy and be toutui!\n
          ####\n",
+);
+let changelog_08 = format!(
+    "Changelog Toutui v{} (26/03/2025) \n\
+         Added:\n\
+         \n\
+         - macOS compatibility.
+         \n\
+         Fixed:\n\
+         \n\
+         - Issue with VLC buffer (if a chapter is manually changed or during jump/backward).
+         - Display issue on small monitors.
+         \n\
+         Changed:\n\
+         \n\
+         - hello_toutui script improved
+         \n\
+         Contributors:\n\
+         \n\
+         - AlbanDAVID, dougy147
+         \n\
+         Enjoy and be toutui!\n
+         ####\n",
          VERSION
 );
 
+    changelog.push_str(&changelog_08); 
     changelog.push_str(&changelog_07); 
     changelog.push_str(&changelog_06); 
     changelog.push_str(&changelog_05); 

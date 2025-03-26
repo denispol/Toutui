@@ -50,7 +50,7 @@ impl App {
         let [list_area, item_area1, item_area2] = Layout::vertical([Constraint::Fill(1), Constraint::Length(3), Constraint::Fill(1)]).areas(main_area);
 
         let render_list_title = "Continue Listening";
-        let text_render_footer = "j/↓, k/↑: move, l/→: play, Tab: library, R: refresh, S: Settings, Q/Esc: quit\n B: show/hide controls, '/': search, Scroll desc: J(down) K(up) H(top), g/G: top/bottom";
+        let text_render_footer = "j/↓, k/↑: move, l/→: play, Tab: library, R: refresh, S: Settings, Q/Esc: quit\n B: toggle player ctrl, '/': search, Scroll desc: J(↓) K(↑) H(⇡), g/G: top/bot";
 
         App::render_header(header_area, buf, self.lib_name_type.clone(), &self.username, &self.server_address_pretty, VERSION);
         App::render_footer(footer_area, buf, text_render_footer);
@@ -77,9 +77,9 @@ impl App {
 
         let mut _text_render_footer = "";
         if self.is_podcast {
-        _text_render_footer = "j/↓, k/↑: move, l/→: episodes, Tab: home, R: refresh, S: Settings, Q/Esc: quit\n B: show/hide controls, '/': search, Scroll desc: J(down) K(up) H(top), g/G: top/bottom";
+        _text_render_footer = "j/↓, k/↑: move, l/→: episodes, Tab: home, R: refresh, S: Settings, Q/Esc: quit\n B: toggle player ctrl, '/': search, Scroll desc: J(↓) K(↑) H(⇡), g/G: top/bot"       
         } else {
-        _text_render_footer = "j/↓, k/↑: move, l/→: play, Tab: home, R: refresh, S: Settings, Q/Esc: quit\n B: show/hide controls, '/': search, Scroll desc: J(down) K(up) H(top), g/G: top/bottom";
+        _text_render_footer = "j/↓, k/↑: move, l/→: play, Tab: home, R: refresh, S: Settings, Q/Esc: quit\n B: toggle player ctrl, '/': search, Scroll desc: J(↓) K(↑) H(⇡), g/G: top/bot";
         }
 
         App::render_header(header_area, buf, self.lib_name_type.clone(), &self.username, &self.server_address_pretty, VERSION);
@@ -370,11 +370,11 @@ impl App {
             .bold()
             .centered()
             .render(area, buf);
-        Paragraph::new(format!("👋Connected as {}\n🔗{}", &username, &server_address_pretty))
+        Paragraph::new(format!("👋 Connected as {}\n🔗 {}", &username, &server_address_pretty))
             .not_bold()
             .left_aligned()
             .render(area, buf);
-        Paragraph::new(format!("🦜Toutui v{}", version))
+        Paragraph::new(format!("🦜 Toutui v{}", version))
             .right_aligned()
             .render(area, buf);
     }
@@ -419,7 +419,7 @@ impl App {
         let list = List::new(items)
             .block(block)
             .highlight_style(selected_style)
-            .highlight_symbol("➤")
+            .highlight_symbol("➤ ")
             .highlight_spacing(HighlightSpacing::Always);
 
         StatefulWidget::render(list, area, buf, list_state);

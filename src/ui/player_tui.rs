@@ -26,7 +26,7 @@ pub fn render_player(area: Rect, buf: &mut ratatui::buffer::Buffer, player_info:
     let mut key_bindings = "".to_string();
     let is_show_key_bindings = get_is_show_key_bindings(username);
     if is_show_key_bindings == "1" {
-        key_bindings = format!("Spacebar: pause/play | p/u: jump forward/backward | P/U: next/prev. chapter | O/I: speedrate up/down | o/i: vol. up/down | Y: quit player");
+        key_bindings = format!("Spc: pause/play | p/u: +/−10s | P/U: nxt/prev ch. | O/I: spd +/− | o/i: vol +/− | Y: quit");
     }  
 
     // Create the paragraph

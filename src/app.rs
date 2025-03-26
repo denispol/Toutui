@@ -809,6 +809,9 @@ pub fn handle_key(&mut self, key: KeyEvent) {
                             // close vlc 
                             let _ = quit_vlc(address_player.as_str(), port.as_str());
 
+                            // pkill vlc
+                            pkill_vlc();
+
                             // before open a new session, wait to close and sync previous
                             // session
                             let _ = wait_prev_session_finished(username.clone()); 
@@ -848,6 +851,9 @@ pub fn handle_key(&mut self, key: KeyEvent) {
 
                             // close vlc 
                             let _ = quit_vlc(address_player.as_str(), port.as_str());
+
+                            // pkill vlc
+                            pkill_vlc();
 
                             // before open a new session, wait to close and sync previous
                             // session
@@ -923,6 +929,9 @@ pub fn handle_key(&mut self, key: KeyEvent) {
                                 // close vlc 
                                 let _ = quit_vlc(address_player.as_str(), port.as_str());
 
+                                // pkill vlc
+                                pkill_vlc();
+
                                 // before open a new session, wait to close and sync previous
                                 // session
                                 let _ = wait_prev_session_finished(username.clone()); 
@@ -977,6 +986,9 @@ pub fn handle_key(&mut self, key: KeyEvent) {
                                 // close vlc 
                                 let _ = quit_vlc(address_player.as_str(), port.as_str());
 
+                                // pkill vlc
+                                pkill_vlc();
+
                                 // before open a new session, wait to close and sync previous
                                 // session
                                 let _ = wait_prev_session_finished(username.clone()); 
@@ -1030,6 +1042,9 @@ pub fn handle_key(&mut self, key: KeyEvent) {
                                     // close vlc 
                                     let _ = quit_vlc(address_player.as_str(), port.as_str());
 
+                                    // pkill vlc
+                                    pkill_vlc();
+
                                     // before open a new session, wait to close and sync previous
                                     // session
                                     let _ = wait_prev_session_finished(username.clone()); 
@@ -1079,6 +1094,9 @@ pub fn handle_key(&mut self, key: KeyEvent) {
                                 tokio::spawn(async move {
                                     // close vlc 
                                     let _ = quit_vlc(address_player.as_str(), port.as_str());
+
+                                    // pkill vlc
+                                    pkill_vlc();
 
                                     // before open a new session, wait to close and sync previous
                                     // session

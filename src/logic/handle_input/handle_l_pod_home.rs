@@ -10,6 +10,8 @@ use std::io::stdout;
 use log::{info, error};
 use crate::db::crud::*;
 use crate::utils::vlc_tcp_stream::*;
+use crate::player::vlc::quit_vlc::*;
+
 
 // handle l when is_podact is true for continue listening `AppView::Home`
 
@@ -26,6 +28,9 @@ pub async fn handle_l_pod_home(
     username: String,
 
 ) {
+
+    // need to pkill VLC for macos users
+    pkill_vlc();
 
     if let Some(index) = selected {
         // id is id of the podcast  and id_pod_ep is the id id of the episode podcast
