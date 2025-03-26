@@ -13,12 +13,12 @@
 
 
 ## ✨ Features  
+✅ **Cross-platform** – <img src=".github/tux.png" align="top" width="24" alt="Tux (Linux)"/>  Linux and <img src=".github/apple.png" align="top" width="24" alt="Apple (macOS)"/> macOS    
 ✅ **Lightweight & Fast** – A minimalist, terminal-based UI (TUI) written in Rust 🦀  
 ✅ **Supports Books & Podcasts** – Enjoy both audiobooks and podcasts  
 ✅ **Sync Progress & Stats** – Keep your listening progress in sync  
 ✅ **Streaming Support** – Play directly without downloading  
 ✅ **Customizable Color Theme** – A config file will allow you to customize the color theme  
-✅ **Cross-platform** - Linux <img src=".github/tux.png" align="top" width="24" alt="Tux (Linux)"/>  and macOS <img src=".github/apple.png" align="top" width="24" alt="Apple (macOS)"/>
 
 
 ## 🛠️ Roadmap  
@@ -49,40 +49,34 @@ At worst, you may experience **sync issues**, but there is **no risk** of data l
 ### 🤝 **Contributing**  
 Do not hesitate to contribute to this project by submitting your code, ideas, or feedback. Please make sure to read the [contributing guidelines](https://github.com/AlbanDAVID/Toutui/blob/main/CONTRIBUTING.md) first.
 
-### 🍏 **macOS**
->[!WARNING]
->**Not yet supported on macOS (but we are working on it).**
-
 ### 🎨 **UI**
-The **font** and **emojis** may vary depending on the terminal you are using.
-To ensure the best experience, it's recommended to use terminals that support **emoji rendering** properly (e.g., Kitty, Alacritty).
+The **font** and **emojis** may vary depending on the terminal you are using.    
+To ensure the best experience, it's recommended to use **Kitty** or **Alacritty** terminal.
 
-### 🎧 **Using `cvlc`**
-- Type `help` to see commands  
-- When using **`cvlc`** (command-line VLC), make sure to use the `shutdown` command when you want to quit the listening session.
-This helps ensure that your books are successfully synced and prevents any potential issues.
+
 
 ## 🚨 Installation Instructions
 
-**⚠️ If you follow all the instructions but installation fails, please open an installation issue.**  
-
 ### Automatic install
-
->[!WARNING]
->It's quite challenging to create a script that is exhaustive for all distributions and OS. If you encounter difficulties, leave an installation issue and install the app [manually](https://github.com/AlbanDAVID/Toutui?tab=readme-ov-file#git).
 
 #### **Install**
 >[!WARNING]
->**Not yet supported on macOS (but we are working on it).**
->
->This is a beta app, please read [this](https://github.com/AlbanDAVID/Toutui?tab=readme-ov-file#%EF%B8%8F-caution-beta-version). 
+> - If you follow all the instructions but installation fails:
+>     - Check first the [wiki](https://github.com/AlbanDAVID/Toutui/wiki/Installation-issues).
+>     - Otherwise, open an installation issue.
+>     - You can also install the app [manually](https://github.com/AlbanDAVID/Toutui?tab=readme-ov-file#git).
+>       
+> - This is a beta app, please read [this](https://github.com/AlbanDAVID/Toutui?tab=readme-ov-file#%EF%B8%8F-caution-beta-version).
 ```bash
 git clone https://github.com/AlbanDAVID/Toutui
 cd Toutui/
 chmod +x hello_toutui.sh
 ./hello_toutui.sh install
 ```
-Once the installation is complete, type `toutui` in your terminal to launch the app.
+>[!TIP]
+> - Once the installation is complete, type `toutui` in your terminal to launch the app.    
+> - Best experience with Kitty or Alacritty terminal.
+
 #### **Update**
 The script will detect if a new release is available and install it if any.
 ```bash
@@ -92,10 +86,11 @@ The script will detect if a new release is available and install it if any.
 #### **Notes**  
 
 ##### Files installed:
-in `/usr/bin`
+In `/usr/bin` for Linux, or `/usr/local/bin` for macOS:
 - `toutui` — The binary file (you can execute it from anywhere).
 
-in `~/.config/toutui`
+In `~/.config/toutui` for Linux or `~/Library/Preferences` for macOS:    
+**Note**: This is the default path if `XDG_CONFIG_HOME` is empty. 
 - `.env` — Contains the secret key.
 - `config.toml` — Configuration file.
 - `toutui.log` — Log file.
@@ -106,19 +101,19 @@ in `~/.config/toutui`
 
 ### Git
 
-❗This is a beta app, please read [this](https://github.com/AlbanDAVID/Toutui?tab=readme-ov-file#%EF%B8%8F-caution-beta-version).  
-❗macOS user: read [this](https://github.com/AlbanDAVID/Toutui/blob/main/README.md#-macos).  
+>[!WARNING]
+> This is a beta app, please read [this](https://github.com/AlbanDAVID/Toutui?tab=readme-ov-file#%EF%B8%8F-caution-beta-version).  
 
 #### **Requirements**
 - `Rust`
+- `Netcat`
 - `VLC`
 - `SQLite3`
 - `libsqlite3-dev` (for some OS, Debian for example)
 - `libssl-dev`
 - `Your terminal must support emojis`
-- Optional, only if you use cvlc:
-- `Netcat`
-- `Kitty terminal emulator`
+- Optional:
+- `Kitty terminal emulator` (for a better experience or if you want to use cvlc in the terminal).
 
 *⚠️ If you had to install a package that is not listed above, please open an installation issue.*
 
@@ -138,6 +133,8 @@ echo TOUTUI_SECRET_KEY=secret >> ~/.config/toutui/.env
 ```bash
 cargo run --release
 ```
+>[!TIP] 
+> - Best experience with Kitty or Alacritty terminal.
 
 To install in a custom location, provide the path like this:
 ```console
