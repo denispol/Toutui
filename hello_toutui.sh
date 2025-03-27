@@ -37,24 +37,26 @@ load_dependencies() {
 	linux:curl \
 	linux:vlc  \
 	linux:pkg-config \
+	linux:git \
 	debian:libssl-dev:no_check \
 	linux:sqlite3 \
 	debian:libsqlite3-dev:no_check \
 	centos:libsqlite3-dev:no_check \
+	macOS:git \
 	macOS:sqlite3 \
 	macOS:vlc \
 	macOS:curl \
 	macOS:pkg-config \
-	macOS:openssl \
-	macOS:netcat\
-	debian:netcat \
-	fedora:nc \
-	centos:nc \
-	arch:gnu-netcat:netcat \
-	opensuse:netcat \
+	%macOS:openssl \
 	*centos:epel-release \
 	*linux:kitty \
 	*macOS:kitty \
+	*macOS:netcat\
+	*debian:netcat \
+	*fedora:nc \
+	*centos:nc \
+	*arch:gnu-netcat:netcat \
+	*opensuse:netcat \
 	)
     # Dependencies starting with a '*' are optional
     # Starting with "linux:" for all linux distros
@@ -155,6 +157,11 @@ get_distro() {
     echo "$distro"
 }
 
+install_brew() {
+    # adapted from https://brew.sh/
+    curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh | /usr/bin/env bash
+}
+
 install_from_source() {
     echo "[ERROR] Could not identify OS/Distro."
     echo "Please follow the instructions here:"
@@ -187,11 +194,38 @@ propose_optional_dependencies() {
 }
 
 install_rust() {
-    if ! [[ $(command -v rustc 2>/dev/null) ]]; then
+    if ! command -v rustc >/dev/null 2>&1; then
 	echo "[INFO] Cannot find \"rustc\" in your \$PATH. Installing rust..."
     	curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+	source_cargo_env
     else
 	echo "[OK] \"rustc\" exists."
+    fi
+}
+
+source_cargo_env() {
+    if [[ $SHELL =~ \/(sh|bash|zsh|ash|pdksh) ]]; then
+	if [[ -z "${CARGO_HOME}" ]]; then
+	    source "$HOME/.cargo/env"
+	else
+	    source "${CARGO_HOME}/env"
+	fi
+    elif [[ $SHELL =~ \/fish ]]; then
+	if [[ -z "${CARGO_HOME}" ]]; then
+	    source "$HOME/.cargo/env.fish"
+	else
+	    source "${CARGO_HOME}/env.fish"
+	fi
+    elif [[ $SHELL =~ \/nushell ]]; then
+	if [[ -z "${CARGO_HOME}" ]]; then
+	    source "$HOME/.cargo/env.nu"
+	else
+	    source "${CARGO_HOME}/env.nu"
+	fi
+    else
+	echo "[ERROR] Cannot source cargo environment automatically."
+	echo "Open a new terminal and launch \"hello_toutui.sh\" again."
+	exit $EXIT_NO_CARGO_PATH
     fi
 }
 
@@ -210,11 +244,10 @@ install_packages() {
     	        *) install_from_source;;
     	    esac ;;
 	macOS)
-	    if [[ $(command -v brew 2>/dev/null) ]]; then
+	    if command -v brew >/dev/null 2>&1; then
 		brew install ${dep[@]}
 	    else
-		echo "[ERROR] Please install \"brew\"."
-		exit $EXIT_FAIL
+		install_brew
 	    fi;;
     esac
     echo "[INFO] Packages installed successfully."
@@ -229,7 +262,7 @@ post_install_msg() {
 }
 
 install_config() {
-    mkdir -p "$CONFIG_DIR" || ( echo "[ERROR] Cannot create config directory \"${CONFIG_DIR}\""; exit $EXIT_CONFIG )
+    mkdir -p "$CONFIG_DIR" 2>/dev/null || ( echo "[ERROR] Cannot create config directory \"${CONFIG_DIR}\""; exit $EXIT_CONFIG )
 
     # .env
     local env="${CONFIG_DIR}/.env"
@@ -262,10 +295,16 @@ dep_already_installed() {
     	    opensuse*) (zypper se --installed-only "$pkg_name" &>/dev/null)2>/dev/null && installed="true";;
     	esac
     elif [[ $OS == "macOS" ]]; then
-	(brew list | grep "^${pkg_name}$") && installed="true"
+	if command -v brew >/dev/null 2>&1; then
+	    if brew list "${pkg_name}" >/dev/null 2>&1; then
+		installed="true"
+	    fi
+	else
+	    install_brew
+	fi
     fi
     if [[ $installed == "false" ]]; then
-	if [[ $cmd_check != "no_check" && $(command -v $cmd_check 2>/dev/null) ]]; then
+	if [[ $cmd_check != "no_check" && $(command -v $cmd_check >/dev/null 2>&1) ]]; then
 	    installed="true"
 	fi
     fi
@@ -293,8 +332,14 @@ install_deps() {
 	if [[ $dep =~ ^\* ]]; then
 	    # this is an optional dependency
 	    deps=("${deps[@]/$dep}") # remove optional from deps
-	    dep="${dep:1:${#dep}}"
+	    dep="${dep:1:${#dep}}" # trim
 	    local optional="true"
+	elif [[ $dep =~ ^% ]];then
+	    # this is a forced dependency
+	    deps=("${deps[@]/$dep}") # remove from deps
+	    dep="${dep:1:${#dep}}" # trim
+	    deps+=( "$dep" ) # add it back
+	    local optional="false"
 	else
 	    local optional="false"
 	fi
@@ -332,7 +377,8 @@ install_toutui() {
     cargo build --release
     # copy Toutui binary to system path
     sudo cp ./target/release/Toutui "${INSTALL_DIR}/toutui" || exit $EXIT_BUILD_FAIL
-    echo "[DONE] Install complete. Type toutui in your terminal to run it"
+    echo "[DONE] Install complete. Type \"toutui\" in your terminal to run it."
+    echo "[ADVICE] Best experience with Kitty or Alacritty terminal."
     post_install_msg # only if .env not found
 }
 
@@ -405,9 +451,10 @@ load_exit_codes() {
     EXIT_UNKNOWN_OS=3
     EXIT_INCORRECT_ARG=4
     EXIT_NO_CARGO_TOML=5
-    EXIT_CONFIG=6
-    EXIT_BUILD_FAIL=7
-    EXIT_INSTALL_DIR=8
+    EXIT_NO_CARGO_PATH=6
+    EXIT_CONFIG=7
+    EXIT_BUILD_FAIL=8
+    EXIT_INSTALL_DIR=9
 }
 
 do_not_run_as_root() {
