@@ -51,12 +51,12 @@ load_dependencies() {
 	*centos:epel-release \
 	*linux:kitty \
 	*macOS:kitty \
-	*macOS:netcat\
-	*debian:netcat \
-	*fedora:nc \
-	*centos:nc \
-	*arch:gnu-netcat:netcat \
-	*opensuse:netcat \
+	macOS:netcat\
+	debian:netcat \
+	fedora:nc \
+	centos:nc \
+	arch:gnu-netcat:netcat \
+	opensuse:netcat \
 	)
     # Dependencies starting with a '*' are optional
     # Starting with "linux:" for all linux distros
