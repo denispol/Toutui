@@ -144,11 +144,6 @@ cargo run --release
 >[!TIP] 
 > - Best experience with Kitty or Alacritty terminal.
 
-To install in a custom location, provide the path like this:
-```console
-./hello_toutui.sh install /usr/bin
-```
-
 #### **Update**
 
 When a new release is available, follow these steps:
