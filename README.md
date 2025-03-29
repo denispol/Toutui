@@ -58,7 +58,6 @@ To ensure the best experience, it's recommended to use **Kitty** or **Alacritty*
 
 ### Automatic install
 
-#### **Install**
 >[!WARNING]
 > - If you follow all the instructions but installation fails:
 >     - Check first the [wiki](https://github.com/AlbanDAVID/Toutui/wiki/Installation-issues).
