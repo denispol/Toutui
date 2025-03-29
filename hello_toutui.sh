@@ -37,7 +37,6 @@ load_dependencies() {
 	linux:curl \
 	linux:vlc  \
 	linux:pkg-config \
-	debian:libssl-dev:no_check \
 	linux:sqlite3 \
 	debian:libsqlite3-dev:no_check \
 	centos:libsqlite3-dev:no_check \
@@ -45,7 +44,6 @@ load_dependencies() {
 	macOS:vlc \
 	macOS:curl \
 	macOS:pkg-config \
-	macOS:openssl \
 	macOS:netcat\
 	debian:netcat \
 	fedora:nc \
