@@ -119,9 +119,7 @@ In `~/.config/toutui` for Linux or `~/Library/Preferences` for macOS:
 - `Netcat`
 - `VLC`
 - `SQLite3`
-- `libsqlite3-dev` (for some OS, Debian for example)
-- `libssl-dev`
-- `Your terminal must support emojis`
+- `openssl`
 - Optional:
 - `Kitty terminal emulator` (for a better experience or if you want to use cvlc in the terminal).
 
