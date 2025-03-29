@@ -59,12 +59,11 @@ To ensure the best experience, it's recommended to use **Kitty** or **Alacritty*
 ### Automatic install
 
 >[!WARNING]
+> - **This is a beta app, please read [this](https://github.com/AlbanDAVID/Toutui?tab=readme-ov-file#%EF%B8%8F-caution-beta-version).**    
 > - If you follow all the instructions but installation fails:
 >     - Check first the [wiki](https://github.com/AlbanDAVID/Toutui/wiki/Installation-issues).
->     - Otherwise, open an installation issue.
+>     - Otherwise, open an issue.
 >     - You can also install the app [manually](https://github.com/AlbanDAVID/Toutui?tab=readme-ov-file#git).
->       
-> - **This is a beta app, please read [this](https://github.com/AlbanDAVID/Toutui?tab=readme-ov-file#%EF%B8%8F-caution-beta-version).**
 
 >[!IMPORTANT]
 > <img src=".github/apple.png" align="top" width="24" alt="Apple (macOS)"/> **macOS users**: before install, make sure to have `Homebrew` and `openssl` installed.    
