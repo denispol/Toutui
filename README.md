@@ -69,7 +69,9 @@ To ensure the best experience, it's recommended to use **Kitty** or **Alacritty*
 
 >[!IMPORTANT]
 > <img src=".github/apple.png" align="top" width="24" alt="Apple (macOS)"/> **macOS users**: before install, make sure to have `Homebrew` and `openssl` installed.    
+> Install Homebrew:    
 > `bash /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)`    
+> Install openssl:    
 > `brew install openssl`    
 
 **Proceed with the installation by simply copying and pasting the following code block into your terminal:**
