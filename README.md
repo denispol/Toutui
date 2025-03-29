@@ -66,6 +66,13 @@ To ensure the best experience, it's recommended to use **Kitty** or **Alacritty*
 >     - You can also install the app [manually](https://github.com/AlbanDAVID/Toutui?tab=readme-ov-file#git).
 >       
 > - **This is a beta app, please read [this](https://github.com/AlbanDAVID/Toutui?tab=readme-ov-file#%EF%B8%8F-caution-beta-version).**
+
+>[!IMPORTANT]
+> <img src=".github/apple.png" align="top" width="24" alt="Apple (macOS)"/> **macOS users**: before install, make sure to have `Homebrew` and `openssl` installed.    
+> `bash /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)`    
+> `brew install openssl`    
+
+**Proceed with the installation by simply copying and pasting the following code block into your terminal:**
 ```bash
 git clone https://github.com/AlbanDAVID/Toutui
 cd Toutui/
@@ -87,6 +94,8 @@ The script will detect if a new release is available and install it if any.
 ##### Files installed:
 In `/usr/bin` for Linux, or `/usr/local/bin` for macOS:
 - `toutui` — The binary file (you can execute it from anywhere).
+>[!TIP]
+> You can choose a custom location: `./hello_toutui.sh install /example/custom/location`
 
 In `~/.config/toutui` for Linux or `~/Library/Preferences` for macOS:    
 **Note**: This is the default path if `XDG_CONFIG_HOME` is empty. 
