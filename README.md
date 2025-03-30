@@ -1,4 +1,6 @@
 # 🦜 Toutui: A TUI Audiobookshelf client for Linux and macOS
+[![GitHub release](https://img.shields.io/github/v/release/AlbanDAVID/Toutui)](https://github.com/AlbanDAVID/Toutui/releases/latest)
+
 <p align="center">
     <em>In French, being "tout ouïe" (toutui) means being all ears.</em>
 </p>
