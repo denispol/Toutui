@@ -1,5 +1,4 @@
 # 🦜 Toutui: A TUI Audiobookshelf client for Linux and macOS
-[![GitHub release](https://img.shields.io/github/v/release/AlbanDAVID/Toutui)](https://github.com/AlbanDAVID/Toutui/releases/latest)
 
 <p align="center">
     <em>In French, being "tout ouïe" (toutui) means being all ears.</em>
@@ -74,7 +73,9 @@ To ensure the best experience, it's recommended to use **Kitty** or **Alacritty*
 > Install openssl:    
 > `brew install openssl`    
 
-**Proceed with the installation by simply copying and pasting the following code block into your terminal:**
+**Proceed with the installation by simply copying and pasting the following code block into your terminal:**    
+
+[![GitHub release](https://img.shields.io/github/v/release/AlbanDAVID/Toutui?label=Latest%20Release&cacheSeconds=3600)](https://github.com/AlbanDAVID/Toutui/releases/latest)
 ```bash
 git clone https://github.com/AlbanDAVID/Toutui
 cd Toutui/
@@ -125,7 +126,9 @@ In `~/.config/toutui` for Linux or `~/Library/Preferences` for macOS:
 
 *⚠️ If you had to install a package that is not listed above, please open an installation issue.*
 
-#### **Install**
+#### **Install**    
+
+[![GitHub release](https://img.shields.io/github/v/release/AlbanDAVID/Toutui?label=Latest%20Release&cacheSeconds=3600)](https://github.com/AlbanDAVID/Toutui/releases/latest)
 ```bash
 git clone https://github.com/AlbanDAVID/Toutui
 cd Toutui/
