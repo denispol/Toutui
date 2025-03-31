@@ -29,6 +29,7 @@
 - Currently working on the next release: [v0.3.3-beta]
 
 **Mid-term Goals**  
+- Put the app on yay    
 - CI/CD Implementation  
 - Add future features described bellow.
 
