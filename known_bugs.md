@@ -8,17 +8,13 @@ No major bug for the moment 🙏
 **Authentification Bug:** Even if you fill in valid credentials, the database sync can be buggy, and authentication may fail. Normally, it works on the second try.
 
 `bug_id: 2eb9e3`
-**Display:** The app is not displayed and no error message appears (especially if you change user, quit and restart the app). Solution: quit the terminal and try it again.
+**Display:** At the launch, the app is not displayed and no error message appears (especially if you change user, quit and restart the app). Solution: quit the terminal and try it again.
 
 `bug_id: 2d358c53`
 **Mark as finished:** When a title reach the end, mark as finished not always work.
 
 `bug_id: a49eza`
-**cvlc error sync:** If you use other command that `shutdown` to quit `cvlc` it may result of a sync issue.
-
-`bug_id: fe4116`
-**cvlc macOS:** `cvlc` option is not available for now in macOS.
-
+**cvlc error sync with ctrl vlc from a terminal:** If you use other command that `shutdown` to quit `cvlc` it may result of a sync issue.
 
 
 **FIXED**  
@@ -42,3 +38,5 @@ No major bug for the moment 🙏
 **Listening session:** The session (that you can see in `yourserveraddress/audiobookshelf/config/sessions`) does not close when the app is quit.  
 `bug_id: 40f48d`
 **Cursor:** When you quit the app, terminal cursor disappear.  
+`bug_id: fe4116`
+**cvlc macOS:** `cvlc` option is not available for now in macOS.  
