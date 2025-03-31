@@ -1,3 +1,4 @@
+[![GitHub release](https://img.shields.io/github/v/release/AlbanDAVID/Toutui?label=Latest%20Release&cacheSeconds=3600)](https://github.com/AlbanDAVID/Toutui/releases/latest)
 # 🦜 Toutui: A TUI Audiobookshelf client for Linux and macOS
 
 <p align="center">
