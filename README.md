@@ -107,9 +107,6 @@ In `~/.config/toutui` for Linux or `~/Library/Preferences` for macOS:
 - `toutui.log` — Log file.
 - `db.sqlite3` — SQLite database file.
 
-### For Arch Users
-🚧 Soon
-
 ### Git
 
 >[!WARNING]
