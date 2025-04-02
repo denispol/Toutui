@@ -41,6 +41,8 @@ impl AppLogin {
                 .fg(Color::Rgb(fg_color[0], fg_color[1], fg_color[2])))
         );
 
+        textarea1.set_placeholder_text("http:// or https:// required");
+
         let mut textarea2 = TextArea::default();
         textarea2.set_block(
             Block::default()
