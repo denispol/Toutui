@@ -86,7 +86,10 @@ chmod +x hello_toutui.sh
 ```
 >[!TIP]
 > - Once the installation is complete, type `toutui` in your terminal to launch the app.    
-> - Best experience with Kitty or Alacritty terminal.
+> - Best experience with Kitty or Alacritty terminal.    
+  
+>[!IMPORTANT]
+> If you encounter issues, check the [wiki](https://github.com/AlbanDAVID/Toutui/wiki).
 
 #### **Update**
 The script will detect if a new release is available and install it if any.
@@ -144,7 +147,10 @@ echo TOUTUI_SECRET_KEY=secret >> ~/.config/toutui/.env
 cargo run --release
 ```
 >[!TIP] 
-> - Best experience with Kitty or Alacritty terminal.
+> - Best experience with Kitty or Alacritty terminal.    
+
+>[!IMPORTANT]
+> If you encounter issues, check the [wiki](https://github.com/AlbanDAVID/Toutui/wiki).
 
 #### **Update**
 
