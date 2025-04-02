@@ -105,7 +105,7 @@ impl AppLogin {
                     info!("ERROR: Failed to get login error: {}", e);
                     "".to_string()
                 }};
-            let _ = pop_message(&mut stdout, 15, error_message_login.as_str());
+            let _ = pop_message(&mut stdout, 6, error_message_login.as_str());
 
             match crossterm::event::read()? {
                 event::Event::Key(KeyEvent { code: KeyCode::Enter, .. }) => {
