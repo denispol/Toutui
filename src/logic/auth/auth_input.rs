@@ -13,7 +13,8 @@ use crate::api::server::auth_process::*;
 use crossterm::event::{self, KeyEvent, KeyCode};  
 use log::{info, error};
 use crate::utils::exit_app::*;
-
+use crate::utils::pop_up_message::*;
+use crate::db::crud::*;
 
 const VERSION: &str = env!("CARGO_PKG_VERSION");
 
@@ -79,9 +80,6 @@ impl AppLogin {
         let mut collected_data : Vec<String> = Vec::new();
         let log_bg_color = self.config.colors.log_background_color.clone();
 
-
-
-
         loop {
             term.draw(|f| {
                 let background = Block::default()
@@ -94,6 +92,20 @@ impl AppLogin {
                 f.render_widget(&textareas[current_index], input_area);
                 f.render_widget(background, f.area());
             })?;
+
+            // display error message (in any)
+            let mut stdout = std::io::stdout();
+            let error_message_login = match get_others() {
+                Ok(Some(value)) => value.login_err,
+                Ok(None) => {
+                    info!("INFO: No login error found, using default value.");
+                    "".to_string()
+                }
+                Err(e) => {
+                    info!("ERROR: Failed to get login error: {}", e);
+                    "".to_string()
+                }};
+            let _ = pop_message(&mut stdout, 15, error_message_login.as_str());
 
             match crossterm::event::read()? {
                 event::Event::Key(KeyEvent { code: KeyCode::Enter, .. }) => {
@@ -108,6 +120,7 @@ impl AppLogin {
                 }
 
                 event::Event::Key(KeyEvent { code: KeyCode::Esc, .. }) => {
+                    let _ = update_login_err("");
                     clean_exit();
                 }
 
@@ -146,10 +159,13 @@ impl AppLogin {
                     Ok(_response) => {
                         info!("[auth_process] Login successful");
                         println!("Login successful");
+                        let _ = update_login_err("");
                     }
                     Err(e) => {
                         error!("[auth_process] Login failed: {}", e);
-                        eprintln!("Login failed: {}", e);
+                        eprintln!("ERROR: {}", e);
+                        let err = format!("ERROR: {}", e.to_string());
+                        let _ = update_login_err(err.as_str());
                     }
                 }});
 

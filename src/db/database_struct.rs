@@ -6,6 +6,7 @@ pub struct Database  {
     pub users: Vec<User>,
     pub default_usr: Vec<String>,
     pub listening_session: ListeningSession,
+    pub others: Others,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -40,6 +41,10 @@ pub struct ListeningSession {
     pub chapter: String,
 }
 
+pub struct Others {
+    pub login_err: String,
+}
+
 
 impl Database {
     pub async fn new() -> Result<Self> {
@@ -72,10 +77,15 @@ impl Database {
             chapter: String::new(),
         };
 
+        let others = Others {
+            login_err: String::new(),
+        };
+
         Ok(Self {
             users,
             default_usr,
-            listening_session
+            listening_session,
+            others
         })
     }
 }
