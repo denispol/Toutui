@@ -860,11 +860,11 @@ pub fn update_login_err(value: &str) -> Result<()> {
 
     if let Ok(conn) = Connection::open(db_path) {
         conn.execute(
-            "INSERT OR IGNORE INTO others (login_err) VALUES ('')",
+            "INSERT INTO others (login_err) SELECT '' WHERE NOT EXISTS (SELECT 1 FROM others LIMIT 1)",
             [],
         )?;
         conn.execute(
-            "UPDATE others SET login_err = ?1",
+            "UPDATE others SET login_err = ?1 WHERE rowid = 1",
             params![value],
         )?;
     } else {
@@ -1009,7 +1009,7 @@ pub fn init_db() -> Result<()> {
     //Create table `others` if there is none 
     conn.execute(
         "CREATE TABLE IF NOT EXISTS others (
-            login_err TEXT NOT NULL DEFAULT 'TEST'
+            login_err TEXT NOT NULL DEFAULT ''
         )",
         [],
     )?;
