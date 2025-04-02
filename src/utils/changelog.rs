@@ -134,7 +134,7 @@ To make it work properly, perform a fresh reinstall.
          ####\n",
 );
 let changelog_08 = format!(
-    "Changelog Toutui v{} (26/03/2025) \n\
+    "Changelog Toutui v0.3.2-beta (26/03/2025) \n\
          Added:\n\
          \n\
          - macOS compatibility.
@@ -154,9 +154,25 @@ let changelog_08 = format!(
          \n\
          Enjoy and be toutui!\n
          ####\n",
+);
+let changelog_09 = format!(
+    "Changelog Toutui v{} (02/04/2025) \n\
+         \n\
+         Changed:\n\
+         \n\
+         - Adding a login placeholder to specify the use of http:// or https:// for the server address.
+         - Display error login message without time limit.
+         \n\
+         Contributors:\n\
+         \n\
+         - AlbanDAVID
+         \n\
+         Enjoy and be toutui!\n
+         ####\n",
          VERSION
 );
 
+    changelog.push_str(&changelog_09); 
     changelog.push_str(&changelog_08); 
     changelog.push_str(&changelog_07); 
     changelog.push_str(&changelog_06); 

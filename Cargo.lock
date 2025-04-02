@@ -4,7 +4,7 @@ version = 4
 
 [[package]]
 name = "Toutui"
-version = "0.3.2-beta"
+version = "0.3.3-beta"
 dependencies = [
  "chrono",
  "color-eyre",

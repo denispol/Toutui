@@ -1,6 +1,7 @@
 use rusqlite::{params, Connection, Result};
 use crate::db::database_struct::User;
 use crate::db::database_struct::ListeningSession;
+use crate::db::database_struct::Others;
 use crate::utils::pop_up_message::*;
 use std::io::stdout;
 use log::{info, error};
@@ -792,6 +793,88 @@ pub fn db_insert_usr(users : &Vec<User>)  -> Result<()> {
     Ok(())
 }
 
+// get others
+pub fn get_others() -> Result<Option<Others>> {
+
+    let config_home_path = env::var("XDG_CONFIG_HOME")
+        .map(PathBuf::from)
+        .unwrap_or_else(|_| {
+            let mut path = dirs::home_dir().expect("Unable to find the user's home directory");
+
+            if cfg!(target_os = "macos") {
+                path.push("Library/Preferences");
+            } else {
+                path.push(".config");
+            }
+
+            path
+        });
+
+    let db_path = config_home_path.join("toutui/db.sqlite3");
+
+    let err_message = "Error connecting to the database.";
+
+    if let Ok(conn) = Connection::open(db_path) {
+        let mut stmt = conn.prepare(
+            "SELECT login_err
+             FROM others
+             LIMIT 1",
+        )?;
+
+        let mut rows = stmt.query(params![])?;
+
+        if let Some(row) = rows.next()? {
+            let others = Others {
+                login_err: row.get(0)?,
+            };
+            return Ok(Some(others));
+        }
+    } else {
+        let mut stdout = stdout();
+        let _ = pop_message(&mut stdout, 3, err_message);
+        error!("[get_others] {}", err_message);
+    }
+
+    Ok(None)
+}
+// Update login_err (for `others` table)
+pub fn update_login_err(value: &str) -> Result<()> {
+
+    let config_home_path = env::var("XDG_CONFIG_HOME")
+        .map(PathBuf::from)
+        .unwrap_or_else(|_| {
+            let mut path = dirs::home_dir().expect("Unable to find the user's home directory");
+
+            if cfg!(target_os = "macos") {
+                path.push("Library/Preferences");
+            } else {
+                path.push(".config");
+            }
+
+            path
+        });
+
+    let db_path = config_home_path.join("toutui/db.sqlite3");
+
+    let err_message = "Error connecting to the database.";
+
+    if let Ok(conn) = Connection::open(db_path) {
+        conn.execute(
+            "INSERT INTO others (login_err) SELECT '' WHERE NOT EXISTS (SELECT 1 FROM others LIMIT 1)",
+            [],
+        )?;
+        conn.execute(
+            "UPDATE others SET login_err = ?1 WHERE rowid = 1",
+            params![value],
+        )?;
+    } else {
+        let mut stdout = stdout();
+        let _ = pop_message(&mut stdout, 3, err_message);
+        error!("[update_login_err] {}", err_message);
+    }
+
+    Ok(())
+}
 
 // Select default user
 pub fn select_default_usr() -> Result<Vec<String>> {
@@ -923,6 +1006,13 @@ pub fn init_db() -> Result<()> {
         [],
     )?;
 
+    //Create table `others` if there is none 
+    conn.execute(
+        "CREATE TABLE IF NOT EXISTS others (
+            login_err TEXT NOT NULL DEFAULT ''
+        )",
+        [],
+    )?;
 
     Ok(())
 }
