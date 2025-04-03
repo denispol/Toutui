@@ -26,7 +26,7 @@
 ## 🛠️ Roadmap  
 **Short-term Goals**  
 - Since this is a beta version, the main focus is on tracking and fixing bugs.
-- Currently working on the next release: [v0.3.3-beta]
+- Currently working on the next release: [v0.3.4-beta]
 
 **Mid-term Goals**  
 - Put the app on yay    
