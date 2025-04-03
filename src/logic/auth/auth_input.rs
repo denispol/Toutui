@@ -98,7 +98,6 @@ impl AppLogin {
             let error_message_login = match get_others() {
                 Ok(Some(value)) => value.login_err,
                 Ok(None) => {
-                    info!("INFO: No login error found, using default value.");
                     "".to_string()
                 }
                 Err(e) => {
