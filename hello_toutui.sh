@@ -356,7 +356,6 @@ install_toutui() {
     install_deps # install essential and/or optional deps
     install_config # create ~/.config/toutui/ etc.
     install_rust # cornerstone! toutui is written by a crab
-    . "$HOME/.cargo/env" # ensure cargo is in PATH
     cargo build --release
     # copy Toutui binary to system path
     sudo cp ./target/release/Toutui "${INSTALL_DIR}/toutui" || exit $EXIT_BUILD_FAIL
