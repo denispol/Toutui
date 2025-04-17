@@ -22,6 +22,9 @@
 ✅ **Streaming Support** – Play directly without downloading  
 ✅ **Customizable Color Theme** – A config file will allow you to customize the color theme  
 
+## 📰 Media
+Featured on [Korben](https://korben.info/toutui-client-terminal-audiobookshelf.html), a well-known French tech blog covering open source and technology.
+
 
 ## 🛠️ Roadmap  
 **Short-term Goals**  
