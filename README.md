@@ -23,7 +23,7 @@
 ✅ **Customizable Color Theme** – A config file will allow you to customize the color theme  
 
 ## 📰 Media
-<img src=".github/korben.png" align="top" width="50" alt="Tux (Linux)"/> Featured on [Korben](https://korben.info/toutui-client-terminal-audiobookshelf.html), a well-known French tech blog covering open source and technology.
+<img src=".github/korben.png" align="top" width="50" alt="Korben"/> Featured on [Korben](https://korben.info/toutui-client-terminal-audiobookshelf.html), a well-known French tech blog covering open source and technology.
 
 
 ## 🛠️ Roadmap  
