@@ -9,7 +9,7 @@ Check the [roadmap](https://github.com/AlbanDAVID/Toutui?tab=readme-ov-file#%EF%
 If you want to contribute new features but don't have any ideas, feel free to check the [future features](https://github.com/AlbanDAVID/Toutui?tab=readme-ov-file#-future-features) section for inspiration.   
 
 ## 💬 How to Contribute
-
+- **Share your theme**: Check [here](https://github.com/AlbanDAVID/Toutui-theme).
 - **Suggestions/feedback**: Open an issue (feature request) or use [discussions](https://github.com/AlbanDAVID/Toutui/discussions).
 - **Bugs**: Report bugs not listed in issues or [known bugs](https://github.com/AlbanDAVID/Toutui/blob/main/known_bugs.md). Use the appropriate issue section (Installation issue or bug report).
 - **Code**: Fork the repo, create a branch, and submit a pull request. **I encourage you to discuss your ideas with me before a PR** (to ensure no one else is working on it). Code doesn’t need to be perfect—let’s collaborate and improve it together!
