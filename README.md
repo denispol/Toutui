@@ -55,7 +55,7 @@ At worst, you may experience **sync issues**, but there is **no risk** of data l
 Do not hesitate to contribute to this project by submitting your code, ideas, or feedback. Please make sure to read the [contributing guidelines](https://github.com/AlbanDAVID/Toutui/blob/main/CONTRIBUTING.md) first.
 
 ### 🎨 **UI**
-Explore and share theme [here](https://github.com/AlbanDAVID/Toutui-theme).    
+Explore and share themes [here](https://github.com/AlbanDAVID/Toutui-theme).    
 The **font** and **emojis** may vary depending on the terminal you are using.    
 To ensure the best experience, it's recommended to use **Kitty** or **Alacritty** terminal.
 
