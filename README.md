@@ -89,7 +89,8 @@ chmod +x hello_toutui.sh
 ./hello_toutui.sh install
 ```
 >[!TIP]
-> - Once the installation is complete, type `toutui` in your terminal to launch the app.    
+> - Once the installation is complete, type `toutui` in your terminal to launch the app.
+> - Explore themes [here.](https://github.com/AlbanDAVID/Toutui-theme)       
 > - Best experience with Kitty or Alacritty terminal.    
   
 >[!IMPORTANT]
