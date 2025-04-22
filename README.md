@@ -63,7 +63,7 @@ To ensure the best experience, it's recommended to use **Kitty** or **Alacritty*
 
 ## 🚨 Installation Instructions
 
-### Automatic install
+### Easy installation
 
 >[!WARNING]
 > - **This is a beta app, please read [this](https://github.com/AlbanDAVID/Toutui?tab=readme-ov-file#%EF%B8%8F-caution-beta-version).**    
