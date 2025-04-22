@@ -64,7 +64,7 @@ body:
     attributes:
       label: Which install method?
       options:
-        - Automatic install
+        - Easy installation 
         - Yay
         - Git (manual)
         - Other (list in "Additional Notes" box)
