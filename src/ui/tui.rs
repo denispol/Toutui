@@ -352,14 +352,34 @@ impl App {
 
         App::render_header(header_area, buf, self.lib_name_type.clone(), &self.username, &self.server_address_pretty, VERSION);
         App::render_footer(footer_area, buf, text_render_footer);
+        let no_episodes_message = "No episodes found for this podcast.\nPress 'h' to go back.";
+
         if self.is_from_search_pod {
-            self.render_list(list_area, buf, render_list_title, &self.titles_pod_ep_search.clone(), &mut self.list_state_pod_ep.clone());
-            self.render_info_pod_ep_search(item_area1, buf, &mut &self.list_state_pod_ep.clone());
-            self.render_desc_pod_ep_search(item_area2, buf, &mut &self.list_state_pod_ep.clone());
+            if self.titles_pod_ep_search.is_empty() {
+                log::warn!("render_pod_ep (search): No episodes found.");
+                Paragraph::new(no_episodes_message)
+                    .centered()
+                    .block(Block::new().borders(Borders::TOP).border_style(Style::new().fg(Color::DarkGray)))
+                    .render(main_area, buf);
+            } else {
+                // Only render list/info/desc if episodes exist
+                self.render_list(list_area, buf, render_list_title, &self.titles_pod_ep_search.clone(), &mut self.list_state_pod_ep.clone());
+                self.render_info_pod_ep_search(item_area1, buf, &mut &self.list_state_pod_ep.clone());
+                self.render_desc_pod_ep_search(item_area2, buf, &mut &self.list_state_pod_ep.clone());
+            }
         } else {
-            self.render_list(list_area, buf, render_list_title, &self.titles_pod_ep.clone(), &mut self.list_state_pod_ep.clone());
-            self.render_info_pod_ep(item_area1, buf, &mut &self.list_state_pod_ep.clone());
-            self.render_desc_pod_ep(item_area2, buf, &mut &self.list_state_pod_ep.clone());
+            if self.titles_pod_ep.is_empty() {
+                log::warn!("render_pod_ep (library): No episodes found.");
+                Paragraph::new(no_episodes_message)
+                    .centered()
+                    .block(Block::new().borders(Borders::TOP).border_style(Style::new().fg(Color::DarkGray)))
+                    .render(main_area, buf);
+            } else {
+                // Only render list/info/desc if episodes exist
+                self.render_list(list_area, buf, render_list_title, &self.titles_pod_ep.clone(), &mut self.list_state_pod_ep.clone());
+                self.render_info_pod_ep(item_area1, buf, &mut &self.list_state_pod_ep.clone());
+                self.render_desc_pod_ep(item_area2, buf, &mut &self.list_state_pod_ep.clone());
+            }
         }
     }
 
@@ -517,19 +537,57 @@ impl App {
     // info about the podcast for `PodcastEpisode`
     fn render_info_pod_ep(&self, area: Rect, buf: &mut Buffer, list_state: &ListState) {
 
-        let n = self.durations_pod_ep.len();
-        let duplicated_titles = vec![self.titles_pod[0].clone(); n];
-        let duplicated_authors = vec![self.authors_pod_ep[0].clone(); n];
-        if let Some(selected) = list_state.selected() {
-
-            Paragraph::new(format!("[{}] - Author: {} - Episode: {} - Duration: {} ", 
-                    duplicated_titles[selected].trim(), 
-                    duplicated_authors[selected].trim(), 
-                    self.episodes_pod_ep[selected].trim(),
-                    self.durations_pod_ep[selected].trim(),
-            ))
+        // Check if source vectors for podcast title/author are empty before accessing index 0
+        if self.titles_pod.is_empty() || self.authors_pod_ep.is_empty() {
+            log::error!("render_info_pod_ep: titles_pod or authors_pod_ep is empty. Cannot render episode info.");
+            // Render placeholder text or handle appropriately
+            Paragraph::new("Error: Podcast metadata missing.")
                 .left_aligned()
                 .render(area, buf);
+            return; // Exit the function early
+        }
+
+        let n = self.durations_pod_ep.len();
+        // Now safe to access index 0 as we've checked they are not empty
+        let duplicated_titles = vec![self.titles_pod[0].clone(); n];
+        let duplicated_authors = vec![self.authors_pod_ep[0].clone(); n];
+
+        if let Some(selected) = list_state.selected() {
+            log::debug!(
+                "render_info_pod_ep: selected={}, titles_pod.len={}, authors_pod_ep.len={}, durations_pod_ep.len={}, episodes_pod_ep.len={}, duplicated_titles.len={}, duplicated_authors.len={}",
+                selected,
+                self.titles_pod.len(), // Should be >= 1 here
+                self.authors_pod_ep.len(), // Should be >= 1 here
+                self.durations_pod_ep.len(),
+                self.episodes_pod_ep.len(),
+                duplicated_titles.len(), // Will be n
+                duplicated_authors.len() // Will be n
+            );
+
+            // Check if episode-specific vectors are valid for the selected index
+            if selected < self.episodes_pod_ep.len() && selected < self.durations_pod_ep.len() {
+                 // Also check duplicated vectors, though their length depends on n (durations_pod_ep.len())
+                 if selected < duplicated_titles.len() && selected < duplicated_authors.len() {
+                    Paragraph::new(format!("[{}] - Author: {} - Episode: {} - Duration: {} ",
+                            duplicated_titles[selected].trim(),
+                            duplicated_authors[selected].trim(),
+                            self.episodes_pod_ep[selected].trim(),
+                            self.durations_pod_ep[selected].trim(),
+                    ))
+                        .left_aligned()
+                        .render(area, buf);
+                 } else {
+                     log::error!("render_info_pod_ep: Index {} out of bounds for duplicated title/author vectors (len={})!", selected, duplicated_titles.len());
+                     Paragraph::new("Error: Episode info rendering mismatch.")
+                         .left_aligned()
+                         .render(area, buf);
+                 }
+            } else {
+                log::error!("render_info_pod_ep: Index {} out of bounds for episode/duration vectors (ep_len={}, dur_len={})!", selected, self.episodes_pod_ep.len(), self.durations_pod_ep.len());
+                Paragraph::new("Error: Episode data unavailable or index out of bounds.")
+                    .left_aligned()
+                    .render(area, buf);
+            }
         }
     }
     // info about the podcast for `PodcastEpisode` (from search)
@@ -555,11 +613,21 @@ impl App {
     fn render_desc_pod_ep(&self, area: Rect, buf: &mut Buffer, list_state: &ListState) {
 
         if let Some(selected) = list_state.selected() {
+            log::debug!("render_desc_pod_ep: selected={}, subtitles_pod_ep.len={}", selected, self.subtitles_pod_ep.len());
 
-            Paragraph::new(self.subtitles_pod_ep[selected].clone())
-                .scroll((self.scroll_offset as u16, 0))
-                .wrap(Wrap { trim: true })
-                .render(area, buf);
+            // Check if index is valid for subtitles vector
+            if selected < self.subtitles_pod_ep.len() {
+                Paragraph::new(self.subtitles_pod_ep[selected].clone())
+                    .scroll((self.scroll_offset as u16, 0))
+                    .wrap(Wrap { trim: true })
+                    .render(area, buf);
+            } else {
+                log::error!("render_desc_pod_ep: Index {} out of bounds for subtitles_pod_ep (len={})!", selected, self.subtitles_pod_ep.len());
+                // Render placeholder text
+                Paragraph::new("Error: Episode description unavailable.")
+                    .left_aligned()
+                    .render(area, buf);
+            }
         }
     }
     // desc of the podcast for `PodcastEpisode` (from search)
